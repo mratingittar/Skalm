@@ -5,6 +5,10 @@ namespace OOP2_Projektarbete.Classes
     {
         public void Run()
         {
+
+            SoundManager soundManager = new SoundManager();
+            soundManager.PlayMusic("Thunder_Dreams.wav");
+
             MainMenu mainMenu = new MainMenu();
 
             switch (mainMenu.Menu())
@@ -30,6 +34,5 @@ namespace OOP2_Projektarbete.Classes
         {
 
         }
-
     }
 }

@@ -29,15 +29,22 @@ namespace OOP2_Projektarbete.Classes
             while (true)
             {
                 ConsoleKey key = ReadKey().Key;
-
+                
                 if (key == ConsoleKey.Escape)
                     return MenuChoices.Exit;
                 else if (key == ConsoleKey.UpArrow)
+                {
                     MoveMenuUp();
+                }
                 else if (key == ConsoleKey.DownArrow)
+                {
                     MoveMenuDown();
+                }
                 else if (key == ConsoleKey.Enter)
+                {
+                    PlayBeep(880);
                     return menuSelection;
+                }
             }
         }
 
@@ -87,6 +94,7 @@ namespace OOP2_Projektarbete.Classes
                 return;
 
             menuSelection--;
+            PlayBeep(440);
             PrintMenuChoices();
         }
 
@@ -97,7 +105,14 @@ namespace OOP2_Projektarbete.Classes
                 return;
 
             menuSelection++;
+            PlayBeep(440);
             PrintMenuChoices();
+        }
+
+        private void PlayBeep(int freq)
+        {
+            if (OperatingSystem.IsWindows())
+                Beep(freq, 100);
         }
     }
 }
