@@ -9,51 +9,85 @@ namespace OOP2_Projektarbete.Classes.Managers
 {
     internal class ManagerDisplay
     {
+        private Vector2Int gwStartXY;
+        private Vector2Int gwEndXY;
+
+        private Vector2Int msgBoxStartXY;
+        private Vector2Int msgBoxEndXY;
+
+        private Vector2Int mainStatsStartXY;
+        private Vector2Int mainStatsEndXY;
+
+        private Vector2Int subStatsStartXY;
+        private Vector2Int subStatsEndXY;
+
+        public ManagerDisplay()
+        {
+            InitHudPositions();
+            InitGameWindow();
+        }
+
+        // SET WINDOW COORDS
+        private void InitHudPositions()
+        {
+            gwStartXY = new Vector2Int(Globals.G_HUD_PADDING, Globals.G_HUD_PADDING);
+            gwEndXY = new Vector2Int(gwStartXY.X + Globals.G_GAME_WIDTH, gwStartXY.Y + Globals.G_GAME_HEIGHT);
+
+            msgBoxStartXY = new Vector2Int(Globals.G_HUD_PADDING, gwEndXY.Y + (Globals.G_HUD_PADDING * 2));
+            msgBoxEndXY = new Vector2Int(msgBoxStartXY.X + Globals.G_HUD_MSGBOX_W, msgBoxStartXY.Y + Globals.G_HUD_MSGBOX_H);
+
+            mainStatsStartXY = new Vector2Int(gwEndXY.X + (Globals.G_HUD_PADDING * 2), Globals.G_HUD_PADDING);
+            mainStatsEndXY = new Vector2Int(mainStatsStartXY.X + Globals.G_HUD_MAINSTATS_W, mainStatsStartXY.Y + Globals.G_HUD_MAINSTATS_H);
+
+            subStatsStartXY = new Vector2Int(gwEndXY.X + (Globals.G_HUD_PADDING * 2), mainStatsEndXY.Y + (Globals.G_HUD_PADDING * 2));
+            subStatsEndXY = new Vector2Int(subStatsStartXY.X + Globals.G_HUD_SUBSTATS_W, subStatsStartXY.Y + Globals.G_HUD_SUBSTATS_H);
+        }
+
         // METHOD INITIALIZE WINDOW
         public void InitGameWindow()
         {
-            int gameW = Globals.G_GAME_WIDTH + (Globals.G_HUD_PADDING * 2);
-            int messageW = gameW;
-            int mainStatsW = Globals.G_HUD_MAINSTATS_W + (Globals.G_HUD_PADDING * 2);
-            int subStatsW = Globals.G_HUD_SUBSTATS_W + (Globals.G_HUD_PADDING * 2);
+            int padding = Globals.G_HUD_PADDING;
 
-            int WindowWidth = gameW + mainStatsW;
-
-            int gameH = Globals.G_GAME_HEIGHT + (Globals.G_HUD_PADDING * 2);
-            int messageH = Globals.G_HUD_MSGBOX_H + (Globals.G_HUD_PADDING * 2);
-            int mainStatsH = Globals.G_HUD_MAINSTATS_H + (Globals.G_HUD_PADDING * 2);
-            int subStatsH = Globals.G_HUD_SUBSTATS_H + (Globals.G_HUD_PADDING * 2);
-
-            int WindowHeight = gameH + messageH;
+            // SET WINDOW SIZE & BUFFER
+            int WindowWidth = (gwStartXY.X - padding) + (mainStatsEndXY.X + padding);
+            int WindowHeight = (gwStartXY.Y - padding) + (subStatsEndXY.Y + padding);
 
             Console.SetWindowSize(WindowWidth+1, WindowHeight+1);
             Console.SetBufferSize(WindowWidth+1, WindowHeight+1);
 
             // PRINT GAME PLAN BORDERS
-            BorderPrinter(new Vector2Int(0,0), new Vector2Int(gameW, gameH));
+            BorderPrinter(
+                new Vector2Int(gwStartXY.X - padding, gwStartXY.Y - padding), 
+                new Vector2Int(gwEndXY.X + padding, gwEndXY.Y + padding));
 
             // PRINT MESSAGE FIELD BORDERS
-            BorderPrinter(new Vector2Int(0, gameH), new Vector2Int(messageW, gameH + messageH));
+            BorderPrinter(
+                new Vector2Int(msgBoxStartXY.X - padding, msgBoxStartXY.Y - padding), 
+                new Vector2Int(msgBoxEndXY.X + padding, msgBoxEndXY.Y + padding));
 
             // PRINT MAIN STATS BORDERS
-            BorderPrinter(new Vector2Int(gameW, 0), new Vector2Int(gameW + mainStatsW, mainStatsH));
+            BorderPrinter(
+                new Vector2Int(mainStatsStartXY.X - padding, mainStatsStartXY.Y - padding), 
+                new Vector2Int(mainStatsEndXY.X + padding, mainStatsEndXY.Y + padding));
 
             // PRINT SUB STATS BORDERS
-            BorderPrinter(new Vector2Int(gameW, mainStatsH), new Vector2Int(gameW + subStatsW, mainStatsH + subStatsH));
+            BorderPrinter(
+                new Vector2Int(subStatsStartXY.X - padding, subStatsStartXY.Y - padding), 
+                new Vector2Int(subStatsEndXY.X + padding, subStatsEndXY.Y + padding));
         }
 
         // METHOD BORDER PRINTER
         public void BorderPrinter(Vector2Int topleft, Vector2Int bottomright)
         {
             // PRINT BORDER HORIZONTAL AXIS
-            for (int i = topleft.X; i < bottomright.X; i++)
+            for (int i = topleft.X; i <= bottomright.X; i++)
             {
                 PrintAtPosition(i, topleft.Y, Globals.G_BORDER);
                 PrintAtPosition(i, bottomright.Y, Globals.G_BORDER);
             }
 
             // PRINT BORDER VERTICAL AXIS
-            for (int j = topleft.Y; j < bottomright.Y; j++)
+            for (int j = topleft.Y; j <= bottomright.Y; j++)
             {
                 PrintAtPosition(topleft.X, j, Globals.G_BORDER);
                 PrintAtPosition(bottomright.X, j, Globals.G_BORDER);
