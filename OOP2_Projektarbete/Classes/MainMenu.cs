@@ -1,21 +1,11 @@
 ﻿using static System.Console;
 
 
-namespace OOP2_Projektarbete
+namespace OOP2_Projektarbete.Classes
 {
     internal class MainMenu
     {
-        private string skalm = @"
-   _______  _        __   __  _        _______ 
-  (  ____ \| \    /\(__) (__)( \      (       )
-  | (    \/|  \  / / _______ | (      | () () |
-  | (_____ |  (_/ / (  ___  )| |      | || || |
-  (_____  )|   _ (  | (___) || |      | |(_)| |
-        ) ||  ( \ \ |  ___  || |      | |   | |
-  /\____) ||  /  \ \| )   ( || (____/\| )   ( |
-  \_______)|_/    \/|/     \|(_______/|/     \|
-                                               ";
-
+        private AsciiArt ascii;
         private MenuChoices menuSelection;
         private Dictionary<MenuChoices, string> menuNames;
         private int menuChoiceRowStart;
@@ -30,15 +20,31 @@ namespace OOP2_Projektarbete
                 [MenuChoices.Continue] = "Continue",
                 [MenuChoices.Exit] = "Exit"
             };
+            ascii = new AsciiArt();
+        }
 
+        public MenuChoices Menu() 
+        {
             LoadMenu();
-            MenuSelection();
+            while (true)
+            {
+                ConsoleKey key = ReadKey().Key;
+
+                if (key == ConsoleKey.Escape)
+                    return MenuChoices.Exit;
+                else if (key == ConsoleKey.UpArrow)
+                    MoveMenuUp();
+                else if (key == ConsoleKey.DownArrow)
+                    MoveMenuDown();
+                else if (key == ConsoleKey.Enter)
+                    return menuSelection;
+            }
         }
 
         private void LoadMenu()
         {
             Clear();
-            WriteLine(skalm);
+            WriteLine(ascii.SkalmTitle);
             WriteLine();
             WriteLine();
             menuChoiceRowStart = CursorTop;
@@ -67,28 +73,11 @@ namespace OOP2_Projektarbete
             ForegroundColor = ConsoleColor.White;
         }
 
-        private enum MenuChoices
+        public enum MenuChoices
         {
             NewGame,
             Continue,
             Exit
-        }
-
-        private void MenuSelection() // To be refactored into using input system
-        {
-            while (true)
-            {
-                ConsoleKey key = ReadKey().Key;
-
-                if (key == ConsoleKey.Escape)
-                    ExitGame();
-                else if (key == ConsoleKey.UpArrow)
-                    MoveMenuUp();
-                else if (key == ConsoleKey.DownArrow)
-                    MoveMenuDown();
-                else if (key == ConsoleKey.Enter)
-                    ConfirmSelection();
-            }
         }
 
         private void MoveMenuUp()
@@ -110,17 +99,5 @@ namespace OOP2_Projektarbete
             menuSelection++;
             PrintMenuChoices();
         }
-
-        private void ConfirmSelection()
-        {
-            if (menuSelection == MenuChoices.Exit)
-                ExitGame();
-        }
-
-        private void ExitGame()
-        {
-            Environment.Exit(0);
-        }
     }
-
 }

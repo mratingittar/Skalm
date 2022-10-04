@@ -1,15 +1,34 @@
-﻿namespace OOP2_Projektarbete
+﻿
+namespace OOP2_Projektarbete.Classes
 {
     internal class GameManager
     {
         public void Run()
         {
-            MainMenu menu = new MainMenu();
+            MainMenu mainMenu = new MainMenu();
 
+            switch (mainMenu.Menu())
+            {
+                case MainMenu.MenuChoices.NewGame:
+                    break;
+                case MainMenu.MenuChoices.Continue:
+                    break;
+                case MainMenu.MenuChoices.Exit:
+                    Environment.Exit(0);
+                    break;
+                default:
+                    break;
+            }
+        }
 
-            // Game loop
-            // Player input
-            // Main menu
+        private void NewGame()
+        {
+
+        }
+
+        private void ContinueGame()
+        {
+
         }
 
     }
