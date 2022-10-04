@@ -1,4 +1,5 @@
-﻿using OOP2_Projektarbete.Classes.Structs;
+﻿using OOP2_Projektarbete.Classes.HUD;
+using OOP2_Projektarbete.Classes.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +23,16 @@ namespace OOP2_Projektarbete.Classes.Managers
         private Vector2Int subStatsStartXY;
         private Vector2Int subStatsEndXY;
 
+        // HUD COMPONENTS
+        public HUDmsgBox HudMsgBox;
+
         // CONSTRUCTOR I
         public ManagerDisplay()
         {
             InitHudPositions();
             InitGameWindow();
+
+            HudMsgBox = new HUDmsgBox(msgBoxStartXY, msgBoxEndXY);
         }
 
         // SET WINDOW COORDS
@@ -46,11 +52,11 @@ namespace OOP2_Projektarbete.Classes.Managers
         }
 
         // METHOD INITIALIZE WINDOW
-        public void InitGameWindow()
+        private void InitGameWindow()
         {
             int padding = Globals.G_HUD_PADDING;
 
-            // SET WINDOW SIZE & BUFFER
+            // SET WINDOW & BUFFER SIZE
             int WindowWidth = (gwStartXY.X - padding) + (mainStatsEndXY.X + padding);
             int WindowHeight = (gwStartXY.Y - padding) + (subStatsEndXY.Y + padding);
 
@@ -79,7 +85,7 @@ namespace OOP2_Projektarbete.Classes.Managers
         }
 
         // METHOD BORDER PRINTER
-        public void BorderPrinter(Vector2Int topleft, Vector2Int bottomright)
+        private void BorderPrinter(Vector2Int topleft, Vector2Int bottomright)
         {
             // PRINT BORDER HORIZONTAL AXIS
             for (int i = topleft.X; i <= bottomright.X; i++)

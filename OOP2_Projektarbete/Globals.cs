@@ -12,16 +12,16 @@ namespace OOP2_Projektarbete
         public static bool G_DISPLAY_CURSOR = false;
 
         public static int G_GAME_WIDTH = 96;
-        public static int G_GAME_HEIGHT = 48;
+        public static int G_GAME_HEIGHT = 40;
 
         public static int G_HUD_MSGBOX_W = 96;
-        public static int G_HUD_MSGBOX_H = 4;
+        public static int G_HUD_MSGBOX_H = 3;
         public static int G_HUD_MAINSTATS_W = 24;
         public static int G_HUD_MAINSTATS_H = 8;
         public static int G_HUD_SUBSTATS_W = 24;
-        public static int G_HUD_SUBSTATS_H = 44;
+        public static int G_HUD_SUBSTATS_H = 35;
 
-        public static int G_HUD_PADDING = 1;
+        public static int G_HUD_PADDING = 2;
         public static int G_HUD_PADDING_ALL = 1;
 
         public static char G_BORDER = '░';//'█';

@@ -8,5 +8,7 @@ namespace OOP2_Projektarbete.Classes.HUD
 {
     internal class HUDsubStats
     {
+        // DISPLAY INVENTORY, ATTRIBUTES, EXPERIANCE, ETC?
+        // TAB SYSTEM? MAYBE STATE MACHINE?
     }
 }
