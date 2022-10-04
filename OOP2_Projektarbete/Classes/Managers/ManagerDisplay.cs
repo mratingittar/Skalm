@@ -9,6 +9,7 @@ namespace OOP2_Projektarbete.Classes.Managers
 {
     internal class ManagerDisplay
     {
+        // INSTANCE VARIABLES
         private Vector2Int gwStartXY;
         private Vector2Int gwEndXY;
 
@@ -21,6 +22,7 @@ namespace OOP2_Projektarbete.Classes.Managers
         private Vector2Int subStatsStartXY;
         private Vector2Int subStatsEndXY;
 
+        // CONSTRUCTOR I
         public ManagerDisplay()
         {
             InitHudPositions();
