@@ -6,7 +6,7 @@ namespace OOP2_Projektarbete.Classes.Managers
     internal class InputManager
     {
         private IMoveInput moveInput;
-        public Action<Vector2Int>? onInputCommand;
+        public event Action<Vector2Int>? onInputCommand;
 
         public InputManager(IMoveInput moveInput)
         {
