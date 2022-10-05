@@ -21,7 +21,7 @@ namespace OOP2_Projektarbete.Classes.Managers
             DrawField();
         }
 
-        // DRAW FIELD
+        // METHOD DRAW FIELD
         public void DrawField()
         {
             for (int j = 0; j < mapManager.mapArr.GetLength(1); j++)
@@ -52,6 +52,8 @@ namespace OOP2_Projektarbete.Classes.Managers
                         Console.Write(' ');
                         break;
                     }
+
+                    if (Globals.G_HALFWIDTHDRAW) Console.Write(' ');
                 }
 
                 Console.WriteLine();

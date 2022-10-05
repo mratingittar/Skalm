@@ -12,14 +12,14 @@ namespace OOP2_Projektarbete
         public static bool G_DISPLAY_CURSOR = false;
 
         public static int G_GAME_WIDTH = 96;
-        public static int G_GAME_HEIGHT = 48;
+        public static int G_GAME_HEIGHT = 32;
 
         public static int G_HUD_MSGBOX_W = 96;
         public static int G_HUD_MSGBOX_H = 4;
         public static int G_HUD_MAINSTATS_W = 24;
         public static int G_HUD_MAINSTATS_H = 8;
         public static int G_HUD_SUBSTATS_W = 24;
-        public static int G_HUD_SUBSTATS_H = 44;
+        public static int G_HUD_SUBSTATS_H = 28;
 
         public static int G_HUD_PADDING = 1;
         public static int G_HUD_PADDING_ALL = 1;
@@ -28,5 +28,7 @@ namespace OOP2_Projektarbete
         public static char G_WALL = '#';
         public static char G_FLOOR = '.';
         public static char G_DOOR = '+';
+
+        public static bool G_HALFWIDTHDRAW = true;
     }
 }

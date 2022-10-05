@@ -8,12 +8,20 @@ namespace OOP2_Projektarbete.Classes.Map
 {
     internal class MapManager
     {
+        private int mapW;
+        private int mapH;
+
         public int[,] mapArr { get; private set; }
 
         // CONSTRUCTOR I
         public MapManager()
         {
-            mapArr = new int[Globals.G_GAME_WIDTH, Globals.G_GAME_HEIGHT];
+            mapW = Globals.G_GAME_WIDTH;
+            mapH = Globals.G_GAME_HEIGHT;
+
+            if (Globals.G_HALFWIDTHDRAW) mapW /= 2;
+
+            mapArr = new int[mapW, mapH];
             InitMap();
         }
 
