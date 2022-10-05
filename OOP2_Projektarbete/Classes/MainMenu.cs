@@ -62,7 +62,7 @@ namespace OOP2_Projektarbete.Classes
         private void LoadMenu()
         {
             Clear();
-            WriteLine(ascii.SkalmTitle);
+            ascii.PrintFromPlace(3,0, ascii.SkalmTitle);
             WriteLine();
             WriteLine();
             menuChoiceRowStart = CursorTop;
