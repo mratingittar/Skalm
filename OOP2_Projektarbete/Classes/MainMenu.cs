@@ -1,5 +1,7 @@
-﻿using static System.Console;
-
+﻿using OOP2_Projektarbete.Classes.Input;
+using OOP2_Projektarbete.Classes.Managers;
+using OOP2_Projektarbete.Classes.Structs;
+using static System.Console;
 
 namespace OOP2_Projektarbete.Classes
 {
@@ -9,9 +11,11 @@ namespace OOP2_Projektarbete.Classes
         private MenuChoices menuSelection;
         private Dictionary<MenuChoices, string> menuNames;
         private int menuChoiceRowStart;
+        private InputManager inputManager;
 
         public MainMenu()
         {
+            inputManager = new InputManager(new InputKeys());
             CursorVisible = false;
             menuSelection = MenuChoices.NewGame;
             menuNames = new Dictionary<MenuChoices, string>
@@ -21,23 +25,37 @@ namespace OOP2_Projektarbete.Classes
                 [MenuChoices.Exit] = "Exit"
             };
             ascii = new AsciiArt();
+            inputManager.onInputCommand += Input;
         }
 
-        public MenuChoices Menu() 
+        private void Input(Vector2Int dir)
+        {
+            if (dir.Y < 0)
+                MoveMenuDown();
+            else if (dir.Y > 0)
+                MoveMenuUp();
+        }
+
+        public MenuChoices Menu()
         {
             LoadMenu();
             while (true)
             {
-                ConsoleKey key = ReadKey().Key;
+                if (Console.KeyAvailable)
+                    inputManager.ParseCommand();
 
-                if (key == ConsoleKey.Escape)
-                    return MenuChoices.Exit;
-                else if (key == ConsoleKey.UpArrow)
-                    MoveMenuUp();
-                else if (key == ConsoleKey.DownArrow)
-                    MoveMenuDown();
-                else if (key == ConsoleKey.Enter)
-                    return menuSelection;
+                //ConsoleKey key = ReadKey().Key;
+
+                //if (key == ConsoleKey.Escape)
+                //    return MenuChoices.Exit;
+                //else if (key == ConsoleKey.UpArrow)
+                //    MoveMenuUp();
+                //else if (key == ConsoleKey.DownArrow)
+                //    MoveMenuDown();
+                //else if (key == ConsoleKey.Enter)
+                //    return menuSelection;
+
+                Thread.Sleep(100);
             }
         }
 
