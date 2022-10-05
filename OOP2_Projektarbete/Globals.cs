@@ -27,5 +27,6 @@ namespace OOP2_Projektarbete
         public static char G_BORDER = '░';//'█';
         public static char G_WALL = '#';
         public static char G_FLOOR = '.';
+        public static char G_DOOR = '+';
     }
 }

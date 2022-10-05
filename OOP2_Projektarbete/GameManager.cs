@@ -1,12 +1,17 @@
 ﻿using OOP2_Projektarbete.Classes.Managers;
+using OOP2_Projektarbete.Classes.Map;
 
 internal class GameManager
 {
-    public ManagerDisplay DisplayManager;
+    public WindowManagerConsole displayManager;
+    public DisplayManagerGameWindow displayManagerGameWindow;
+    public MapManager mapManager;
 
     public GameManager()
     {
-        DisplayManager = new ManagerDisplay();
+        mapManager = new MapManager();
+        displayManager = new WindowManagerConsole();
+        displayManagerGameWindow = new DisplayManagerGameWindow(displayManager.gameWindowBounds, mapManager);
     }
 }
 
