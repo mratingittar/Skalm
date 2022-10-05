@@ -8,14 +8,22 @@ namespace OOP2_Projektarbete.Classes.States
 {
     internal class GameStateMainMenu : IGameState
     {
+        public MainMenu MainMenu { get; private set; }
+
+        public GameStateMainMenu(MainMenu menu)
+        {
+            MainMenu = menu;
+        }
+
         public void Enter()
         {
-            throw new NotImplementedException();
+            MainMenu.LoadMenu();
         }
 
         public void Exit()
         {
-            throw new NotImplementedException();
+            MainMenu.Enabled = false;
+            Console.Clear();
         }
     }
 }

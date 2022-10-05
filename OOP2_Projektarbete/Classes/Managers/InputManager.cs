@@ -6,23 +6,28 @@ namespace OOP2_Projektarbete.Classes.Managers
     internal class InputManager
     {
         private IMoveInput moveInput;
-        public event Action<Vector2Int>? onInputCommand;
+        private ICommandInput commandInput;
+        public event Action<Vector2Int>? onInputMove;
+        public event Action<InputCommands>? onInputCommand;
 
-        public InputManager(IMoveInput moveInput)
+        public InputManager(IMoveInput moveInput, ICommandInput commandInput)
         {
             this.moveInput = moveInput;
-           
+            this.commandInput = commandInput;
         }
 
-        public void ParseCommand()
+        public void GetInput()
         {
-            onInputCommand?.Invoke(GetMoveDirection());
-        }
+            if (!Console.KeyAvailable)
+                return;
 
-        public Vector2Int GetMoveDirection()
-        {
-            return moveInput.GetMoveInput();
-        }
+            ConsoleKeyInfo key = Console.ReadKey(true);
 
+            if (moveInput.GetMoveInput(key, out Vector2Int direction))
+                onInputMove?.Invoke(direction);
+
+            if (commandInput.GetCommandInput(key, out InputCommands command))
+                onInputCommand?.Invoke(command);
+        }
     }
 }

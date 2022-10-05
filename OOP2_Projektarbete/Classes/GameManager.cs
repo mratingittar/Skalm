@@ -9,34 +9,39 @@ namespace OOP2_Projektarbete.Classes
         public IGameState GameState;
         private MainMenu mainMenu;
         private InputManager inputManager;
+        private int updateFrequency = 10;
 
-        public GameManager(IGameState initialState)
+        public GameManager()
         {
-            GameState = initialState;
-            mainMenu = new MainMenu();
-            inputManager = new InputManager(new InputKeys());
+            inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
+            mainMenu = new MainMenu(inputManager);
+            mainMenu.onMenuSelection += MainMenuSelection;
+            GameState = new GameStateInitializing();
         }
 
-        public void Run()
+
+        public void Start()
+        {
+            ChangeGameState(new GameStateMainMenu(mainMenu));
+            Update();
+        }
+
+        private void Update()
         {
             while (true)
             {
                 if (Console.KeyAvailable)
                 {
-                    inputManager.ParseCommand();
+                    inputManager.GetInput();
                 }
 
-                if (GameState is GameStateMainMenu)
-                {
-                    RunMainMenu();
 
-                }
                 else if (GameState is GameStatePlaying)
                 {
                     RunGame();
                 }
 
-                Thread.Sleep(100);
+                Thread.Sleep(1000 / updateFrequency);
             }
         }
 
@@ -46,23 +51,24 @@ namespace OOP2_Projektarbete.Classes
             GameState = gameState;
             GameState.Enter();
         }
-
-        private void RunMainMenu()
+        private void MainMenuSelection(MainMenuChoices selection)
         {
-            switch (mainMenu.Menu())
+            if (GameState is not GameStateMainMenu)
+                return;
+
+            switch (selection)
             {
-                case MainMenu.MenuChoices.NewGame:
+                case MainMenuChoices.NewGame:
                     ChangeGameState(new GameStatePlaying());
                     break;
-                case MainMenu.MenuChoices.Continue:
+                case MainMenuChoices.Continue:
                     break;
-                case MainMenu.MenuChoices.Exit:
+                case MainMenuChoices.Exit:
                     Environment.Exit(0);
-                    break;
-                default:
                     break;
             }
         }
+
         private void RunGame()
         {
 

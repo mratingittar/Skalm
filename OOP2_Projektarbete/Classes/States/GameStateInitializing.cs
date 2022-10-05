@@ -6,20 +6,16 @@ using System.Threading.Tasks;
 
 namespace OOP2_Projektarbete.Classes.States
 {
-    internal class GameStatePlaying : IGameState
+    internal class GameStateInitializing : IGameState
     {
         public void Enter()
         {
-            Console.WriteLine("Starting New Game");
-            Thread.Sleep(1000);
-            Console.Clear();
-            Console.WriteLine("Game is running...");
+            Console.WriteLine("Initializing...");
         }
 
         public void Exit()
         {
-            throw new NotImplementedException();
+            Console.WriteLine("Initialized.");
         }
-    
     }
 }
