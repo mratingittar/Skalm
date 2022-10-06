@@ -85,6 +85,7 @@ namespace OOP2_Projektarbete.Classes
                 else
                     WriteLine(menuNames[choice]);
             }
+           
         }
 
         private void PrintWithHighlight(string text)

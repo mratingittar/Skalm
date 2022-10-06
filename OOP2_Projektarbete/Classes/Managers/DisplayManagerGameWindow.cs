@@ -10,12 +10,12 @@ namespace OOP2_Projektarbete.Classes.Managers
 {
     internal class DisplayManagerGameWindow : IDisplayManager
     {
-        public Bounds2Int displayBounds { get; set; }
+        public Bounds displayBounds { get; set; }
         public MapManager mapManager { get; set; }
         private Queue<Vector2Int> positionsToUpdate;
 
         // CONSTRUCTOR I
-        public DisplayManagerGameWindow(Bounds2Int displayBounds, MapManager mapManager)
+        public DisplayManagerGameWindow(Bounds displayBounds, MapManager mapManager)
         {
             this.displayBounds = displayBounds;
             this.mapManager = mapManager;
@@ -84,7 +84,7 @@ namespace OOP2_Projektarbete.Classes.Managers
             for (int j = 0; j < mapManager.mapArr.GetLength(1); j++)
             {
                 // SET CURSOR POSITION
-                Console.SetCursorPosition(displayBounds.startXY.X, displayBounds.startXY.Y + j);
+                Console.SetCursorPosition(displayBounds.StartXY.X, displayBounds.StartXY.Y + j);
 
                 // HORIZONTAL AXIS
                 for (int i = 0; i < mapManager.mapArr.GetLength(0); i++)

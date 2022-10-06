@@ -28,10 +28,6 @@
                 Console.WriteLine(lines[i]);
 
             }
-
-            foreach (string line in lines)
-            {
-            }
         }
     }
 }

@@ -3,26 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using OOP2_Projektarbete.Classes.Grid;
+using OOP2_Projektarbete.Classes.Structs;
 
 namespace OOP2_Projektarbete.Classes.Map
 {
     internal class MapManager
     {
-        private int mapW;
-        private int mapH;
-
+        private Vector2Int mapOrigin;
+        private int mapWidth;
+        private int mapHeight;
+        //public Grid<Cell> mapGrid;
         public int[,] mapArr { get; private set; }
 
         // CONSTRUCTOR I
-        public MapManager()
+        public MapManager(int width, int height, Vector2Int origin)
         {
-            mapW = Globals.G_GAME_WIDTH;
-            mapH = Globals.G_GAME_HEIGHT;
+            mapWidth = width;
+            mapHeight = height;
+            mapOrigin = origin;
+            //mapGrid = new Grid<Cell>(width, height, 2, 1, origin, (position, x, y) => new Cell(position, x, y));
+            
 
-            if (Globals.G_HALFWIDTHDRAW) mapW /= 2;
-
-            mapArr = new int[mapW, mapH];
-            InitMap();
+            mapArr = new int[mapWidth, mapHeight];
+            //InitMap();
         }
 
         // METHOD INITIALIZE MAP

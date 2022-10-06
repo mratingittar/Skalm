@@ -10,7 +10,7 @@ namespace OOP2_Projektarbete.Classes.Managers
 {
     internal interface IDisplayManager
     {
-        Bounds2Int displayBounds { get; set; }
+        Bounds displayBounds { get; set; }
         MapManager mapManager { get; set; }
 
         public void DrawField();

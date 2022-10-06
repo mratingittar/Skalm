@@ -1,9 +1,9 @@
-﻿using OOP2_Projektarbete.Classes.States;
-using OOP2_Projektarbete.Classes.Managers;
+﻿using OOP2_Projektarbete.Classes.Grid;
 using OOP2_Projektarbete.Classes.Input;
+using OOP2_Projektarbete.Classes.Managers;
 using OOP2_Projektarbete.Classes.Map;
+using OOP2_Projektarbete.Classes.States;
 using OOP2_Projektarbete.Classes.Structs;
-using OOP2_Projektarbete.Classes.Grid;
 
 namespace OOP2_Projektarbete.Classes
 {
@@ -14,21 +14,27 @@ namespace OOP2_Projektarbete.Classes
         private InputManager inputManager;
         private int updateFrequency;
 
-        public WindowManagerConsole displayManager;
-        public DisplayManagerGameWindow displayManagerGameWindow;
+        private int windowHeight;
+        private int windowWidth;
+
+        //public WindowManagerConsole displayManager;
+        //public DisplayManagerGameWindow displayManagerGameWindow;
         public MapManager mapManager;
+        public DisplayManager displayManager;
 
         public GameManager()
         {
+            mapManager = new MapManager(32, 32, Vector2Int.Zero);
+            displayManager = new(mapManager);
+
             updateFrequency = Globals.G_UPDATE_FREQUENCY;
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
             mainMenu = new MainMenu(inputManager);
             mainMenu.onMenuSelection += MainMenuSelection;
             GameState = new GameStateInitializing();
 
-            mapManager = new MapManager();
-            displayManager = new WindowManagerConsole();
-            displayManagerGameWindow = new DisplayManagerGameWindow(displayManager.gameWindowBounds, mapManager);
+            //displayManager = new WindowManagerConsole();
+            //displayManagerGameWindow = new DisplayManagerGameWindow(displayManager.gameWindowBounds, mapManager);
         }
 
 
@@ -50,7 +56,7 @@ namespace OOP2_Projektarbete.Classes
 
                 else if (GameState is GameStatePlaying)
                 {
-                    PrintGrid();
+
                 }
 
                 Thread.Sleep(1000 / updateFrequency);
@@ -63,6 +69,7 @@ namespace OOP2_Projektarbete.Classes
             GameState = gameState;
             GameState.Enter();
         }
+
         private void MainMenuSelection(MainMenuChoices selection)
         {
             if (GameState is not GameStateMainMenu)
@@ -72,6 +79,8 @@ namespace OOP2_Projektarbete.Classes
             {
                 case MainMenuChoices.NewGame:
                     ChangeGameState(new GameStatePlaying());
+                    PrintGrid();
+                    displayManager.InitGameWindow();
                     break;
                 case MainMenuChoices.Continue:
                     break;
@@ -93,9 +102,13 @@ namespace OOP2_Projektarbete.Classes
 
         private void PrintGrid()
         {
-            Grid<Cell> grid = new Grid<Cell>(32, 32, 2, 1, new(5,15), (position, x, y) => new Cell(position, x, y));
             Console.Clear();
-            grid.PrintGrid('*');
+
+            Grid<Border> gridA = new Grid<Border>(32, 1, 2, 1, new(2, 2), (gridPosition, consolePositions) => new Border(gridPosition, consolePositions));
+            gridA.PrintPartialGrid();
+
+            Grid<Border> gridB = new Grid<Border>(32, 1, 2, 1, new(2, 8), (gridPosition, consolePositions) => new Border(gridPosition, consolePositions));
+            gridB.PrintFullGrid();
             Console.ReadKey();
         }
 
