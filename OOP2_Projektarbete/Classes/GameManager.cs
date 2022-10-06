@@ -1,6 +1,7 @@
 ﻿using OOP2_Projektarbete.Classes.States;
 using OOP2_Projektarbete.Classes.Managers;
 using OOP2_Projektarbete.Classes.Input;
+using OOP2_Projektarbete.Classes.Map;
 
 namespace OOP2_Projektarbete.Classes
 {
@@ -11,12 +12,20 @@ namespace OOP2_Projektarbete.Classes
         private InputManager inputManager;
         private int updateFrequency = 10;
 
+        public WindowManagerConsole displayManager;
+        public DisplayManagerGameWindow displayManagerGameWindow;
+        public MapManager mapManager;
+
         public GameManager()
         {
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
             mainMenu = new MainMenu(inputManager);
             mainMenu.onMenuSelection += MainMenuSelection;
             GameState = new GameStateInitializing();
+
+            mapManager = new MapManager();
+            displayManager = new WindowManagerConsole();
+            displayManagerGameWindow = new DisplayManagerGameWindow(displayManager.gameWindowBounds, mapManager);
         }
 
 
