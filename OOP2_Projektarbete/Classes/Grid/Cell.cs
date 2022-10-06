@@ -1,6 +1,6 @@
 ﻿using OOP2_Projektarbete.Classes.Structs;
 
-namespace OOP2_Projektarbete.Classes
+namespace OOP2_Projektarbete.Classes.Grid
 {
     internal class Cell
     {

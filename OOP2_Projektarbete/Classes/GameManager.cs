@@ -2,6 +2,8 @@
 using OOP2_Projektarbete.Classes.Managers;
 using OOP2_Projektarbete.Classes.Input;
 using OOP2_Projektarbete.Classes.Map;
+using OOP2_Projektarbete.Classes.Structs;
+using OOP2_Projektarbete.Classes.Grid;
 
 namespace OOP2_Projektarbete.Classes
 {
@@ -47,7 +49,7 @@ namespace OOP2_Projektarbete.Classes
 
                 else if (GameState is GameStatePlaying)
                 {
-                    RunGame();
+                    PrintGrid();
                 }
 
                 Thread.Sleep(1000 / updateFrequency);
@@ -90,7 +92,7 @@ namespace OOP2_Projektarbete.Classes
 
         private void PrintGrid()
         {
-            Grid<Cell> grid = new Grid<Cell>(32, 32, 2, 1, new(0, 0), (position, x, y) => new Cell(position, x, y));
+            Grid<Cell> grid = new Grid<Cell>(32, 32, 2, 1, new(5,15), (position, x, y) => new Cell(position, x, y));
             Console.Clear();
             grid.PrintGrid('*');
             Console.ReadKey();

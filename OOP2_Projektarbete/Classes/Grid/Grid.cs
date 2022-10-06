@@ -1,6 +1,6 @@
 ﻿using OOP2_Projektarbete.Classes.Structs;
 
-namespace OOP2_Projektarbete.Classes
+namespace OOP2_Projektarbete.Classes.Grid
 {
     internal class Grid<T>
     {
@@ -32,15 +32,30 @@ namespace OOP2_Projektarbete.Classes
 
         public void PrintGrid(char character)
         {
-            for (int x = 0; x < gridArray.GetLength(0); x++)
+            try
             {
-                for (int y = 0; y < gridArray.GetLength(1); y++)
+                if (Console.BufferHeight < height*cellHeight+origin.Y)
+                    Console.BufferHeight = height*cellHeight+origin.Y;
+
+                if (Console.BufferWidth < width*cellWidth+origin.X)
+                    Console.BufferWidth = width*cellWidth+origin.X;
+
+                for (int x = 0; x < gridArray.GetLength(0); x++)
                 {
-                    Vector2Int pos = GetConsolePosition(x, y);
-                    Console.SetCursorPosition(pos.X, pos.Y);
-                    Console.Write(character);
+                    for (int y = 0; y < gridArray.GetLength(1); y++)
+                    {
+                        Vector2Int pos = GetConsolePosition(x, y);
+
+                        Console.SetCursorPosition(pos.X, pos.Y);
+                        Console.Write(character);
+                    }
                 }
             }
+            catch (Exception e)
+            {
+                Console.WriteLine(e.Message);
+            }
+
         }
 
         private Vector2Int GetConsolePosition(int x, int y)
