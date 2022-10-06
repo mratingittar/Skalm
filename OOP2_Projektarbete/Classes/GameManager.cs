@@ -12,7 +12,7 @@ namespace OOP2_Projektarbete.Classes
         public IGameState GameState;
         private MainMenu mainMenu;
         private InputManager inputManager;
-        private int updateFrequency = 10;
+        private int updateFrequency;
 
         public WindowManagerConsole displayManager;
         public DisplayManagerGameWindow displayManagerGameWindow;
@@ -20,6 +20,7 @@ namespace OOP2_Projektarbete.Classes
 
         public GameManager()
         {
+            updateFrequency = Globals.G_UPDATE_FREQUENCY;
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
             mainMenu = new MainMenu(inputManager);
             mainMenu.onMenuSelection += MainMenuSelection;

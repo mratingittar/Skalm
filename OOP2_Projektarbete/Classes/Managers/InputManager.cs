@@ -16,6 +16,15 @@ namespace OOP2_Projektarbete.Classes.Managers
             this.commandInput = commandInput;
         }
 
+        public void SetInputMethod(IMoveInput moveInput)
+        {
+            this.moveInput = moveInput;
+        }
+        public void SetInputMethod(ICommandInput commandInput)
+        {
+            this.commandInput = commandInput;
+        }
+
         public void GetInput()
         {
             if (!Console.KeyAvailable)

@@ -10,6 +10,7 @@ namespace OOP2_Projektarbete
     {
         public static string G_GAME_TITLE = "Skälm";
         public static bool G_DISPLAY_CURSOR = false;
+        public static int G_UPDATE_FREQUENCY = 10;
 
         public static int G_GAME_WIDTH = 96;
         public static int G_GAME_HEIGHT = 32;

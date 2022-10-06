@@ -34,10 +34,10 @@ namespace OOP2_Projektarbete.Classes.Grid
         {
             try
             {
-                if (Console.BufferHeight < height*cellHeight+origin.Y)
+                if (Console.BufferHeight < height*cellHeight+origin.Y && OperatingSystem.IsWindows())
                     Console.BufferHeight = height*cellHeight+origin.Y;
 
-                if (Console.BufferWidth < width*cellWidth+origin.X)
+                if (Console.BufferWidth < width*cellWidth+origin.X && OperatingSystem.IsWindows())
                     Console.BufferWidth = width*cellWidth+origin.X;
 
                 for (int x = 0; x < gridArray.GetLength(0); x++)
