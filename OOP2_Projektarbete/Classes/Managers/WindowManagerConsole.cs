@@ -7,23 +7,27 @@ using System.Threading.Tasks;
 
 namespace OOP2_Projektarbete.Classes.Managers
 {
-    internal class ManagerDisplay
+    internal class WindowManagerConsole : IWindowManager
     {
         // INSTANCE VARIABLES
+        public Bounds2Int gameWindowBounds { get; private set; }
         private Vector2Int gwStartXY;
         private Vector2Int gwEndXY;
 
+        public Bounds2Int msgBoxBounds { get; private set; }
         private Vector2Int msgBoxStartXY;
         private Vector2Int msgBoxEndXY;
 
+        public Bounds2Int mainStatsBounds { get; private set; }
         private Vector2Int mainStatsStartXY;
         private Vector2Int mainStatsEndXY;
 
+        public Bounds2Int subStatsBounds { get; private set; }
         private Vector2Int subStatsStartXY;
         private Vector2Int subStatsEndXY;
 
         // CONSTRUCTOR I
-        public ManagerDisplay()
+        public WindowManagerConsole()
         {
             InitHudPositions();
             InitGameWindow();
@@ -34,15 +38,19 @@ namespace OOP2_Projektarbete.Classes.Managers
         {
             gwStartXY = new Vector2Int(Globals.G_HUD_PADDING, Globals.G_HUD_PADDING);
             gwEndXY = new Vector2Int(gwStartXY.X + Globals.G_GAME_WIDTH, gwStartXY.Y + Globals.G_GAME_HEIGHT);
+            gameWindowBounds = new Bounds2Int(gwStartXY, gwEndXY);
 
             msgBoxStartXY = new Vector2Int(Globals.G_HUD_PADDING, gwEndXY.Y + (Globals.G_HUD_PADDING * 2));
             msgBoxEndXY = new Vector2Int(msgBoxStartXY.X + Globals.G_HUD_MSGBOX_W, msgBoxStartXY.Y + Globals.G_HUD_MSGBOX_H);
+            msgBoxBounds = new Bounds2Int(msgBoxStartXY, msgBoxEndXY);
 
             mainStatsStartXY = new Vector2Int(gwEndXY.X + (Globals.G_HUD_PADDING * 2), Globals.G_HUD_PADDING);
             mainStatsEndXY = new Vector2Int(mainStatsStartXY.X + Globals.G_HUD_MAINSTATS_W, mainStatsStartXY.Y + Globals.G_HUD_MAINSTATS_H);
+            mainStatsBounds = new Bounds2Int(mainStatsStartXY, mainStatsEndXY);
 
             subStatsStartXY = new Vector2Int(gwEndXY.X + (Globals.G_HUD_PADDING * 2), mainStatsEndXY.Y + (Globals.G_HUD_PADDING * 2));
             subStatsEndXY = new Vector2Int(subStatsStartXY.X + Globals.G_HUD_SUBSTATS_W, subStatsStartXY.Y + Globals.G_HUD_SUBSTATS_H);
+            subStatsBounds = new Bounds2Int(subStatsStartXY, subStatsEndXY);
         }
 
         // METHOD INITIALIZE WINDOW
