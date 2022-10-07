@@ -9,17 +9,20 @@ namespace OOP2_Projektarbete.Classes
 {
     internal class GameManager
     {
+
         public IGameState GameState;
         private MainMenu mainMenu;
         private InputManager inputManager;
         private int updateFrequency;
-
+        private SoundManager soundManager;
         public WindowManagerConsole displayManager;
         public DisplayManagerGameWindow displayManagerGameWindow;
         public MapManager mapManager;
 
         public GameManager()
         {
+            soundManager = new SoundManager();
+            soundManager.PlayMusic(soundManager.MenuMusic);
             updateFrequency = Globals.G_UPDATE_FREQUENCY;
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
             mainMenu = new MainMenu(inputManager);
@@ -103,6 +106,5 @@ namespace OOP2_Projektarbete.Classes
         {
 
         }
-
     }
 }
