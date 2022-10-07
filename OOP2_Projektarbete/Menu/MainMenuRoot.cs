@@ -72,37 +72,37 @@ namespace Skalm.Menu
         }
 
         #region Menu Printing
-        public void LoadMenu()
-        {
-            Clear();
-            DisplayManager.PrintCenteredMultiLineText(ascii.SkalmTitle, 0);
-            WriteLine();
-            WriteLine();
-            menuChoiceRowStart = CursorTop;
-            PrintMenuChoices();
-        }
+        //public void LoadMenu()
+        //{
+        //    Clear();
+        //    DisplayManager.PrintCenteredMultiLineText(ascii.SkalmTitle, 0);
+        //    WriteLine();
+        //    WriteLine();
+        //    menuChoiceRowStart = CursorTop;
+        //    PrintMenuChoices();
+        //}
 
-        private void PrintMenuChoices()
-        {
-            CursorTop = menuChoiceRowStart;
-            WriteLine();
-            foreach (MainMenuChoices choice in Enum.GetValues(typeof(MainMenuChoices)))
-            {
-                if (choice == menuSelection)
-                    PrintWithHighlight(menuNames[choice]);
-                else
-                    DisplayManager.PrintCenteredText(menuNames[choice], GetCursorPosition().Top);
-            }
-        }
+        //private void PrintMenuChoices()
+        //{
+        //    CursorTop = menuChoiceRowStart;
+        //    WriteLine();
+        //    foreach (MainMenuChoices choice in Enum.GetValues(typeof(MainMenuChoices)))
+        //    {
+        //        if (choice == menuSelection)
+        //            PrintWithHighlight(menuNames[choice]);
+        //        else
+        //            DisplayManager.PrintCenteredText(menuNames[choice], GetCursorPosition().Top);
+        //    }
+        //}
 
-        private void PrintWithHighlight(string text)
-        {
-            BackgroundColor = ConsoleColor.White;
-            ForegroundColor = ConsoleColor.Black;
-            DisplayManager.PrintCenteredText(text, GetCursorPosition().Top);
-            BackgroundColor = ConsoleColor.Black;
-            ForegroundColor = ConsoleColor.White;
-        }
+        //private void PrintWithHighlight(string text)
+        //{
+        //    BackgroundColor = ConsoleColor.White;
+        //    ForegroundColor = ConsoleColor.Black;
+        //    DisplayManager.PrintCenteredText(text, GetCursorPosition().Top);
+        //    BackgroundColor = ConsoleColor.Black;
+        //    ForegroundColor = ConsoleColor.White;
+        //}
 
         #endregion Menu Printing
         #region Menu Manipulation
@@ -115,7 +115,7 @@ namespace Skalm.Menu
 
             menuSelection--;
             SoundManager.PlayMoveBeep();
-            PrintMenuChoices();
+            //PrintMenuChoices();
         }
 
         private void MoveMenuDown()
@@ -126,7 +126,7 @@ namespace Skalm.Menu
 
             menuSelection++;
             SoundManager.PlayMoveBeep();
-            PrintMenuChoices();
+            //PrintMenuChoices();
         }
 
 

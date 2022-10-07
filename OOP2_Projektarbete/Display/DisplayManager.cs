@@ -1,5 +1,4 @@
-﻿using Skalm;
-using Skalm.Grid;
+﻿using Skalm.Grid;
 using Skalm.Map;
 using Skalm.Structs;
 
@@ -18,6 +17,9 @@ namespace Skalm.Display
         private int statsWidth = Globals.G_HUD_MAINSTATS_W;
         private int mainStatsHeight = Globals.G_HUD_MAINSTATS_H;
         private char borderChar = Globals.G_BORDER_CHAR;
+
+        private static ConsoleColor backgroundColor = ConsoleColor.Black;
+        private static ConsoleColor foregroundColor = ConsoleColor.White;
         #endregion
 
         #region FIELDS
@@ -135,16 +137,42 @@ namespace Skalm.Display
             string[] lines = text.Split("\n");
             for (int i = 0; i < lines.Length; i++)
             {
-                PrintCenteredText(lines[i], yStart + i);
+                Print(lines[i], 0, yStart + i, true);
             }
         }
-        public static void PrintCenteredText(string text, int y)
+
+        public static void Print(string text, int x = 0, int y = 0, bool centered = false, bool highlighted = false)
         {
-            int startX = Console.WindowWidth / 2 - text.Length / 2;
-            Console.SetCursorPosition(startX, y);
+            x = centered ? Console.WindowWidth / 2 - text.Length / 2 : x;
+            Console.SetCursorPosition(x, y);
+
+            if (highlighted)
+            {
+                Console.BackgroundColor = foregroundColor;
+                Console.ForegroundColor = backgroundColor;
+            }
+
             Console.WriteLine(text);
+
+            if (highlighted)
+            {
+                Console.BackgroundColor = backgroundColor;
+                Console.ForegroundColor = foregroundColor;
+            }
         }
 
-        #endregion    
+        public static void Tippex(Bounds area)
+        {
+            for (int x = area.StartXY.X; x < area.EndXY.X; x++)
+            {
+                for (int y = area.StartXY.Y; y < area.EndXY.Y; y++)
+                {
+                    Console.SetCursorPosition(x, y);
+                    Console.Write(" ");
+                }
+            }
+        }
+
+        #endregion
     }
 }
