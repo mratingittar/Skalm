@@ -70,7 +70,7 @@ namespace OOP2_Projektarbete.Classes
         public void LoadMenu()
         {
             Clear();
-            ascii.PrintFromPlace(3,0, ascii.SkalmTitle);
+            DisplayManager.PrintCenteredMultiLineText(ascii.SkalmTitle, 0);            
             WriteLine();
             WriteLine();
             menuChoiceRowStart = CursorTop;
@@ -86,15 +86,15 @@ namespace OOP2_Projektarbete.Classes
                 if (choice == menuSelection)
                     PrintWithHighlight(menuNames[choice]);
                 else
-                    WriteLine(menuNames[choice]);
-            }
+                    DisplayManager.PrintCenteredText(menuNames[choice], GetCursorPosition().Top);                    
+            }           
         }
 
         private void PrintWithHighlight(string text)
         {
             BackgroundColor = ConsoleColor.White;
             ForegroundColor = ConsoleColor.Black;
-            WriteLine(text);
+            DisplayManager.PrintCenteredText(text, GetCursorPosition().Top);
             BackgroundColor = ConsoleColor.Black;
             ForegroundColor = ConsoleColor.White;
         }

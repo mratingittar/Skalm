@@ -2,15 +2,36 @@
 
 namespace OOP2_Projektarbete.Classes.Grid
 {
-    internal class Cell
+    internal class Cell : IGridObject
     {
-        public Cell(Vector2Int consolePosition, int x, int y)
+        public Vector2Int GridPosition { get; set; }
+        public List<Vector2Int> ConsolePositions { get; set; }
+        public IContentType Content { get; set; }
+
+        public Cell(Vector2Int gridPosition, List<Vector2Int> consolePositions, IContentType content, bool print = true, bool fillCell = true)
         {
-            ConsolePosition = consolePosition;
-            GridPosition = new Vector2Int(x,y);
+            GridPosition = gridPosition;
+            ConsolePositions = consolePositions;
+            Content = content;
+            if (print)
+                PrintContent(fillCell);
         }
 
-        public Vector2Int ConsolePosition { get; private set; }
-        public Vector2Int GridPosition { get; private set; }
+        public void PrintContent(bool fillCell)
+        {
+            if (fillCell)
+            {
+                foreach (Vector2Int position in ConsolePositions)
+                {
+                    Console.SetCursorPosition(position.X, position.Y);
+                    Console.Write(Content.Character);
+                }
+            }
+            else
+            {
+                Console.SetCursorPosition(ConsolePositions.First().X, ConsolePositions.First().Y);
+                Console.Write(Content.Character);
+            }
+        }
     }
 }

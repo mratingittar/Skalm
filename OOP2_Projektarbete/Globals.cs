@@ -12,8 +12,12 @@ namespace OOP2_Projektarbete
         public static bool G_DISPLAY_CURSOR = false;
         public static int G_UPDATE_FREQUENCY = 10;
 
-        public static int G_GAME_WIDTH = 96;
-        public static int G_GAME_HEIGHT = 32;
+        public static int G_WINDOW_PADDING = 1;
+        public static int G_BORDER_THICKNESS = 1;
+        public static int G_CELL_WIDTH = 2;
+        public static int G_CELL_HEIGHT = 1;
+        public static int G_MAP_WIDTH = 42;
+        public static int G_MAP_HEIGHT = 32;
 
         public static int G_HUD_MSGBOX_W = 96;
         public static int G_HUD_MSGBOX_H = 4;
@@ -25,7 +29,7 @@ namespace OOP2_Projektarbete
         public static int G_HUD_PADDING = 1;
         public static int G_HUD_PADDING_ALL = 1;
 
-        public static char G_BORDER = '░';//'█';
+        public static char G_BORDER_CHAR = '░'; //'█' || '\u2588'
         public static char G_WALL = '#';
         public static char G_FLOOR = '.';
         public static char G_DOOR = '+';

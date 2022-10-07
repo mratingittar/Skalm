@@ -17,6 +17,7 @@ namespace OOP2_Projektarbete.Classes.States
 
         public void Enter()
         {
+            Console.Clear();
             MainMenu.LoadMenu();
         }
 
