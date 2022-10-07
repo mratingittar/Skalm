@@ -14,7 +14,7 @@ namespace Skalm
         #region FIELDS
         public IGameState GameState;
         private MainMenu mainMenu;
-        private int updateFrequency;
+        private int updateFrequency = Globals.G_UPDATE_FREQUENCY;
 
         // MANAGERS
         private InputManager inputManager;
@@ -25,22 +25,18 @@ namespace Skalm
 
         public GameManager(IGameState initialState)
         {
-
             GameState = initialState;
             GameState.Enter();
+
             soundManager = new SoundManager();
-            soundManager.PlayMusic(soundManager.MenuMusic);
+            soundManager.PlayMusic(soundManager.defaultSound);
+            //soundManager.PlayMusic(soundManager.Sounds.Find(sound => sound.soundName == "Thunder Dreams"));
 
             mapManager = new MapManager(32, 32, Vector2Int.Zero);
             displayManager = new(mapManager);
-
-
-
-            updateFrequency = Globals.G_UPDATE_FREQUENCY;
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
             mainMenu = new MainMenu(inputManager);
             mainMenu.onMenuSelection += MainMenuSelection;
-
         }
 
 
@@ -48,7 +44,6 @@ namespace Skalm
         {
             ChangeGameState(new GameStateMainMenu(mainMenu));
             Update();
-            //Console.ReadKey();
         }
 
         private void Update()

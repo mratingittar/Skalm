@@ -29,5 +29,7 @@
         public static char G_DOOR = '+';
 
         public static bool G_HALFWIDTHDRAW = true;
+
+        public static string G_SOUNDS_FOLDER_PATH = "..\\..\\..\\Sounds\\";
     }
 }

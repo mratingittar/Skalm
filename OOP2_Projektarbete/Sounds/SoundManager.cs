@@ -4,18 +4,28 @@ namespace Skalm.Sounds
 {
     internal class SoundManager
     {
-        private string soundsFolderPath;
-        public string MenuMusic { get; private set; }
+        private readonly string soundsFolderPath;
+        public List<Sound> Sounds { get; private set; }
+        public readonly Sound defaultSound;
 
         public SoundManager()
         {
-            soundsFolderPath = "..\\..\\..\\Sounds\\";
-            MenuMusic = "Thunder_Dreams.wav";
+            soundsFolderPath = Globals.G_SOUNDS_FOLDER_PATH;
+            Sounds = InitializeSoundList();
+            defaultSound = Sounds.FirstOrDefault();
         }
 
-        public void PlayMusic(string filename)
+        private List<Sound> InitializeSoundList()
         {
-            string path = soundsFolderPath + filename;
+            List<Sound> sounds = new List<Sound>();
+            sounds.Add(new Sound("Thunder Dreams", "Thunder_Dreams.wav"));
+
+            return sounds;
+        }
+
+        public void PlayMusic(Sound sound)
+        {
+            string path = soundsFolderPath + sound.fileName;
             if (File.Exists(path))
             {
                 SoundPlayer musicPlayer = new SoundPlayer(path);
