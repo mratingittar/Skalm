@@ -1,15 +1,18 @@
-﻿using OOP2_Projektarbete.Classes.Structs;
+﻿using OOP2_Projektarbete.Classes.Managers;
+using OOP2_Projektarbete.Classes.Structs;
 
 namespace OOP2_Projektarbete.Classes.Grid
 {
     internal class Grid<T> where T : IGridObject
     {
+        // TODO: SEPARATE GENERIC GRID LOGIC FROM CONSOLE GRID LOGIC
+
         public readonly int gridWidth;
         public readonly int gridHeight;
         private int cellWidth;
         private int cellHeight;
         private Vector2Int origin;
-        public T[,] GridArray;
+        private T[,] gridArray;
         public readonly int consoleWidth;
         public readonly int consoleHeight;
 
@@ -23,59 +26,84 @@ namespace OOP2_Projektarbete.Classes.Grid
             consoleWidth = width * cellWidth;
             consoleHeight = height * cellHeight;
 
-            GridArray = new T[width, height];
+            gridArray = new T[width, height];
 
-            for (int x = 0; x < GridArray.GetLength(0); x++)
+            for (int x = 0; x < gridArray.GetLength(0); x++)
             {
-                for (int y = 0; y < GridArray.GetLength(1); y++)
+                for (int y = 0; y < gridArray.GetLength(1); y++)
                 {
-                    GridArray[x, y] = createGridObject(new Vector2Int(x,y), GetConsolePositions(new Vector2Int(x,y)));
+                    gridArray[x, y] = createGridObject(new Vector2Int(x, y), GetConsolePositions(new Vector2Int(x, y)));
                 }
             }
         }
 
-
-        public void PrintPartialGrid()
+        /// <summary>
+        /// Assigns content type to all cells within specified bounds.
+        /// </summary>
+        /// <param name="area">Area to be defined.</param>
+        /// <param name="content">Content type to assign.</param>
+        public void DefineContentOfGridArea(Bounds area, IContentType content)
         {
-            try
+            for (int x = area.StartXY.X; x < area.EndXY.X; x++)
             {
-                if (Console.BufferHeight < gridHeight*cellHeight+origin.Y && OperatingSystem.IsWindows())
-                    Console.BufferHeight = gridHeight*cellHeight+origin.Y;
-
-                if (Console.BufferWidth < gridWidth*cellWidth+origin.X && OperatingSystem.IsWindows())
-                    Console.BufferWidth = gridWidth*cellWidth+origin.X;
-
-                for (int x = 0; x < GridArray.GetLength(0); x++)
+                for (int y = area.StartXY.Y; y < area.EndXY.Y; y++)
                 {
-                    for (int y = 0; y < GridArray.GetLength(1); y++)
-                    {
-                        Vector2Int pos = GridArray[x, y].ConsolePositions[0];
+                    gridArray[x, y].Content = content;
+                }
+            }
+        }
 
-                        Console.SetCursorPosition(pos.X, pos.Y);
-                        Console.Write(GridArray[x, y].CharacterRepresentation);
+        /// <summary>
+        /// Prints content character to every cell in grid that matches content type.
+        /// </summary>
+        /// <param name="content">Specifies which type of content to match.</param>
+        public void PrintGridContent(IContentType content) // MAYBE FIND WAY TO ONLY PASS TYPE AS PARAMETER
+        {
+            for (int x = 0; x < gridArray.GetLength(0); x++)
+            {
+                for (int y = 0; y < gridArray.GetLength(1); y++)
+                {
+                    if (gridArray[x, y].Content.GetType() == content.GetType())
+                        PrintCell(gridArray[x, y].ConsolePositions, gridArray[x, y].Content.Character);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Prints content character to every cell in grid.
+        /// </summary>
+        /// <param name="fullGrid">Covers every console cell if true.</param>
+        public void PrintGridContent(bool fullGrid = true)
+        {
+            for (int x = 0; x < gridArray.GetLength(0); x++)
+            {
+                for (int y = 0; y < gridArray.GetLength(1); y++)
+                {
+                    if (fullGrid)
+                    {
+                        PrintCell(gridArray[x, y].ConsolePositions, gridArray[x, y].Content.Character);
+                    }
+                    else
+                    {
+                        Vector2Int pos = gridArray[x, y].ConsolePositions.First();
+                        DisplayManager.PrintAtPosition(pos.X, pos.Y, gridArray[x, y].Content.Character);
                     }
                 }
             }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-            }
         }
 
-        public void PrintFullGrid()
+        /// <summary>
+        /// Prints content character to all console cells in list.
+        /// </summary>
+        /// <param name="consolePositions"></param>
+        /// <param name="character"></param>
+        private void PrintCell(List<Vector2Int> consolePositions, char character)
         {
-            for (int x = 0; x < GridArray.GetLength(0); x++)
+            foreach (Vector2Int position in consolePositions)
             {
-                for (int y = 0; y < GridArray.GetLength(1); y++)
-                {
-                    foreach (Vector2Int position in GridArray[x,y].ConsolePositions)
-                    {
-                        Console.SetCursorPosition(position.X, position.Y);
-                        Console.Write(GridArray[x, y].CharacterRepresentation);
-                    }
-                }
+                DisplayManager.PrintAtPosition(position.X, position.Y, character);
             }
-        }
+        }       
 
         private List<Vector2Int> GetConsolePositions(Vector2Int gridPosition)
         {
@@ -85,37 +113,46 @@ namespace OOP2_Projektarbete.Classes.Grid
             {
                 for (int h = 0; h < cellHeight; h++)
                 {
-                    positions.Add(new Vector2Int(gridPosition.X * cellWidth + origin.X+w, gridPosition.Y * cellHeight + origin.Y+h));
+                    positions.Add(new Vector2Int(gridPosition.X * cellWidth + origin.X + w, gridPosition.Y * cellHeight + origin.Y + h));
                 }
             }
             return positions;
         }
 
-        private Vector2Int GetConsolePosition(Vector2Int gridPosition)
+        public Vector2Int GetConsolePosition(Vector2Int gridPosition)
         {
             return new Vector2Int(gridPosition.X * cellWidth + origin.X, gridPosition.Y * cellHeight + origin.Y);
         }
 
-        private Vector2Int GetGridPosition(Vector2Int consolePosition)
+        public Vector2Int GetConsolePosition(int x, int y)
+        {
+            return GetConsolePosition(new Vector2Int(x, y));
+        }
+
+        public Vector2Int GetGridPosition(Vector2Int consolePosition)
         {
             int x = (consolePosition.X - origin.X) / cellWidth;
             int y = (consolePosition.Y - origin.Y) / cellHeight;
-            return new Vector2Int(x,y);
+            return new Vector2Int(x, y);
         }
 
         public T? GetGridObject(Vector2Int gridPosition)
         {
             if (gridPosition.X >= 0 && gridPosition.Y >= 0 && gridPosition.X < gridWidth && gridPosition.Y < gridHeight)
-                return GridArray[gridPosition.X, gridPosition.Y];
+                return gridArray[gridPosition.X, gridPosition.Y];
             else
                 return default;
         }
 
+        public void SetGridObject(int x, int y, T obj)
+        {
+            SetGridObject(new Vector2Int(x, y), obj);
+        }
 
         public void SetGridObject(Vector2Int gridPosition, T obj)
         {
             if (gridPosition.X >= 0 && gridPosition.Y >= 0 && gridPosition.X < gridWidth && gridPosition.Y < gridHeight)
-                GridArray[gridPosition.X, gridPosition.Y] = obj;
+                gridArray[gridPosition.X, gridPosition.Y] = obj;
         }
     }
 }

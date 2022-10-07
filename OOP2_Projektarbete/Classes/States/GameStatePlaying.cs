@@ -1,4 +1,5 @@
-﻿using System;
+﻿using OOP2_Projektarbete.Classes.Managers;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,12 +9,19 @@ namespace OOP2_Projektarbete.Classes.States
 {
     internal class GameStatePlaying : IGameState
     {
+        private readonly DisplayManager _displayManager;
+
+        public GameStatePlaying(DisplayManager displayManager)
+        {
+            _displayManager = displayManager;
+        }
+
         public void Enter()
         {
-            Console.WriteLine("Starting New Game");
-            Thread.Sleep(1000);
+            DisplayManager.PrintCenteredText("Starting new game", Console.WindowHeight/2);            
+            Thread.Sleep(500);
             Console.Clear();
-            Console.WriteLine("Game is running...");
+            _displayManager.DisplayHUD();
         }
 
         public void Exit()

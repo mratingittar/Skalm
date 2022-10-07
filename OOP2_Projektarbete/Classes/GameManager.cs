@@ -1,5 +1,4 @@
-﻿using OOP2_Projektarbete.Classes.Grid;
-using OOP2_Projektarbete.Classes.Input;
+﻿using OOP2_Projektarbete.Classes.Input;
 using OOP2_Projektarbete.Classes.Managers;
 using OOP2_Projektarbete.Classes.Map;
 using OOP2_Projektarbete.Classes.States;
@@ -14,16 +13,14 @@ namespace OOP2_Projektarbete.Classes
         private InputManager inputManager;
         private int updateFrequency;
 
-        private int windowHeight;
-        private int windowWidth;
-
-        //public WindowManagerConsole displayManager;
         //public DisplayManagerGameWindow displayManagerGameWindow;
         public MapManager mapManager;
         public DisplayManager displayManager;
 
-        public GameManager()
+        public GameManager(IGameState initialState)
         {
+            GameState = initialState;
+            GameState.Enter();
             mapManager = new MapManager(32, 32, Vector2Int.Zero);
             displayManager = new(mapManager);
 
@@ -31,9 +28,7 @@ namespace OOP2_Projektarbete.Classes
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
             mainMenu = new MainMenu(inputManager);
             mainMenu.onMenuSelection += MainMenuSelection;
-            GameState = new GameStateInitializing();
 
-            //displayManager = new WindowManagerConsole();
             //displayManagerGameWindow = new DisplayManagerGameWindow(displayManager.gameWindowBounds, mapManager);
         }
 
@@ -42,6 +37,7 @@ namespace OOP2_Projektarbete.Classes
         {
             ChangeGameState(new GameStateMainMenu(mainMenu));
             Update();
+            //Console.ReadKey();
         }
 
         private void Update()
@@ -78,9 +74,7 @@ namespace OOP2_Projektarbete.Classes
             switch (selection)
             {
                 case MainMenuChoices.NewGame:
-                    ChangeGameState(new GameStatePlaying());
-                    PrintGrid();
-                    displayManager.InitGameWindow();
+                    ChangeGameState(new GameStatePlaying(displayManager));
                     break;
                 case MainMenuChoices.Continue:
                     break;
@@ -100,17 +94,6 @@ namespace OOP2_Projektarbete.Classes
 
         }
 
-        private void PrintGrid()
-        {
-            Console.Clear();
-
-            Grid<Border> gridA = new Grid<Border>(32, 1, 2, 1, new(2, 2), (gridPosition, consolePositions) => new Border(gridPosition, consolePositions));
-            gridA.PrintPartialGrid();
-
-            Grid<Border> gridB = new Grid<Border>(32, 1, 2, 1, new(2, 8), (gridPosition, consolePositions) => new Border(gridPosition, consolePositions));
-            gridB.PrintFullGrid();
-            Console.ReadKey();
-        }
 
         private void ContinueGame()
         {

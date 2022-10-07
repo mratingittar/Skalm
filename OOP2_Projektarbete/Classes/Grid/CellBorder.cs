@@ -7,10 +7,13 @@ using System.Threading.Tasks;
 
 namespace OOP2_Projektarbete.Classes.Grid
 {
-    internal interface IGridObject
+    internal class CellBorder : IContentType
     {
-        Vector2Int GridPosition { get; set; }
-        List<Vector2Int> ConsolePositions { get; set; }
-        IContentType Content { get; set; }
+        public char Character { get; set; }
+        // '█'
+        public CellBorder(char character = '*')
+        {
+            Character = character;
+        }
     }
 }

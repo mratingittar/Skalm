@@ -16,18 +16,6 @@
   /\____) ||  /  \ \| )   ( || (____/\| )   ( |
   \_______)|_/    \/|/     \|(_______/|/     \|
                                                ";
-        }
-
-        public void PrintFromPlace(int col, int row, string str)
-        {
-            string[] lines = str.Split("\n");
-
-            for (int i = 0; i < lines.Length; i++)
-            {
-                Console.SetCursorPosition(col, i+row);
-                Console.WriteLine(lines[i]);
-
-            }
-        }
+        }        
     }
 }
