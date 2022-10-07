@@ -16,5 +16,7 @@ namespace OOP2_Projektarbete.Classes.Structs
             this.X = X;
             this.Y = Y;
         }
+
+        public static Vector2Int Zero { get => new Vector2Int(0, 0); }
     }
 }

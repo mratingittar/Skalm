@@ -1,37 +1,105 @@
-﻿
+﻿using OOP2_Projektarbete.Classes.States;
+using OOP2_Projektarbete.Classes.Managers;
+using OOP2_Projektarbete.Classes.Input;
+using OOP2_Projektarbete.Classes.Map;
+using OOP2_Projektarbete.Classes.Structs;
+using OOP2_Projektarbete.Classes.Grid;
+
 namespace OOP2_Projektarbete.Classes
 {
     internal class GameManager
     {
+
+        public IGameState GameState;
+        private MainMenu mainMenu;
+        private InputManager inputManager;
+        private int updateFrequency;
         private SoundManager soundManager;
+        public WindowManagerConsole displayManager;
+        public DisplayManagerGameWindow displayManagerGameWindow;
+        public MapManager mapManager;
 
         public GameManager()
         {
             soundManager = new SoundManager();
             soundManager.PlayMusic(soundManager.MenuMusic);
+            updateFrequency = Globals.G_UPDATE_FREQUENCY;
+            inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
+            mainMenu = new MainMenu(inputManager);
+            mainMenu.onMenuSelection += MainMenuSelection;
+            GameState = new GameStateInitializing();
+
+            mapManager = new MapManager();
+            displayManager = new WindowManagerConsole();
+            displayManagerGameWindow = new DisplayManagerGameWindow(displayManager.gameWindowBounds, mapManager);
         }
-        public void Run()
+
+
+        public void Start()
         {
+            ChangeGameState(new GameStateMainMenu(mainMenu));
+            Update();
+        }
 
-            MainMenu mainMenu = new MainMenu();
-
-            switch (mainMenu.Menu())
+        private void Update()
+        {
+            while (true)
             {
-                case MainMenu.MenuChoices.NewGame:
+                if (Console.KeyAvailable)
+                {
+                    inputManager.GetInput();
+                }
+
+
+                else if (GameState is GameStatePlaying)
+                {
+                    PrintGrid();
+                }
+
+                Thread.Sleep(1000 / updateFrequency);
+            }
+        }
+
+        public void ChangeGameState(IGameState gameState)
+        {
+            GameState.Exit();
+            GameState = gameState;
+            GameState.Enter();
+        }
+        private void MainMenuSelection(MainMenuChoices selection)
+        {
+            if (GameState is not GameStateMainMenu)
+                return;
+
+            switch (selection)
+            {
+                case MainMenuChoices.NewGame:
+                    ChangeGameState(new GameStatePlaying());
                     break;
-                case MainMenu.MenuChoices.Continue:
+                case MainMenuChoices.Continue:
                     break;
-                case MainMenu.MenuChoices.Exit:
+                case MainMenuChoices.Exit:
                     Environment.Exit(0);
                     break;
-                default:
-                    break;
             }
+        }
+
+        private void RunGame()
+        {
+
         }
 
         private void NewGame()
         {
 
+        }
+
+        private void PrintGrid()
+        {
+            Grid<Cell> grid = new Grid<Cell>(32, 32, 2, 1, new(5,15), (position, x, y) => new Cell(position, x, y));
+            Console.Clear();
+            grid.PrintGrid('*');
+            Console.ReadKey();
         }
 
         private void ContinueGame()

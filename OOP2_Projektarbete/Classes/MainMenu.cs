@@ -1,57 +1,75 @@
-﻿using static System.Console;
-
+﻿using OOP2_Projektarbete.Classes.Input;
+using OOP2_Projektarbete.Classes.Managers;
+using OOP2_Projektarbete.Classes.Structs;
+using static System.Console;
 
 namespace OOP2_Projektarbete.Classes
 {
-    internal class MainMenu
+    internal partial class MainMenu
     {
+        public bool Enabled { get; set; }
         private AsciiArt ascii;
-        private MenuChoices menuSelection;
-        private Dictionary<MenuChoices, string> menuNames;
+        private MainMenuChoices menuSelection;
+        private Dictionary<MainMenuChoices, string> menuNames;
         private int menuChoiceRowStart;
+        private InputManager inputManager;
+        public event Action<MainMenuChoices>? onMenuSelection;
 
-        public MainMenu()
+        public MainMenu(InputManager inputManager)
         {
-            CursorVisible = false;
-            menuSelection = MenuChoices.NewGame;
-            menuNames = new Dictionary<MenuChoices, string>
+            this.inputManager = inputManager;
+            menuSelection = MainMenuChoices.NewGame;
+            menuNames = new Dictionary<MainMenuChoices, string>
             {
-                [MenuChoices.NewGame] = "New Game",
-                [MenuChoices.Continue] = "Continue",
-                [MenuChoices.Exit] = "Exit"
+                [MainMenuChoices.NewGame] = "New Game",
+                [MainMenuChoices.Continue] = "Continue",
+                [MainMenuChoices.Exit] = "Exit"
             };
             ascii = new AsciiArt();
+            inputManager.onInputMove += RecieveInput;
+            inputManager.onInputCommand += RecieveInput;
+            Enabled = true;
         }
 
-        public MenuChoices Menu() 
+        private void RecieveInput(Vector2Int dir)
         {
-            LoadMenu();
-            while (true)
+
+            if (!Enabled)
+                return;
+
+            switch (dir.Y)
             {
-                ConsoleKey key = ReadKey().Key;
-                
-                if (key == ConsoleKey.Escape)
-                    return MenuChoices.Exit;
-                else if (key == ConsoleKey.UpArrow)
-                {
-                    MoveMenuUp();
-                }
-                else if (key == ConsoleKey.DownArrow)
-                {
+                case < 0:
                     MoveMenuDown();
-                }
-                else if (key == ConsoleKey.Enter)
-                {
-                    PlayBeep(880);
-                    return menuSelection;
-                }
+                    break;
+                case > 0:
+                    MoveMenuUp();
+                    break;
             }
         }
 
-        private void LoadMenu()
+        private void RecieveInput(InputCommands command)
+        {
+            if (!Enabled)
+                return;
+
+            switch (command)
+            {
+                case InputCommands.Confirm:
+                    onMenuSelection?.Invoke(menuSelection);
+                    break;
+                case InputCommands.Cancel:
+                    Environment.Exit(0);
+                    break;
+
+            }
+        }
+
+        #region Menu Printing
+        public void LoadMenu()
         {
             Clear();
-            WriteLine(ascii.SkalmTitle);
+            ascii.PrintFromPlace(3,0, ascii.SkalmTitle);
             WriteLine();
             WriteLine();
             menuChoiceRowStart = CursorTop;
@@ -62,7 +80,7 @@ namespace OOP2_Projektarbete.Classes
         {
             CursorTop = menuChoiceRowStart;
             WriteLine();
-            foreach (MenuChoices choice in Enum.GetValues(typeof(MenuChoices)))
+            foreach (MainMenuChoices choice in Enum.GetValues(typeof(MainMenuChoices)))
             {
                 if (choice == menuSelection)
                     PrintWithHighlight(menuNames[choice]);
@@ -80,17 +98,13 @@ namespace OOP2_Projektarbete.Classes
             ForegroundColor = ConsoleColor.White;
         }
 
-        public enum MenuChoices
-        {
-            NewGame,
-            Continue,
-            Exit
-        }
+        #endregion Menu Printing
+        #region Menu Manipulation
 
         private void MoveMenuUp()
         {
             // Checking for lowest enum value
-            if ((int)menuSelection == Enum.GetValues(typeof(MenuChoices)).Cast<int>().Min())
+            if ((int)menuSelection == Enum.GetValues(typeof(MainMenuChoices)).Cast<int>().Min())
                 return;
 
             menuSelection--;
@@ -101,7 +115,7 @@ namespace OOP2_Projektarbete.Classes
         private void MoveMenuDown()
         {
             // Checking for highest enum value
-            if ((int)menuSelection == Enum.GetValues(typeof(MenuChoices)).Cast<int>().Max())
+            if ((int)menuSelection == Enum.GetValues(typeof(MainMenuChoices)).Cast<int>().Max())
                 return;
 
             menuSelection++;
@@ -109,10 +123,8 @@ namespace OOP2_Projektarbete.Classes
             PrintMenuChoices();
         }
 
-        private void PlayBeep(int freq)
-        {
-            if (OperatingSystem.IsWindows())
-                Beep(freq, 100);
-        }
+
+        #endregion Menu Manipulation
+
     }
 }
