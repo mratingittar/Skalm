@@ -3,11 +3,15 @@ namespace OOP2_Projektarbete.Classes
 {
     internal class GameManager
     {
+        private SoundManager soundManager;
+
+        public GameManager()
+        {
+            soundManager = new SoundManager();
+            soundManager.PlayMusic(soundManager.MenuMusic);
+        }
         public void Run()
         {
-
-            SoundManager soundManager = new SoundManager();
-            soundManager.PlayMusic("Thunder_Dreams.wav");
 
             MainMenu mainMenu = new MainMenu();
 
