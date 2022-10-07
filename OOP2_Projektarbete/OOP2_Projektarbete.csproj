@@ -6,6 +6,8 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
 	  <WarningsAsErrors>Nullable</WarningsAsErrors>
+	  <AssemblyName>Skalm</AssemblyName>
+	  <RootNamespace>Skalm</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
