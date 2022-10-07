@@ -37,7 +37,7 @@ namespace OOP2_Projektarbete.Classes.Managers
         private void InitHudPositions()
         {
             gwStartXY = new Vector2Int(Globals.G_HUD_PADDING, Globals.G_HUD_PADDING);
-            gwEndXY = new Vector2Int(gwStartXY.X + Globals.G_GAME_WIDTH, gwStartXY.Y + Globals.G_GAME_HEIGHT);
+            gwEndXY = new Vector2Int(gwStartXY.X + Globals.G_MAP_WIDTH, gwStartXY.Y + Globals.G_MAP_HEIGHT);
             gameWindowBounds = new Bounds(gwStartXY, gwEndXY);
 
             msgBoxStartXY = new Vector2Int(Globals.G_HUD_PADDING, gwEndXY.Y + (Globals.G_HUD_PADDING * 2));
@@ -92,15 +92,15 @@ namespace OOP2_Projektarbete.Classes.Managers
             // PRINT BORDER HORIZONTAL AXIS
             for (int i = topleft.X; i <= bottomright.X; i++)
             {
-                PrintAtPosition(i, topleft.Y, Globals.G_BORDER);
-                PrintAtPosition(i, bottomright.Y, Globals.G_BORDER);
+                PrintAtPosition(i, topleft.Y, Globals.G_BORDER_CHAR);
+                PrintAtPosition(i, bottomright.Y, Globals.G_BORDER_CHAR);
             }
 
             // PRINT BORDER VERTICAL AXIS
             for (int j = topleft.Y; j <= bottomright.Y; j++)
             {
-                PrintAtPosition(topleft.X, j, Globals.G_BORDER);
-                PrintAtPosition(bottomright.X, j, Globals.G_BORDER);
+                PrintAtPosition(topleft.X, j, Globals.G_BORDER_CHAR);
+                PrintAtPosition(bottomright.X, j, Globals.G_BORDER_CHAR);
             }
         }
 

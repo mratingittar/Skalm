@@ -8,17 +8,16 @@ namespace OOP2_Projektarbete.Classes.Managers
     internal class DisplayManager
     {
         #region SETTINGS
-        private int windowPadding = 1;
-        private int borderThickness = 1;
-        private int cellWidth = 2;
-        private int cellHeight = 1;
-        private int mapWidth = 42;
-        private int mapHeight = 32;
-        private int messageHeight = 4;
-        private int statsWidth = 24;
-        private int mainStatsHeight = 8;
-
-        private char borderChar = '\u2588';
+        private int windowPadding = Globals.G_WINDOW_PADDING;
+        private int borderThickness = Globals.G_BORDER_THICKNESS;
+        private int cellWidth = Globals.G_CELL_WIDTH;
+        private int cellHeight = Globals.G_CELL_HEIGHT;
+        private int mapWidth = Globals.G_MAP_WIDTH;
+        private int mapHeight = Globals.G_MAP_HEIGHT;
+        private int messageHeight = Globals.G_HUD_MSGBOX_H;
+        private int statsWidth = Globals.G_HUD_MAINSTATS_W;
+        private int mainStatsHeight = Globals.G_HUD_MAINSTATS_H;
+        private char borderChar = Globals.G_BORDER_CHAR;
         #endregion
 
         #region FIELDS
@@ -112,15 +111,15 @@ namespace OOP2_Projektarbete.Classes.Managers
             // PRINT BORDER HORIZONTAL AXIS
             for (int i = topleft.X; i <= bottomright.X; i++)
             {
-                PrintAtPosition(i, topleft.Y, Globals.G_BORDER);
-                PrintAtPosition(i, bottomright.Y, Globals.G_BORDER);
+                PrintAtPosition(i, topleft.Y, Globals.G_BORDER_CHAR);
+                PrintAtPosition(i, bottomright.Y, Globals.G_BORDER_CHAR);
             }
 
             // PRINT BORDER VERTICAL AXIS
             for (int j = topleft.Y; j <= bottomright.Y; j++)
             {
-                PrintAtPosition(topleft.X, j, Globals.G_BORDER);
-                PrintAtPosition(bottomright.X, j, Globals.G_BORDER);
+                PrintAtPosition(topleft.X, j, Globals.G_BORDER_CHAR);
+                PrintAtPosition(bottomright.X, j, Globals.G_BORDER_CHAR);
             }
         }
 
