@@ -7,17 +7,19 @@ namespace Skalm.Sounds
         private readonly string soundsFolderPath;
         public List<Sound> Sounds { get; private set; }
         public readonly Sound defaultSound;
-
+        public static bool beepsOn;
         public SoundManager()
         {
             soundsFolderPath = Globals.G_SOUNDS_FOLDER_PATH;
             Sounds = InitializeSoundList();
             defaultSound = Sounds.FirstOrDefault();
+            beepsOn = true;
         }
 
         private List<Sound> InitializeSoundList()
         {
             List<Sound> sounds = new List<Sound>();
+            sounds.Add(new Sound("Steel and Seething", "Steel_and_Seething.wav"));
             sounds.Add(new Sound("Thunder Dreams", "Thunder_Dreams.wav"));
 
             return sounds;
@@ -44,7 +46,14 @@ namespace Skalm.Sounds
         }
         private static void PlayBeep(int frequency, int duration)
         {
-            Console.Beep(frequency, duration);
+            if (beepsOn)
+                Console.Beep(frequency, duration);
         }
     }
 }
+
+
+//"Thunder Dreams" Kevin MacLeod(incompetech.com)
+//"Steel and Seething" Kevin MacLeod(incompetech.com)
+//Licensed under Creative Commons: By Attribution 4.0 License
+//http://creativecommons.org/licenses/by/4.0/

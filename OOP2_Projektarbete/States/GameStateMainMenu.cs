@@ -9,22 +9,22 @@ namespace Skalm.States
 {
     internal class GameStateMainMenu : IGameState
     {
-        public MainMenu MainMenu { get; private set; }
+        private MenuManager menuManager;
 
-        public GameStateMainMenu(MainMenu menu)
+        public GameStateMainMenu(MenuManager menuManager)
         {
-            MainMenu = menu;
+            this.menuManager = menuManager;
         }
 
         public void Enter()
         {
             Console.Clear();
-            MainMenu.LoadMenu();
+            menuManager.LoadMainMenu();
         }
 
         public void Exit()
         {
-            MainMenu.Enabled = false;
+            //MainMenu.Enabled = false;
             Console.Clear();
         }
     }
