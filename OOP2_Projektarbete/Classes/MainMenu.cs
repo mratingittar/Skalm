@@ -53,6 +53,7 @@ namespace OOP2_Projektarbete.Classes
             if (!Enabled)
                 return;
 
+            SoundManager.PlayConfirmBeep();
             switch (command)
             {
                 case InputCommands.Confirm:
@@ -108,7 +109,7 @@ namespace OOP2_Projektarbete.Classes
                 return;
 
             menuSelection--;
-            PlayBeep(440);
+            SoundManager.PlayMoveBeep();
             PrintMenuChoices();
         }
 
@@ -119,7 +120,7 @@ namespace OOP2_Projektarbete.Classes
                 return;
 
             menuSelection++;
-            PlayBeep(440);
+            SoundManager.PlayMoveBeep();
             PrintMenuChoices();
         }
 
