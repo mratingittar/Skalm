@@ -33,6 +33,7 @@ namespace OOP2_Projektarbete.Classes
 
         private void RecieveInput(Vector2Int dir)
         {
+
             if (!Enabled)
                 return;
 
@@ -52,6 +53,7 @@ namespace OOP2_Projektarbete.Classes
             if (!Enabled)
                 return;
 
+            SoundManager.PlayConfirmBeep();
             switch (command)
             {
                 case InputCommands.Confirm:
@@ -60,6 +62,7 @@ namespace OOP2_Projektarbete.Classes
                 case InputCommands.Cancel:
                     Environment.Exit(0);
                     break;
+
             }
         }
 
@@ -106,6 +109,7 @@ namespace OOP2_Projektarbete.Classes
                 return;
 
             menuSelection--;
+            SoundManager.PlayMoveBeep();
             PrintMenuChoices();
         }
 
@@ -116,9 +120,12 @@ namespace OOP2_Projektarbete.Classes
                 return;
 
             menuSelection++;
+            SoundManager.PlayMoveBeep();
             PrintMenuChoices();
         }
 
+
         #endregion Menu Manipulation
+
     }
 }
