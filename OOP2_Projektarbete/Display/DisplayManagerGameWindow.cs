@@ -25,14 +25,14 @@ namespace Skalm.Display
         }
 
         // METHOD CASH UPDATED TILES
-        private void CashUpdatedTiles(Vector2Int oldPos, Vector2Int newPos)
+        private void CacheUpdatedTiles(Vector2Int oldPos, Vector2Int newPos)
         {
             positionsToUpdate.Enqueue(oldPos);
             positionsToUpdate.Enqueue(newPos);
         }
 
         // METHOD REDRAW CASHED TILES
-        public void RedrawCashedTiles()
+        public void RedrawCachedTiles()
         {
             Vector2Int tempPos;
             while (positionsToUpdate.Count > 0)
