@@ -21,24 +21,24 @@ namespace Skalm.Display
             this.displayBounds = displayBounds;
             this.mapManager = mapManager;
             positionsToUpdate = new Queue<Vector2Int>();
-            DrawField();
+            //DrawField();
         }
 
-        // METHOD CASH UPDATED TILES
+        // METHOD CACHE UPDATED TILES
         private void CacheUpdatedTiles(Vector2Int oldPos, Vector2Int newPos)
         {
             positionsToUpdate.Enqueue(oldPos);
             positionsToUpdate.Enqueue(newPos);
         }
 
-        // METHOD REDRAW CASHED TILES
-        public void RedrawCachedTiles()
+        // METHOD REDRAW CACHED TILES
+        public void RedrawCachedTiles(int[,] mapArr)
         {
             Vector2Int tempPos;
             while (positionsToUpdate.Count > 0)
             {
                 tempPos = positionsToUpdate.Dequeue();
-                DrawSingleTile(mapManager.mapArr, tempPos.X, tempPos.Y);
+                DrawSingleTile(mapArr, tempPos.X, tempPos.Y);
             }
         }
 
@@ -79,18 +79,18 @@ namespace Skalm.Display
         }
 
         // METHOD DRAW FIELD
-        public void DrawField()
+        public void DrawField(int[,] mapArr)
         {
             // VERTICAL AXIS
-            for (int j = 0; j < mapManager.mapArr.GetLength(1); j++)
+            for (int j = 0; j < mapArr.GetLength(1); j++)
             {
                 // SET CURSOR POSITION
                 Console.SetCursorPosition(displayBounds.StartXY.X, displayBounds.StartXY.Y + j);
 
                 // HORIZONTAL AXIS
-                for (int i = 0; i < mapManager.mapArr.GetLength(0); i++)
+                for (int i = 0; i < mapArr.GetLength(0); i++)
                 {
-                    DrawSingleTile(mapManager.mapArr, i, j);
+                    DrawSingleTile(mapArr, i, j);
                 }
 
                 // NEXT LINE

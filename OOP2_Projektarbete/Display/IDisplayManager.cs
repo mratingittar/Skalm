@@ -13,6 +13,6 @@ namespace Skalm.Display
         Bounds displayBounds { get; set; }
         MapManager mapManager { get; set; }
 
-        public void DrawField();
+        //public void DrawField();
     }
 }

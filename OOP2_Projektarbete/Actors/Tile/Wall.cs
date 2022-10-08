@@ -10,7 +10,7 @@ namespace Skalm.Actors.Tile
     internal abstract class Wall : Tile, ICollidable
     {
         // CONSTRUCTOR
-        protected Wall(Vector2Int posXY, char sprite) : base(posXY, sprite) {}
+        protected Wall(Vector2Int posXY) : base(posXY, Globals.G_WALL, ConsoleColor.Gray) {}
 
         public void OnCollision()
         {
