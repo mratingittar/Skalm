@@ -13,7 +13,6 @@ namespace Skalm
 
         #region FIELDS
         public IGameState GameState;
-        private MainMenuRoot? mainMenu;
         private int updateFrequency = Globals.G_UPDATE_FREQUENCY;
 
         // MANAGERS
@@ -36,7 +35,6 @@ namespace Skalm
             displayManager = new(mapManager);
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
             menuManager = new MenuManager(inputManager);
-            //mainMenu = new MainMenuRoot();
             //mainMenu.onMenuSelection += MainMenuSelection;
         }
 

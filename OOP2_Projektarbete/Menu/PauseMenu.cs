@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace Skalm.Menu
 {
-    internal interface IMenu
+    internal class PauseMenu : MenuBase
     {
-        string MenuName { get; }
-        bool Enabled { get; set; }
-        MenuItems Items { get; }
+        public PauseMenu(string[] title, TreeNode<MenuPage> pages) : base(title, pages)
+        {
+        }
     }
 }

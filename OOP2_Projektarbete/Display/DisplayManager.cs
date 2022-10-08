@@ -36,9 +36,13 @@ namespace Skalm.Display
         private Bounds messageBounds;
         private Bounds mainStatsBounds;
         private Bounds subStatsBounds;
+        private static Bounds latestPrintedArea;
 
         // MANAGERS
         private MapManager mapManager;
+
+        //public static (Bounds, string[]) cachedCharacters; NOT IMPLEMENTED
+
         #endregion
 
         #region PROPERTIES
@@ -50,7 +54,6 @@ namespace Skalm.Display
         {
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             // ADD FONT CHECKING. NEEDS TO BE TRUETYPE.
-
             DefineBounds();
             CellContents = new Dictionary<IContentType, Cell>();
             GameGrid = new Grid<Cell>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
@@ -61,6 +64,7 @@ namespace Skalm.Display
             GameGrid.DefineContentOfGridArea(mainStatsBounds, new CellEmpty());
             GameGrid.DefineContentOfGridArea(subStatsBounds, new CellEmpty());
             this.mapManager = mapManager;
+            latestPrintedArea = messageBounds;
         }
 
         public void DisplayHUD()
@@ -89,9 +93,9 @@ namespace Skalm.Display
             {
                 if (consoleRect.Width > Console.LargestWindowWidth || consoleRect.Height > Console.LargestWindowHeight)
                     throw new ArgumentOutOfRangeException("Game window does not fit inside monitor.");
-
-                Console.SetBufferSize(consoleRect.Width, consoleRect.Height);
+                
                 Console.SetWindowSize(consoleRect.Width, consoleRect.Height);
+                Console.SetBufferSize(consoleRect.Width, consoleRect.Height);
             }
             catch (ArgumentOutOfRangeException e)
             {
@@ -132,27 +136,23 @@ namespace Skalm.Display
             Console.Write(character);
         }
 
-        public static void PrintCenteredMultiLineText(string text, int yStart)
+        /// <summary>
+        /// Prints string at row, starting at columnStart. Option to highlight string.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="row"></param>
+        /// <param name="columnStart"></param>
+        /// <param name="highlighted">If true, prints string with inverted colors.</param>
+        public static void Print(string line, int row, int columnStart, bool highlighted = false)
         {
-            string[] lines = text.Split("\n");
-            for (int i = 0; i < lines.Length; i++)
-            {
-                Print(lines[i], 0, yStart + i, true);
-            }
-        }
-
-        public static void Print(string text, int x = 0, int y = 0, bool centered = false, bool highlighted = false)
-        {
-            x = centered ? Console.WindowWidth / 2 - text.Length / 2 : x;
-            Console.SetCursorPosition(x, y);
-
             if (highlighted)
             {
                 Console.BackgroundColor = foregroundColor;
                 Console.ForegroundColor = backgroundColor;
             }
 
-            Console.WriteLine(text);
+            Console.SetCursorPosition(columnStart, row);
+            Console.Write(line);
 
             if (highlighted)
             {
@@ -161,7 +161,87 @@ namespace Skalm.Display
             }
         }
 
-        public static void Tippex(Bounds area)
+        /// <summary>
+        /// Prints string array, starting at rowStart and colStart. Option to highlight strings.
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="rowStart"></param>
+        /// <param name="columnStart"></param>
+        /// <param name="highlighted">If true, prints string with inverted colors.</param>
+        public static void Print(string[] lines, int rowStart, int columnStart, bool highlighted = false)
+        {
+            latestPrintedArea = new Bounds(new Vector2Int(columnStart, rowStart), new Rectangle(lines.Max(line => line.Length), lines.Length));
+            for (int i = 0; i < lines.Length; i++)
+                Print(lines[i], rowStart + i, columnStart, highlighted);
+        }
+
+        /// <summary>
+        /// Prints string at center of console and specified row. Option to highlight string.
+        /// </summary>
+        /// <param name="line"></param>
+        /// <param name="row"></param>
+        /// <param name="highlighted">If true, prints string with inverted colors.</param>
+        public static void PrintCentered(string line, int row, bool highlighted = false)
+        {
+            Print(line, row, FindOffsetFromConsoleCenter(line.Length), highlighted);
+        }
+
+        /// <summary>
+        /// Prints string array at center of console, starting from rowStart. Option to highlight strings.
+        /// </summary>
+        /// <param name="lines"></param>
+        /// <param name="rowStart"></param>
+        /// <param name="highlighted">If true, prints string with inverted colors.</param>
+        public static void PrintCentered(string[] lines, int rowStart, bool highlighted = false)
+        {
+            int width = lines.Max(line => line.Length);
+            Vector2Int startPos = new Vector2Int(FindOffsetFromConsoleCenter(width), rowStart);
+            latestPrintedArea = new Bounds(startPos, new Rectangle(width, lines.Length));
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                PrintCentered(lines[i], rowStart + i, highlighted);
+            }
+        }
+
+        private static int FindOffsetFromConsoleCenter(int width)
+        {
+            return (int)((float)Console.WindowWidth / 2 - (float)width / 2);
+        }
+
+
+        // NOT WORKING, MISSING CONSOLE READING
+        private (Bounds, string[]) CacheCharactersInArea(Bounds area)
+        {
+            List<string> allLines = new();
+            for (int rows = area.StartXY.Y; rows < area.EndXY.Y; rows++)
+            {
+                string line = "";
+                for (int cols = area.StartXY.X; cols < area.EndXY.X; cols++)
+                {
+                    // READING FROM CONSOLE IS COMPLICATED
+                    // MAYBE LATER
+                }
+                allLines.Add(line);
+            }
+            return (area, allLines.ToArray());
+        }
+
+        public static void ReplaceAreaWithStringArray(Bounds area, string[] lines)
+        {
+            Erase(area);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                Print(lines[i], 0, area.StartXY.Y + i, true);
+            }
+        }
+
+        public static void EraseLatestPrint()
+        {
+            Erase(latestPrintedArea);
+        }
+
+        public static void Erase(Bounds area)
         {
             for (int x = area.StartXY.X; x < area.EndXY.X; x++)
             {

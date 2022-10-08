@@ -18,7 +18,7 @@ namespace Skalm.States
 
         public void Enter()
         {
-            DisplayManager.Print("Starting new game", 0, Console.WindowHeight / 2, true);
+            DisplayManager.PrintCentered("Starting new game", Console.WindowHeight / 2);
             Thread.Sleep(500);
             Console.Clear();
             _displayManager.DisplayHUD();

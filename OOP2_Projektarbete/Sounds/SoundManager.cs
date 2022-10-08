@@ -5,24 +5,37 @@ namespace Skalm.Sounds
     internal class SoundManager
     {
         private readonly string soundsFolderPath;
-        public List<Sound> Sounds { get; private set; }
+        public List<Sound> Tracks { get; private set; }
         public readonly Sound defaultSound;
-        public static bool beepsOn;
+        public static bool beepsEnabled;
         public SoundManager()
         {
             soundsFolderPath = Globals.G_SOUNDS_FOLDER_PATH;
-            Sounds = InitializeSoundList();
-            defaultSound = Sounds.FirstOrDefault();
-            beepsOn = true;
+            Tracks = CreateSoundsList();
+            Random random = new Random();
+            defaultSound = Tracks[random.Next(Tracks.Count)];
+            beepsEnabled = true;
         }
 
-        private List<Sound> InitializeSoundList()
+        private List<Sound> CreateSoundsList()
         {
+            List<string> fileNames = LoadFileNamesFromFolder(soundsFolderPath);
             List<Sound> sounds = new List<Sound>();
-            sounds.Add(new Sound("Steel and Seething", "Steel_and_Seething.wav"));
-            sounds.Add(new Sound("Thunder Dreams", "Thunder_Dreams.wav"));
-
+            foreach (string fileName in fileNames)
+            {
+                string soundName = fileName.Replace('_', ' ').Split('.').First();
+                sounds.Add(new Sound(soundName, fileName));
+            }
             return sounds;
+        }
+
+        private List<string> LoadFileNamesFromFolder(string path)
+        {
+            string[] files = Directory.GetFiles(path, "*.wav");
+            List<string> fileNames = new();
+            foreach (string file in files)
+                fileNames.Add(Path.GetFileName(file));
+            return fileNames;
         }
 
         public void PlayMusic(Sound sound)
@@ -46,7 +59,7 @@ namespace Skalm.Sounds
         }
         private static void PlayBeep(int frequency, int duration)
         {
-            if (beepsOn)
+            if (beepsEnabled)
                 Console.Beep(frequency, duration);
         }
     }

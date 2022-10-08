@@ -11,13 +11,13 @@ namespace Skalm.States
     {
         public void Enter()
         {
-            DisplayManager.Print("Loading SKÄLM", 0, Console.WindowHeight / 2, true);
+            DisplayManager.PrintCentered("Loading SKÄLM", Console.WindowHeight / 2);
         }
 
         public void Exit()
         {
             Console.Clear();
-            DisplayManager.Print("Loaded", 0, Console.WindowHeight / 2, true);
+            DisplayManager.PrintCentered("Loaded", Console.WindowHeight / 2);
             Thread.Sleep(1000);
         }
     }
