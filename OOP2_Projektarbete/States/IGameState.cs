@@ -10,5 +10,8 @@ namespace Skalm.States
     {
         void Enter();
         void Exit();
+
+        void UpdateLogic();
+        void UpdateDisplay();
     }
 }
