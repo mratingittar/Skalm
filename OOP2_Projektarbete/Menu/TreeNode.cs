@@ -61,7 +61,7 @@ namespace Skalm.Menu
 
         public TreeNode<T> FindNode(Func<TreeNode<T>, bool> predicate)
         {
-            return ElementsIndex.First(predicate);
+            return ElementsIndex.FirstOrDefault(predicate) ?? this;
         }
 
         public IEnumerable<T> Flatten()
@@ -89,3 +89,5 @@ namespace Skalm.Menu
         #endregion
     }
 }
+
+// https://github.com/gt4dev/yet-another-tree-structure/blob/master/csharp/CSharpTree/TreeNode.cs

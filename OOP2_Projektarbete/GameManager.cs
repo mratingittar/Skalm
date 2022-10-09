@@ -23,25 +23,26 @@ namespace Skalm
         private MenuManager menuManager;
         #endregion
 
-        public GameManager(IGameState initialState)
+        public GameManager()
         {
-            GameState = initialState;
+            mapManager = new MapManager(32, 32, Vector2Int.Zero);
+            displayManager = new DisplayManager(mapManager, new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser());
+            
+            GameState = new GameStateInitializing(displayManager);
             GameState.Enter();
 
             soundManager = new SoundManager();
             soundManager.PlayMusic(soundManager.defaultSound);
 
-            mapManager = new MapManager(32, 32, Vector2Int.Zero);
-            displayManager = new(mapManager);
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
-            menuManager = new MenuManager(inputManager);
+            menuManager = new MenuManager(inputManager, displayManager);
             //mainMenu.onMenuSelection += MainMenuSelection;
         }
 
 
         public void Start()
         {
-            ChangeGameState(new GameStateMainMenu(menuManager));
+            ChangeGameState(new GameStateMainMenu(displayManager, menuManager));
             Update();
         }
 

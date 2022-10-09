@@ -17,9 +17,6 @@ namespace Skalm.Display
         private int statsWidth = Globals.G_HUD_MAINSTATS_W;
         private int mainStatsHeight = Globals.G_HUD_MAINSTATS_H;
         private char borderChar = Globals.G_BORDER_CHAR;
-
-        private static ConsoleColor backgroundColor = ConsoleColor.Black;
-        private static ConsoleColor foregroundColor = ConsoleColor.White;
         #endregion
 
         #region FIELDS
@@ -40,18 +37,25 @@ namespace Skalm.Display
 
         // MANAGERS
         private MapManager mapManager;
-
-        //public static (Bounds, string[]) cachedCharacters; NOT IMPLEMENTED
-
+        public readonly IPrinter printer;
+        public readonly IEraser eraser;
         #endregion
 
         #region PROPERTIES
         public Grid<Cell> GameGrid { get; private set; }
         public Dictionary<IContentType, Cell> CellContents { get; private set; } // USED TO SAVE POSITIONS OF DIFFERENT TYPES OF CELLS FOR LATER ACCESS
+        public (int, int) CurrentCursorPosition => (Console.CursorLeft, Console.CursorTop);
+        public int WindowHeight => Console.WindowHeight;
+        public int WindowWidth => Console.WindowWidth;
         #endregion
 
-        public DisplayManager(MapManager mapManager)
+        public DisplayManager(MapManager mapManager, IPrinter printer, IEraser eraser)
         {
+            Console.Title = Globals.G_GAME_TITLE;
+            Console.CursorVisible = Globals.G_DISPLAY_CURSOR;
+
+            this.printer = printer;
+            this.eraser = eraser;
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             // ADD FONT CHECKING. NEEDS TO BE TRUETYPE.
             DefineBounds();
@@ -136,80 +140,7 @@ namespace Skalm.Display
             Console.Write(character);
         }
 
-        /// <summary>
-        /// Prints string at row, starting at columnStart. Option to highlight string.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <param name="row"></param>
-        /// <param name="columnStart"></param>
-        /// <param name="highlighted">If true, prints string with inverted colors.</param>
-        public static void Print(string line, int row, int columnStart, bool highlighted = false)
-        {
-            if (highlighted)
-            {
-                Console.BackgroundColor = foregroundColor;
-                Console.ForegroundColor = backgroundColor;
-            }
-
-            Console.SetCursorPosition(columnStart, row);
-            Console.Write(line);
-
-            if (highlighted)
-            {
-                Console.BackgroundColor = backgroundColor;
-                Console.ForegroundColor = foregroundColor;
-            }
-        }
-
-        /// <summary>
-        /// Prints string array, starting at rowStart and colStart. Option to highlight strings.
-        /// </summary>
-        /// <param name="lines"></param>
-        /// <param name="rowStart"></param>
-        /// <param name="columnStart"></param>
-        /// <param name="highlighted">If true, prints string with inverted colors.</param>
-        public static void Print(string[] lines, int rowStart, int columnStart, bool highlighted = false)
-        {
-            latestPrintedArea = new Bounds(new Vector2Int(columnStart, rowStart), new Rectangle(lines.Max(line => line.Length), lines.Length));
-            for (int i = 0; i < lines.Length; i++)
-                Print(lines[i], rowStart + i, columnStart, highlighted);
-        }
-
-        /// <summary>
-        /// Prints string at center of console and specified row. Option to highlight string.
-        /// </summary>
-        /// <param name="line"></param>
-        /// <param name="row"></param>
-        /// <param name="highlighted">If true, prints string with inverted colors.</param>
-        public static void PrintCentered(string line, int row, bool highlighted = false)
-        {
-            Print(line, row, FindOffsetFromConsoleCenter(line.Length), highlighted);
-        }
-
-        /// <summary>
-        /// Prints string array at center of console, starting from rowStart. Option to highlight strings.
-        /// </summary>
-        /// <param name="lines"></param>
-        /// <param name="rowStart"></param>
-        /// <param name="highlighted">If true, prints string with inverted colors.</param>
-        public static void PrintCentered(string[] lines, int rowStart, bool highlighted = false)
-        {
-            int width = lines.Max(line => line.Length);
-            Vector2Int startPos = new Vector2Int(FindOffsetFromConsoleCenter(width), rowStart);
-            latestPrintedArea = new Bounds(startPos, new Rectangle(width, lines.Length));
-
-            for (int i = 0; i < lines.Length; i++)
-            {
-                PrintCentered(lines[i], rowStart + i, highlighted);
-            }
-        }
-
-        private static int FindOffsetFromConsoleCenter(int width)
-        {
-            return (int)((float)Console.WindowWidth / 2 - (float)width / 2);
-        }
-
-
+        
         // NOT WORKING, MISSING CONSOLE READING
         private (Bounds, string[]) CacheCharactersInArea(Bounds area)
         {
@@ -227,30 +158,18 @@ namespace Skalm.Display
             return (area, allLines.ToArray());
         }
 
-        public static void ReplaceAreaWithStringArray(Bounds area, string[] lines)
+        public void ReplaceAreaWithStringArray(Bounds area, string[] lines)
         {
-            Erase(area);
+            eraser.EraseArea(area);
             for (int i = 0; i < lines.Length; i++)
             {
-                Print(lines[i], 0, area.StartXY.Y + i, true);
+                printer.PrintFromPosition(lines[i], 0, area.StartXY.Y + i, true);
             }
         }
 
-        public static void EraseLatestPrint()
+        public void EraseLatestPrint()
         {
-            Erase(latestPrintedArea);
-        }
-
-        public static void Erase(Bounds area)
-        {
-            for (int x = area.StartXY.X; x < area.EndXY.X; x++)
-            {
-                for (int y = area.StartXY.Y; y < area.EndXY.Y; y++)
-                {
-                    Console.SetCursorPosition(x, y);
-                    Console.Write(" ");
-                }
-            }
+            eraser.EraseArea(latestPrintedArea);
         }
 
         #endregion

@@ -8,22 +8,23 @@ namespace Skalm.Menu
     internal class MenuManager
     {
         private InputManager inputManager;
+        private DisplayManager displayManager;
         private AsciiArt ascii;
 
-        private MenuBase activeMenu;
-        private MainMenu mainMenu;
-        //private PauseMenu pauseMenu;
+        private Menu activeMenu;
+        private Menu mainMenu;
+        //private Menu pauseMenu;
 
-        public MenuManager(InputManager inputManager)
+        public MenuManager(InputManager inputManager, DisplayManager displayManager)
         {
             this.inputManager = inputManager;
-
+            this.displayManager = displayManager;
             inputManager.onInputMove += TraverseMenu;
             inputManager.onInputCommand += ExecuteMenu;
             ascii = new AsciiArt();
 
-            mainMenu = new MainMenu(ascii.Title, new TreeNode<MenuPage>(new MenuPage("Main Menu", "New Game", "Continue", "Options", "Exit")));
-            //pauseMenu = new PauseMenu();
+            mainMenu = new Menu(ascii.Title, new TreeNode<MenuPage>(new MenuPage("Main Menu", "New Game", "Continue", "Options", "Exit")), displayManager);
+            //pauseMenu = new Menu();
             activeMenu = mainMenu;
         }
 
@@ -48,12 +49,14 @@ namespace Skalm.Menu
                     break;
             }
         }
+
         private void ExecuteMenu(InputCommands command)
         {
             if (activeMenu.IsEnabled is false)
                 return;
 
             SoundManager.PlayConfirmBeep();
+
             switch (command)
             {
                 case InputCommands.Confirm:
@@ -70,11 +73,10 @@ namespace Skalm.Menu
 
         private void ExitMenu()
         {
-            if (activeMenu is MainMenu)
+            if (activeMenu.pages.Value.pageName.ToUpper() == "MAIN MENU")
                 Environment.Exit(0);
             else
                 LoadMainMenu();
         }
-
     }
 }
