@@ -1,4 +1,5 @@
-﻿using Skalm.Structs;
+﻿using Skalm.Map;
+using Skalm.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,13 +14,15 @@ namespace Skalm.Actors.Tile
         public char sprite { get; protected set; }
         public ConsoleColor color { get; protected set; }
         public int drawDepth { get; protected set; }
+        public MapTiles tileType { get; protected set; }
 
-        public Tile(Vector2Int posXY, char sprite = ' ', ConsoleColor color = ConsoleColor.White, int drawDepth = 0)
+        public Tile(Vector2Int posXY, char sprite = ' ', ConsoleColor color = ConsoleColor.White, MapTiles tileType = MapTiles.Void, int drawDepth = 0)
         {
             this.posXY = posXY;
             this.sprite = sprite;
             this.color = color;
             this.drawDepth = drawDepth;
+            this.tileType = tileType;
         }
     }
 }

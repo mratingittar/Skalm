@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors.Fighting
 {
-    internal interface IDamageable
+    internal interface IAttackComponent
     {
-        void ReceiveDamage(DoDamage damage);
+        DoDamage Attack();
     }
 }

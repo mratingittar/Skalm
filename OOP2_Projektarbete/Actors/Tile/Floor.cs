@@ -1,4 +1,5 @@
-﻿using Skalm.Structs;
+﻿using Skalm.Map;
+using Skalm.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Skalm.Actors.Tile
 {
     internal class Floor : Tile
     {
-        public Floor(Vector2Int posXY) : base(posXY, Globals.G_FLOOR, ConsoleColor.Gray) {}
+        public Floor(Vector2Int posXY) : base(posXY, Globals.G_FLOOR, ConsoleColor.Gray, MapTiles.Floor) {}
     }
 }

@@ -19,13 +19,14 @@ namespace Skalm.Actors
 
         // COMPONENTS
         public IMoveInput _moveInput { get; set; }
+        public IAttackComponent _attack { get; set; }
 
         // STATS
         public StatsObjectHard statsHard;
         public StatsObjectSoft statsSoft;
 
         // CONSTRUCTOR I
-        public Player(Grid<Cell> gameGrid, Vector2Int posXY, IMoveInput moveInput)
+        public Player(Grid<Cell> gameGrid, Vector2Int posXY, IMoveInput moveInput, IAttackComponent attack)
         {
             // GAME WORLD
             this.gameGrid = gameGrid;
@@ -33,10 +34,11 @@ namespace Skalm.Actors
 
             // COMPONENTS
             this._moveInput = moveInput;
+            this._attack = attack;
 
             // STATS
-            statsHard = new StatsObjectHard(5, 5, 5, 5, 5);
-            statsSoft = new StatsObjectSoft(10, 1);
+            this.statsHard = new StatsObjectHard(5, 5, 5, 5, 5);
+            this.statsSoft = new StatsObjectSoft(10, 1);
         }
 
         // UPDATE OBJECT
@@ -57,7 +59,7 @@ namespace Skalm.Actors
                 // IF CAN BE FOUGHT, DEAL DAMAGE
                 if (collidable is IDamageable damageable)
                 {
-                    damageable.ReceiveDamage(DoDamage());
+                    damageable.ReceiveDamage(_attack.Attack());
                 }
             } else {
                 // CELL IS FREE = MAKE MOVE
@@ -69,12 +71,6 @@ namespace Skalm.Actors
         public void OnCollision()
         {
 
-        }
-
-        // METHOD DO DAMAGE
-        public DoDamage DoDamage()
-        {
-            return new DoDamage();
         }
 
         // METHOD RECEIVE DAMAGE
