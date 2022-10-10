@@ -9,21 +9,21 @@ namespace Skalm.States
 {
     internal class GameStatePlaying : IGameState
     {
-        private readonly DisplayManager _displayManager;
+        private readonly DisplayManager displayManager;
 
         // CONSTRUCTOR I
         public GameStatePlaying(DisplayManager displayManager)
         {
-            _displayManager = displayManager;
+            this.displayManager = displayManager;
         }
 
         // ENTER GAME PLAYING STATE
         public void Enter()
         {
-            DisplayManager.PrintCenteredText("Starting new game", Console.WindowHeight / 2);
+            displayManager.printer.PrintCenteredInWindow("Starting new game", displayManager.WindowHeight / 2);
             Thread.Sleep(500);
-            Console.Clear();
-            _displayManager.DisplayHUD();
+            displayManager.eraser.EraseAll();
+            displayManager.DisplayHUD();
         }
 
         // EXIT GAME PLAYING STATE

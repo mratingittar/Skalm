@@ -1,5 +1,4 @@
-﻿using Skalm;
-using Skalm.Grid;
+﻿using Skalm.Grid;
 using Skalm.Map;
 using Skalm.Structs;
 
@@ -34,21 +33,31 @@ namespace Skalm.Display
         private Bounds messageBounds;
         private Bounds mainStatsBounds;
         private Bounds subStatsBounds;
+        private static Bounds latestPrintedArea;
 
         // MANAGERS
         private MapManager mapManager;
+        public readonly IPrinter printer;
+        public readonly IEraser eraser;
         #endregion
 
         #region PROPERTIES
         public Grid<Cell> GameGrid { get; private set; }
         public Dictionary<IContentType, Cell> CellContents { get; private set; } // USED TO SAVE POSITIONS OF DIFFERENT TYPES OF CELLS FOR LATER ACCESS
+        public (int, int) CurrentCursorPosition => (Console.CursorLeft, Console.CursorTop);
+        public int WindowHeight => Console.WindowHeight;
+        public int WindowWidth => Console.WindowWidth;
         #endregion
 
-        public DisplayManager(MapManager mapManager)
+        public DisplayManager(MapManager mapManager, IPrinter printer, IEraser eraser)
         {
+            Console.Title = Globals.G_GAME_TITLE;
+            Console.CursorVisible = Globals.G_DISPLAY_CURSOR;
+
+            this.printer = printer;
+            this.eraser = eraser;
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             // ADD FONT CHECKING. NEEDS TO BE TRUETYPE.
-
             DefineBounds();
             CellContents = new Dictionary<IContentType, Cell>();
             GameGrid = new Grid<Cell>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
@@ -59,6 +68,7 @@ namespace Skalm.Display
             GameGrid.DefineContentOfGridArea(mainStatsBounds, new CellEmpty());
             GameGrid.DefineContentOfGridArea(subStatsBounds, new CellEmpty());
             this.mapManager = mapManager;
+            latestPrintedArea = messageBounds;
         }
 
         public void DisplayHUD()
@@ -87,9 +97,9 @@ namespace Skalm.Display
             {
                 if (consoleRect.Width > Console.LargestWindowWidth || consoleRect.Height > Console.LargestWindowHeight)
                     throw new ArgumentOutOfRangeException("Game window does not fit inside monitor.");
-
-                Console.SetBufferSize(consoleRect.Width, consoleRect.Height);
+                
                 Console.SetWindowSize(consoleRect.Width, consoleRect.Height);
+                Console.SetBufferSize(consoleRect.Width, consoleRect.Height);
             }
             catch (ArgumentOutOfRangeException e)
             {
@@ -130,21 +140,38 @@ namespace Skalm.Display
             Console.Write(character);
         }
 
-        public static void PrintCenteredMultiLineText(string text, int yStart)
+        
+        // NOT WORKING, MISSING CONSOLE READING
+        private (Bounds, string[]) CacheCharactersInArea(Bounds area)
         {
-            string[] lines = text.Split("\n");
-            for (int i = 0; i < lines.Length; i++)
+            List<string> allLines = new();
+            for (int rows = area.StartXY.Y; rows < area.EndXY.Y; rows++)
             {
-                PrintCenteredText(lines[i], yStart + i);
+                string line = "";
+                for (int cols = area.StartXY.X; cols < area.EndXY.X; cols++)
+                {
+                    // READING FROM CONSOLE IS COMPLICATED
+                    // MAYBE LATER
+                }
+                allLines.Add(line);
             }
-        }
-        public static void PrintCenteredText(string text, int y)
-        {
-            int startX = Console.WindowWidth / 2 - text.Length / 2;
-            Console.SetCursorPosition(startX, y);
-            Console.WriteLine(text);
+            return (area, allLines.ToArray());
         }
 
-        #endregion    
+        public void ReplaceAreaWithStringArray(Bounds area, string[] lines)
+        {
+            eraser.EraseArea(area);
+            for (int i = 0; i < lines.Length; i++)
+            {
+                printer.PrintFromPosition(lines[i], 0, area.StartXY.Y + i, true);
+            }
+        }
+
+        public void EraseLatestPrint()
+        {
+            eraser.EraseArea(latestPrintedArea);
+        }
+
+        #endregion
     }
 }

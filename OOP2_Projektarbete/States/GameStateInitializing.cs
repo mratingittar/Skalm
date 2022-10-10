@@ -9,18 +9,28 @@ namespace Skalm.States
 {
     internal class GameStateInitializing : IGameState
     {
+
+        private DisplayManager displayManager;
+
+        public GameStateInitializing(DisplayManager displayManager)
+        {
+            this.displayManager = displayManager;
+        }
+
+
         // ENTER STATE
+
         public void Enter()
         {
-            DisplayManager.PrintCenteredText("Loading SKÄLM", Console.WindowHeight / 2);
+            displayManager.printer.PrintCenteredInWindow("Loading SKÄLM", displayManager.WindowHeight / 2);
         }
 
         // EXIT STATE
         public void Exit()
         {
-            Console.Clear();
-            DisplayManager.PrintCenteredText("Loaded", Console.WindowHeight / 2);
-            Thread.Sleep(1000);
+            displayManager.eraser.EraseAll(); 
+            displayManager.printer.PrintCenteredInWindow("Loaded", displayManager.WindowHeight / 2);
+            Thread.Sleep(500);
         }
 
         // UPDATE LOGIC

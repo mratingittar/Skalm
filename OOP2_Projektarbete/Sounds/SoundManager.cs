@@ -5,22 +5,37 @@ namespace Skalm.Sounds
     internal class SoundManager
     {
         private readonly string soundsFolderPath;
-        public List<Sound> Sounds { get; private set; }
+        public List<Sound> Tracks { get; private set; }
         public readonly Sound defaultSound;
-
+        public bool beepsEnabled;
         public SoundManager()
         {
             soundsFolderPath = Globals.G_SOUNDS_FOLDER_PATH;
-            Sounds = InitializeSoundList();
-            defaultSound = Sounds.FirstOrDefault();
+            Tracks = CreateSoundsList();
+            Random random = new Random();
+            defaultSound = Tracks[random.Next(Tracks.Count)];
+            beepsEnabled = true;
         }
 
-        private List<Sound> InitializeSoundList()
+        private List<Sound> CreateSoundsList()
         {
+            List<string> fileNames = LoadFileNamesFromFolder(soundsFolderPath);
             List<Sound> sounds = new List<Sound>();
-            sounds.Add(new Sound("Thunder Dreams", "Thunder_Dreams.wav"));
-
+            foreach (string fileName in fileNames)
+            {
+                string soundName = fileName.Replace('_', ' ').Split('.').First();
+                sounds.Add(new Sound(soundName, fileName));
+            }
             return sounds;
+        }
+
+        private List<string> LoadFileNamesFromFolder(string path)
+        {
+            string[] files = Directory.GetFiles(path, "*.wav");
+            List<string> fileNames = new();
+            foreach (string file in files)
+                fileNames.Add(Path.GetFileName(file));
+            return fileNames;
         }
 
         public void PlayMusic(Sound sound)
@@ -44,7 +59,14 @@ namespace Skalm.Sounds
         }
         private static void PlayBeep(int frequency, int duration)
         {
-            Console.Beep(frequency, duration);
+            if (true)
+                Console.Beep(frequency, duration);
         }
     }
 }
+
+
+//"Thunder Dreams" Kevin MacLeod(incompetech.com)
+//"Steel and Seething" Kevin MacLeod(incompetech.com)
+//Licensed under Creative Commons: By Attribution 4.0 License
+//http://creativecommons.org/licenses/by/4.0/

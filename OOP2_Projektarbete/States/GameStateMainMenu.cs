@@ -1,34 +1,35 @@
-﻿using Skalm.Menu;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Skalm.Display;
+using Skalm.Menu;
 
 namespace Skalm.States
 {
     internal class GameStateMainMenu : IGameState
     {
-        public MainMenu MainMenu { get; private set; }
+        private MenuManager menuManager;
+        private DisplayManager displayManager;
 
+
+        public GameStateMainMenu(DisplayManager displayManager, MenuManager menuManager)
+=======
         // CONSTRUCTOR I
-        public GameStateMainMenu(MainMenu menu)
+
         {
-            MainMenu = menu;
+            this.displayManager = displayManager;
+            this.menuManager = menuManager;
         }
 
         // ENTER STATE
         public void Enter()
         {
-            Console.Clear();
-            MainMenu.LoadMenu();
+            displayManager.eraser.EraseAll();
+            menuManager.LoadMainMenu();
         }
 
         // EXIT STATE
         public void Exit()
         {
-            MainMenu.Enabled = false;
-            Console.Clear();
+            menuManager.mainMenu.IsEnabled = false;
+            displayManager.eraser.EraseAll();
         }
 
         // UPDATE LOGIC
