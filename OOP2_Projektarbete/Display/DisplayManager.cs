@@ -35,29 +35,26 @@ namespace Skalm.Display
         private Bounds subStatsBounds;
         private static Bounds latestPrintedArea;
 
-        // MANAGERS
-        private MapManager mapManager;
+        // INTERFACES
         public readonly IPrinter printer;
         public readonly IEraser eraser;
+        public readonly IWindowInfo windowInfo;
         #endregion
 
         #region PROPERTIES
         public Grid<Cell> GameGrid { get; private set; }
         public Dictionary<IContentType, Cell> CellContents { get; private set; } // USED TO SAVE POSITIONS OF DIFFERENT TYPES OF CELLS FOR LATER ACCESS
-        public (int, int) CurrentCursorPosition => (Console.CursorLeft, Console.CursorTop);
-        public int WindowHeight => Console.WindowHeight;
-        public int WindowWidth => Console.WindowWidth;
         #endregion
 
-        public DisplayManager(MapManager mapManager, IPrinter printer, IEraser eraser)
+        public DisplayManager(IPrinter printer, IEraser eraser, IWindowInfo windowInfo)
         {
-            Console.Title = Globals.G_GAME_TITLE;
-            Console.CursorVisible = Globals.G_DISPLAY_CURSOR;
-
             this.printer = printer;
             this.eraser = eraser;
+            this.windowInfo = windowInfo;
+
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             // ADD FONT CHECKING. NEEDS TO BE TRUETYPE.
+
             DefineBounds();
             CellContents = new Dictionary<IContentType, Cell>();
             GameGrid = new Grid<Cell>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
@@ -67,7 +64,6 @@ namespace Skalm.Display
             GameGrid.DefineContentOfGridArea(messageBounds, new CellEmpty());
             GameGrid.DefineContentOfGridArea(mainStatsBounds, new CellEmpty());
             GameGrid.DefineContentOfGridArea(subStatsBounds, new CellEmpty());
-            this.mapManager = mapManager;
             latestPrintedArea = messageBounds;
         }
 
@@ -115,23 +111,6 @@ namespace Skalm.Display
         #endregion
 
         #region PRINTING
-        // METHOD BORDER PRINTER
-        public void BorderPrinter(Vector2Int topleft, Vector2Int bottomright)
-        {
-            // PRINT BORDER HORIZONTAL AXIS
-            for (int i = topleft.X; i <= bottomright.X; i++)
-            {
-                PrintAtPosition(i, topleft.Y, Globals.G_BORDER_CHAR);
-                PrintAtPosition(i, bottomright.Y, Globals.G_BORDER_CHAR);
-            }
-
-            // PRINT BORDER VERTICAL AXIS
-            for (int j = topleft.Y; j <= bottomright.Y; j++)
-            {
-                PrintAtPosition(topleft.X, j, Globals.G_BORDER_CHAR);
-                PrintAtPosition(bottomright.X, j, Globals.G_BORDER_CHAR);
-            }
-        }
 
         // METHOD PRINT AT POSITION
         public static void PrintAtPosition(int x, int y, char character)
@@ -140,32 +119,6 @@ namespace Skalm.Display
             Console.Write(character);
         }
 
-        
-        // NOT WORKING, MISSING CONSOLE READING
-        private (Bounds, string[]) CacheCharactersInArea(Bounds area)
-        {
-            List<string> allLines = new();
-            for (int rows = area.StartXY.Y; rows < area.EndXY.Y; rows++)
-            {
-                string line = "";
-                for (int cols = area.StartXY.X; cols < area.EndXY.X; cols++)
-                {
-                    // READING FROM CONSOLE IS COMPLICATED
-                    // MAYBE LATER
-                }
-                allLines.Add(line);
-            }
-            return (area, allLines.ToArray());
-        }
-
-        public void ReplaceAreaWithStringArray(Bounds area, string[] lines)
-        {
-            eraser.EraseArea(area);
-            for (int i = 0; i < lines.Length; i++)
-            {
-                printer.PrintFromPosition(lines[i], 0, area.StartXY.Y + i, true);
-            }
-        }
 
         public void EraseLatestPrint()
         {

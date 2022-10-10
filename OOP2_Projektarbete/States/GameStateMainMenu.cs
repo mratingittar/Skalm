@@ -8,11 +8,8 @@ namespace Skalm.States
         private MenuManager menuManager;
         private DisplayManager displayManager;
 
-
-        public GameStateMainMenu(DisplayManager displayManager, MenuManager menuManager)
-=======
         // CONSTRUCTOR I
-
+        public GameStateMainMenu(DisplayManager displayManager, MenuManager menuManager)
         {
             this.displayManager = displayManager;
             this.menuManager = menuManager;

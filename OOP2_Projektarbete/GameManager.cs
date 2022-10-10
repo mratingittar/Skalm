@@ -19,23 +19,22 @@ namespace Skalm
         private InputManager inputManager;
         private SoundManager soundManager;
         public MapManager mapManager;
-        public DisplayManager displayManager; 
+        public DisplayManager displayManager;
         private MenuManager menuManager;
         #endregion
 
         public GameManager()
         {
             mapManager = new MapManager(32, 32, Vector2Int.Zero);
-            displayManager = new DisplayManager(mapManager, new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser());
-            
+            displayManager = new DisplayManager(new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser(), new ConsoleWindowInfo());
+
             GameState = new GameStateInitializing(displayManager);
             GameState.Enter();
 
-            soundManager = new SoundManager();
-            soundManager.PlayMusic(soundManager.defaultSound);
+            soundManager = new SoundManager(new ConsoleSoundPlayer(Globals.G_SOUNDS_FOLDER_PATH));
 
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
-            menuManager = new MenuManager(inputManager, displayManager);
+            menuManager = new MenuManager(inputManager, displayManager, soundManager.player);
             menuManager.mainMenu.onMenuExecution += MainMenuExecution;
         }
 
@@ -51,16 +50,7 @@ namespace Skalm
         {
             while (true)
             {
-                if (Console.KeyAvailable)
-                {
-                    inputManager.GetInput(); // INPUTS ARE QUEUEING UP, NEEDS FIXING.
-                }
-
-
-                else if (GameState is GameStatePlaying)
-                {
-
-                }
+                inputManager.GetInput(); // INPUTS ARE QUEUEING UP, NEEDS FIXING.
 
                 Thread.Sleep(1000 / updateFrequency);
             }
@@ -73,6 +63,7 @@ namespace Skalm
             GameState.Enter();
         }
 
+        // MAY CHANGE THIS TO THE MENUS HAVING A REFERENCE TO THIS METHOD AND SENDING IN AN ENUM INSTEAD.
         private void MainMenuExecution(string item)
         {
             if (GameState is not GameStateMainMenu)
@@ -86,7 +77,7 @@ namespace Skalm
                 case "Continue":
                     break;
                 case "Toggle Beep":
-                    soundManager.beepsEnabled = !soundManager.beepsEnabled;
+                    soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
                     break;
                 default:
                     break;

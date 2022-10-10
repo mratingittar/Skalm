@@ -11,6 +11,12 @@
             this.backgroundColor = backgroundColor;
         }
 
+        public void PrintAtPosition(char character, int y, int x)
+        {
+            Console.SetCursorPosition(x, y);
+            Console.Write(character);
+        }
+
         public void PrintFromPosition(string line, int y, int x, bool highlighted = false)
         {
             if (highlighted)

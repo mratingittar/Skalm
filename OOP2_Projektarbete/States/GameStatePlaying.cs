@@ -20,7 +20,7 @@ namespace Skalm.States
         // ENTER GAME PLAYING STATE
         public void Enter()
         {
-            displayManager.printer.PrintCenteredInWindow("Starting new game", displayManager.WindowHeight / 2);
+            displayManager.printer.PrintCenteredInWindow("Starting new game", displayManager.windowInfo.WindowHeight / 2);
             Thread.Sleep(500);
             displayManager.eraser.EraseAll();
             displayManager.DisplayHUD();

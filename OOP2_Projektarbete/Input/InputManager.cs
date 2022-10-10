@@ -36,6 +36,9 @@ namespace Skalm.Input
 
             if (commandInput.GetCommandInput(key, out InputCommands command))
                 onInputCommand?.Invoke(command);
+
+            while (Console.KeyAvailable)
+                Console.ReadKey(true);
         }
     }
 }

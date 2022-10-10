@@ -1,7 +1,4 @@
 ﻿using Skalm.Display;
-using Skalm.Sounds;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 
 namespace Skalm.Menu
 {
@@ -38,7 +35,7 @@ namespace Skalm.Menu
             IsEnabled = true;
             MenuItemIndex = 0;
             displayManager.printer.PrintCenteredInWindow(title, titlePadding);
-            pageStartRow = displayManager.CurrentCursorPosition.Item2 + titlePadding;
+            pageStartRow = displayManager.windowInfo.CursorPosition.Item2 + titlePadding;
             LoadPage(pages.Value);
         }
         public void LoadPage(MenuPage page)
@@ -70,23 +67,23 @@ namespace Skalm.Menu
             onMenuExecution?.Invoke(executedItem);
         }
 
-        public void MoveMenuUp()
+        public bool MoveMenuUp()
         {
             if (MenuItemIndex == 0)
-                return;
+                return false;
 
             MenuItemIndex--;
-            SoundManager.PlayMoveBeep();
             PrintMenu();
+            return true;
         }
-        public void MoveMenuDown()
+        public bool MoveMenuDown()
         {
             if (MenuItemIndex == ActivePage.items.Count - 1)
-                return;
+                return false;
 
             MenuItemIndex++;
-            SoundManager.PlayMoveBeep();
             PrintMenu();
+            return true;
         }
 
         public void GoBackOneLevel()

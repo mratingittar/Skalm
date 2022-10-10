@@ -1,7 +1,0 @@
-{ "MainMenu":
-  { "MAIN MENU" : { "New Game", "Continue", "Options", "Exit" } },
-  { "NEW GAME" : { "Create Character", "Back" } },
-  {"CONTINUE" : { "Select Character", "Back" } },
-  {"OPTIONS" : { "Select Input Method", "Select Music", "Toggle Beep", "Back" } }
-}
-  

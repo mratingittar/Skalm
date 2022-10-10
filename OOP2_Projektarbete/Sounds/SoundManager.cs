@@ -4,22 +4,25 @@ namespace Skalm.Sounds
 {
     internal class SoundManager
     {
-        private readonly string soundsFolderPath;
+        public ISoundPlayer player;
         public List<Sound> Tracks { get; private set; }
-        public readonly Sound defaultSound;
-        public bool beepsEnabled;
-        public SoundManager()
+        public SoundManager(ISoundPlayer soundPlayer)
         {
-            soundsFolderPath = Globals.G_SOUNDS_FOLDER_PATH;
-            Tracks = CreateSoundsList();
+            player = soundPlayer;
+            Tracks = CreateSoundsList(Globals.G_SOUNDS_FOLDER_PATH);
+
             Random random = new Random();
-            defaultSound = Tracks[random.Next(Tracks.Count)];
-            beepsEnabled = true;
+            player.Play(Tracks[random.Next(Tracks.Count)]);
         }
 
-        private List<Sound> CreateSoundsList()
+        /// <summary>
+        /// Creates a list of Sounds to play.
+        /// </summary>
+        /// <param name="path">Path to sounds folder.</param>
+        /// <returns></returns>
+        private List<Sound> CreateSoundsList(string path)
         {
-            List<string> fileNames = LoadFileNamesFromFolder(soundsFolderPath);
+            List<string> fileNames = LoadFileNamesFromFolder(path);
             List<Sound> sounds = new List<Sound>();
             foreach (string fileName in fileNames)
             {
@@ -29,6 +32,11 @@ namespace Skalm.Sounds
             return sounds;
         }
 
+        /// <summary>
+        /// Loads .wav files from Sounds folder on startup and places their file names into a List.
+        /// </summary>
+        /// <param name="path">Path to sounds folder.</param>
+        /// <returns></returns>
         private List<string> LoadFileNamesFromFolder(string path)
         {
             string[] files = Directory.GetFiles(path, "*.wav");
@@ -38,29 +46,13 @@ namespace Skalm.Sounds
             return fileNames;
         }
 
-        public void PlayMusic(Sound sound)
+        /// <summary>
+        /// The type of SFX to be played.
+        /// </summary>
+        public enum SoundType
         {
-            string path = soundsFolderPath + sound.fileName;
-            if (File.Exists(path))
-            {
-                SoundPlayer musicPlayer = new SoundPlayer(path);
-                musicPlayer.Load();
-                musicPlayer.PlayLooping();
-            }
-        }
-
-        public static void PlayMoveBeep()
-        {
-            PlayBeep(440, 100);
-        }
-        public static void PlayConfirmBeep()
-        {
-            PlayBeep(880, 100);
-        }
-        private static void PlayBeep(int frequency, int duration)
-        {
-            if (true)
-                Console.Beep(frequency, duration);
+            Move,
+            Confirm
         }
     }
 }

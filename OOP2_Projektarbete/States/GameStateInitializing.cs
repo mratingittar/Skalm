@@ -22,14 +22,14 @@ namespace Skalm.States
 
         public void Enter()
         {
-            displayManager.printer.PrintCenteredInWindow("Loading SKÄLM", displayManager.WindowHeight / 2);
+            displayManager.printer.PrintCenteredInWindow("Loading SKÄLM", displayManager.windowInfo.WindowHeight / 2);
         }
 
         // EXIT STATE
         public void Exit()
         {
             displayManager.eraser.EraseAll(); 
-            displayManager.printer.PrintCenteredInWindow("Loaded", displayManager.WindowHeight / 2);
+            displayManager.printer.PrintCenteredInWindow("Loaded", displayManager.windowInfo.WindowHeight / 2);
             Thread.Sleep(500);
         }
 
