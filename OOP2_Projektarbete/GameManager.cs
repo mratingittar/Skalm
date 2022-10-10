@@ -21,6 +21,9 @@ namespace Skalm
         public MapManager mapManager;
         public DisplayManager displayManager;
         private MenuManager menuManager;
+
+        private List<char> animationTest;
+        private int animationFrame;
         #endregion
 
         public GameManager()
@@ -34,8 +37,11 @@ namespace Skalm
             soundManager = new SoundManager(new ConsoleSoundPlayer(Globals.G_SOUNDS_FOLDER_PATH));
 
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
-            menuManager = new MenuManager(inputManager, displayManager, soundManager.player);
+            menuManager = new MenuManager(inputManager, displayManager, soundManager);
             menuManager.mainMenu.onMenuExecution += MainMenuExecution;
+
+            animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░'};
+            animationFrame = 0;
         }
 
 
@@ -46,11 +52,22 @@ namespace Skalm
             Update();
         }
 
+        private void Animate() 
+        {
+            if (animationFrame == animationTest.Count)
+                animationFrame = 0;
+
+            displayManager.printer.PrintAtPosition(animationTest[animationFrame], 10, 10);
+            animationFrame++;
+        }
+
         private void Update()
         {
             while (true)
             {
+
                 inputManager.GetInput(); // INPUTS ARE QUEUEING UP, NEEDS FIXING.
+
 
                 Thread.Sleep(1000 / updateFrequency);
             }
@@ -64,22 +81,30 @@ namespace Skalm
         }
 
         // MAY CHANGE THIS TO THE MENUS HAVING A REFERENCE TO THIS METHOD AND SENDING IN AN ENUM INSTEAD.
-        private void MainMenuExecution(string item)
+        private void MainMenuExecution(string menuPage, string item)
         {
             if (GameState is not GameStateMainMenu)
                 return;
 
-            switch (item)
+            switch (menuPage)
             {
-                case "Start New Game":
-                    ChangeGameState(new GameStatePlaying(displayManager));
+                case "MAIN MENU":
+                    //if (item == "Continue")
+                    //    Continue();
                     break;
-                case "Continue":
+                case "NEW GAME":
+                    if (item == "Start New Game")
+                        ChangeGameState(new GameStatePlaying(displayManager));
                     break;
-                case "Toggle Beep":
-                    soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
+                case "OPTIONS":
+                    if (item == "Toggle Beep")
+                        soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
                     break;
-                default:
+                case "MUSIC":
+                    soundManager.player.Play(soundManager.Tracks.Find(sound => sound.soundName == item));
+                    break;
+                case "INPUT METHOD":
+                    inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
                     break;
             }
         }

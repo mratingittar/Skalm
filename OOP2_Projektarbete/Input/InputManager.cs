@@ -6,13 +6,20 @@ namespace Skalm.Input
     {
         private IMoveInput moveInput;
         private ICommandInput commandInput;
-        public event Action<Vector2Int>? onInputMove;
-        public event Action<InputCommands>? onInputCommand;
+        public readonly List<IMoveInput> Inputs;
+        public event Action<Vector2Int>? OnInputMove;
+        public event Action<InputCommands>? OnInputCommand;
 
         public InputManager(IMoveInput moveInput, ICommandInput commandInput)
         {
             this.moveInput = moveInput;
             this.commandInput = commandInput;
+            Inputs = new List<IMoveInput>
+            {
+                new MoveInputArrowKeys(),
+                new MoveInputWASD(),
+                new MoveInputNumpad()
+            };
         }
 
         public void SetInputMethod(IMoveInput moveInput)
@@ -32,10 +39,10 @@ namespace Skalm.Input
             ConsoleKeyInfo key = Console.ReadKey(true);
 
             if (moveInput.GetMoveInput(key, out Vector2Int direction))
-                onInputMove?.Invoke(direction);
+                OnInputMove?.Invoke(direction);
 
             if (commandInput.GetCommandInput(key, out InputCommands command))
-                onInputCommand?.Invoke(command);
+                OnInputCommand?.Invoke(command);
 
             while (Console.KeyAvailable)
                 Console.ReadKey(true);

@@ -5,19 +5,19 @@ namespace Skalm.Grid
 {
     internal class GridController
     {
-        private Grid2D<Cell> gameGrid;
+        private Grid2D<Pixel> sectionGrid;
         private IPrinter printer;
         private IEraser eraser;
-        public Dictionary<string, HashSet<Cell>> cellsInSections { get; private set; }
-        private HashSet<Cell> borderCells;
+        private Dictionary<string, HashSet<Pixel>> cellsInSections;
+        private HashSet<Pixel> borderCells;
 
-        public GridController(Grid2D<Cell> gameGrid, IPrinter printer, IEraser eraser)
+        public GridController(Grid2D<Pixel> sectionGrid, IPrinter printer, IEraser eraser)
         {
-            this.gameGrid = gameGrid;
+            this.sectionGrid = sectionGrid;
             this.printer = printer;
             this.eraser = eraser;
-            cellsInSections = new Dictionary<string, HashSet<Cell>>();
-            borderCells = new HashSet<Cell>();
+            cellsInSections = new Dictionary<string, HashSet<Pixel>>();
+            borderCells = new HashSet<Pixel>();
         }
 
 
@@ -25,17 +25,17 @@ namespace Skalm.Grid
         public void DefineGridSections(Bounds area, Section section)
         {
             if (!cellsInSections.ContainsKey(section.GetType().Name))
-                cellsInSections.Add(section.GetType().Name, new HashSet<Cell>());
+                cellsInSections.Add(section.GetType().Name, new HashSet<Pixel>());
 
             for (int x = area.StartXY.X; x < area.EndXY.X; x++)
             {
                 for (int y = area.StartXY.Y; y < area.EndXY.Y; y++)
                 {
-                    Cell? cell = gameGrid.GetGridObject(x, y);
+                    Pixel? cell = sectionGrid.GetGridObject(x, y);
 
                     if (cell != null && cell.PartOfHUD is HUDBorder)
                     {
-                        gameGrid.GridArray[x, y].PartOfHUD = section;
+                        sectionGrid.GridArray[x, y].PartOfHUD = section;
                         cellsInSections[section.GetType().Name].Add(cell);
                     }
                 }
@@ -44,11 +44,11 @@ namespace Skalm.Grid
 
         public void FindBorderCells()
         {
-            for (int x = 0; x < gameGrid.gridWidth; x++)
+            for (int x = 0; x < sectionGrid.gridWidth; x++)
             {
-                for (int y = 0; y < gameGrid.gridHeight; y++)
+                for (int y = 0; y < sectionGrid.gridHeight; y++)
                 {
-                    Cell? cell = gameGrid.GetGridObject(x, y);
+                    Pixel? cell = sectionGrid.GetGridObject(x, y);
 
                     if (cell != null)
                     {
@@ -61,9 +61,9 @@ namespace Skalm.Grid
 
         public void PrintBorders()
         {
-            foreach (Cell cell in borderCells)
+            foreach (Pixel cell in borderCells)
             {
-                foreach (var position in cell.ConsolePositions)
+                foreach (var position in cell.planePositions)
                 {
                     printer.PrintAtPosition((cell.PartOfHUD as HUDBorder)!.borderCharacter, position.Y, position.X);
                 }

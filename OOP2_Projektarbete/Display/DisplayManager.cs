@@ -54,8 +54,8 @@ namespace Skalm.Display
             DefineBounds();
             windowInfo.SetWindowSize(consoleRect.Width, consoleRect.Height);
 
-            gameGridController = new GridController(new Grid2D<Cell>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
-                (gridX, gridY, consolePositions) => new Cell(new(gridX, gridY), consolePositions, new HUDBorder('░'))), printer, eraser);
+            gameGridController = new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
+                (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), consolePositions, new HUDBorder('░'))), printer, eraser);
 
             gameGridController.DefineGridSections(mapBounds, new MapSection());
             gameGridController.DefineGridSections(messageBounds, new MessageSection());
@@ -63,7 +63,6 @@ namespace Skalm.Display
             gameGridController.DefineGridSections(subStatsBounds, new SubStatsSection());
 
             gameGridController.FindBorderCells();
-
         }
 
         public void DisplayHUD()

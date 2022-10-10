@@ -9,7 +9,7 @@ namespace Skalm.Menu
         public readonly TreeNode<MenuPage> pages;
         private int pageStartRow;
         private DisplayManager displayManager;
-        public event Action<string>? onMenuExecution;
+        public event Action<string, string>? onMenuExecution;
         #endregion
 
         #region CONSTRUCTOR
@@ -64,7 +64,7 @@ namespace Skalm.Menu
 
         private void ExecuteLeaf(string executedItem)
         {
-            onMenuExecution?.Invoke(executedItem);
+            onMenuExecution?.Invoke(ActivePage.pageName, executedItem);
         }
 
         public bool MoveMenuUp()
