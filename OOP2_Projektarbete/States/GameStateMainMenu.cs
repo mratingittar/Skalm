@@ -22,7 +22,7 @@ namespace Skalm.States
 
         public void Exit()
         {
-            //MainMenu.Enabled = false;
+            menuManager.mainMenu.IsEnabled = false;
             displayManager.eraser.EraseAll();
         }
     }

@@ -7,7 +7,7 @@ namespace Skalm.Sounds
         private readonly string soundsFolderPath;
         public List<Sound> Tracks { get; private set; }
         public readonly Sound defaultSound;
-        public static bool beepsEnabled;
+        public bool beepsEnabled;
         public SoundManager()
         {
             soundsFolderPath = Globals.G_SOUNDS_FOLDER_PATH;
@@ -59,7 +59,7 @@ namespace Skalm.Sounds
         }
         private static void PlayBeep(int frequency, int duration)
         {
-            if (beepsEnabled)
+            if (true)
                 Console.Beep(frequency, duration);
         }
     }

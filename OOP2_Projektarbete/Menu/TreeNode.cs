@@ -22,6 +22,15 @@ namespace Skalm.Menu
             ElementsIndex = new LinkedList<TreeNode<T>>();
             ElementsIndex.Add(this);
         }
+
+        public TreeNode(T value, params T[] childValues)
+        {
+            Value = value;
+            Children = new List<TreeNode<T>>();
+            ElementsIndex = new LinkedList<TreeNode<T>>();
+            ElementsIndex.Add(this);
+            AddChildren(childValues);
+        }
         #endregion
 
         #region NODE CHILDREN
@@ -61,7 +70,7 @@ namespace Skalm.Menu
 
         public TreeNode<T> FindNode(Func<TreeNode<T>, bool> predicate)
         {
-            return ElementsIndex.FirstOrDefault(predicate) ?? this;
+            return ElementsIndex.FirstOrDefault(predicate)!;
         }
 
         public IEnumerable<T> Flatten()

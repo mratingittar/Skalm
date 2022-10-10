@@ -36,8 +36,9 @@ namespace Skalm
 
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
             menuManager = new MenuManager(inputManager, displayManager);
-            //mainMenu.onMenuSelection += MainMenuSelection;
+            menuManager.mainMenu.onMenuExecution += MainMenuExecution;
         }
+
 
 
         public void Start()
@@ -52,7 +53,7 @@ namespace Skalm
             {
                 if (Console.KeyAvailable)
                 {
-                    inputManager.GetInput();
+                    inputManager.GetInput(); // INPUTS ARE QUEUEING UP, NEEDS FIXING.
                 }
 
 
@@ -72,38 +73,24 @@ namespace Skalm
             GameState.Enter();
         }
 
-        private void MainMenuSelection(MainMenuChoices selection)
+        private void MainMenuExecution(string item)
         {
             if (GameState is not GameStateMainMenu)
                 return;
 
-            switch (selection)
+            switch (item)
             {
-                case MainMenuChoices.NewGame:
+                case "Start New Game":
                     ChangeGameState(new GameStatePlaying(displayManager));
                     break;
-                case MainMenuChoices.Continue:
+                case "Continue":
                     break;
-                case MainMenuChoices.Exit:
-                    Environment.Exit(0);
+                case "Toggle Beep":
+                    soundManager.beepsEnabled = !soundManager.beepsEnabled;
+                    break;
+                default:
                     break;
             }
-        }
-
-        private void RunGame()
-        {
-
-        }
-
-        private void NewGame()
-        {
-
-        }
-
-
-        private void ContinueGame()
-        {
-
         }
     }
 }

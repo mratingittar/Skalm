@@ -11,6 +11,6 @@ namespace Skalm.Display
         public void PrintFromPosition(string line, int y, int x, bool highlighted = false);
         public void PrintFromPosition(string[] lines, int y, int x, bool highlighted = false);
         public void PrintCenteredInWindow(string line, int y, bool highlighted = false);
-        public void PrintCenteredInWindow(string[] line, int y, bool highlighted = false);
+        public void PrintCenteredInWindow(string[] line, int y, bool highlighted = false);        
     }
 }

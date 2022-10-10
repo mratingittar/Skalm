@@ -1,5 +1,7 @@
 ﻿using Skalm.Display;
 using Skalm.Sounds;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace Skalm.Menu
 {
@@ -10,6 +12,7 @@ namespace Skalm.Menu
         public readonly TreeNode<MenuPage> pages;
         private int pageStartRow;
         private DisplayManager displayManager;
+        public event Action<string>? onMenuExecution;
         #endregion
 
         #region CONSTRUCTOR
@@ -20,15 +23,6 @@ namespace Skalm.Menu
             this.displayManager = displayManager;
             IsEnabled = false;
             ActivePage = pages.First().Value;
-
-            pages.AddChildren(
-               new MenuPage("New Game"),
-               new MenuPage("Continue"),
-               new MenuPage("Options", "Select Input Method", "Select Music", "Toggle Beep", "Back"));
-
-            pages.Children.First(page => page.Value.pageName == "Options").AddChildren(
-                new MenuPage("Select Input Method"),
-                new MenuPage("Select Music"));
         }
         #endregion
 
@@ -49,9 +43,10 @@ namespace Skalm.Menu
         }
         public void LoadPage(MenuPage page)
         {
+            displayManager.eraser.EraseLinesFromTo(pageStartRow, pageStartRow + ActivePage.items.Count + 2); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
             ActivePage = page;
-            displayManager.eraser.EraseLinesFromTo(pageStartRow, pageStartRow + page.items.Count);
-            HighlightSelectedItem();
+            MenuItemIndex = 0;
+            PrintMenu();
         }
 
         public void ExecuteSelectedMenuItem()
@@ -63,8 +58,16 @@ namespace Skalm.Menu
                 Environment.Exit(0);
             else
             {
-                LoadPage(pages.FindNode(node => node.Value.pageName.ToUpper() == item.ToUpper()).Value);
+                if (pages.FindNode(node => node.Value.pageName.ToUpper() == item.ToUpper()) is null)
+                    ExecuteLeaf(item);
+                else
+                    LoadPage(pages.FindNode(node => node.Value.pageName.ToUpper() == item.ToUpper()).Value);
             }
+        }
+
+        private void ExecuteLeaf(string executedItem)
+        {
+            onMenuExecution?.Invoke(executedItem);
         }
 
         public void MoveMenuUp()
@@ -74,7 +77,7 @@ namespace Skalm.Menu
 
             MenuItemIndex--;
             SoundManager.PlayMoveBeep();
-            HighlightSelectedItem();
+            PrintMenu();
         }
         public void MoveMenuDown()
         {
@@ -83,7 +86,7 @@ namespace Skalm.Menu
 
             MenuItemIndex++;
             SoundManager.PlayMoveBeep();
-            HighlightSelectedItem();
+            PrintMenu();
         }
 
         public void GoBackOneLevel()
@@ -91,15 +94,22 @@ namespace Skalm.Menu
             LoadPage(pages.FindNode(node => node.Value.pageName.ToUpper() == ActivePage.pageName.ToUpper()).Parent!.Value);
         }
 
-        private void HighlightSelectedItem()
+        private void PrintMenu()
+        {
+            displayManager.printer.PrintCenteredInWindow(ActivePage.pageName, pageStartRow);
+            displayManager.printer.PrintCenteredInWindow("", pageStartRow + 1); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
+            HighlightSelectedItem(pageStartRow + 2); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
+        }
+
+        private void HighlightSelectedItem(int startRow)
         {
             int count = 0;
             foreach (var item in ActivePage.items)
             {
                 if (item.Key == MenuItemIndex)
-                    displayManager.printer.PrintCenteredInWindow(item.Value, pageStartRow + count, true);
+                    displayManager.printer.PrintCenteredInWindow(item.Value, startRow + count, true);
                 else
-                    displayManager.printer.PrintCenteredInWindow(item.Value, pageStartRow + count);
+                    displayManager.printer.PrintCenteredInWindow(item.Value, startRow + count);
                 count++;
             }
         }
