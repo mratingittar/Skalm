@@ -33,17 +33,13 @@ namespace Skalm.Display
         private Bounds messageBounds;
         private Bounds mainStatsBounds;
         private Bounds subStatsBounds;
-        private static Bounds latestPrintedArea;
 
         // INTERFACES
         public readonly IPrinter printer;
         public readonly IEraser eraser;
         public readonly IWindowInfo windowInfo;
-        #endregion
 
-        #region PROPERTIES
-        public Grid<Cell> GameGrid { get; private set; }
-        public Dictionary<IContentType, Cell> CellContents { get; private set; } // USED TO SAVE POSITIONS OF DIFFERENT TYPES OF CELLS FOR LATER ACCESS
+        private GridController gameGridController;
         #endregion
 
         public DisplayManager(IPrinter printer, IEraser eraser, IWindowInfo windowInfo)
@@ -56,20 +52,23 @@ namespace Skalm.Display
             // ADD FONT CHECKING. NEEDS TO BE TRUETYPE.
 
             DefineBounds();
-            CellContents = new Dictionary<IContentType, Cell>();
-            GameGrid = new Grid<Cell>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
-                (gridPosition, consolePositions) => new Cell(gridPosition, consolePositions, new CellBorder(borderChar), false));
+            windowInfo.SetWindowSize(consoleRect.Width, consoleRect.Height);
 
-            GameGrid.DefineContentOfGridArea(mapBounds, new CellEmpty());
-            GameGrid.DefineContentOfGridArea(messageBounds, new CellEmpty());
-            GameGrid.DefineContentOfGridArea(mainStatsBounds, new CellEmpty());
-            GameGrid.DefineContentOfGridArea(subStatsBounds, new CellEmpty());
-            latestPrintedArea = messageBounds;
+            gameGridController = new GridController(new Grid2D<Cell>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
+                (gridX, gridY, consolePositions) => new Cell(new(gridX, gridY), consolePositions, new HUDBorder('░'))), printer, eraser);
+
+            gameGridController.DefineGridSections(mapBounds, new MapSection());
+            gameGridController.DefineGridSections(messageBounds, new MessageSection());
+            gameGridController.DefineGridSections(mainStatsBounds, new MainStatsSection());
+            gameGridController.DefineGridSections(subStatsBounds, new SubStatsSection());
+
+            gameGridController.FindBorderCells();
+
         }
 
         public void DisplayHUD()
         {
-            GameGrid.PrintGridContent(new CellBorder());
+            gameGridController.PrintBorders();
         }
 
         #region SETUP
@@ -87,44 +86,8 @@ namespace Skalm.Display
             messageBounds = new Bounds(new Vector2Int(borderThickness, mapBounds.EndXY.Y + borderThickness), gridMessageRect);
             mainStatsBounds = new Bounds(new Vector2Int(mapBounds.EndXY.X + borderThickness, mapBounds.StartXY.Y), gridMainStatsRect);
             subStatsBounds = new Bounds(new Vector2Int(mainStatsBounds.StartXY.X, mainStatsBounds.EndXY.Y + borderThickness), gridSubStatsRect);
-
-
-            try
-            {
-                if (consoleRect.Width > Console.LargestWindowWidth || consoleRect.Height > Console.LargestWindowHeight)
-                    throw new ArgumentOutOfRangeException("Game window does not fit inside monitor.");
-                
-                Console.SetWindowSize(consoleRect.Width, consoleRect.Height);
-                Console.SetBufferSize(consoleRect.Width, consoleRect.Height);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.ReadKey(true);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.ReadKey(true);
-            }
         }
         #endregion
 
-        #region PRINTING
-
-        // METHOD PRINT AT POSITION
-        public static void PrintAtPosition(int x, int y, char character)
-        {
-            Console.SetCursorPosition(x, y);
-            Console.Write(character);
-        }
-
-
-        public void EraseLatestPrint()
-        {
-            eraser.EraseArea(latestPrintedArea);
-        }
-
-        #endregion
     }
 }

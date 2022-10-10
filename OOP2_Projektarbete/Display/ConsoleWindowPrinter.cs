@@ -2,8 +2,8 @@
 {
     internal class ConsoleWindowPrinter : IPrinter
     {
-        private ConsoleColor foregroundColor;
-        private ConsoleColor backgroundColor;
+        private readonly ConsoleColor foregroundColor;
+        private readonly ConsoleColor backgroundColor;
 
         public ConsoleWindowPrinter(ConsoleColor foregroundColor, ConsoleColor backgroundColor)
         {
