@@ -40,7 +40,7 @@ namespace Skalm.Menu
         }
         public void LoadPage(MenuPage page)
         {
-            displayManager.eraser.EraseLinesFromTo(pageStartRow, pageStartRow + ActivePage.items.Count + 2); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
+            displayManager.eraser.EraseLinesFromTo(pageStartRow, pageStartRow + ActivePage.items.Count + 3); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
             ActivePage = page;
             MenuItemIndex = 0;
             PrintMenu();
@@ -103,6 +103,12 @@ namespace Skalm.Menu
             int count = 0;
             foreach (var item in ActivePage.items)
             {
+                if (item.Key == ActivePage.items.Last().Key)
+                {
+                    displayManager.printer.PrintCenteredInWindow("", startRow + count);
+                    count++;
+                }
+
                 if (item.Key == MenuItemIndex)
                     displayManager.printer.PrintCenteredInWindow(item.Value, startRow + count, true);
                 else
