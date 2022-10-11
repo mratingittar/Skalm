@@ -12,7 +12,7 @@ namespace Skalm.Display
         private int cellHeight = Globals.G_CELL_HEIGHT;
         private int mapWidth = Globals.G_MAP_WIDTH;
         private int mapHeight = Globals.G_MAP_HEIGHT;
-        private int messageHeight = Globals.G_HUD_MSGBOX_H;
+        private int messageHeight = Math.Max(Globals.G_HUD_MSGBOX_H,3);
         private int statsWidth = Globals.G_HUD_MAINSTATS_W;
         private int mainStatsHeight = Globals.G_HUD_MAINSTATS_H;
         #endregion
@@ -37,7 +37,7 @@ namespace Skalm.Display
         public readonly IEraser eraser;
         public readonly IWindowInfo windowInfo;
 
-        private GridController gameGridController;
+        private GridController gridController;
         #endregion
 
         public readonly Dictionary<string, char> CharSet;
@@ -54,24 +54,25 @@ namespace Skalm.Display
             DefineBounds();
             windowInfo.SetWindowSize(consoleRect.Width, consoleRect.Height);
 
-            gameGridController = new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
+            gridController = new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
                 (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), consolePositions, new HUDBorder(CharSet["shadeMedium"]))), printer, eraser);
 
-            gameGridController.DefineGridSections(mapBounds, new MapSection());
-            gameGridController.DefineGridSections(messageBounds, new MessageSection());
-            gameGridController.DefineGridSections(mainStatsBounds, new MainStatsSection());
-            gameGridController.DefineGridSections(subStatsBounds, new SubStatsSection());
-            gameGridController.FindBorderCells();
+            gridController.DefineGridSections(mapBounds, new MapSection());
+            gridController.DefineGridSections(messageBounds, new MessageSection());
+            gridController.DefineGridSections(mainStatsBounds, new MainStatsSection());
+            gridController.DefineGridSections(subStatsBounds, new SubStatsSection());
+            gridController.FindBorderPixels();
+            gridController.DefineSectionBounds();
         }
 
         public void DisplayHUD()
         {
-            gameGridController.PrintBorders();
+            gridController.PrintBorders();
         }
 
         #region SETUP
         private void DefineBounds()
-        {
+        {            
             gridMapRect = new Rectangle(mapWidth, mapHeight);
             gridMessageRect = new Rectangle(mapWidth, messageHeight);
             gridMainStatsRect = new Rectangle(statsWidth, mainStatsHeight);
@@ -106,6 +107,7 @@ namespace Skalm.Display
     }
 
         #endregion
+
 
         public string[] AddBordersToText(string text)
         {

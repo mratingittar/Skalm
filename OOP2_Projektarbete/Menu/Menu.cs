@@ -52,19 +52,27 @@ namespace Skalm.Menu
             if (item == "Back")
                 GoBackOneLevel();
             else if (item == "Exit")
-                Environment.Exit(0);
+                SendMenuEvent(item);
             else
             {
                 if (pages.FindNode(node => node.Value.pageName.ToUpper() == item.ToUpper()) is null)
-                    ExecuteLeaf(item);
+                    SendMenuEvent(item);
                 else
                     LoadPage(pages.FindNode(node => node.Value.pageName.ToUpper() == item.ToUpper()).Value);
             }
         }
 
-        private void ExecuteLeaf(string executedItem)
+        private void SendMenuEvent(string executedItem)
         {
             onMenuExecution?.Invoke(ActivePage.pageName, executedItem);
+        }
+
+        public void Cancel()
+        {
+            if (MenuLevel > 0)
+                GoBackOneLevel();
+            else
+                SendMenuEvent("Exit");
         }
 
         public bool MoveMenuUp()

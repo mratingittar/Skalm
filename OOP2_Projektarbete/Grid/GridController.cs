@@ -5,19 +5,21 @@ namespace Skalm.Grid
 {
     internal class GridController
     {
-        private Grid2D<Pixel> sectionGrid;
-        private IPrinter printer;
-        private IEraser eraser;
+        private Grid2D<Pixel> pixelGrid;
+        private readonly IPrinter printer;
+        private readonly IEraser eraser;
         private Dictionary<string, HashSet<Pixel>> cellsInSections;
+        private Dictionary<string, Bounds> sectionRealBounds;
         private HashSet<Pixel> borderCells;
 
         public GridController(Grid2D<Pixel> sectionGrid, IPrinter printer, IEraser eraser)
         {
-            this.sectionGrid = sectionGrid;
+            this.pixelGrid = sectionGrid;
             this.printer = printer;
             this.eraser = eraser;
             cellsInSections = new Dictionary<string, HashSet<Pixel>>();
             borderCells = new HashSet<Pixel>();
+            sectionRealBounds = new Dictionary<string, Bounds>();
         }
 
 
@@ -31,26 +33,69 @@ namespace Skalm.Grid
             {
                 for (int y = area.StartXY.Y; y < area.EndXY.Y; y++)
                 {
-                    Pixel? cell = sectionGrid.GetGridObject(x, y);
+                    Pixel? cell = pixelGrid.GetGridObject(x, y);
 
                     if (cell != null && cell.PartOfHUD is HUDBorder)
                     {
-                        sectionGrid.GridArray[x, y].PartOfHUD = section;
+                        pixelGrid.GridArray[x, y].PartOfHUD = section;
                         cellsInSections[section.GetType().Name].Add(cell);
                     }
                 }
             }
         }
 
-        public void FindBorderCells()
+        public void DefineSectionBounds()
         {
-            for (int x = 0; x < sectionGrid.gridWidth; x++)
+            foreach (var section in cellsInSections.Keys)
             {
-                for (int y = 0; y < sectionGrid.gridHeight; y++)
-                {
-                    Pixel? cell = sectionGrid.GetGridObject(x, y);
+                Bounds bounds = new Bounds(cellsInSections[section].First().planePositions.First(), cellsInSections[section].Last().planePositions.Last());
+                sectionRealBounds.Add(section, bounds);
+            }            
+        }
 
-                    if (cell != null)
+        public void DisplayMessage(string msg)
+        {
+            Bounds msgBox = sectionRealBounds["MessageSection"];
+            int counter = 0;
+            for (int y = msgBox.StartXY.Y + 1; y <= msgBox.EndXY.Y - 1; y++)
+            {
+                for (int x = msgBox.StartXY.X + 2; x <= msgBox.EndXY.X - 2; x++)
+                {
+                    if (counter == msg.Length)
+                        return;
+
+                    printer.PrintAtPosition(msg[counter], y, x);
+                    counter++;
+                }
+            }
+        }
+
+        public void PrintToSection(Section section)
+        {
+            Vector2Int start = sectionRealBounds[section.GetType().Name].StartXY;
+            Vector2Int end = sectionRealBounds[section.GetType().Name].EndXY;
+            int x = start.X;
+            int y = start.Y;
+
+            for (x = start.X; x <= end.X; x++)
+            {
+                for (y = start.Y; y <= end.Y; y++)
+                {
+
+                    printer.PrintAtPosition('o', y, x);
+                }
+            }
+        }
+
+        public void FindBorderPixels()
+        {
+            for (int x = 0; x < pixelGrid.gridWidth; x++)
+            {
+                for (int y = 0; y < pixelGrid.gridHeight; y++)
+                {
+                    Pixel? cell = pixelGrid.GetGridObject(x, y);
+
+                    if (cell is not null)
                     {
                         if (cell.PartOfHUD is HUDBorder)
                             borderCells.Add(cell);
@@ -80,52 +125,5 @@ namespace Skalm.Grid
 
 
 
-        //public void PrintGridContent(IContentType content) // MAYBE FIND WAY TO ONLY PASS TYPE AS PARAMETER
-        //{
-        //    for (int x = 0; x < gameGrid.GridArray.GetLength(0); x++)
-        //    {
-        //        for (int y = 0; y < gameGrid.GridArray.GetLength(1); y++)
-        //        {
-        //            if (gameGrid.GridArray[x, y].PartOfHUD.GetType() == content.GetType())
-        //                PrintCell(gameGrid.GridArray[x, y].ConsolePositions, gameGrid.GridArray[x, y].PartOfHUD);
-        //        }
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Prints content character to every cell in grid.
-        ///// </summary>
-        ///// <param name="fullGrid">Covers every console cell if true.</param>
-        //public void PrintGridContent(bool fullGrid = true)
-        //{
-        //    for (int x = 0; x < gameGrid.GridArray.GetLength(0); x++)
-        //    {
-        //        for (int y = 0; y < gameGrid.GridArray.GetLength(1); y++)
-        //        {
-        //            if (fullGrid)
-        //            {
-        //                PrintCell(gameGrid.GridArray[x, y].ConsolePositions, gameGrid.GridArray[x, y].PartOfHUD.Character);
-        //            }
-        //            else
-        //            {
-        //                Vector2Int pos = gameGrid.GridArray[x, y].ConsolePositions.First();
-        //                printer.PrintAtPosition(gameGrid.GridArray[x, y].PartOfHUD.Character, pos.Y, pos.X);
-        //            }
-        //        }
-        //    }
-        //}
-
-        ///// <summary>
-        ///// Prints content character to all console cells in list.
-        ///// </summary>
-        ///// <param name="consolePositions"></param>
-        ///// <param name="character"></param>
-        //private void PrintCell(List<Vector2Int> consolePositions, char character)
-        //{
-        //    foreach (Vector2Int position in consolePositions)
-        //    {
-        //        printer.PrintAtPosition(character, position.Y, position.X);
-        //    }
-        //}
     }
 }

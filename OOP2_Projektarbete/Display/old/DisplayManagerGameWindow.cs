@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.Display
 {
-    internal class DisplayManagerGameWindow : IDisplayManager
+    internal class DisplayManagerGameWindow
     {
         public Bounds displayBounds { get; set; }
         public MapManager mapManager { get; set; }
