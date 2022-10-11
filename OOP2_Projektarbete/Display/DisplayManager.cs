@@ -1,5 +1,4 @@
 ﻿using Skalm.Grid;
-using Skalm.Map;
 using Skalm.Structs;
 
 namespace Skalm.Display
@@ -16,7 +15,6 @@ namespace Skalm.Display
         private int messageHeight = Globals.G_HUD_MSGBOX_H;
         private int statsWidth = Globals.G_HUD_MAINSTATS_W;
         private int mainStatsHeight = Globals.G_HUD_MAINSTATS_H;
-        private char borderChar = Globals.G_BORDER_CHAR;
         #endregion
 
         #region FIELDS
@@ -42,6 +40,8 @@ namespace Skalm.Display
         private GridController gameGridController;
         #endregion
 
+        public readonly Dictionary<string, char> CharSet;
+
         public DisplayManager(IPrinter printer, IEraser eraser, IWindowInfo windowInfo)
         {
             this.printer = printer;
@@ -50,18 +50,17 @@ namespace Skalm.Display
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             // ADD FONT CHECKING. NEEDS TO BE TRUETYPE.
-
+            CharSet = CreateCharSet();
             DefineBounds();
             windowInfo.SetWindowSize(consoleRect.Width, consoleRect.Height);
 
             gameGridController = new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
-                (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), consolePositions, new HUDBorder('░'))), printer, eraser);
+                (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), consolePositions, new HUDBorder(CharSet["shadeMedium"]))), printer, eraser);
 
             gameGridController.DefineGridSections(mapBounds, new MapSection());
             gameGridController.DefineGridSections(messageBounds, new MessageSection());
             gameGridController.DefineGridSections(mainStatsBounds, new MainStatsSection());
             gameGridController.DefineGridSections(subStatsBounds, new SubStatsSection());
-
             gameGridController.FindBorderCells();
         }
 
@@ -86,7 +85,48 @@ namespace Skalm.Display
             mainStatsBounds = new Bounds(new Vector2Int(mapBounds.EndXY.X + borderThickness, mapBounds.StartXY.Y), gridMainStatsRect);
             subStatsBounds = new Bounds(new Vector2Int(mainStatsBounds.StartXY.X, mainStatsBounds.EndXY.Y + borderThickness), gridSubStatsRect);
         }
+
+        private Dictionary<string, char> CreateCharSet()
+        {
+            return new Dictionary<string, char>
+            {
+                {"shadeLight", '░'},
+                {"shadeMedium", '▒'},
+                {"shadeDark", '▓'},
+                {"blockFull", '█'},
+                {"boxDownRight", '╔'},
+                {"boxHorizontal", '═'},
+                {"boxDownLeft", '╗'},
+                {"boxVertical", '║'},
+                {"boxUpRight", '╚'},
+                {"boxUpLeft", '╝'},
+                {"pointerRight", '►'},
+                {"pointerLeft", '◄'}
+            };
+    }
+
         #endregion
+
+        public string[] AddBordersToText(string text)
+        {
+            string[] result = new string[3];
+
+            result[0] = CharSet["boxDownRight"] + RepeatChar(CharSet["boxHorizontal"], text.Length) + CharSet["boxDownLeft"];
+            result[1] = CharSet["boxVertical"] + text + CharSet["boxVertical"];
+            result[2] = CharSet["boxUpRight"] + RepeatChar(CharSet["boxHorizontal"], text.Length) + CharSet["boxUpLeft"];
+
+            return result;
+        }
+
+        private string RepeatChar(char ch, int count)
+        {
+            string result = "";
+            for (int i = 0; i < count; i++)
+            {
+                result += ch;
+            }
+            return result;
+        }
 
     }
 }

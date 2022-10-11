@@ -40,7 +40,7 @@ namespace Skalm.Menu
         }
         public void LoadPage(MenuPage page)
         {
-            displayManager.eraser.EraseLinesFromTo(pageStartRow, pageStartRow + ActivePage.items.Count + 3); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
+            displayManager.eraser.EraseLinesFromTo(pageStartRow, pageStartRow + ActivePage.items.Count + 5); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
             ActivePage = page;
             MenuItemIndex = 0;
             PrintMenu();
@@ -93,9 +93,9 @@ namespace Skalm.Menu
 
         private void PrintMenu()
         {
-            displayManager.printer.PrintCenteredInWindow(ActivePage.pageName, pageStartRow);
-            displayManager.printer.PrintCenteredInWindow("", pageStartRow + 1); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
-            HighlightSelectedItem(pageStartRow + 2); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
+            displayManager.printer.PrintCenteredInWindow(displayManager.AddBordersToText(ActivePage.pageName), pageStartRow);
+            displayManager.printer.PrintCenteredInWindow("", pageStartRow + 3); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
+            HighlightSelectedItem(pageStartRow + 4); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
         }
 
         private void HighlightSelectedItem(int startRow)
@@ -116,7 +116,5 @@ namespace Skalm.Menu
                 count++;
             }
         }
-
-
     }
 }
