@@ -6,38 +6,39 @@ namespace Skalm.Display
     internal class DisplayManager
     {
         #region SETTINGS
-        private int windowPadding = Globals.G_WINDOW_PADDING;
-        private int borderThickness = Globals.G_BORDER_THICKNESS;
-        private int cellWidth = Globals.G_CELL_WIDTH;
-        private int cellHeight = Globals.G_CELL_HEIGHT;
-        private int mapWidth = Globals.G_MAP_WIDTH;
-        private int mapHeight = Globals.G_MAP_HEIGHT;
-        private int messageHeight = Math.Max(Globals.G_HUD_MSGBOX_H,3);
-        private int statsWidth = Globals.G_HUD_MAINSTATS_W;
-        private int mainStatsHeight = Globals.G_HUD_MAINSTATS_H;
+        private readonly int windowPadding = Globals.G_WINDOW_PADDING;
+        private readonly int borderThickness = Globals.G_BORDER_THICKNESS;
+        private readonly int cellWidth = Globals.G_CELL_WIDTH;
+        private readonly int cellHeight = Globals.G_CELL_HEIGHT;
+        private readonly int mapWidth = Globals.G_MAP_WIDTH;
+        private readonly int mapHeight = Globals.G_MAP_HEIGHT;
+        private readonly int messageHeight = Math.Max(Globals.G_HUD_MSGBOX_H,3);
+        private readonly int statsWidth = Globals.G_HUD_MAINSTATS_W;
+        private readonly int mainStatsHeight = Globals.G_HUD_MAINSTATS_H;
         #endregion
 
         #region FIELDS
         // RECTANGLES
-        private Rectangle consoleRect;
-        private Rectangle gridRect;
-        private Rectangle gridMapRect;
-        private Rectangle gridMessageRect;
-        private Rectangle gridMainStatsRect;
-        private Rectangle gridSubStatsRect;
+        public readonly Rectangle consoleRect;
+        public readonly Rectangle gridRect;
+        public readonly Rectangle gridMapRect;
+        public readonly Rectangle gridMessageRect;
+        public readonly Rectangle gridMainStatsRect;
+        public readonly Rectangle gridSubStatsRect;
 
         // BOUNDS
-        private Bounds mapBounds;
-        private Bounds messageBounds;
-        private Bounds mainStatsBounds;
-        private Bounds subStatsBounds;
+        public readonly Bounds mapBounds;
+        public readonly Bounds messageBounds;
+        public readonly Bounds mainStatsBounds;
+        public readonly Bounds subStatsBounds;
 
         // INTERFACES
         public readonly IPrinter printer;
         public readonly IEraser eraser;
         public readonly IWindowInfo windowInfo;
 
-        private GridController gridController;
+        public readonly GridController pixelGridController;
+
         #endregion
 
         public readonly Dictionary<string, char> CharSet;
@@ -51,28 +52,7 @@ namespace Skalm.Display
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             // ADD FONT CHECKING. NEEDS TO BE TRUETYPE.
             CharSet = CreateCharSet();
-            DefineBounds();
-            windowInfo.SetWindowSize(consoleRect.Width, consoleRect.Height);
 
-            gridController = new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
-                (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), consolePositions, new HUDBorder(CharSet["shadeMedium"]))), printer, eraser);
-
-            gridController.DefineGridSections(mapBounds, new MapSection());
-            gridController.DefineGridSections(messageBounds, new MessageSection());
-            gridController.DefineGridSections(mainStatsBounds, new MainStatsSection());
-            gridController.DefineGridSections(subStatsBounds, new SubStatsSection());
-            gridController.FindBorderPixels();
-            gridController.DefineSectionBounds();
-        }
-
-        public void DisplayHUD()
-        {
-            gridController.PrintBorders();
-        }
-
-        #region SETUP
-        private void DefineBounds()
-        {            
             gridMapRect = new Rectangle(mapWidth, mapHeight);
             gridMessageRect = new Rectangle(mapWidth, messageHeight);
             gridMainStatsRect = new Rectangle(statsWidth, mainStatsHeight);
@@ -85,7 +65,26 @@ namespace Skalm.Display
             messageBounds = new Bounds(new Vector2Int(borderThickness, mapBounds.EndXY.Y + borderThickness), gridMessageRect);
             mainStatsBounds = new Bounds(new Vector2Int(mapBounds.EndXY.X + borderThickness, mapBounds.StartXY.Y), gridMainStatsRect);
             subStatsBounds = new Bounds(new Vector2Int(mainStatsBounds.StartXY.X, mainStatsBounds.EndXY.Y + borderThickness), gridSubStatsRect);
+
+            windowInfo.SetWindowSize(consoleRect.Width, consoleRect.Height);
+
+            pixelGridController = new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
+                (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), consolePositions, new HUDBorder(CharSet["shadeMedium"]))), printer, eraser);
+
+            pixelGridController.DefineGridSections(mapBounds, new MapSection());
+            pixelGridController.DefineGridSections(messageBounds, new MessageSection());
+            pixelGridController.DefineGridSections(mainStatsBounds, new MainStatsSection());
+            pixelGridController.DefineGridSections(subStatsBounds, new SubStatsSection());
+            pixelGridController.FindBorderPixels();
+            pixelGridController.DefineSectionBounds();
+
         }
+
+        public void DisplayHUD()
+        {
+            pixelGridController.PrintBorders();
+        }
+
 
         private Dictionary<string, char> CreateCharSet()
         {
@@ -104,10 +103,7 @@ namespace Skalm.Display
                 {"pointerRight", '►'},
                 {"pointerLeft", '◄'}
             };
-    }
-
-        #endregion
-
+        }
 
         public string[] AddBordersToText(string text)
         {

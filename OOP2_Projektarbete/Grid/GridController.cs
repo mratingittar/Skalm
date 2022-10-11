@@ -8,9 +8,9 @@ namespace Skalm.Grid
         private Grid2D<Pixel> pixelGrid;
         private readonly IPrinter printer;
         private readonly IEraser eraser;
-        private Dictionary<string, HashSet<Pixel>> cellsInSections;
-        private Dictionary<string, Bounds> sectionRealBounds;
-        private HashSet<Pixel> borderCells;
+        public Dictionary<string, HashSet<Pixel>> cellsInSections;
+        public Dictionary<string, Bounds> sectionRealBounds;
+        public HashSet<Pixel> borderCells;
 
         public GridController(Grid2D<Pixel> sectionGrid, IPrinter printer, IEraser eraser)
         {

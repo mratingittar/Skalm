@@ -10,7 +10,10 @@ namespace Skalm.Sounds
         {
             player = soundPlayer;
             Tracks = CreateSoundsList(Globals.G_SOUNDS_FOLDER_PATH);
+        }
 
+        public void PlayRandomSong()
+        {
             Random random = new Random();
             player.Play(Tracks[random.Next(Tracks.Count)]);
         }

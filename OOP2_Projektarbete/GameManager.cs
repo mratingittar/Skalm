@@ -1,4 +1,5 @@
 ﻿using Skalm.Display;
+using Skalm.Grid;
 using Skalm.Input;
 using Skalm.Map;
 using Skalm.Menu;
@@ -19,7 +20,7 @@ namespace Skalm
         // MANAGERS
         private InputManager inputManager;
         private SoundManager soundManager;
-        //private MapManager mapManager;
+        private MapManager mapManager;
         private DisplayManager displayManager;
         private MenuManager menuManager;
 
@@ -37,6 +38,8 @@ namespace Skalm
             GameState = new GameStateInitializing(displayManager);
             GameState.Enter();
 
+            mapManager = new MapManager(new Grid2D<Tile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x,y, gridPosition) => new Tile(new Vector2Int(x,y))));
+            
             soundManager = new SoundManager(new ConsoleSoundPlayer(Globals.G_SOUNDS_FOLDER_PATH));
 
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
@@ -59,6 +62,42 @@ namespace Skalm
             animationFrame = 0;
         }
 
+
+
+        public void Start()
+        {
+            ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);           
+            soundManager.player.Play(soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
+            Update();
+        }
+
+        private void Animate() 
+        {
+            if (animationFrame == animationTest.Count)
+                animationFrame = 0;
+
+            displayManager.printer.PrintAtPosition(animationTest[animationFrame], 10, 10);
+            animationFrame++;
+        }
+
+        private void Update()
+        {
+            while (true)
+            {
+
+                inputManager.GetInput();
+
+
+                Thread.Sleep(1000 / updateFrequency);
+            }
+        }
+
+        public void ChangeGameState(IGameState gameState)
+        {
+            GameState.Exit();
+            GameState = gameState;
+            GameState.Enter();
+        }
         private void MoveInput(Vector2Int direction)
         {
             if (GameState is GameStateMainMenu or GameStatePaused)
@@ -83,40 +122,6 @@ namespace Skalm
                 if (command == InputCommands.Cancel)
                     ChangeGameState(gameStates.Find(state => state is GameStatePaused)!);
             }
-        }
-
-        public void Start()
-        {
-            ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
-            Update();
-        }
-
-        private void Animate() 
-        {
-            if (animationFrame == animationTest.Count)
-                animationFrame = 0;
-
-            displayManager.printer.PrintAtPosition(animationTest[animationFrame], 10, 10);
-            animationFrame++;
-        }
-
-        private void Update()
-        {
-            while (true)
-            {
-
-                inputManager.GetInput(); // INPUTS ARE QUEUEING UP, NEEDS FIXING.
-
-
-                Thread.Sleep(1000 / updateFrequency);
-            }
-        }
-
-        public void ChangeGameState(IGameState gameState)
-        {
-            GameState.Exit();
-            GameState = gameState;
-            GameState.Enter();
         }
 
         private void MenuExecution(string menuPage, string item)
