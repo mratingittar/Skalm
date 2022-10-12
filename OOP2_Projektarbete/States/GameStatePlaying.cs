@@ -1,4 +1,5 @@
 ﻿using Skalm.Display;
+using Skalm.Map;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,11 +11,13 @@ namespace Skalm.States
     internal class GameStatePlaying : IGameState
     {
         private readonly DisplayManager displayManager;
+        public MapManager mapManager;
 
         // CONSTRUCTOR I
-        public GameStatePlaying(DisplayManager displayManager)
+        public GameStatePlaying(DisplayManager displayManager, MapManager mapManager)
         {
             this.displayManager = displayManager;
+            this.mapManager = mapManager;
         }
 
         // ENTER GAME PLAYING STATE
@@ -28,6 +31,10 @@ namespace Skalm.States
             Thread.Sleep(500);
             displayManager.eraser.EraseAll();
             displayManager.DisplayHUD();
+
+            // CREATE MAP
+            mapManager.CreateMap();
+            mapManager.mapPrinter.RedrawMap();
         }
 
         // EXIT GAME PLAYING STATE

@@ -27,15 +27,6 @@ namespace Skalm.Map
             return count;
         }
 
-        // METHOD GET CELL NEIGHBORS VON NEUMAN (4-WAY)
-        public static int Cell4W(BaseTile[,] inArr, int x, int y, int value = 1)
-        {
-            int count = 0;
-            foreach (var dir in cardinalDirs)
-                if (InsideArrBounds(inArr, x + dir.X, y + dir.Y) && ((int)inArr[x + dir.X, y + dir.Y].tileType == value)) count++;
-            return count;
-        }
-
         // METHOD GET CELL NEIGHBORS 8-WAY
         public static int Cell8W(int[,] inArr, int x, int y, int value = 1)
         {

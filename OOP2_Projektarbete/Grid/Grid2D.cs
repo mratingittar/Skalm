@@ -30,7 +30,7 @@ namespace Skalm.Grid
             }
         }
 
-        private List<Vector2Int> GetPlanePositions(int gridX, int gridY)
+        public List<Vector2Int> GetPlanePositions(int gridX, int gridY)
         {
             List<Vector2Int> positions = new List<Vector2Int>();
 

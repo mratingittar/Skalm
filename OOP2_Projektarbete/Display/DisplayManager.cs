@@ -1,4 +1,5 @@
 ﻿using Skalm.Grid;
+using Skalm.Map;
 using Skalm.Structs;
 
 namespace Skalm.Display
@@ -80,11 +81,12 @@ namespace Skalm.Display
 
         }
 
+
+        // DISPLAY HUD
         public void DisplayHUD()
         {
             pixelGridController.PrintBorders();
         }
-
 
         private Dictionary<string, char> CreateCharSet()
         {
