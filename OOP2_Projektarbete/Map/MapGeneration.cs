@@ -1,4 +1,5 @@
-﻿using Skalm.Structs;
+﻿using Skalm.Actors.Tile;
+using Skalm.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,11 +23,16 @@ namespace Skalm.Map
         {
             int count = 0;
             foreach (var dir in cardinalDirs)
-                if (InsideArrBounds(inArr, x + dir.X, y + dir.Y) && inArr[x + dir.X, y + dir.Y] == value) count++;
-            //if ((InsideArrBounds(inArr, x, y)) && (inArr[x, y - 1] == value)) output++;
-            //if ((InsideArrBounds(inArr, x, y)) && (inArr[x, y + 1] == value)) output++;
-            //if ((InsideArrBounds(inArr, x, y)) && (inArr[x - 1, y] == value)) output++;
-            //if ((InsideArrBounds(inArr, x, y)) && (inArr[x + 1, y] == value)) output++;
+                if (InsideArrBounds(inArr, x + dir.X, y + dir.Y) && (inArr[x + dir.X, y + dir.Y] == value)) count++;
+            return count;
+        }
+
+        // METHOD GET CELL NEIGHBORS VON NEUMAN (4-WAY)
+        public static int Cell4W(Tile[,] inArr, int x, int y, int value = 1)
+        {
+            int count = 0;
+            foreach (var dir in cardinalDirs)
+                if (InsideArrBounds(inArr, x + dir.X, y + dir.Y) && ((int)inArr[x + dir.X, y + dir.Y].tileType == value)) count++;
             return count;
         }
 
@@ -47,6 +53,18 @@ namespace Skalm.Map
 
         // METHOD CHECK IF COORDINATE INSIDE ARRAY
         public static bool InsideArrBounds(int[,] inArr, int x, int y)
+        {
+            if (x < 0
+            || x >= inArr.GetLength(0)
+            || y < 0
+            || y >= inArr.GetLength(1))
+                return false;
+            else
+                return true;
+        }
+
+        // METHOD CHECK IF COORDINATE INSIDE ARRAY
+        public static bool InsideArrBounds(Tile[,] inArr, int x, int y)
         {
             if (x < 0
             || x >= inArr.GetLength(0)

@@ -1,6 +1,6 @@
 ﻿using Skalm.Structs;
 
-namespace Skalm.Map
+namespace Skalm.Actors.StateMachine
 {
     internal class Tile
     {
