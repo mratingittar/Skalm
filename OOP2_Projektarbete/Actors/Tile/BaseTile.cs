@@ -10,7 +10,7 @@ namespace Skalm.Actors.Tile
 {
     internal abstract class BaseTile
     {
-        public Vector2Int posXY { get; protected set; }
+        public Vector2Int posXY { get; set; }
         public char sprite { get; protected set; }
         public ConsoleColor color { get; protected set; }
 

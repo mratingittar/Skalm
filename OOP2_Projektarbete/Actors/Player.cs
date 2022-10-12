@@ -15,23 +15,23 @@ namespace Skalm.Actors
     internal class Player : IGameObject, IMoveable, ICollidable, IDamageable
     {
         // POSITION
-        public Grid2D<BaseTile> gameGrid;
-        public Vector2Int posXY { get; private set; }
+        private Grid2D<BaseTile> gameGrid;
+        public ActorTile tile { get; set; }
 
         // COMPONENTS
         public IMoveInput _moveInput { get; set; }
         public IAttackComponent _attack { get; set; }
 
         // STATS
-        public StatsObjectHard statsHard;
-        public StatsObjectSoft statsSoft;
+        private StatsObjectHard statsHard;
+        private StatsObjectSoft statsSoft;
 
         // CONSTRUCTOR I
         public Player(Grid2D<BaseTile> gameGrid, Vector2Int posXY, IMoveInput moveInput, IAttackComponent attack)
         {
             // GAME WORLD
             this.gameGrid = gameGrid;
-            this.posXY = posXY;
+            this.tile = new ActorTile(posXY, '@', ConsoleColor.Red);
 
             // COMPONENTS
             this._moveInput = moveInput;
@@ -64,7 +64,7 @@ namespace Skalm.Actors
                 }
             } else {
                 // CELL IS FREE = MAKE MOVE
-                posXY = target;
+                tile.posXY = target;
             }
         }
 

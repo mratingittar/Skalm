@@ -12,7 +12,6 @@ namespace Skalm
 {
     internal class GameManager
     {
-
         #region FIELDS
         public IGameState GameState;
         private List<IGameState> gameStates;
@@ -25,14 +24,13 @@ namespace Skalm
         private DisplayManager displayManager;
         private MenuManager menuManager;
 
-
         private List<char> animationTest;
         private int animationFrame;
         #endregion
 
+        // CONSTRUCTOR I
         public GameManager()
         {
-
             //mapManager = new MapManager(32, 32, Vector2Int.Zero);
             displayManager = new DisplayManager(new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser(), new ConsoleWindowInfo());
 
@@ -63,8 +61,7 @@ namespace Skalm
             animationFrame = 0;
         }
 
-
-
+        // METHOD START STATE
         public void Start()
         {
             ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);           
@@ -72,6 +69,7 @@ namespace Skalm
             Update();
         }
 
+        // METHOD ANIMATE
         private void Animate() 
         {
             if (animationFrame == animationTest.Count)
@@ -81,24 +79,26 @@ namespace Skalm
             animationFrame++;
         }
 
+        // METHOD UPDATE GAME
         private void Update()
         {
             while (true)
             {
-
                 inputManager.GetInput();
-
 
                 Thread.Sleep(1000 / updateFrequency);
             }
         }
 
+        // METHOD CHANGE STATE
         public void ChangeGameState(IGameState gameState)
         {
             GameState.Exit();
             GameState = gameState;
             GameState.Enter();
         }
+
+        // METHOD MOVE INPUT
         private void MoveInput(Vector2Int direction)
         {
             if (GameState is GameStateMainMenu or GameStatePaused)
@@ -109,9 +109,9 @@ namespace Skalm
             {
 
             }
-
         }
 
+        // METHOD COMMAND INPUT
         private void CommandInput(InputCommands command)
         {
             if (GameState is GameStateMainMenu or GameStatePaused)
@@ -125,6 +125,7 @@ namespace Skalm
             }
         }
 
+        // METHOD EXECUTE MENU INDEX
         private void MenuExecution(string menuPage, string item)
         {
             if (GameState is not GameStateMainMenu and not GameStatePaused)

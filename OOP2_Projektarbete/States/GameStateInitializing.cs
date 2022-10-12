@@ -9,7 +9,6 @@ namespace Skalm.States
 {
     internal class GameStateInitializing : IGameState
     {
-
         private DisplayManager displayManager;
 
         public GameStateInitializing(DisplayManager displayManager)
@@ -17,9 +16,7 @@ namespace Skalm.States
             this.displayManager = displayManager;
         }
 
-
         // ENTER STATE
-
         public void Enter()
         {
             displayManager.printer.PrintCenteredInWindow("Loading SKÄLM", displayManager.windowInfo.WindowHeight / 2);

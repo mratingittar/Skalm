@@ -1,4 +1,6 @@
-﻿using Skalm.Actors.Tile;
+﻿using Skalm.Actors;
+using Skalm.Actors.Player;
+using Skalm.Actors.Tile;
 using Skalm.Display;
 using Skalm.Grid;
 using Skalm.Structs;
@@ -12,19 +14,23 @@ namespace Skalm.Map
         public readonly DisplayManager displayManager;
         public readonly MapPrinter mapPrinter;
 
-        //private List<Tile> tileBase;
+        private HashSet<Vector2Int> freeTiles;
+        public List<IGameObject> gameObjects;
 
+        Player player;
+
+        // CONSTRUCTOR I
         public MapManager(Grid2D<BaseTile> tileGrid, DisplayManager displayManager)
         {
             this.tileGrid = tileGrid;
             this.displayManager = displayManager;
             this.mapPrinter = new MapPrinter(this, displayManager);
 
-            //this.tileBase = new() {new Tile()};
+            freeTiles = new HashSet<Vector2Int>();
+            gameObjects = new List<IGameObject>();
+
+            player = new Player(tileGrid, new Vector2Int(tileGrid.gridWidth / 2, tileGrid.gridHeight / 2), new Actors.Player.PlayerMoveInput(), new Actors.Player.PlayerAttackComponent());
         }
-
-        // DRAW ALL TILES
-
 
         // METHOD CREATE MAP
         public void CreateMap()
@@ -43,6 +49,7 @@ namespace Skalm.Map
             {
                 for (int i = roomSpace.StartXY.X + 1; i <= roomSpace.EndXY.X - 1; i++)
                 {
+                    freeTiles.Add(new Vector2Int(i, j));
                     tileGrid.SetGridObject(i, j, new FloorTile(new Vector2Int(i, j)));
                 }
             }
@@ -73,65 +80,6 @@ namespace Skalm.Map
                 tileGrid.SetGridObject(posX2, j, new WallTile(new Vector2Int(posX1, j)));
             }
         }
-
-
-        //    private Vector2Int mapOrigin;
-        //    private int mapWidth;
-        //    private int mapHeight;
-        //    //public Grid<Cell> mapGrid;
-        //    public int[,] mapArr { get; private set; }
-
-        //    // CONSTRUCTOR I
-        //    public MapManager(int width, int height, Vector2Int origin)
-        //    {
-        //        mapWidth = width;
-        //        mapHeight = height;
-        //        mapOrigin = origin;
-        //        //mapGrid = new Grid<Cell>(width, height, 2, 1, origin, (position, x, y) => new Cell(position, x, y));
-
-
-        //        mapArr = new int[mapWidth, mapHeight];
-        //        //InitMap();
-        //    }
-
-        //    // METHOD INITIALIZE MAP
-        //    public void InitMap()
-        //    {
-        //        for (int j = 4; j < mapArr.GetLength(1) - 4; j++)
-        //        {
-        //            for (int i = 4; i < mapArr.GetLength(0) - 4; i++)
-        //            {
-        //                mapArr[i, j] = (int)MapTiles.Floor;
-        //            }
-        //        }
-
-        //        FindWalls();
-        //    }
-
-        //    // METHOD CELL VON NEUMAN
-        //    private int cell4W(int x, int y, int value)
-        //    {
-        //        int output = 0;
-        //        if (mapArr[x, y - 1] == value) output++;
-        //        if (mapArr[x, y + 1] == value) output++;
-        //        if (mapArr[x - 1, y] == value) output++;
-        //        if (mapArr[x + 1, y] == value) output++;
-        //        return output;
-        //    }
-
-        //    // FIND WALLS IN ARRAY
-        //    private void FindWalls()
-        //    {
-        //        for (int j = 0; j < mapArr.GetLength(1); j++)
-        //        {
-        //            for (int i = 0; i < mapArr.GetLength(0); i++)
-        //            {
-        //                if (mapArr[i, j] == (int)MapTiles.Floor)
-        //                    if (cell4W(i, j, (int)MapTiles.Void) > 0) mapArr[i, j] = (int)MapTiles.Wall;
-        //            }
-        //        }
-        //    }
-        //}
 
         public enum MapTiles
         {

@@ -26,7 +26,6 @@ namespace Skalm.States
             // IF NEW GAME
             // ELSE IF RESUMING
 
-
             displayManager.printer.PrintCenteredInWindow("Starting new game", displayManager.windowInfo.WindowHeight / 2);
             Thread.Sleep(500);
             displayManager.eraser.EraseAll();
@@ -42,7 +41,6 @@ namespace Skalm.States
         {
             // SAVING STATE
             displayManager.eraser.EraseAll();
-
         }
 
         // UPDATE STATE LOGIC

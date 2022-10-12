@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Skalm.Actors.Tile;
+using Skalm.Structs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +10,8 @@ namespace Skalm.Actors
 {
     internal interface IGameObject
     {
+        ActorTile tile { get; set; }
+
         //void UpdateEarly();
         void UpdateMain();
         //void UpdateLate();
