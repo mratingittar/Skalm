@@ -57,7 +57,7 @@ namespace Skalm.Map
             for (int i = roomSpace.StartXY.X; i <= roomSpace.EndXY.X; i++)
             {
                 posY1 = roomSpace.StartXY.Y;
-                posY2 = roomSpace.StartXY.Y;
+                posY2 = roomSpace.EndXY.Y;
 
                 tileGrid.SetGridObject(i, posY1, new WallTile(new Vector2Int(i, posY1)));
                 tileGrid.SetGridObject(i, posY2, new WallTile(new Vector2Int(i, posY2)));
