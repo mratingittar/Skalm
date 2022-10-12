@@ -52,7 +52,7 @@ namespace Skalm
 
             mapManager = new MapManager(new Grid2D<Tile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x, y, gridPosition) => new Tile(new Vector2Int(x, y))));
 
-            soundManager = new SoundManager(new ConsoleSoundPlayer(Settings.SoundsFolderPath));
+            soundManager = new SoundManager(new ConsoleSoundPlayer(Settings.SoundsFolderPath), Settings.SoundsFolderPath);
 
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
             inputManager.OnInputMove += MoveInput;
@@ -79,7 +79,7 @@ namespace Skalm
         public void Start()
         {
             ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
-            soundManager.player.Play(soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
+            soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
             Update();
         }
 
@@ -156,7 +156,8 @@ namespace Skalm
                         soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
                     break;
                 case "MUSIC":
-                    soundManager.player.Play(soundManager.Tracks.Find(sound => sound.soundName == item));
+                    soundManager.PlayMusic(soundManager.Tracks.Find(sound => sound.soundName == item));
+                    menuManager.ActiveMenu.ReloadPage();
                     break;
                 case "INPUT METHOD":
                     inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);

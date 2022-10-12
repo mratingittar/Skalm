@@ -6,10 +6,17 @@ namespace Skalm.Sounds
     {
         public ISoundPlayer player;
         public List<Sound> Tracks { get; private set; }
-        public SoundManager(ISoundPlayer soundPlayer)
+        public Sound CurrentlyPlaying { get; private set; }
+        public SoundManager(ISoundPlayer soundPlayer, string soundsFolderPath)
         {
             player = soundPlayer;
-            Tracks = CreateSoundsList(Globals.G_SOUNDS_FOLDER_PATH);
+            Tracks = CreateSoundsList(soundsFolderPath);
+        }
+
+        public void PlayMusic(Sound track)
+        {
+            CurrentlyPlaying = track;
+            player.Play(track);
         }
 
         public void PlayRandomSong()

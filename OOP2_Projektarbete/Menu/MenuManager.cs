@@ -15,7 +15,7 @@ namespace Skalm.Menu
 
         public readonly Menu mainMenu;
         public readonly Menu pauseMenu;
-        private Menu activeMenu;
+        public Menu ActiveMenu { get; private set; }
 
         public MenuManager(InputManager inputManager, DisplayManager displayManager, SoundManager soundManager)
         {
@@ -27,10 +27,10 @@ namespace Skalm.Menu
             ascii = new AsciiArt();
 
             Dictionary<string, MenuPage> menuPagesToLoad = CreateMenuPages();
-            mainMenu = new Menu(ascii.Title, new TreeNode<MenuPage>(menuPagesToLoad["MAIN MENU"], menuPagesToLoad["NEW GAME"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["CREDITS"]), displayManager);
+            mainMenu = new Menu(ascii.Title, new TreeNode<MenuPage>(menuPagesToLoad["MAIN MENU"], menuPagesToLoad["NEW GAME"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["CREDITS"]), displayManager, soundManager);
             mainMenu.pages.FindNode(node => node.Value.pageName == "OPTIONS").AddChildren(menuPagesToLoad["INPUT METHOD"], menuPagesToLoad["MUSIC"]);
-            pauseMenu = new Menu(ascii.Title, new TreeNode<MenuPage>(menuPagesToLoad["PAUSE MENU"], menuPagesToLoad["OPTIONS"]), displayManager);
-            activeMenu = mainMenu;
+            pauseMenu = new Menu(ascii.Title, new TreeNode<MenuPage>(menuPagesToLoad["PAUSE MENU"], menuPagesToLoad["OPTIONS"]), displayManager, soundManager);
+            ActiveMenu = mainMenu;
             
         }
 
@@ -57,30 +57,30 @@ namespace Skalm.Menu
 
         public void LoadMenu(Menu menu)
         {
-            activeMenu = menu;
+            ActiveMenu = menu;
             menu.LoadMenu(3);
-            activeMenu.IsEnabled = true;
+            ActiveMenu.IsEnabled = true;
         }
 
         public void UnloadMenu()
         {
-            activeMenu.IsEnabled = false;
+            ActiveMenu.IsEnabled = false;
             displayManager.eraser.EraseAll();
         }
 
         public void TraverseMenu(Vector2Int direction)
         {
-            if (activeMenu.IsEnabled is false)
+            if (ActiveMenu.IsEnabled is false)
                 return;
 
             switch (direction.Y)
             {
                 case < 0:
-                    if (activeMenu.MoveMenuDown())
+                    if (ActiveMenu.MoveMenuDown())
                         soundPlayer.Play(SoundManager.SoundType.Move);
                     break;
                 case > 0:
-                    if (activeMenu.MoveMenuUp())
+                    if (ActiveMenu.MoveMenuUp())
                         soundPlayer.Play(SoundManager.SoundType.Move);
                     break;
             }
@@ -88,7 +88,7 @@ namespace Skalm.Menu
 
         public void ExecuteMenu(InputCommands command)
         {
-            if (activeMenu.IsEnabled is false)
+            if (ActiveMenu.IsEnabled is false)
                 return;
 
             soundPlayer.Play(SoundManager.SoundType.Confirm);
@@ -96,10 +96,10 @@ namespace Skalm.Menu
             switch (command)
             {
                 case InputCommands.Confirm:
-                    activeMenu.ExecuteSelectedMenuItem();
+                    ActiveMenu.ExecuteSelectedMenuItem();
                     break;
                 case InputCommands.Cancel:
-                    activeMenu.Cancel();
+                    ActiveMenu.Cancel();
                     break;
             }
         }
