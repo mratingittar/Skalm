@@ -28,7 +28,7 @@ namespace Skalm.Map
         }
 
         // METHOD GET CELL NEIGHBORS VON NEUMAN (4-WAY)
-        public static int Cell4W(Tile[,] inArr, int x, int y, int value = 1)
+        public static int Cell4W(BaseTile[,] inArr, int x, int y, int value = 1)
         {
             int count = 0;
             foreach (var dir in cardinalDirs)
@@ -64,7 +64,7 @@ namespace Skalm.Map
         }
 
         // METHOD CHECK IF COORDINATE INSIDE ARRAY
-        public static bool InsideArrBounds(Tile[,] inArr, int x, int y)
+        public static bool InsideArrBounds(BaseTile[,] inArr, int x, int y)
         {
             if (x < 0
             || x >= inArr.GetLength(0)

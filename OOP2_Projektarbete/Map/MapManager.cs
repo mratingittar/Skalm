@@ -1,5 +1,4 @@
 ﻿using Skalm.Grid;
-using Skalm.Structs;
 
 namespace Skalm.Map
 {
@@ -73,11 +72,12 @@ namespace Skalm.Map
         //    }
         //}
 
-        //public enum MapTiles
-        //{
-        //    Void,
-        //    Wall,
-        //    Floor,
-        //    Door
+        public enum MapTiles
+        {
+            Void,
+            Wall,
+            Floor,
+            Door
+        }
     }
 }

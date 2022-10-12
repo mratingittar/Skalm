@@ -1,5 +1,6 @@
 ﻿using Skalm.Actors.Fighting;
 using Skalm.Actors.Stats;
+using Skalm.Actors.Tile;
 using Skalm.Grid;
 using Skalm.Input;
 using Skalm.Structs;
@@ -14,7 +15,7 @@ namespace Skalm.Actors
     internal class Player : IGameObject, IMoveable, ICollidable, IDamageable
     {
         // POSITION
-        public Grid<Cell> gameGrid;
+        public Grid2D<BaseTile> gameGrid;
         public Vector2Int posXY { get; private set; }
 
         // COMPONENTS
@@ -26,7 +27,7 @@ namespace Skalm.Actors
         public StatsObjectSoft statsSoft;
 
         // CONSTRUCTOR I
-        public Player(Grid<Cell> gameGrid, Vector2Int posXY, IMoveInput moveInput, IAttackComponent attack)
+        public Player(Grid2D<BaseTile> gameGrid, Vector2Int posXY, IMoveInput moveInput, IAttackComponent attack)
         {
             // GAME WORLD
             this.gameGrid = gameGrid;
@@ -51,7 +52,7 @@ namespace Skalm.Actors
         public void Move(Vector2Int target)
         {
             // CHECK GRID FOR COLLISION
-            if (gameGrid.GetGridObject(target) is ICollidable collidable)
+            if (gameGrid.GetGridObject(target.X, target.Y) is ICollidable collidable)
             {
                 // COLLIDE
                 collidable.OnCollision();
