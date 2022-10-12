@@ -1,6 +1,6 @@
 ﻿namespace Skalm
 {
-    internal class Settings
+    internal class Settings : ISettings
     {
         public string GameTitle { get; private set; } = "";
         public bool DisplayCursor { get; private set; }
@@ -44,6 +44,9 @@
                     continue;
 
                 string name = line.Split(' ')[1];
+
+                if (this.GetType().GetProperty(name) is null)
+                    return false;
 
                 try
                 {

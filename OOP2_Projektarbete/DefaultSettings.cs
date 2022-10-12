@@ -1,31 +1,31 @@
 ﻿namespace Skalm
 {
-    internal class DefaultSettings : Settings
+    internal class DefaultSettings : ISettings
     {
-        public new string GameTitle { get; private set; } = "Skälm";
-        public new bool DisplayCursor { get; private set; } = false;
-        public new int UpdateFrequency { get; private set; } = 20;
+        public string GameTitle { get; private set; } = "Skälm";
+        public bool DisplayCursor { get; private set; } = false;
+        public int UpdateFrequency { get; private set; } = 20;
 
-        public new int WindowPadding { get; private set; } = 1;
-        public new int BorderThickness { get; private set; } = 1;
-        public new int CellWidth { get; private set; } = 2;
-        public new int CellHeight { get; private set; } = 1;
-        public new int MapWidth { get; private set; } = 42;
-        public new int MapHeight { get; private set; } = 32;
-        public new int MessageBoxHeight { get; private set; } = 5;
-        public new int StatsWidth { get; private set; } = 24;
-        public new int MainStatsHeight { get; private set; } = 8;
-        public new int SubStatsHeight { get; private set; } = 28;
-        public new int HudPadding { get; private set; } = 1;
+        public int WindowPadding { get; private set; } = 1;
+        public int BorderThickness { get; private set; } = 1;
+        public int CellWidth { get; private set; } = 2;
+        public int CellHeight { get; private set; } = 1;
+        public int MapWidth { get; private set; } = 42;
+        public int MapHeight { get; private set; } = 32;
+        public int MessageBoxHeight { get; private set; } = 5;
+        public int StatsWidth { get; private set; } = 24;
+        public int MainStatsHeight { get; private set; } = 8;
+        public int SubStatsHeight { get; private set; } = 28;
+        public int HudPadding { get; private set; } = 1;
 
-        public new char SpriteBorder { get; private set; } = '░';
-        public new char SpriteWall { get; private set; } = '#';
-        public new char SpriteFloor { get; private set; } = '.';
-        public new char SpriteDoor { get; private set; } = '+';
+        public char SpriteBorder { get; private set; } = '░';
+        public char SpriteWall { get; private set; } = '#';
+        public char SpriteFloor { get; private set; } = '.';
+        public char SpriteDoor { get; private set; } = '+';
         
-        public new string SoundsFolderPath { get; private set; } = "..\\..\\..\\Sounds\\";
+        public string SoundsFolderPath { get; private set; } = "..\\..\\..\\Sounds\\";
 
-        public override bool LoadSettings(string[] file)
+        public bool LoadSettings(string[] file)
         {
             FileHandler.WriteFile("settings.txt", CreateSettingsFile());
             return true;

@@ -28,17 +28,16 @@ namespace Skalm
         private List<char> animationTest;
         private int animationFrame;
         #endregion
-        public Settings Settings { get; private set; }
+        public ISettings Settings { get; private set; }
 
         public GameManager()
         {
-            if (FileHandler.TryReadFile("settings.txt", out string[]? file))
                 Settings = new Settings();
-            else
+            if (!FileHandler.TryReadFile("settings.txt", out string[]? file) || !Settings.LoadSettings(file!))
+            {
                 Settings = new DefaultSettings();
-
-            if (!Settings.LoadSettings(file!))
-                Settings = new DefaultSettings();
+                Settings.LoadSettings(file!);
+            }
 
             Console.Title = Settings.GameTitle;
             Console.CursorVisible = Settings.DisplayCursor;
