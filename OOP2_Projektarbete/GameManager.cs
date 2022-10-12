@@ -15,7 +15,7 @@ namespace Skalm
         #region FIELDS
         public IGameState GameState;
         private List<IGameState> gameStates;
-        private int updateFrequency = Globals.G_UPDATE_FREQUENCY;
+        private int updateFrequency;
 
         // MANAGERS
         private InputManager inputManager;
@@ -28,9 +28,22 @@ namespace Skalm
         private List<char> animationTest;
         private int animationFrame;
         #endregion
+        public Settings Settings { get; private set; }
 
         public GameManager()
         {
+            if (FileHandler.TryReadFile("settings.txt", out string[]? file))
+                Settings = new Settings();
+            else
+                Settings = new DefaultSettings();
+
+            if (!Settings.LoadSettings(file!))
+                Settings = new DefaultSettings();
+
+            Console.Title = Settings.GameTitle;
+            Console.CursorVisible = Settings.DisplayCursor;
+            Console.ForegroundColor = ConsoleColor.White;
+            updateFrequency = Settings.UpdateFrequency;
 
             //mapManager = new MapManager(32, 32, Vector2Int.Zero);
             displayManager = new DisplayManager(new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser(), new ConsoleWindowInfo());
@@ -38,9 +51,9 @@ namespace Skalm
             GameState = new GameStateInitializing(displayManager);
             GameState.Enter();
 
-            mapManager = new MapManager(new Grid2D<Tile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x,y, gridPosition) => new Tile(new Vector2Int(x,y))));
-            
-            soundManager = new SoundManager(new ConsoleSoundPlayer(Globals.G_SOUNDS_FOLDER_PATH));
+            mapManager = new MapManager(new Grid2D<Tile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x, y, gridPosition) => new Tile(new Vector2Int(x, y))));
+
+            soundManager = new SoundManager(new ConsoleSoundPlayer(Settings.SoundsFolderPath));
 
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
             inputManager.OnInputMove += MoveInput;
@@ -58,7 +71,7 @@ namespace Skalm
                 new GameStatePlaying(displayManager)
             };
 
-            animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░'};
+            animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
             animationFrame = 0;
         }
 
@@ -66,12 +79,12 @@ namespace Skalm
 
         public void Start()
         {
-            ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);           
+            ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
             soundManager.player.Play(soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
             Update();
         }
 
-        private void Animate() 
+        private void Animate()
         {
             if (animationFrame == animationTest.Count)
                 animationFrame = 0;
