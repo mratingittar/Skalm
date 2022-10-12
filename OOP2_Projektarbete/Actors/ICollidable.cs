@@ -9,6 +9,6 @@ namespace Skalm.Actors
 {
     internal interface ICollidable
     {
-        void OnCollision(ICollidable collider);
+        void OnCollision();
     }
 }

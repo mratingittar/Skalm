@@ -24,7 +24,7 @@ namespace Skalm.Map
             mapGrid = new Tile[mapWidth, mapHeight];
 
             //mapArr = new int[mapWidth, mapHeight];
-            //InitMap();
+            InitMap(mapGrid);
         }
 
         // METHOD INITIALIZE MAP
