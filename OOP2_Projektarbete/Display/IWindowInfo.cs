@@ -11,5 +11,6 @@ namespace Skalm.Display
         int WindowWidth { get; }
         int WindowHeight { get; }
         (int, int) CursorPosition { get; }
+        void SetWindowSize(int width, int height);
     }
 }

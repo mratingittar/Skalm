@@ -20,6 +20,10 @@ namespace Skalm.States
         // ENTER GAME PLAYING STATE
         public void Enter()
         {
+            // IF NEW GAME
+            // ELSE IF RESUMING
+
+
             displayManager.printer.PrintCenteredInWindow("Starting new game", displayManager.windowInfo.WindowHeight / 2);
             Thread.Sleep(500);
             displayManager.eraser.EraseAll();
@@ -29,7 +33,9 @@ namespace Skalm.States
         // EXIT GAME PLAYING STATE
         public void Exit()
         {
-            throw new NotImplementedException();
+            // SAVING STATE
+            displayManager.eraser.EraseAll();
+
         }
 
         // UPDATE STATE LOGIC

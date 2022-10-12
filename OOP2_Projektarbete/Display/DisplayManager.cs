@@ -1,5 +1,4 @@
 ﻿using Skalm.Grid;
-using Skalm.Map;
 using Skalm.Structs;
 
 namespace Skalm.Display
@@ -7,44 +6,42 @@ namespace Skalm.Display
     internal class DisplayManager
     {
         #region SETTINGS
-        private int windowPadding = Globals.G_WINDOW_PADDING;
-        private int borderThickness = Globals.G_BORDER_THICKNESS;
-        private int cellWidth = Globals.G_CELL_WIDTH;
-        private int cellHeight = Globals.G_CELL_HEIGHT;
-        private int mapWidth = Globals.G_MAP_WIDTH;
-        private int mapHeight = Globals.G_MAP_HEIGHT;
-        private int messageHeight = Globals.G_HUD_MSGBOX_H;
-        private int statsWidth = Globals.G_HUD_MAINSTATS_W;
-        private int mainStatsHeight = Globals.G_HUD_MAINSTATS_H;
-        private char borderChar = Globals.G_BORDER_CHAR;
+        private readonly int windowPadding = Globals.G_WINDOW_PADDING;
+        private readonly int borderThickness = Globals.G_BORDER_THICKNESS;
+        private readonly int cellWidth = Globals.G_CELL_WIDTH;
+        private readonly int cellHeight = Globals.G_CELL_HEIGHT;
+        private readonly int mapWidth = Globals.G_MAP_WIDTH;
+        private readonly int mapHeight = Globals.G_MAP_HEIGHT;
+        private readonly int messageHeight = Math.Max(Globals.G_HUD_MSGBOX_H,3);
+        private readonly int statsWidth = Globals.G_HUD_MAINSTATS_W;
+        private readonly int mainStatsHeight = Globals.G_HUD_MAINSTATS_H;
         #endregion
 
         #region FIELDS
         // RECTANGLES
-        private Rectangle consoleRect;
-        private Rectangle gridRect;
-        private Rectangle gridMapRect;
-        private Rectangle gridMessageRect;
-        private Rectangle gridMainStatsRect;
-        private Rectangle gridSubStatsRect;
+        public readonly Rectangle consoleRect;
+        public readonly Rectangle gridRect;
+        public readonly Rectangle gridMapRect;
+        public readonly Rectangle gridMessageRect;
+        public readonly Rectangle gridMainStatsRect;
+        public readonly Rectangle gridSubStatsRect;
 
         // BOUNDS
-        private Bounds mapBounds;
-        private Bounds messageBounds;
-        private Bounds mainStatsBounds;
-        private Bounds subStatsBounds;
-        private static Bounds latestPrintedArea;
+        public readonly Bounds mapBounds;
+        public readonly Bounds messageBounds;
+        public readonly Bounds mainStatsBounds;
+        public readonly Bounds subStatsBounds;
 
         // INTERFACES
         public readonly IPrinter printer;
         public readonly IEraser eraser;
         public readonly IWindowInfo windowInfo;
+
+        public readonly GridController pixelGridController;
+
         #endregion
 
-        #region PROPERTIES
-        public Grid<Cell> GameGrid { get; private set; }
-        public Dictionary<IContentType, Cell> CellContents { get; private set; } // USED TO SAVE POSITIONS OF DIFFERENT TYPES OF CELLS FOR LATER ACCESS
-        #endregion
+        public readonly Dictionary<string, char> CharSet;
 
         public DisplayManager(IPrinter printer, IEraser eraser, IWindowInfo windowInfo)
         {
@@ -54,27 +51,8 @@ namespace Skalm.Display
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             // ADD FONT CHECKING. NEEDS TO BE TRUETYPE.
+            CharSet = CreateCharSet();
 
-            DefineBounds();
-            CellContents = new Dictionary<IContentType, Cell>();
-            GameGrid = new Grid<Cell>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
-                (gridPosition, consolePositions) => new Cell(gridPosition, consolePositions, new CellBorder(borderChar), false));
-
-            GameGrid.DefineContentOfGridArea(mapBounds, new CellEmpty());
-            GameGrid.DefineContentOfGridArea(messageBounds, new CellEmpty());
-            GameGrid.DefineContentOfGridArea(mainStatsBounds, new CellEmpty());
-            GameGrid.DefineContentOfGridArea(subStatsBounds, new CellEmpty());
-            latestPrintedArea = messageBounds;
-        }
-
-        public void DisplayHUD()
-        {
-            GameGrid.PrintGridContent(new CellBorder());
-        }
-
-        #region SETUP
-        private void DefineBounds()
-        {
             gridMapRect = new Rectangle(mapWidth, mapHeight);
             gridMessageRect = new Rectangle(mapWidth, messageHeight);
             gridMainStatsRect = new Rectangle(statsWidth, mainStatsHeight);
@@ -88,43 +66,65 @@ namespace Skalm.Display
             mainStatsBounds = new Bounds(new Vector2Int(mapBounds.EndXY.X + borderThickness, mapBounds.StartXY.Y), gridMainStatsRect);
             subStatsBounds = new Bounds(new Vector2Int(mainStatsBounds.StartXY.X, mainStatsBounds.EndXY.Y + borderThickness), gridSubStatsRect);
 
+            windowInfo.SetWindowSize(consoleRect.Width, consoleRect.Height);
 
-            try
-            {
-                if (consoleRect.Width > Console.LargestWindowWidth || consoleRect.Height > Console.LargestWindowHeight)
-                    throw new ArgumentOutOfRangeException("Game window does not fit inside monitor.");
-                
-                Console.SetWindowSize(consoleRect.Width, consoleRect.Height);
-                Console.SetBufferSize(consoleRect.Width, consoleRect.Height);
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                Console.WriteLine(e.Message);
-                Console.ReadKey(true);
-            }
-            catch (Exception e)
-            {
-                Console.WriteLine(e.Message);
-                Console.ReadKey(true);
-            }
+            pixelGridController = new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
+                (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), consolePositions, new HUDBorder(CharSet["shadeMedium"]))), printer, eraser);
+
+            pixelGridController.DefineGridSections(mapBounds, new MapSection());
+            pixelGridController.DefineGridSections(messageBounds, new MessageSection());
+            pixelGridController.DefineGridSections(mainStatsBounds, new MainStatsSection());
+            pixelGridController.DefineGridSections(subStatsBounds, new SubStatsSection());
+            pixelGridController.FindBorderPixels();
+            pixelGridController.DefineSectionBounds();
+
         }
-        #endregion
 
-        #region PRINTING
-
-        // METHOD PRINT AT POSITION
-        public static void PrintAtPosition(int x, int y, char character)
+        public void DisplayHUD()
         {
-            Console.SetCursorPosition(x, y);
-            Console.Write(character);
+            pixelGridController.PrintBorders();
         }
 
 
-        public void EraseLatestPrint()
+        private Dictionary<string, char> CreateCharSet()
         {
-            eraser.EraseArea(latestPrintedArea);
+            return new Dictionary<string, char>
+            {
+                {"shadeLight", '░'},
+                {"shadeMedium", '▒'},
+                {"shadeDark", '▓'},
+                {"blockFull", '█'},
+                {"boxDownRight", '╔'},
+                {"boxHorizontal", '═'},
+                {"boxDownLeft", '╗'},
+                {"boxVertical", '║'},
+                {"boxUpRight", '╚'},
+                {"boxUpLeft", '╝'},
+                {"pointerRight", '►'},
+                {"pointerLeft", '◄'}
+            };
         }
 
-        #endregion
+        public string[] AddBordersToText(string text)
+        {
+            string[] result = new string[3];
+
+            result[0] = CharSet["boxDownRight"] + RepeatChar(CharSet["boxHorizontal"], text.Length) + CharSet["boxDownLeft"];
+            result[1] = CharSet["boxVertical"] + text + CharSet["boxVertical"];
+            result[2] = CharSet["boxUpRight"] + RepeatChar(CharSet["boxHorizontal"], text.Length) + CharSet["boxUpLeft"];
+
+            return result;
+        }
+
+        private string RepeatChar(char ch, int count)
+        {
+            string result = "";
+            for (int i = 0; i < count; i++)
+            {
+                result += ch;
+            }
+            return result;
+        }
+
     }
 }

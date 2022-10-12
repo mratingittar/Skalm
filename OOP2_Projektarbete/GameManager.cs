@@ -1,4 +1,5 @@
 ﻿using Skalm.Display;
+using Skalm.Grid;
 using Skalm.Input;
 using Skalm.Map;
 using Skalm.Menu;
@@ -13,44 +14,79 @@ namespace Skalm
 
         #region FIELDS
         public IGameState GameState;
+        private List<IGameState> gameStates;
         private int updateFrequency = Globals.G_UPDATE_FREQUENCY;
 
         // MANAGERS
         private InputManager inputManager;
         private SoundManager soundManager;
-        public MapManager mapManager;
-        public DisplayManager displayManager;
+        private MapManager mapManager;
+        private DisplayManager displayManager;
         private MenuManager menuManager;
+
+
+        private List<char> animationTest;
+        private int animationFrame;
         #endregion
 
         public GameManager()
         {
-            mapManager = new MapManager(32, 32, Vector2Int.Zero);
+
+            //mapManager = new MapManager(32, 32, Vector2Int.Zero);
             displayManager = new DisplayManager(new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser(), new ConsoleWindowInfo());
 
             GameState = new GameStateInitializing(displayManager);
             GameState.Enter();
 
+            mapManager = new MapManager(new Grid2D<Tile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x,y, gridPosition) => new Tile(new Vector2Int(x,y))));
+            
             soundManager = new SoundManager(new ConsoleSoundPlayer(Globals.G_SOUNDS_FOLDER_PATH));
 
             inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
-            menuManager = new MenuManager(inputManager, displayManager, soundManager.player);
-            menuManager.mainMenu.onMenuExecution += MainMenuExecution;
+            inputManager.OnInputMove += MoveInput;
+            inputManager.OnInputCommand += CommandInput;
+
+            menuManager = new MenuManager(inputManager, displayManager, soundManager);
+            menuManager.mainMenu.onMenuExecution += MenuExecution;
+            menuManager.pauseMenu.onMenuExecution += MenuExecution;
+
+            gameStates = new List<IGameState>
+            {
+                new GameStateInitializing(displayManager),
+                new GameStateMainMenu(menuManager),
+                new GameStatePaused(menuManager),
+                new GameStatePlaying(displayManager)
+            };
+
+            animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░'};
+            animationFrame = 0;
         }
 
 
 
         public void Start()
         {
-            ChangeGameState(new GameStateMainMenu(displayManager, menuManager));
+            ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);           
+            soundManager.player.Play(soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
             Update();
+        }
+
+        private void Animate() 
+        {
+            if (animationFrame == animationTest.Count)
+                animationFrame = 0;
+
+            displayManager.printer.PrintAtPosition(animationTest[animationFrame], 10, 10);
+            animationFrame++;
         }
 
         private void Update()
         {
             while (true)
             {
-                inputManager.GetInput(); // INPUTS ARE QUEUEING UP, NEEDS FIXING.
+
+                inputManager.GetInput();
+
 
                 Thread.Sleep(1000 / updateFrequency);
             }
@@ -62,24 +98,62 @@ namespace Skalm
             GameState = gameState;
             GameState.Enter();
         }
-
-        // MAY CHANGE THIS TO THE MENUS HAVING A REFERENCE TO THIS METHOD AND SENDING IN AN ENUM INSTEAD.
-        private void MainMenuExecution(string item)
+        private void MoveInput(Vector2Int direction)
         {
-            if (GameState is not GameStateMainMenu)
+            if (GameState is GameStateMainMenu or GameStatePaused)
+            {
+                menuManager.TraverseMenu(direction);
+            }
+            else if (GameState is GameStatePlaying)
+            {
+
+            }
+
+        }
+
+        private void CommandInput(InputCommands command)
+        {
+            if (GameState is GameStateMainMenu or GameStatePaused)
+            {
+                menuManager.ExecuteMenu(command);
+            }
+            else if (GameState is GameStatePlaying)
+            {
+                if (command == InputCommands.Cancel)
+                    ChangeGameState(gameStates.Find(state => state is GameStatePaused)!);
+            }
+        }
+
+        private void MenuExecution(string menuPage, string item)
+        {
+            if (GameState is not GameStateMainMenu and not GameStatePaused)
                 return;
 
-            switch (item)
+            switch (menuPage)
             {
-                case "Start New Game":
-                    ChangeGameState(new GameStatePlaying(displayManager));
+                case "MAIN MENU":
+                    if (item == "Exit")
+                        Environment.Exit(0);
                     break;
-                case "Continue":
+                case "NEW GAME":
+                    if (item == "Start New Game")
+                        ChangeGameState(new GameStatePlaying(displayManager));
                     break;
-                case "Toggle Beep":
-                    soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
+                case "OPTIONS":
+                    if (item == "Toggle Beep")
+                        soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
                     break;
-                default:
+                case "MUSIC":
+                    soundManager.player.Play(soundManager.Tracks.Find(sound => sound.soundName == item));
+                    break;
+                case "INPUT METHOD":
+                    inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
+                    break;
+                case "PAUSE MENU":
+                    if (item == "Resume")
+                        ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
+                    else if (item == "Exit")
+                        ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
                     break;
             }
         }

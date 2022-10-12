@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Skalm.Structs;
 
 namespace Skalm.Map
 {
     internal class Tile
     {
+        public readonly Vector2Int position;
+
+        public Tile(Vector2Int position)
+        {
+            this.position = position;
+        }
     }
 }

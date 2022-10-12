@@ -9,7 +9,7 @@ namespace Skalm.Menu
         public readonly TreeNode<MenuPage> pages;
         private int pageStartRow;
         private DisplayManager displayManager;
-        public event Action<string>? onMenuExecution;
+        public event Action<string, string>? onMenuExecution;
         #endregion
 
         #region CONSTRUCTOR
@@ -40,7 +40,7 @@ namespace Skalm.Menu
         }
         public void LoadPage(MenuPage page)
         {
-            displayManager.eraser.EraseLinesFromTo(pageStartRow, pageStartRow + ActivePage.items.Count + 2); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
+            displayManager.eraser.EraseLinesFromTo(pageStartRow, pageStartRow + ActivePage.items.Count + 5); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
             ActivePage = page;
             MenuItemIndex = 0;
             PrintMenu();
@@ -52,19 +52,27 @@ namespace Skalm.Menu
             if (item == "Back")
                 GoBackOneLevel();
             else if (item == "Exit")
-                Environment.Exit(0);
+                SendMenuEvent(item);
             else
             {
                 if (pages.FindNode(node => node.Value.pageName.ToUpper() == item.ToUpper()) is null)
-                    ExecuteLeaf(item);
+                    SendMenuEvent(item);
                 else
                     LoadPage(pages.FindNode(node => node.Value.pageName.ToUpper() == item.ToUpper()).Value);
             }
         }
 
-        private void ExecuteLeaf(string executedItem)
+        private void SendMenuEvent(string executedItem)
         {
-            onMenuExecution?.Invoke(executedItem);
+            onMenuExecution?.Invoke(ActivePage.pageName, executedItem);
+        }
+
+        public void Cancel()
+        {
+            if (MenuLevel > 0)
+                GoBackOneLevel();
+            else
+                SendMenuEvent("Exit");
         }
 
         public bool MoveMenuUp()
@@ -93,9 +101,9 @@ namespace Skalm.Menu
 
         private void PrintMenu()
         {
-            displayManager.printer.PrintCenteredInWindow(ActivePage.pageName, pageStartRow);
-            displayManager.printer.PrintCenteredInWindow("", pageStartRow + 1); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
-            HighlightSelectedItem(pageStartRow + 2); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
+            displayManager.printer.PrintCenteredInWindow(displayManager.AddBordersToText(ActivePage.pageName), pageStartRow);
+            displayManager.printer.PrintCenteredInWindow("", pageStartRow + 3); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
+            HighlightSelectedItem(pageStartRow + 4); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
         }
 
         private void HighlightSelectedItem(int startRow)
@@ -103,6 +111,12 @@ namespace Skalm.Menu
             int count = 0;
             foreach (var item in ActivePage.items)
             {
+                if (item.Key == ActivePage.items.Last().Key)
+                {
+                    displayManager.printer.PrintCenteredInWindow("", startRow + count);
+                    count++;
+                }
+
                 if (item.Key == MenuItemIndex)
                     displayManager.printer.PrintCenteredInWindow(item.Value, startRow + count, true);
                 else
@@ -110,7 +124,5 @@ namespace Skalm.Menu
                 count++;
             }
         }
-
-
     }
 }

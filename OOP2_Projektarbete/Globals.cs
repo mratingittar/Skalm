@@ -4,7 +4,7 @@
     {
         public static string G_GAME_TITLE = "Skälm";
         public static bool G_DISPLAY_CURSOR = false;
-        public static int G_UPDATE_FREQUENCY = 10;
+        public static int G_UPDATE_FREQUENCY = 20;
 
         public static int G_WINDOW_PADDING = 1;
         public static int G_BORDER_THICKNESS = 1;

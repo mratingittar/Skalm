@@ -31,6 +31,7 @@ namespace Skalm.States
             displayManager.eraser.EraseAll(); 
             displayManager.printer.PrintCenteredInWindow("Loaded", displayManager.windowInfo.WindowHeight / 2);
             Thread.Sleep(500);
+            displayManager.eraser.EraseAll();
         }
 
         // UPDATE LOGIC

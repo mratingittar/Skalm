@@ -6,27 +6,23 @@ namespace Skalm.States
     internal class GameStateMainMenu : IGameState
     {
         private MenuManager menuManager;
-        private DisplayManager displayManager;
 
         // CONSTRUCTOR I
-        public GameStateMainMenu(DisplayManager displayManager, MenuManager menuManager)
+        public GameStateMainMenu(MenuManager menuManager)
         {
-            this.displayManager = displayManager;
             this.menuManager = menuManager;
         }
 
         // ENTER STATE
         public void Enter()
         {
-            displayManager.eraser.EraseAll();
-            menuManager.LoadMainMenu();
+            menuManager.LoadMenu(menuManager.mainMenu);
         }
 
         // EXIT STATE
         public void Exit()
         {
-            menuManager.mainMenu.IsEnabled = false;
-            displayManager.eraser.EraseAll();
+            menuManager.UnloadMenu();
         }
 
         // UPDATE LOGIC
