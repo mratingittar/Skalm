@@ -1,8 +1,5 @@
-using Skalm.Actors.Stats;
 using Skalm.Actors;
-using Skalm.Actors.Tile;
 using Skalm.Display;
-using Skalm.Grid;
 using Skalm.Input;
 using Skalm.Map;
 using Skalm.Menu;
@@ -31,8 +28,10 @@ namespace Skalm
         private MapPrinter mapPrinter;
 
         // ANIMATION
+        private List<string[]> fireAnimation;
         private List<char> animationTest;
         private int animationFrame;
+        private int animationFrameRate;
         #endregion
         public ISettings Settings { get; private set; }
 
@@ -69,7 +68,7 @@ namespace Skalm
             GameState.Enter();
 
             //mapManager = new MapManager(new Grid2D<BaseTile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x,y, gridPosition) => new VoidTile(new Vector2Int(x, y))), displayManager);
-            
+
             //soundManager = new SoundManager(new ConsoleSoundPlayer(Globals.G_SOUNDS_FOLDER_PATH));
 
             //inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
@@ -84,7 +83,45 @@ namespace Skalm
 
             // ANIMATION
             animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
+            fireAnimation = new List<string[]>{
+            new string[] {
+                @" (  ",
+                @" )\ ",
+                @"((_)",
+                @" \/ ",
+                @" || ",
+                @" || ",
+                @"/__\"
+            },
+            new string[] {
+                @" \  ",
+                @" )\ ",
+                @"(__)",
+                @" \/ ",
+                @" || ",
+                @" || ",
+                @"/__\"
+            },
+            new string[] {
+                @"  ) ",
+                @" /( ",
+                @"(_))",
+                @" \/ ",
+                @" || ",
+                @" || ",
+                @"/__\"
+            },
+            new string[] {
+                @"  / ",
+                @" /( ",
+                @"(__)",
+                @" \/ ",
+                @" || ",
+                @" || ",
+                @"/__\"
+            }};
             animationFrame = 0;
+            animationFrameRate = 0;
 
             // PLAYER
             var tileGrid = mapManager.tileGrid;
@@ -101,13 +138,20 @@ namespace Skalm
         }
 
         // METHOD ANIMATE
-        private void Animate() 
+        private void Animate()
         {
-            if (animationFrame == animationTest.Count)
-                animationFrame = 0;
+            if (animationFrameRate == 2)
+            {
+                animationFrameRate = 0;
 
-            displayManager.printer.PrintAtPosition(animationTest[animationFrame], 10, 10);
-            animationFrame++;
+                if (animationFrame == fireAnimation.Count)
+                    animationFrame = 0;
+
+                displayManager.printer.PrintFromPosition(fireAnimation[animationFrame], 4, Console.WindowWidth / 2 - Console.WindowWidth / 4);
+                displayManager.printer.PrintFromPosition(fireAnimation[animationFrame], 4, Console.WindowWidth / 2 + Console.WindowWidth / 4);
+                animationFrame++;
+            }
+            animationFrameRate++;
         }
 
         // METHOD UPDATE GAME
@@ -116,7 +160,8 @@ namespace Skalm
             while (true)
             {
                 inputManager.GetInput();
-
+                if (GameState is GameStateMainMenu)
+                    Animate();
                 Thread.Sleep(1000 / updateFrequency);
             }
         }
