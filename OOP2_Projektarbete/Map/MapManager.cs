@@ -12,7 +12,6 @@ namespace Skalm.Map
         public readonly GridHandler<BaseTile> gridHandler;
 
         public readonly DisplayManager displayManager;
-        public readonly MapPrinter mapPrinter;
 
         private HashSet<Vector2Int> freeTiles;
         public List<IGameObject> gameObjects;
@@ -23,7 +22,6 @@ namespace Skalm.Map
             this.tileGrid = tileGrid;
             this.gridHandler = new GridHandler<BaseTile>(tileGrid);
             this.displayManager = displayManager;
-            this.mapPrinter = new MapPrinter(this, displayManager);
 
             freeTiles = new HashSet<Vector2Int>();
             gameObjects = new List<IGameObject>();

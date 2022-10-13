@@ -1,4 +1,5 @@
-﻿using Skalm.Actors.Stats;
+using Skalm.Actors.Stats;
+using Skalm.Actors;
 using Skalm.Actors.Tile;
 using Skalm.Display;
 using Skalm.Grid;
@@ -22,32 +23,40 @@ namespace Skalm
         // MANAGERS
         private InputManager inputManager;
         private SoundManager soundManager;
-        private MapManager mapManager;
         private DisplayManager displayManager;
         private MenuManager menuManager;
 
+        // MAP MANAGERS
+        private MapManager mapManager;
+        private MapPrinter mapPrinter;
+
+        // ANIMATION
         private List<char> animationTest;
         private int animationFrame;
         #endregion
         public ISettings Settings { get; private set; }
 
+        // PLAYER
+        Player player;
 
         // CONSTRUCTOR I
-
-            //mapManager = new MapManager(32, 32, Vector2Int.Zero);
-            //displayManager = new DisplayManager(new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser(), new ConsoleWindowInfo());
-
         public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager)
         {
             Settings = settings;
+
+            // MANAGERS
             this.displayManager = displayManager;
-            this.mapManager = mapManager;
             this.soundManager = soundManager;
             this.inputManager = inputManager;
             this.menuManager = menuManager;
 
+            this.mapManager = mapManager;
+            this.mapPrinter = new MapPrinter(mapManager, displayManager);
+
+            // UPDATE FREQUENCY
             updateFrequency = Settings.UpdateFrequency;
 
+            // GAME STATES
             gameStates = new List<IGameState>
             {
                 new GameStateInitializing(displayManager),
@@ -65,14 +74,23 @@ namespace Skalm
 
             //inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
 
+            // INPUT
             inputManager.OnInputMove += MoveInput;
             inputManager.OnInputCommand += CommandInput;
 
+            // MENU MANAGER
             menuManager.mainMenu.onMenuExecution += MenuExecution;
             menuManager.pauseMenu.onMenuExecution += MenuExecution;
 
+            // ANIMATION
             animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
             animationFrame = 0;
+
+            // PLAYER
+            var tileGrid = mapManager.tileGrid;
+            Vector2Int midXY = new Vector2Int(tileGrid.gridWidth / 2, tileGrid.gridHeight / 2);
+            player = new Player(mapManager.tileGrid, midXY, new PlayerMoveInput(), new PlayerAttackComponent());
+            mapManager.gameObjects.Add(player);
         }
 
         // METHOD START STATE

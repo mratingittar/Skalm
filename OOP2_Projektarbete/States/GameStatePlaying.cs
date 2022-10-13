@@ -16,9 +16,7 @@ namespace Skalm.States
     {
         private readonly DisplayManager displayManager;
 
-        public MapManager mapManager;
-
-            
+        public MapManager mapManager;            
 
         private readonly SoundManager soundManager;
 
@@ -28,7 +26,6 @@ namespace Skalm.States
             this.displayManager = displayManager;
             this.soundManager = soundManager;
             this.mapManager = mapManager;
-
         }
 
         // ENTER GAME PLAYING STATE
@@ -42,14 +39,12 @@ namespace Skalm.States
             displayManager.eraser.EraseAll();
             displayManager.DisplayHUD();
 
-
             // CREATE MAP
             mapManager.CreateMap();
             mapManager.mapPrinter.RedrawMap();
 
             soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Thunder Dreams"));
             displayManager.pixelGridController.DisplayMessage("Welcome to the Land of Skälm.");
-
         }
 
         // EXIT GAME PLAYING STATE
