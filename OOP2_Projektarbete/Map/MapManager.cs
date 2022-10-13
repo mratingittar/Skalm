@@ -9,6 +9,7 @@ namespace Skalm.Map
     internal class MapManager
     {
         public readonly Grid2D<BaseTile> tileGrid;
+        public readonly GridHandler<BaseTile> gridHandler;
 
         public readonly DisplayManager displayManager;
         public readonly MapPrinter mapPrinter;
@@ -16,37 +17,22 @@ namespace Skalm.Map
         private HashSet<Vector2Int> freeTiles;
         public List<IGameObject> gameObjects;
 
-        Player player;
-
         // CONSTRUCTOR I
         public MapManager(Grid2D<BaseTile> tileGrid, DisplayManager displayManager)
         {
             this.tileGrid = tileGrid;
+            this.gridHandler = new GridHandler<BaseTile>(tileGrid);
             this.displayManager = displayManager;
             this.mapPrinter = new MapPrinter(this, displayManager);
 
             freeTiles = new HashSet<Vector2Int>();
             gameObjects = new List<IGameObject>();
-
-            // CREATE PLAYER
-            int posX = (int)tileGrid.gridWidth / 2;
-            int posY = (int)tileGrid.gridHeight / 2;
-
-            player = new Player(tileGrid, new Vector2Int(posX, posY), new PlayerMoveInput(), new PlayerAttackComponent());
         }
 
         // METHOD CREATE MAP
         public void CreateMap()
         {
             CreateRoom(new Bounds(new Vector2Int(5, 5), new Vector2Int(tileGrid.gridWidth - 5, tileGrid.gridHeight - 5)));
-
-            // CREATE PLAYER
-            int posX = (int)tileGrid.gridWidth / 2;
-            int posY = (int)tileGrid.gridHeight / 2;
-
-            player = new Player(tileGrid, new Vector2Int(posX, posY), new PlayerMoveInput(), new PlayerAttackComponent());
-            gameObjects.Add(player);
-            //tileGrid.GetGridObject(posX, posY)!.actorsAtPosition.Add(player.tile);
         }
 
         // METHOD CREATE ROOM
