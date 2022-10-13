@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors.Tile
 {
-    internal class Wall : BaseTile, ICollidable
+    internal class WallTile : BaseTile, ICollidable
     {
         // CONSTRUCTOR
-        public Wall(Vector2Int posXY) : base(posXY, Globals.G_WALL, ConsoleColor.Gray, MapManager.MapTiles.Wall) {}
+        public WallTile(Vector2Int posXY) : base(posXY, Globals.G_WALL, ConsoleColor.Gray) {}
 
         public void OnCollision()
         {

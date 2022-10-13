@@ -10,19 +10,18 @@ namespace Skalm.Actors.Tile
 {
     internal abstract class BaseTile
     {
-        public Vector2Int posXY { get; protected set; }
+        public Vector2Int posXY { get; set; }
         public char sprite { get; protected set; }
         public ConsoleColor color { get; protected set; }
-        public int drawDepth { get; protected set; }
-        public MapManager.MapTiles tileType { get; protected set; }
+        public List<ActorTile> actorsAtPosition;
 
-        public BaseTile(Vector2Int posXY, char sprite = ' ', ConsoleColor color = ConsoleColor.White, MapManager.MapTiles tileType = MapManager.MapTiles.Floor,  int drawDepth = 0)
+        public BaseTile(Vector2Int posXY, char sprite = ' ', ConsoleColor color = ConsoleColor.White)
         {
             this.posXY = posXY;
             this.sprite = sprite;
             this.color = color;
-            this.drawDepth = drawDepth;
-            this.tileType = tileType;
+
+            actorsAtPosition = new List<ActorTile>();
         }
     }
 }

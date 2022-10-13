@@ -1,4 +1,5 @@
 ﻿using Skalm;
+using Skalm.Actors.Tile;
 using Skalm.Display;
 using Skalm.Grid;
 using Skalm.Input;
@@ -64,9 +65,9 @@ DisplayManager displayManager = new DisplayManager(settings, printer, eraser, ne
 SoundManager soundManager = new SoundManager(new ConsoleSoundPlayer(settings.SoundsFolderPath), settings.SoundsFolderPath);
 InputManager inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
 MenuManager menuManager = new MenuManager(inputManager, displayManager, soundManager);
-MapManager mapManager = new MapManager(new Grid2D<Tile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, 
+MapManager mapManager = new MapManager(new Grid2D<BaseTile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, 
     displayManager.pixelGridController.pixelGrid.GetPlanePosition(displayManager.pixelGridController.cellsInSections["MapSection"].First().gridPosition), 
-    (x, y, gridPosition) => new Tile(new Vector2Int(x, y))));
+    (x, y, gridPosition) => new VoidTile(new Vector2Int(x, y))), displayManager);
 
 GameManager game = new GameManager(settings, displayManager, mapManager, soundManager, inputManager, menuManager);
 #endregion

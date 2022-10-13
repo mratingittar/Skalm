@@ -1,76 +1,80 @@
-﻿using Skalm.Grid;
+﻿using Skalm.Actors;
+using Skalm.Actors.Tile;
+using Skalm.Display;
+using Skalm.Grid;
+using Skalm.Structs;
 
 namespace Skalm.Map
 {
     internal class MapManager
     {
-        public readonly Grid2D<Tile> tileGrid;
-        //private List<Tile> tileBase;
+        public readonly Grid2D<BaseTile> tileGrid;
+        public readonly GridHandler<BaseTile> gridHandler;
 
-        public MapManager(Grid2D<Tile> tileGrid)
+        public readonly DisplayManager displayManager;
+
+        private HashSet<Vector2Int> freeTiles;
+        public List<IGameObject> gameObjects;
+
+        // CONSTRUCTOR I
+        public MapManager(Grid2D<BaseTile> tileGrid, DisplayManager displayManager)
         {
             this.tileGrid = tileGrid;
-            //this.tileBase = new() {new Tile()};
+            this.gridHandler = new GridHandler<BaseTile>(tileGrid);
+            this.displayManager = displayManager;
+
+            freeTiles = new HashSet<Vector2Int>();
+            gameObjects = new List<IGameObject>();
         }
 
+        // METHOD CREATE MAP
+        public void CreateMap()
+        {
+            CreateRoom(new Bounds(new Vector2Int(5, 5), new Vector2Int(tileGrid.gridWidth - 5, tileGrid.gridHeight - 5)));
+        }
 
-        //    private Vector2Int mapOrigin;
-        //    private int mapWidth;
-        //    private int mapHeight;
-        //    //public Grid<Cell> mapGrid;
-        //    public int[,] mapArr { get; private set; }
+        // METHOD CREATE ROOM
+        private void CreateRoom(Bounds roomSpace)
+        {
+            // CREATE WALLS
+            CreateRoomWalls(roomSpace);
 
-        //    // CONSTRUCTOR I
-        //    public MapManager(int width, int height, Vector2Int origin)
-        //    {
-        //        mapWidth = width;
-        //        mapHeight = height;
-        //        mapOrigin = origin;
-        //        //mapGrid = new Grid<Cell>(width, height, 2, 1, origin, (position, x, y) => new Cell(position, x, y));
+            // CREATE FLOOR
+            for (int j = roomSpace.StartXY.Y + 1; j <= roomSpace.EndXY.Y - 1; j++)
+            {
+                for (int i = roomSpace.StartXY.X + 1; i <= roomSpace.EndXY.X - 1; i++)
+                {
+                    freeTiles.Add(new Vector2Int(i, j));
+                    tileGrid.SetGridObject(i, j, new FloorTile(new Vector2Int(i, j)));
+                }
+            }
+        }
 
+        // METHOD CREATE ROOM WALLS
+        private void CreateRoomWalls(Bounds roomSpace)
+        {
+            int posX1, posX2, posY1, posY2;
 
-        //        mapArr = new int[mapWidth, mapHeight];
-        //        //InitMap();
-        //    }
+            // HORIZONTAL AXIS
+            for (int i = roomSpace.StartXY.X; i <= roomSpace.EndXY.X; i++)
+            {
+                posY1 = roomSpace.StartXY.Y;
+                posY2 = roomSpace.EndXY.Y;
 
-        //    // METHOD INITIALIZE MAP
-        //    public void InitMap()
-        //    {
-        //        for (int j = 4; j < mapArr.GetLength(1) - 4; j++)
-        //        {
-        //            for (int i = 4; i < mapArr.GetLength(0) - 4; i++)
-        //            {
-        //                mapArr[i, j] = (int)MapTiles.Floor;
-        //            }
-        //        }
+                tileGrid.SetGridObject(i, posY1, new WallTile(new Vector2Int(i, posY1)));
+                tileGrid.SetGridObject(i, posY2, new WallTile(new Vector2Int(i, posY2)));
+            }
 
-        //        FindWalls();
-        //    }
+            // VERTICAL AXIS
+            for (int j = roomSpace.StartXY.Y; j <= roomSpace.EndXY.Y; j++)
+            {
+                posX1 = roomSpace.StartXY.X;
+                posX2 = roomSpace.EndXY.X;
 
-        //    // METHOD CELL VON NEUMAN
-        //    private int cell4W(int x, int y, int value)
-        //    {
-        //        int output = 0;
-        //        if (mapArr[x, y - 1] == value) output++;
-        //        if (mapArr[x, y + 1] == value) output++;
-        //        if (mapArr[x - 1, y] == value) output++;
-        //        if (mapArr[x + 1, y] == value) output++;
-        //        return output;
-        //    }
-
-        //    // FIND WALLS IN ARRAY
-        //    private void FindWalls()
-        //    {
-        //        for (int j = 0; j < mapArr.GetLength(1); j++)
-        //        {
-        //            for (int i = 0; i < mapArr.GetLength(0); i++)
-        //            {
-        //                if (mapArr[i, j] == (int)MapTiles.Floor)
-        //                    if (cell4W(i, j, (int)MapTiles.Void) > 0) mapArr[i, j] = (int)MapTiles.Wall;
-        //            }
-        //        }
-        //    }
-        //}
+                tileGrid.SetGridObject(posX1, j, new WallTile(new Vector2Int(posX1, j)));
+                tileGrid.SetGridObject(posX2, j, new WallTile(new Vector2Int(posX1, j)));
+            }
+        }
 
         public enum MapTiles
         {

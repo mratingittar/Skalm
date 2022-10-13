@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors.Tile
 {
-    internal class Floor : BaseTile
+    internal class FloorTile : BaseTile
     {
-        public Floor(Vector2Int posXY) : base(posXY, Globals.G_FLOOR, ConsoleColor.Gray, MapManager.MapTiles.Floor) {}
+        public FloorTile(Vector2Int posXY) : base(posXY, Globals.G_FLOOR, ConsoleColor.Gray) {}
     }
 }

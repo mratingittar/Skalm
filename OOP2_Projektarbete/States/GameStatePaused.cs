@@ -10,27 +10,33 @@ namespace Skalm.States
     internal class GameStatePaused : IGameState
     {
         private MenuManager menuManager;
+
+        // CONSTRUCTOR I
         public GameStatePaused(MenuManager menuManager)
         {
             this.menuManager = menuManager;
         }
 
+        // STATE ENTER
         public void Enter()
         {
             menuManager.LoadMenu(menuManager.pauseMenu);
         }
 
+        // STATE EXIT
         public void Exit()
         {
             menuManager.UnloadMenu();
         }
 
-        public void UpdateDisplay()
+        // STATE UPDATE LOGIC
+        public void UpdateLogic()
         {
             throw new NotImplementedException();
         }
 
-        public void UpdateLogic()
+        // STATE UPDATE DISPLAY
+        public void UpdateDisplay()
         {
             throw new NotImplementedException();
         }

@@ -1,4 +1,5 @@
 ﻿using Skalm.Grid;
+using Skalm.Map;
 using Skalm.Structs;
 using Skalm.Utilities;
 
@@ -36,6 +37,8 @@ namespace Skalm.Display
             pixelGridController.FindBorderPixels();
         }
 
+
+        // DISPLAY HUD
         public void DisplayHUD()
         {
             pixelGridController.PrintBorders();
