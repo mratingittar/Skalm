@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text;
 
 namespace Skalm
 {
@@ -15,7 +10,7 @@ namespace Skalm
             bool success;
             try
             {
-                file = File.ReadAllLines(rootFolder+fileName, UTF8Encoding.UTF8);
+                file = File.ReadAllLines(rootFolder + fileName, UTF8Encoding.UTF8);
                 success = true;
             }
             catch (Exception)
@@ -26,10 +21,20 @@ namespace Skalm
             return success;
         }
 
-        public static void WriteFile(string fileName, string[] file)
+        public static bool WriteFile(string fileName, string[] file)
         {
             string rootFolder = Directory.GetCurrentDirectory() + "/";
-            File.WriteAllLines(rootFolder+fileName, file);
+            bool success;
+            try
+            {
+                File.WriteAllLines(rootFolder + fileName, file);
+                success = true;
+            }
+            catch (Exception)
+            {
+                success = false;
+            }
+            return success;
         }
     }
 }

@@ -30,37 +30,16 @@ namespace Skalm
         #endregion
         public ISettings Settings { get; private set; }
 
-        public GameManager()
+        public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager)
         {
-                Settings = new Settings();
-            if (!FileHandler.TryReadFile("settings.txt", out string[]? file) || !Settings.LoadSettings(file!))
-            {
-                Settings = new DefaultSettings();
-                Settings.LoadSettings(file!);
-            }
+            Settings = settings;
+            this.displayManager = displayManager;
+            this.mapManager = mapManager;
+            this.soundManager = soundManager;
+            this.inputManager = inputManager;
+            this.menuManager = menuManager;
 
-            Console.Title = Settings.GameTitle;
-            Console.CursorVisible = Settings.DisplayCursor;
-            Console.ForegroundColor = ConsoleColor.White;
             updateFrequency = Settings.UpdateFrequency;
-
-            //mapManager = new MapManager(32, 32, Vector2Int.Zero);
-            displayManager = new DisplayManager(new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser(), new ConsoleWindowInfo());
-
-            GameState = new GameStateInitializing(displayManager);
-            GameState.Enter();
-
-            mapManager = new MapManager(new Grid2D<Tile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x, y, gridPosition) => new Tile(new Vector2Int(x, y))));
-
-            soundManager = new SoundManager(new ConsoleSoundPlayer(Settings.SoundsFolderPath), Settings.SoundsFolderPath);
-
-            inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
-            inputManager.OnInputMove += MoveInput;
-            inputManager.OnInputCommand += CommandInput;
-
-            menuManager = new MenuManager(inputManager, displayManager, soundManager);
-            menuManager.mainMenu.onMenuExecution += MenuExecution;
-            menuManager.pauseMenu.onMenuExecution += MenuExecution;
 
             gameStates = new List<IGameState>
             {
@@ -69,6 +48,16 @@ namespace Skalm
                 new GameStatePaused(menuManager),
                 new GameStatePlaying(displayManager)
             };
+            GameState = gameStates.Where(state => state is GameStateInitializing).First();
+            GameState.Enter();
+
+ 
+            inputManager.OnInputMove += MoveInput;
+            inputManager.OnInputCommand += CommandInput;
+
+            menuManager.mainMenu.onMenuExecution += MenuExecution;
+            menuManager.pauseMenu.onMenuExecution += MenuExecution;
+
 
             animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
             animationFrame = 0;

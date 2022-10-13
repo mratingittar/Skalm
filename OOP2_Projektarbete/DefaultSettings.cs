@@ -2,6 +2,7 @@
 {
     internal class DefaultSettings : ISettings
     {
+        #region PROPERTIES
         public string GameTitle { get; private set; } = "Skälm";
         public bool DisplayCursor { get; private set; } = false;
         public int UpdateFrequency { get; private set; } = 20;
@@ -24,11 +25,11 @@
         public char SpriteDoor { get; private set; } = '+';
         
         public string SoundsFolderPath { get; private set; } = "..\\..\\..\\Sounds\\";
+        #endregion
 
         public bool LoadSettings(string[] file)
         {
-            FileHandler.WriteFile("settings.txt", CreateSettingsFile());
-            return true;
+            return FileHandler.WriteFile("settings.txt", CreateSettingsFile());
         }
 
         private string[] CreateSettingsFile()

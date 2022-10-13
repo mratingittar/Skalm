@@ -8,7 +8,7 @@ namespace Skalm.Menu
 {
     internal class MenuPage
     {
-        public readonly string pageName;
+        public readonly string pageName; // CHANGE TO ENUM
         public readonly Dictionary<int, string> items = new();
 
         public MenuPage(string name, params string[] items)
