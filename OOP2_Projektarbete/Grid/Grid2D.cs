@@ -1,4 +1,5 @@
 ﻿using Skalm.Structs;
+using System;
 
 namespace Skalm.Grid
 {
@@ -30,7 +31,7 @@ namespace Skalm.Grid
             }
         }
 
-        private List<Vector2Int> GetPlanePositions(int gridX, int gridY)
+        public List<Vector2Int> GetPlanePositions(int gridX, int gridY)
         {
             List<Vector2Int> positions = new List<Vector2Int>();
 
@@ -44,10 +45,20 @@ namespace Skalm.Grid
             return positions;
         }
 
+        public List<Vector2Int> GetPlanePositions(Vector2Int gridPosition)
+        {
+            return GetPlanePositions(gridPosition.X, gridPosition.Y);
+        }
+
   
         public Vector2Int GetPlanePosition(int gridX, int gridY)
         {
             return new Vector2Int(gridX * cellWidth + origin.X, gridY * cellHeight + origin.Y);
+        }
+
+        public Vector2Int GetPlanePosition(Vector2Int gridPosition)
+        {
+            return GetPlanePosition(gridPosition.X, gridPosition.Y);
         }
 
 

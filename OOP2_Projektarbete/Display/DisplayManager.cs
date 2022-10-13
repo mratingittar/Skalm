@@ -1,5 +1,6 @@
 ﻿using Skalm.Grid;
 using Skalm.Structs;
+using Skalm.Utilities;
 
 namespace Skalm.Display
 {
@@ -27,10 +28,10 @@ namespace Skalm.Display
         public readonly IPrinter printer;
         public readonly IEraser eraser;
         public readonly IWindowInfo windowInfo;
-
-        public readonly GridController pixelGridController;
         #endregion
 
+
+        public readonly GridController pixelGridController;
         public readonly Dictionary<string, char> CharSet;
 
         public DisplayManager(ISettings settings, IPrinter printer, IEraser eraser, IWindowInfo windowInfo)
@@ -39,12 +40,10 @@ namespace Skalm.Display
             this.eraser = eraser;
             this.windowInfo = windowInfo;
 
-            
-
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            // ADD FONT CHECKING. NEEDS TO BE TRUETYPE.
             CharSet = CreateCharSet();
 
+            // MOVE TO MAIN AND INJECT DICT<STRING, BOUNDS>
             gridMapRect = new Rectangle(settings.MapWidth, settings.MapHeight);
             gridMessageRect = new Rectangle(settings.MapWidth, settings.MessageBoxHeight);
             gridMainStatsRect = new Rectangle(settings.StatsWidth, settings.MainStatsHeight);
@@ -60,24 +59,22 @@ namespace Skalm.Display
 
             windowInfo.SetWindowSize(consoleRect.Width, consoleRect.Height);
 
+            // INJECT FROM MAIN
             pixelGridController = new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, settings.CellWidth, settings.CellHeight, 
                 new Vector2Int(settings.WindowPadding * settings.CellWidth, settings.WindowPadding * settings.CellHeight),
-                (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), consolePositions, new HUDBorder(CharSet["shadeMedium"]))), printer, eraser);
+                (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), new HUDBorder(CharSet["shadeMedium"]))), printer, eraser);
 
             pixelGridController.DefineGridSections(mapBounds, new MapSection());
             pixelGridController.DefineGridSections(messageBounds, new MessageSection());
             pixelGridController.DefineGridSections(mainStatsBounds, new MainStatsSection());
             pixelGridController.DefineGridSections(subStatsBounds, new SubStatsSection());
             pixelGridController.FindBorderPixels();
-            pixelGridController.DefineSectionBounds();
-
         }
 
         public void DisplayHUD()
         {
             pixelGridController.PrintBorders();
         }
-
 
         private Dictionary<string, char> CreateCharSet()
         {

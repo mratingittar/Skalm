@@ -6,6 +6,7 @@ using Skalm.Map;
 using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.Structs;
+using Skalm.Utilities;
 
 #region SETTINGS
 Console.WriteLine("Loading settings");
@@ -31,7 +32,7 @@ SoundManager soundManager = new SoundManager(new ConsoleSoundPlayer(settings.Sou
 InputManager inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
 MenuManager menuManager = new MenuManager(inputManager, displayManager, soundManager);
 
-MapManager mapManager = new MapManager(new Grid2D<Tile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x, y, gridPosition) => new Tile(new Vector2Int(x, y))));
+MapManager mapManager = new MapManager(new Grid2D<Tile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, displayManager.pixelGridController.pixelGrid.GetPlanePosition(displayManager.pixelGridController.cellsInSections["MapSection"].First().gridPosition), (x, y, gridPosition) => new Tile(new Vector2Int(x, y))));
 
 GameManager game = new GameManager(settings, displayManager, mapManager, soundManager, inputManager, menuManager);
 game.Start();

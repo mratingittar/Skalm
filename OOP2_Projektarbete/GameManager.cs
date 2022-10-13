@@ -6,6 +6,7 @@ using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.States;
 using Skalm.Structs;
+using Skalm.Utilities;
 
 namespace Skalm
 {
@@ -43,9 +44,9 @@ namespace Skalm
             gameStates = new List<IGameState>
             {
                 new GameStateInitializing(displayManager),
-                new GameStateMainMenu(menuManager),
+                new GameStateMainMenu(menuManager, soundManager),
                 new GameStatePaused(menuManager),
-                new GameStatePlaying(displayManager)
+                new GameStatePlaying(displayManager, soundManager)
             };
             GameState = gameStates.Where(state => state is GameStateInitializing).First();
             GameState.Enter();
@@ -67,7 +68,6 @@ namespace Skalm
         public void Start()
         {
             ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
-            soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
             Update();
         }
 
@@ -137,7 +137,7 @@ namespace Skalm
                     break;
                 case Page.NewGame:
                     if (item == "Start New Game")
-                        ChangeGameState(new GameStatePlaying(displayManager));
+                        ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
                     break;
                 case Page.Options:
                     if (item == "Toggle Beep")

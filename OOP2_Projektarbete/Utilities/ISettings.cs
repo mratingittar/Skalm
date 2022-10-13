@@ -1,4 +1,4 @@
-﻿namespace Skalm
+﻿namespace Skalm.Utilities
 {
     internal interface ISettings
     {

@@ -1,4 +1,4 @@
-﻿namespace Skalm
+﻿namespace Skalm.Utilities
 {
     internal class DefaultSettings : ISettings
     {
@@ -23,7 +23,7 @@
         public char SpriteWall { get; private set; } = '#';
         public char SpriteFloor { get; private set; } = '.';
         public char SpriteDoor { get; private set; } = '+';
-        
+
         public string SoundsFolderPath { get; private set; } = "..\\..\\..\\Sounds\\";
 
         public ConsoleColor ForegroundColor { get; private set; } = ConsoleColor.White;
@@ -49,11 +49,11 @@
                 ""
             };
 
-            foreach (var item in this.GetType().GetProperties())
+            foreach (var item in GetType().GetProperties())
             {
                 settingsList.Add(item.PropertyType.Name.ToString() + " " + item.Name + " = " + item.GetValue(this)!.ToString());
             }
-            
+
             return settingsList.ToArray();
         }
     }

@@ -1,4 +1,4 @@
-﻿namespace Skalm
+﻿namespace Skalm.Utilities
 {
     internal class Settings : ISettings
     {
@@ -50,7 +50,7 @@
                 string name = line.Split(' ')[1];
                 string value = line.Split('=').Last().Trim();
 
-                if (this.GetType().GetProperty(name) is null)
+                if (GetType().GetProperty(name) is null)
                     return false;
 
                 try
@@ -58,19 +58,19 @@
                     switch (type)
                     {
                         case "Int32":
-                            this.GetType().GetProperty(name)!.SetValue(this, ParseInt(value));
+                            GetType().GetProperty(name)!.SetValue(this, ParseInt(value));
                             break;
                         case "Char":
-                            this.GetType().GetProperty(name)!.SetValue(this, ParseChar(value));
+                            GetType().GetProperty(name)!.SetValue(this, ParseChar(value));
                             break;
                         case "String":
-                            this.GetType().GetProperty(name)!.SetValue(this, value);
+                            GetType().GetProperty(name)!.SetValue(this, value);
                             break;
                         case "Boolean":
-                            this.GetType().GetProperty(name)!.SetValue(this, ParseBool(value));
+                            GetType().GetProperty(name)!.SetValue(this, ParseBool(value));
                             break;
                         case "ConsoleColor":
-                            this.GetType().GetProperty(name)!.SetValue(this, ParseColor(value));
+                            GetType().GetProperty(name)!.SetValue(this, ParseColor(value));
                             break;
                     }
                 }
@@ -82,7 +82,7 @@
             return true;
         }
 
-     
+
 
         private char ParseChar(string field)
         {

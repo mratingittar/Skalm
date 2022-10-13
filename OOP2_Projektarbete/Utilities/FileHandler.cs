@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-namespace Skalm
+namespace Skalm.Utilities
 {
     internal static class FileHandler
     {
@@ -10,7 +10,7 @@ namespace Skalm
             bool success;
             try
             {
-                file = File.ReadAllLines(rootFolder + fileName, UTF8Encoding.UTF8);
+                file = File.ReadAllLines(rootFolder + fileName, Encoding.UTF8);
                 success = true;
             }
             catch (Exception)
