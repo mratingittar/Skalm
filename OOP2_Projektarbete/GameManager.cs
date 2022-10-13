@@ -15,19 +15,17 @@ namespace Skalm
     internal class GameManager
     {
         #region FIELDS
-        public IGameState GameState;
-        private List<IGameState> gameStates;
         private int updateFrequency;
 
         // MANAGERS
-        private InputManager inputManager;
-        private SoundManager soundManager;
-        private DisplayManager displayManager;
-        private MenuManager menuManager;
+        public InputManager inputManager;
+        public SoundManager soundManager;
+        public DisplayManager displayManager;
+        public MenuManager menuManager;
 
         // MAP MANAGERS
-        private MapManager mapManager;
-        private MapPrinter mapPrinter;
+        public MapManager mapManager;
+        public MapPrinter mapPrinter;
 
         // ANIMATION
         private List<char> animationTest;
@@ -37,6 +35,10 @@ namespace Skalm
 
         // PLAYER
         Player player;
+
+        // GAME MANAGER STATE MACHINE
+        public GameManagerStateMachine stateMachine;
+        public List<IGameState> gameStates;
 
         // CONSTRUCTOR I
         public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager)
@@ -55,17 +57,16 @@ namespace Skalm
             // UPDATE FREQUENCY
             updateFrequency = Settings.UpdateFrequency;
 
-            // GAME STATES
+            // STATE MACHINE & GAME STATES
             gameStates = new List<IGameState>
             {
-                new GameStateInitializing(displayManager),
-                new GameStateMainMenu(menuManager, soundManager),
-                new GameStatePaused(menuManager),
-                new GameStatePlaying(displayManager, soundManager, mapManager)
+                new GameStateInitializing(this),
+                new GameStateMainMenu(this),
+                new GameStatePaused(this),
+                new GameStatePlaying(this)
             };
 
-            GameState = gameStates.Where(state => state is GameStateInitializing).First();
-            GameState.Enter();
+            stateMachine = new GameManagerStateMachine(gameStates.Find(state => state is GameStateInitializing)!);
 
             //mapManager = new MapManager(new Grid2D<BaseTile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x,y, gridPosition) => new VoidTile(new Vector2Int(x, y))), displayManager);
             
@@ -74,12 +75,12 @@ namespace Skalm
             //inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
 
             // INPUT
-            inputManager.OnInputMove += MoveInput;
-            inputManager.OnInputCommand += CommandInput;
+            //inputManager.OnInputMove += MoveInput;
+            //inputManager.OnInputCommand += CommandInput;
 
             // MENU MANAGER
-            menuManager.mainMenu.onMenuExecution += MenuExecution;
-            menuManager.pauseMenu.onMenuExecution += MenuExecution;
+            //menuManager.mainMenu.onMenuExecution += MenuExecution;
+            //menuManager.pauseMenu.onMenuExecution += MenuExecution;
 
             // ANIMATION
             animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
@@ -92,11 +93,27 @@ namespace Skalm
             mapManager.gameObjects.Add(player);
         }
 
+        // METHOD UPDATE GAME
+        private void Update()
+        {
+            while (true)
+            {
+                inputManager.GetInput();
+
+                stateMachine.CurrentState.UpdateLogic();
+                stateMachine.CurrentState.UpdateDisplay();
+
+                Thread.Sleep(1000 / updateFrequency);
+            }
+        }
+
         // METHOD START STATE
         public void Start()
         {
-            ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
-            Update();
+            stateMachine.Initialize(gameStates.Find(state => state is GameStateInitializing)!);
+        //    stateMachine.CurrentState.Enter();
+        //    ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
+        //    Update();
         }
 
         // METHOD ANIMATE
@@ -109,91 +126,80 @@ namespace Skalm
             animationFrame++;
         }
 
-        // METHOD UPDATE GAME
-        private void Update()
-        {
-            while (true)
-            {
-                inputManager.GetInput();
-
-                Thread.Sleep(1000 / updateFrequency);
-            }
-        }
-
         // METHOD CHANGE STATE
-        public void ChangeGameState(IGameState gameState)
-        {
-            GameState.Exit();
-            GameState = gameState;
-            GameState.Enter();
-        }
+        //public void ChangeGameState(IGameState gameState)
+        //{
+        //    GameState.Exit();
+        //    GameState = gameState;
+        //    GameState.Enter();
+        //}
 
         // METHOD MOVE INPUT
-        private void MoveInput(Vector2Int direction)
-        {
-            if (GameState is GameStateMainMenu or GameStatePaused)
-            {
-                menuManager.TraverseMenu(direction);
-            }
-            else if (GameState is GameStatePlaying)
-            {
+        //private void MoveInput(Vector2Int direction)
+        //{
+        //    if (GameState is GameStateMainMenu or GameStatePaused)
+        //    {
+        //        menuManager.TraverseMenu(direction);
+        //    }
+        //    else if (GameState is GameStatePlaying)
+        //    {
 
-            }
-        }
+        //    }
+        //}
 
         // METHOD COMMAND INPUT
-        private void CommandInput(InputCommands command)
-        {
-            if (GameState is GameStateMainMenu or GameStatePaused)
-            {
-                menuManager.ExecuteMenu(command);
-            }
-            else if (GameState is GameStatePlaying)
-            {
-                if (command == InputCommands.Cancel)
-                    ChangeGameState(gameStates.Find(state => state is GameStatePaused)!);
-            }
-        }
+        //private void CommandInput(InputCommands command)
+        //{
+        //    if (GameState is GameStateMainMenu or GameStatePaused)
+        //    {
+        //        menuManager.ExecuteMenu(command);
+        //    }
+        //    else if (GameState is GameStatePlaying)
+        //    {
+        //        if (command == InputCommands.Cancel)
+        //            ChangeGameState(gameStates.Find(state => state is GameStatePaused)!);
+        //    }
+        //}
 
         // METHOD EXECUTE MENU INDEX
-        private void MenuExecution(Page menuPage, string item)
-        {
-            if (GameState is not GameStateMainMenu and not GameStatePaused)
-                return;
+        //private void MenuExecution(Page menuPage, string item)
+        //{
+        //    if (GameState is not GameStateMainMenu and not GameStatePaused)
+        //        return;
 
-            switch (menuPage)
-            {
-                case Page.MainMenu:
-                    if (item == "Exit")
-                        Environment.Exit(0);
-                    break;
+        //    switch (menuPage)
+        //    {
+        //        case Page.MainMenu:
+        //            if (item == "Exit")
+        //                Environment.Exit(0);
+        //            break;
 
-                case Page.NewGame:
-                    if (item == "Start New Game")
-                        ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
-                    break;
+        //        case Page.NewGame:
+        //            if (item == "Start New Game")
+        //                ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
+        //            break;
 
-                case Page.Options:
-                    if (item == "Toggle Beep")
-                        soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
-                    break;
+        //        case Page.Options:
+        //            if (item == "Toggle Beep")
+        //                soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
+        //            break;
 
-                case Page.Music:
-                    soundManager.PlayMusic(soundManager.Tracks.Find(sound => sound.soundName == item));
-                    menuManager.ActiveMenu.ReloadPage();
-                    break;
+        //        case Page.Music:
+        //            soundManager.PlayMusic(soundManager.Tracks.Find(sound => sound.soundName == item));
+        //            menuManager.ActiveMenu.ReloadPage();
+        //            break;
 
-                case Page.InputMethod:
-                    inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
-                    break;
+        //        case Page.InputMethod:
+        //            inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
+        //            break;
 
-                case Page.PauseMenu:
-                    if (item == "Resume")
-                        ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
-                    else if (item == "Exit")
-                        ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
-                    break;
-            }
-        }
+        //        case Page.PauseMenu:
+        //            if (item == "Resume")
+        //                ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
+        //            else if (item == "Exit")
+        //                ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
+        //            break;
+        //    }
+        //}
     }
 }

@@ -1,4 +1,6 @@
-﻿using Skalm.Menu;
+﻿using Skalm.Input;
+using Skalm.Menu;
+using Skalm.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,12 +11,18 @@ namespace Skalm.States
 {
     internal class GameStatePaused : IGameState
     {
-        private MenuManager menuManager;
+        public GameManager gameManager { get; }
+
+        private readonly MenuManager menuManager;
+
+        #region StateMachine Basics
 
         // CONSTRUCTOR I
-        public GameStatePaused(MenuManager menuManager)
+        public GameStatePaused(GameManager gameManager)
         {
-            this.menuManager = menuManager;
+            this.gameManager = gameManager;
+
+            menuManager = gameManager.menuManager;
         }
 
         // STATE ENTER
@@ -40,5 +48,23 @@ namespace Skalm.States
         {
             throw new NotImplementedException();
         }
+
+        #endregion
+
+        #region Methods
+
+        // METHOD MOVE INPUT
+        private void MoveInput(Vector2Int direction)
+        {
+            menuManager.TraverseMenu(direction);
+        }
+
+        // METHOD COMMAND INPUT
+        private void CommandInput(InputCommands command)
+        {
+            menuManager.ExecuteMenu(command);
+        }
+
+        #endregion
     }
 }
