@@ -8,7 +8,6 @@ using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.Structs;
 using Skalm.Utilities;
-using System.Reflection;
 
 #region SETTINGS
 Console.WriteLine("Loading settings");
@@ -54,7 +53,7 @@ Dictionary<string, Bounds> sectionBounds = new Dictionary<string, Bounds>
 };
 #endregion
 
-IPrinter printer = new ConsoleWindowPrinter(settings.ForegroundColor, settings.BackgroundColor);
+IPrinter printer = new ConsoleWindowPrinter();
 IEraser eraser = new ConsoleWindowEraser();
 
 #region CREATING MANAGERS

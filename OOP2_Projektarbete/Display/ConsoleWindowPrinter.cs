@@ -2,15 +2,6 @@
 {
     internal class ConsoleWindowPrinter : IPrinter
     {
-        private readonly ConsoleColor foregroundColor;
-        private readonly ConsoleColor backgroundColor;
-
-        public ConsoleWindowPrinter(ConsoleColor foregroundColor, ConsoleColor backgroundColor)
-        {
-            this.foregroundColor = foregroundColor;
-            this.backgroundColor = backgroundColor;
-        }
-
         public void PrintAtPosition(char character, int y, int x)
         {
             Console.SetCursorPosition(x, y);
@@ -19,10 +10,13 @@
 
         public void PrintFromPosition(string line, int y, int x, bool highlighted = false)
         {
+            ConsoleColor fg = Console.ForegroundColor;
+            ConsoleColor bg = Console.BackgroundColor;
+
             if (highlighted)
             {
-                Console.BackgroundColor = foregroundColor;
-                Console.ForegroundColor = backgroundColor;
+                Console.BackgroundColor = fg;
+                Console.ForegroundColor = bg;
             }
 
             Console.SetCursorPosition(x, y);
@@ -30,8 +24,8 @@
 
             if (highlighted)
             {
-                Console.BackgroundColor = backgroundColor;
-                Console.ForegroundColor = foregroundColor;
+                Console.BackgroundColor = bg;
+                Console.ForegroundColor = fg;
             }
         }
 

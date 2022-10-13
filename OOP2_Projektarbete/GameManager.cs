@@ -186,6 +186,7 @@ namespace Skalm
 
                 case Page.InputMethod:
                     inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
+                    menuManager.ActiveMenu.ReloadPage();
                     break;
 
                 case Page.PauseMenu:

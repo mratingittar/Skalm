@@ -4,8 +4,8 @@ namespace Skalm.Input
 {
     internal class InputManager
     {
-        private IMoveInput moveInput;
-        private ICommandInput commandInput;
+        public IMoveInput moveInput { get; private set; }
+        public ICommandInput commandInput { get; private set; }
         public readonly List<IMoveInput> Inputs;
         public event Action<Vector2Int>? OnInputMove;
         public event Action<InputCommands>? OnInputCommand;

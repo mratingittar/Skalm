@@ -8,6 +8,10 @@ namespace Skalm.Utilities
 {
     internal static class TextTools
     {
+        public static string AddPointersToString(string str, int padding)
+        {
+            return "►" + RepeatChar(' ', padding) + str + RepeatChar(' ', padding) + "◄";
+        }
         public static string[] AddDoubleBordersToText(string str)
         {
             string[] result = new string[3];
