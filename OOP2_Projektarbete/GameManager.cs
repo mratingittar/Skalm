@@ -21,29 +21,30 @@ namespace Skalm
         // MANAGERS
         private InputManager inputManager;
         private SoundManager soundManager;
-        private MapManager mapManager;
         private DisplayManager displayManager;
         private MenuManager menuManager;
 
+        // MAP MANAGERS
+        private MapManager mapManager;
+        private MapPrinter mapPrinter;
+
+        // ANIMATION
         private List<char> animationTest;
         private int animationFrame;
         #endregion
         public ISettings Settings { get; private set; }
 
-
         // CONSTRUCTOR I
-
-            //mapManager = new MapManager(32, 32, Vector2Int.Zero);
-            //displayManager = new DisplayManager(new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser(), new ConsoleWindowInfo());
-
         public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager)
         {
             Settings = settings;
             this.displayManager = displayManager;
-            this.mapManager = mapManager;
             this.soundManager = soundManager;
             this.inputManager = inputManager;
             this.menuManager = menuManager;
+
+            this.mapManager = mapManager;
+            this.mapPrinter = new MapPrinter(mapManager, displayManager);
 
             updateFrequency = Settings.UpdateFrequency;
 
