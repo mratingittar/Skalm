@@ -1,4 +1,5 @@
 ﻿using Skalm.Display;
+using Skalm.Sounds;
 
 namespace Skalm.Menu
 {
@@ -9,15 +10,17 @@ namespace Skalm.Menu
         public readonly TreeNode<MenuPage> pages;
         private int pageStartRow;
         private DisplayManager displayManager;
-        public event Action<string, string>? onMenuExecution;
+        private SoundManager soundManager;
+        public event Action<Page, string>? onMenuExecution;
         #endregion
 
         #region CONSTRUCTOR
-        public Menu(string[] title, TreeNode<MenuPage> pages, DisplayManager displayManager)
+        public Menu(string[] title, TreeNode<MenuPage> pages, DisplayManager displayManager, SoundManager soundManager)
         {
             this.title = title;
             this.pages = pages;
             this.displayManager = displayManager;
+            this.soundManager = soundManager;
             IsEnabled = false;
             ActivePage = pages.First().Value;
         }
@@ -38,12 +41,17 @@ namespace Skalm.Menu
             pageStartRow = displayManager.windowInfo.CursorPosition.Item2 + titlePadding;
             LoadPage(pages.Value);
         }
-        public void LoadPage(MenuPage page)
+        public void LoadPage(MenuPage page, int itemIndex = 0)
         {
             displayManager.eraser.EraseLinesFromTo(pageStartRow, pageStartRow + ActivePage.items.Count + 5); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
             ActivePage = page;
-            MenuItemIndex = 0;
+            MenuItemIndex = itemIndex;
             PrintMenu();
+        }
+
+        public void ReloadPage()
+        {
+            LoadPage(ActivePage, MenuItemIndex);
         }
 
         public void ExecuteSelectedMenuItem()
@@ -64,7 +72,7 @@ namespace Skalm.Menu
 
         private void SendMenuEvent(string executedItem)
         {
-            onMenuExecution?.Invoke(ActivePage.pageName, executedItem);
+            onMenuExecution?.Invoke(ActivePage.page, executedItem);
         }
 
         public void Cancel()
@@ -111,6 +119,11 @@ namespace Skalm.Menu
             int count = 0;
             foreach (var item in ActivePage.items)
             {
+                string pageItem = item.Value;
+
+                if (ActivePage.page is Page.Music && pageItem == soundManager.CurrentlyPlaying.soundName)
+                    pageItem = displayManager.CharSet["pointerRight"] + " " + item.Value + " " + displayManager.CharSet["pointerLeft"];
+
                 if (item.Key == ActivePage.items.Last().Key)
                 {
                     displayManager.printer.PrintCenteredInWindow("", startRow + count);
@@ -118,9 +131,9 @@ namespace Skalm.Menu
                 }
 
                 if (item.Key == MenuItemIndex)
-                    displayManager.printer.PrintCenteredInWindow(item.Value, startRow + count, true);
+                    displayManager.printer.PrintCenteredInWindow(pageItem, startRow + count, true);
                 else
-                    displayManager.printer.PrintCenteredInWindow(item.Value, startRow + count);
+                    displayManager.printer.PrintCenteredInWindow(pageItem, startRow + count);
                 count++;
             }
         }

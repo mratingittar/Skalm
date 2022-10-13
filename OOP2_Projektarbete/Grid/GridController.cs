@@ -5,11 +5,10 @@ namespace Skalm.Grid
 {
     internal class GridController
     {
-        private Grid2D<Pixel> pixelGrid;
+        public readonly Grid2D<Pixel> pixelGrid;
         private readonly IPrinter printer;
         private readonly IEraser eraser;
         public Dictionary<string, HashSet<Pixel>> cellsInSections;
-        public Dictionary<string, Bounds> sectionRealBounds;
         public HashSet<Pixel> borderCells;
 
         public GridController(Grid2D<Pixel> sectionGrid, IPrinter printer, IEraser eraser)
@@ -19,10 +18,7 @@ namespace Skalm.Grid
             this.eraser = eraser;
             cellsInSections = new Dictionary<string, HashSet<Pixel>>();
             borderCells = new HashSet<Pixel>();
-            sectionRealBounds = new Dictionary<string, Bounds>();
         }
-
-
 
         public void DefineGridSections(Bounds area, Section section)
         {
@@ -44,18 +40,15 @@ namespace Skalm.Grid
             }
         }
 
-        public void DefineSectionBounds()
+        public void DisplayStats()
         {
-            foreach (var section in cellsInSections.Keys)
-            {
-                Bounds bounds = new Bounds(cellsInSections[section].First().planePositions.First(), cellsInSections[section].Last().planePositions.Last());
-                sectionRealBounds.Add(section, bounds);
-            }            
+
         }
 
         public void DisplayMessage(string msg)
         {
-            Bounds msgBox = sectionRealBounds["MessageSection"];
+            Bounds msgBox = new Bounds(pixelGrid.GetPlanePosition(cellsInSections["MessageSection"].First().gridPosition), 
+                pixelGrid.GetPlanePosition(cellsInSections["MessageSection"].Last().gridPosition));
             int counter = 0;
             for (int y = msgBox.StartXY.Y + 1; y <= msgBox.EndXY.Y - 1; y++)
             {
@@ -66,23 +59,6 @@ namespace Skalm.Grid
 
                     printer.PrintAtPosition(msg[counter], y, x);
                     counter++;
-                }
-            }
-        }
-
-        public void PrintToSection(Section section)
-        {
-            Vector2Int start = sectionRealBounds[section.GetType().Name].StartXY;
-            Vector2Int end = sectionRealBounds[section.GetType().Name].EndXY;
-            int x = start.X;
-            int y = start.Y;
-
-            for (x = start.X; x <= end.X; x++)
-            {
-                for (y = start.Y; y <= end.Y; y++)
-                {
-
-                    printer.PrintAtPosition('o', y, x);
                 }
             }
         }
@@ -108,7 +84,7 @@ namespace Skalm.Grid
         {
             foreach (Pixel cell in borderCells)
             {
-                foreach (var position in cell.planePositions)
+                foreach (var position in pixelGrid.GetPlanePositions(cell.gridPosition.X, cell.gridPosition.Y))
                 {
                     printer.PrintAtPosition((cell.PartOfHUD as HUDBorder)!.borderCharacter, position.Y, position.X);
                 }

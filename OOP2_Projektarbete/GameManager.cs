@@ -7,6 +7,7 @@ using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.States;
 using Skalm.Structs;
+using Skalm.Utilities;
 
 namespace Skalm
 {
@@ -15,7 +16,7 @@ namespace Skalm
         #region FIELDS
         public IGameState GameState;
         private List<IGameState> gameStates;
-        private int updateFrequency = Globals.G_UPDATE_FREQUENCY;
+        private int updateFrequency;
 
         // MANAGERS
         private InputManager inputManager;
@@ -27,47 +28,62 @@ namespace Skalm
         private List<char> animationTest;
         private int animationFrame;
         #endregion
+        public ISettings Settings { get; private set; }
+
 
         // CONSTRUCTOR I
-        public GameManager()
-        {
+
             //mapManager = new MapManager(32, 32, Vector2Int.Zero);
-            displayManager = new DisplayManager(new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser(), new ConsoleWindowInfo());
+            //displayManager = new DisplayManager(new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser(), new ConsoleWindowInfo());
 
-            GameState = new GameStateInitializing(displayManager);
-            GameState.Enter();
+        public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager)
+        {
+            Settings = settings;
+            this.displayManager = displayManager;
+            this.mapManager = mapManager;
+            this.soundManager = soundManager;
+            this.inputManager = inputManager;
+            this.menuManager = menuManager;
 
-            mapManager = new MapManager(new Grid2D<BaseTile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x,y, gridPosition) => new VoidTile(new Vector2Int(x, y))), displayManager);
-            
-            soundManager = new SoundManager(new ConsoleSoundPlayer(Globals.G_SOUNDS_FOLDER_PATH));
+            updateFrequency = Settings.UpdateFrequency;
 
-            inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
-            inputManager.OnInputMove += MoveInput;
-            inputManager.OnInputCommand += CommandInput;
-
-            menuManager = new MenuManager(inputManager, displayManager, soundManager);
-            menuManager.mainMenu.onMenuExecution += MenuExecution;
-            menuManager.pauseMenu.onMenuExecution += MenuExecution;
 
             gameStates = new List<IGameState>
             {
                 new GameStateInitializing(displayManager),
-                new GameStateMainMenu(menuManager),
+                new GameStateMainMenu(menuManager, soundManager),
                 new GameStatePaused(menuManager),
-                new GameStatePlaying(displayManager, mapManager)
+                new GameStatePlaying(displayManager, soundManager)
             };
+            GameState = gameStates.Where(state => state is GameStateInitializing).First();
+            GameState.Enter();
 
-            animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░'};
+
+            //mapManager = new MapManager(new Grid2D<BaseTile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x,y, gridPosition) => new VoidTile(new Vector2Int(x, y))), displayManager);
+            
+            //soundManager = new SoundManager(new ConsoleSoundPlayer(Globals.G_SOUNDS_FOLDER_PATH));
+
+            //inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
+
+            inputManager.OnInputMove += MoveInput;
+            inputManager.OnInputCommand += CommandInput;
+
+            menuManager.mainMenu.onMenuExecution += MenuExecution;
+            menuManager.pauseMenu.onMenuExecution += MenuExecution;
+
+
+
+            animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
             animationFrame = 0;
         }
 
         // METHOD START STATE
         public void Start()
         {
-            ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);           
-            soundManager.player.Play(soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
+            ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
             Update();
         }
+
 
         // METHOD ANIMATE
         private void Animate() 
@@ -125,33 +141,41 @@ namespace Skalm
             }
         }
 
+
         // METHOD EXECUTE MENU INDEX
-        private void MenuExecution(string menuPage, string item)
+
+
+        private void MenuExecution(Page menuPage, string item)
+
         {
             if (GameState is not GameStateMainMenu and not GameStatePaused)
                 return;
 
             switch (menuPage)
             {
-                case "MAIN MENU":
+                case Page.MainMenu:
                     if (item == "Exit")
                         Environment.Exit(0);
                     break;
-                case "NEW GAME":
+                case Page.NewGame:
                     if (item == "Start New Game")
-                        ChangeGameState(new GameStatePlaying(displayManager, mapManager));
+
+
+                        ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
+
                     break;
-                case "OPTIONS":
+                case Page.Options:
                     if (item == "Toggle Beep")
                         soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
                     break;
-                case "MUSIC":
-                    soundManager.player.Play(soundManager.Tracks.Find(sound => sound.soundName == item));
+                case Page.Music:
+                    soundManager.PlayMusic(soundManager.Tracks.Find(sound => sound.soundName == item));
+                    menuManager.ActiveMenu.ReloadPage();
                     break;
-                case "INPUT METHOD":
+                case Page.InputMethod:
                     inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
                     break;
-                case "PAUSE MENU":
+                case Page.PauseMenu:
                     if (item == "Resume")
                         ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
                     else if (item == "Exit")

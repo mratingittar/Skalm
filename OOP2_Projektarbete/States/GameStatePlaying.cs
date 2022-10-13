@@ -1,5 +1,9 @@
 ﻿using Skalm.Display;
+
 using Skalm.Map;
+
+using Skalm.Sounds;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,13 +15,20 @@ namespace Skalm.States
     internal class GameStatePlaying : IGameState
     {
         private readonly DisplayManager displayManager;
+
         public MapManager mapManager;
 
+            
+
+        private readonly SoundManager soundManager;
+
         // CONSTRUCTOR I
-        public GameStatePlaying(DisplayManager displayManager, MapManager mapManager)
+        public GameStatePlaying(DisplayManager displayManager, SoundManager soundManager, MapManager mapManager)
         {
             this.displayManager = displayManager;
+            this.soundManager = soundManager;
             this.mapManager = mapManager;
+
         }
 
         // ENTER GAME PLAYING STATE
@@ -31,9 +42,14 @@ namespace Skalm.States
             displayManager.eraser.EraseAll();
             displayManager.DisplayHUD();
 
+
             // CREATE MAP
             mapManager.CreateMap();
             mapManager.mapPrinter.RedrawMap();
+
+            soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Thunder Dreams"));
+            displayManager.pixelGridController.DisplayMessage("Welcome to the Land of Skälm.");
+
         }
 
         // EXIT GAME PLAYING STATE
