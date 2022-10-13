@@ -4,7 +4,7 @@ namespace Skalm
 {
     internal static class FileHandler
     {
-        public static bool TryReadFile(string fileName, out string[]? file)
+        public static bool TryReadFile(string fileName, out string[] file)
         {
             string rootFolder = Directory.GetCurrentDirectory() + "/";
             bool success;
@@ -15,7 +15,7 @@ namespace Skalm
             }
             catch (Exception)
             {
-                file = null;
+                file = new string[0];
                 success = false;
             }
             return success;

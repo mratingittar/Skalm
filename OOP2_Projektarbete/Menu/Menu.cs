@@ -11,7 +11,7 @@ namespace Skalm.Menu
         private int pageStartRow;
         private DisplayManager displayManager;
         private SoundManager soundManager;
-        public event Action<string, string>? onMenuExecution;
+        public event Action<Page, string>? onMenuExecution;
         #endregion
 
         #region CONSTRUCTOR
@@ -72,7 +72,7 @@ namespace Skalm.Menu
 
         private void SendMenuEvent(string executedItem)
         {
-            onMenuExecution?.Invoke(ActivePage.pageName, executedItem);
+            onMenuExecution?.Invoke(ActivePage.page, executedItem);
         }
 
         public void Cancel()
@@ -121,7 +121,7 @@ namespace Skalm.Menu
             {
                 string pageItem = item.Value;
 
-                if (ActivePage.pageName == "MUSIC" && pageItem == soundManager.CurrentlyPlaying.soundName)
+                if (ActivePage.page is Page.Music && pageItem == soundManager.CurrentlyPlaying.soundName)
                     pageItem = displayManager.CharSet["pointerRight"] + " " + item.Value + " " + displayManager.CharSet["pointerLeft"];
 
                 if (item.Key == ActivePage.items.Last().Key)

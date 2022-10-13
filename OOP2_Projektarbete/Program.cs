@@ -1,6 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using Skalm;
+﻿using Skalm;
 using Skalm.Display;
 using Skalm.Grid;
 using Skalm.Input;

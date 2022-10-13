@@ -11,7 +11,6 @@ namespace Skalm
 {
     internal class GameManager
     {
-
         #region FIELDS
         public IGameState GameState;
         private List<IGameState> gameStates;
@@ -125,33 +124,33 @@ namespace Skalm
             }
         }
 
-        private void MenuExecution(string menuPage, string item)
+        private void MenuExecution(Page menuPage, string item)
         {
             if (GameState is not GameStateMainMenu and not GameStatePaused)
                 return;
 
             switch (menuPage)
             {
-                case "MAIN MENU":
+                case Page.MainMenu:
                     if (item == "Exit")
                         Environment.Exit(0);
                     break;
-                case "NEW GAME":
+                case Page.NewGame:
                     if (item == "Start New Game")
                         ChangeGameState(new GameStatePlaying(displayManager));
                     break;
-                case "OPTIONS":
+                case Page.Options:
                     if (item == "Toggle Beep")
                         soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
                     break;
-                case "MUSIC":
+                case Page.Music:
                     soundManager.PlayMusic(soundManager.Tracks.Find(sound => sound.soundName == item));
                     menuManager.ActiveMenu.ReloadPage();
                     break;
-                case "INPUT METHOD":
+                case Page.InputMethod:
                     inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
                     break;
-                case "PAUSE MENU":
+                case Page.PauseMenu:
                     if (item == "Resume")
                         ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
                     else if (item == "Exit")
