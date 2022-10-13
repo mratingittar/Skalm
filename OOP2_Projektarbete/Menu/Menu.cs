@@ -1,5 +1,6 @@
 ﻿using Skalm.Display;
 using Skalm.Sounds;
+using Skalm.Utilities;
 
 namespace Skalm.Menu
 {
@@ -109,7 +110,7 @@ namespace Skalm.Menu
 
         private void PrintMenu()
         {
-            displayManager.printer.PrintCenteredInWindow(displayManager.AddBordersToText(ActivePage.pageName), pageStartRow);
+            displayManager.printer.PrintCenteredInWindow(TextTools.AddLightBordersToText(ActivePage.pageName), pageStartRow);
             displayManager.printer.PrintCenteredInWindow("", pageStartRow + 3); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
             HighlightSelectedItem(pageStartRow + 4); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
         }

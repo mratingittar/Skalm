@@ -15,7 +15,6 @@
         public int MessageBoxHeight { get; private set; }
         public int StatsWidth { get; private set; }
         public int MainStatsHeight { get; private set; }
-        public int SubStatsHeight { get; private set; }
         public int HudPadding { get; private set; }
 
         public char SpriteBorder { get; private set; }
@@ -31,10 +30,18 @@
 
         public virtual bool LoadSettings(string[] settingsFile)
         {
-            return ApplySettings(settingsFile);
+            bool success = ApplySettings(settingsFile);
+            CheckForMinValues();
+            return success;
             // ADD REFERENCE TO DEFAULTSETTINGS, LOAD SINGLE MISSING SETTINGS FROM THAT
         }
 
+        private void CheckForMinValues()
+        {
+            StatsWidth = Math.Max(StatsWidth, 23);
+            MainStatsHeight = Math.Max(MainStatsHeight, 8);
+            MessageBoxHeight = Math.Max(MessageBoxHeight, 3);
+        }
 
         private bool ApplySettings(string[] settingsFile)
         {
