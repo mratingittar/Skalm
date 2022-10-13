@@ -47,17 +47,16 @@ namespace Skalm
 
             updateFrequency = Settings.UpdateFrequency;
 
-
             gameStates = new List<IGameState>
             {
                 new GameStateInitializing(displayManager),
                 new GameStateMainMenu(menuManager, soundManager),
                 new GameStatePaused(menuManager),
-                new GameStatePlaying(displayManager, soundManager)
+                new GameStatePlaying(displayManager, soundManager, mapManager)
             };
+
             GameState = gameStates.Where(state => state is GameStateInitializing).First();
             GameState.Enter();
-
 
             //mapManager = new MapManager(new Grid2D<BaseTile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x,y, gridPosition) => new VoidTile(new Vector2Int(x, y))), displayManager);
             
@@ -71,8 +70,6 @@ namespace Skalm
             menuManager.mainMenu.onMenuExecution += MenuExecution;
             menuManager.pauseMenu.onMenuExecution += MenuExecution;
 
-
-
             animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
             animationFrame = 0;
         }
@@ -83,7 +80,6 @@ namespace Skalm
             ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
             Update();
         }
-
 
         // METHOD ANIMATE
         private void Animate() 
@@ -141,12 +137,8 @@ namespace Skalm
             }
         }
 
-
         // METHOD EXECUTE MENU INDEX
-
-
         private void MenuExecution(Page menuPage, string item)
-
         {
             if (GameState is not GameStateMainMenu and not GameStatePaused)
                 return;
@@ -157,24 +149,26 @@ namespace Skalm
                     if (item == "Exit")
                         Environment.Exit(0);
                     break;
+
                 case Page.NewGame:
                     if (item == "Start New Game")
-
-
                         ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
-
                     break;
+
                 case Page.Options:
                     if (item == "Toggle Beep")
                         soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
                     break;
+
                 case Page.Music:
                     soundManager.PlayMusic(soundManager.Tracks.Find(sound => sound.soundName == item));
                     menuManager.ActiveMenu.ReloadPage();
                     break;
+
                 case Page.InputMethod:
                     inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
                     break;
+
                 case Page.PauseMenu:
                     if (item == "Resume")
                         ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
