@@ -7,67 +7,32 @@ namespace Skalm.Display
     internal class DisplayManager
     {
         #region FIELDS
-        private readonly int verticalBorders = 3;
-        private readonly int horizontalBorders = 3;
-
-        // RECTANGLES
-        private readonly Rectangle consoleRect;
-        private readonly Rectangle gridRect;
-        private readonly Rectangle gridMapRect;
-        private readonly Rectangle gridMessageRect;
-        private readonly Rectangle gridMainStatsRect;
-        private readonly Rectangle gridSubStatsRect;
-
-        // BOUNDS
-        private readonly Bounds mapBounds;
-        private readonly Bounds messageBounds;
-        private readonly Bounds mainStatsBounds;
-        private readonly Bounds subStatsBounds;
-
-        // INTERFACES
         public readonly IPrinter printer;
         public readonly IEraser eraser;
         public readonly IWindowInfo windowInfo;
         #endregion
 
-
+        public readonly Dictionary<string, Bounds> sectionBounds;
         public readonly GridController pixelGridController;
         public readonly Dictionary<string, char> CharSet;
 
-        public DisplayManager(ISettings settings, IPrinter printer, IEraser eraser, IWindowInfo windowInfo)
+        public DisplayManager(ISettings settings, IPrinter printer, IEraser eraser, IWindowInfo windowInfo, Rectangle windowSize, Dictionary<string, Bounds> sectionBounds, GridController gridController)
         {
             this.printer = printer;
             this.eraser = eraser;
             this.windowInfo = windowInfo;
+            this.sectionBounds = sectionBounds;
+            pixelGridController = gridController;
 
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             CharSet = CreateCharSet();
 
-            // MOVE TO MAIN AND INJECT DICT<STRING, BOUNDS>
-            gridMapRect = new Rectangle(settings.MapWidth, settings.MapHeight);
-            gridMessageRect = new Rectangle(settings.MapWidth, settings.MessageBoxHeight);
-            gridMainStatsRect = new Rectangle(settings.StatsWidth, settings.MainStatsHeight);
-            gridSubStatsRect = new Rectangle(settings.StatsWidth, settings.MapHeight + settings.MessageBoxHeight - settings.MainStatsHeight);
-            gridRect = new Rectangle(gridMapRect.Width + gridMainStatsRect.Width + settings.BorderThickness * verticalBorders,
-                gridMapRect.Height + gridMessageRect.Height + settings.BorderThickness * horizontalBorders);
-            consoleRect = new Rectangle((gridRect.Width + settings.WindowPadding * 2) * settings.CellWidth, (gridRect.Height + settings.WindowPadding * 2) * settings.CellHeight);
+            windowInfo.SetWindowSize(windowSize.Width, windowSize.Height);
 
-            mapBounds = new Bounds(new Vector2Int(settings.BorderThickness, settings.BorderThickness), gridMapRect);
-            messageBounds = new Bounds(new Vector2Int(settings.BorderThickness, mapBounds.EndXY.Y + settings.BorderThickness), gridMessageRect);
-            mainStatsBounds = new Bounds(new Vector2Int(mapBounds.EndXY.X + settings.BorderThickness, mapBounds.StartXY.Y), gridMainStatsRect);
-            subStatsBounds = new Bounds(new Vector2Int(mainStatsBounds.StartXY.X, mainStatsBounds.EndXY.Y + settings.BorderThickness), gridSubStatsRect);
-
-            windowInfo.SetWindowSize(consoleRect.Width, consoleRect.Height);
-
-            // INJECT FROM MAIN
-            pixelGridController = new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, settings.CellWidth, settings.CellHeight, 
-                new Vector2Int(settings.WindowPadding * settings.CellWidth, settings.WindowPadding * settings.CellHeight),
-                (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), new HUDBorder(CharSet["shadeMedium"]))), printer, eraser);
-
-            pixelGridController.DefineGridSections(mapBounds, new MapSection());
-            pixelGridController.DefineGridSections(messageBounds, new MessageSection());
-            pixelGridController.DefineGridSections(mainStatsBounds, new MainStatsSection());
-            pixelGridController.DefineGridSections(subStatsBounds, new SubStatsSection());
+            pixelGridController.DefineGridSections(sectionBounds["mapBounds"], new MapSection());
+            pixelGridController.DefineGridSections(sectionBounds["messageBounds"], new MessageSection());
+            pixelGridController.DefineGridSections(sectionBounds["mainStatsBounds"], new MainStatsSection());
+            pixelGridController.DefineGridSections(sectionBounds["subStatsBounds"], new SubStatsSection());
             pixelGridController.FindBorderPixels();
         }
 
