@@ -20,11 +20,13 @@ if (!FileHandler.TryReadFile("settings.txt", out string[]? file) || !settings.Lo
     if (!settings.LoadSettings(file!))
         Console.WriteLine("Unable to create settings file, continuing with default settings");
 }
+Console.WriteLine("Settings loaded");
 #endregion
 
 Console.Title = settings.GameTitle;
 Console.CursorVisible = settings.DisplayCursor;
-Console.ForegroundColor = ConsoleColor.White;
+Console.BackgroundColor = settings.backgroundColor;
+Console.ForegroundColor = settings.foregroundColor;
 
 DisplayManager displayManager = new DisplayManager(new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser(), new ConsoleWindowInfo());
 MapManager mapManager = new MapManager(new Grid2D<Tile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x, y, gridPosition) => new Tile(new Vector2Int(x, y))));

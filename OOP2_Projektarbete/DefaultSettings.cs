@@ -25,6 +25,10 @@
         public char SpriteDoor { get; private set; } = '+';
         
         public string SoundsFolderPath { get; private set; } = "..\\..\\..\\Sounds\\";
+
+        public ConsoleColor foregroundColor { get; private set; } = ConsoleColor.White;
+
+        public ConsoleColor backgroundColor { get; private set; } = ConsoleColor.Black;
         #endregion
 
         public bool LoadSettings(string[] file)

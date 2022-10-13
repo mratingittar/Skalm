@@ -25,6 +25,9 @@
 
         public string SoundsFolderPath { get; private set; } = "";
 
+        public ConsoleColor foregroundColor { get; private set; }
+
+        public ConsoleColor backgroundColor { get; private set; }
 
         public virtual bool LoadSettings(string[] settingsFile)
         {
@@ -44,6 +47,7 @@
                     continue;
 
                 string name = line.Split(' ')[1];
+                string value = line.Split('=').Last().Trim();
 
                 if (this.GetType().GetProperty(name) is null)
                     return false;
@@ -52,24 +56,20 @@
                 {
                     switch (type)
                     {
-                        case "int":
-                        case "Int":
                         case "Int32":
-                        case "int32":
-                            this.GetType().GetProperty(name)!.SetValue(this, ParseInt(name, settingsFile));
+                            this.GetType().GetProperty(name)!.SetValue(this, ParseInt(value));
                             break;
-                        case "char":
                         case "Char":
-                            this.GetType().GetProperty(name)!.SetValue(this, ParseChar(name, settingsFile));
+                            this.GetType().GetProperty(name)!.SetValue(this, ParseChar(value));
                             break;
-                        case "string":
                         case "String":
-                            this.GetType().GetProperty(name)!.SetValue(this, ParseString(name, settingsFile));
+                            this.GetType().GetProperty(name)!.SetValue(this, value);
                             break;
-                        case "bool":
-                        case "Bool":
                         case "Boolean":
-                            this.GetType().GetProperty(name)!.SetValue(this, ParseBool(name, settingsFile));
+                            this.GetType().GetProperty(name)!.SetValue(this, ParseBool(value));
+                            break;
+                        case "ConsoleColor":
+                            this.GetType().GetProperty(name)!.SetValue(this, ParseColor(value));
                             break;
                     }
                 }
@@ -81,37 +81,41 @@
             return true;
         }
 
-        private string ParseString(string field, string[] file)
+     
+
+        private char ParseChar(string field)
         {
-            string setting = ExtractField(field, file);
-            return setting.Trim();
+            return field.ToCharArray().SingleOrDefault();
         }
 
-        private char ParseChar(string field, string[] file)
+        private int ParseInt(string field)
         {
-            string setting = ExtractField(field, file);
-            return setting.Trim().ToCharArray().SingleOrDefault();
-        }
-
-        private int ParseInt(string field, string[] file)
-        {
-            string setting = ExtractField(field, file);
-            int.TryParse(setting.Trim(), out int value);
+            int.TryParse(field, out int value);
             return value;
         }
 
-        private bool ParseBool(string field, string[] file)
+        private bool ParseBool(string field)
         {
-            string setting = ExtractField(field, file);
-            bool.TryParse(setting.Trim(), out bool value);
+            bool.TryParse(field, out bool value);
             return value;
         }
 
-        // Each step, remove the line from the file so it has fewer lines to check each time
-
-        private string ExtractField(string field, string[] settings)
+        private ConsoleColor ParseColor(string field)
         {
-            return settings.Where(s => s.Contains(field)).First().Split('=').Last();
+            ConsoleColor color = ConsoleColor.Gray;
+            switch (field)
+            {
+                case "White":
+                    color = ConsoleColor.White;
+                    break;
+                case "Black":
+                    color = ConsoleColor.Black;
+                    break;
+                case "Red":
+                    color = ConsoleColor.Red;
+                    break;
+            }
+            return color;
         }
     }
 }
