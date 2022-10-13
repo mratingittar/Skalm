@@ -26,9 +26,9 @@
         
         public string SoundsFolderPath { get; private set; } = "..\\..\\..\\Sounds\\";
 
-        public ConsoleColor foregroundColor { get; private set; } = ConsoleColor.White;
+        public ConsoleColor ForegroundColor { get; private set; } = ConsoleColor.White;
 
-        public ConsoleColor backgroundColor { get; private set; } = ConsoleColor.Black;
+        public ConsoleColor BackgroundColor { get; private set; } = ConsoleColor.Black;
         #endregion
 
         public bool LoadSettings(string[] file)

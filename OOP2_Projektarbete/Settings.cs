@@ -25,13 +25,14 @@
 
         public string SoundsFolderPath { get; private set; } = "";
 
-        public ConsoleColor foregroundColor { get; private set; }
+        public ConsoleColor ForegroundColor { get; private set; }
 
-        public ConsoleColor backgroundColor { get; private set; }
+        public ConsoleColor BackgroundColor { get; private set; }
 
         public virtual bool LoadSettings(string[] settingsFile)
         {
             return ApplySettings(settingsFile);
+            // ADD REFERENCE TO DEFAULTSETTINGS, LOAD SINGLE MISSING SETTINGS FROM THAT
         }
 
 

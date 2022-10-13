@@ -5,32 +5,23 @@ namespace Skalm.Display
 {
     internal class DisplayManager
     {
-        #region SETTINGS
-        private readonly int windowPadding = Globals.G_WINDOW_PADDING;
-        private readonly int borderThickness = Globals.G_BORDER_THICKNESS;
-        private readonly int cellWidth = Globals.G_CELL_WIDTH;
-        private readonly int cellHeight = Globals.G_CELL_HEIGHT;
-        private readonly int mapWidth = Globals.G_MAP_WIDTH;
-        private readonly int mapHeight = Globals.G_MAP_HEIGHT;
-        private readonly int messageHeight = Math.Max(Globals.G_HUD_MSGBOX_H,3);
-        private readonly int statsWidth = Globals.G_HUD_MAINSTATS_W;
-        private readonly int mainStatsHeight = Globals.G_HUD_MAINSTATS_H;
-        #endregion
-
         #region FIELDS
+        private readonly int verticalBorders = 3;
+        private readonly int horizontalBorders = 3;
+
         // RECTANGLES
-        public readonly Rectangle consoleRect;
-        public readonly Rectangle gridRect;
-        public readonly Rectangle gridMapRect;
-        public readonly Rectangle gridMessageRect;
-        public readonly Rectangle gridMainStatsRect;
-        public readonly Rectangle gridSubStatsRect;
+        private readonly Rectangle consoleRect;
+        private readonly Rectangle gridRect;
+        private readonly Rectangle gridMapRect;
+        private readonly Rectangle gridMessageRect;
+        private readonly Rectangle gridMainStatsRect;
+        private readonly Rectangle gridSubStatsRect;
 
         // BOUNDS
-        public readonly Bounds mapBounds;
-        public readonly Bounds messageBounds;
-        public readonly Bounds mainStatsBounds;
-        public readonly Bounds subStatsBounds;
+        private readonly Bounds mapBounds;
+        private readonly Bounds messageBounds;
+        private readonly Bounds mainStatsBounds;
+        private readonly Bounds subStatsBounds;
 
         // INTERFACES
         public readonly IPrinter printer;
@@ -38,37 +29,39 @@ namespace Skalm.Display
         public readonly IWindowInfo windowInfo;
 
         public readonly GridController pixelGridController;
-
         #endregion
 
         public readonly Dictionary<string, char> CharSet;
 
-        public DisplayManager(IPrinter printer, IEraser eraser, IWindowInfo windowInfo)
+        public DisplayManager(ISettings settings, IPrinter printer, IEraser eraser, IWindowInfo windowInfo)
         {
             this.printer = printer;
             this.eraser = eraser;
             this.windowInfo = windowInfo;
 
+            
+
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             // ADD FONT CHECKING. NEEDS TO BE TRUETYPE.
             CharSet = CreateCharSet();
 
-            gridMapRect = new Rectangle(mapWidth, mapHeight);
-            gridMessageRect = new Rectangle(mapWidth, messageHeight);
-            gridMainStatsRect = new Rectangle(statsWidth, mainStatsHeight);
-            gridSubStatsRect = new Rectangle(statsWidth, mapHeight + messageHeight - mainStatsHeight);
-            gridRect = new Rectangle(gridMapRect.Width + gridMainStatsRect.Width + borderThickness * 3,
-                gridMapRect.Height + gridMessageRect.Height + borderThickness * 3);
-            consoleRect = new Rectangle((gridRect.Width + windowPadding * 2) * cellWidth, (gridRect.Height + windowPadding * 2) * cellHeight);
+            gridMapRect = new Rectangle(settings.MapWidth, settings.MapHeight);
+            gridMessageRect = new Rectangle(settings.MapWidth, settings.MessageBoxHeight);
+            gridMainStatsRect = new Rectangle(settings.StatsWidth, settings.MainStatsHeight);
+            gridSubStatsRect = new Rectangle(settings.StatsWidth, settings.MapHeight + settings.MessageBoxHeight - settings.MainStatsHeight);
+            gridRect = new Rectangle(gridMapRect.Width + gridMainStatsRect.Width + settings.BorderThickness * verticalBorders,
+                gridMapRect.Height + gridMessageRect.Height + settings.BorderThickness * horizontalBorders);
+            consoleRect = new Rectangle((gridRect.Width + settings.WindowPadding * 2) * settings.CellWidth, (gridRect.Height + settings.WindowPadding * 2) * settings.CellHeight);
 
-            mapBounds = new Bounds(new Vector2Int(borderThickness, borderThickness), gridMapRect);
-            messageBounds = new Bounds(new Vector2Int(borderThickness, mapBounds.EndXY.Y + borderThickness), gridMessageRect);
-            mainStatsBounds = new Bounds(new Vector2Int(mapBounds.EndXY.X + borderThickness, mapBounds.StartXY.Y), gridMainStatsRect);
-            subStatsBounds = new Bounds(new Vector2Int(mainStatsBounds.StartXY.X, mainStatsBounds.EndXY.Y + borderThickness), gridSubStatsRect);
+            mapBounds = new Bounds(new Vector2Int(settings.BorderThickness, settings.BorderThickness), gridMapRect);
+            messageBounds = new Bounds(new Vector2Int(settings.BorderThickness, mapBounds.EndXY.Y + settings.BorderThickness), gridMessageRect);
+            mainStatsBounds = new Bounds(new Vector2Int(mapBounds.EndXY.X + settings.BorderThickness, mapBounds.StartXY.Y), gridMainStatsRect);
+            subStatsBounds = new Bounds(new Vector2Int(mainStatsBounds.StartXY.X, mainStatsBounds.EndXY.Y + settings.BorderThickness), gridSubStatsRect);
 
             windowInfo.SetWindowSize(consoleRect.Width, consoleRect.Height);
 
-            pixelGridController = new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, cellWidth, cellHeight, new(windowPadding * cellWidth, windowPadding * cellHeight),
+            pixelGridController = new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, settings.CellWidth, settings.CellHeight, 
+                new Vector2Int(settings.WindowPadding * settings.CellWidth, settings.WindowPadding * settings.CellHeight),
                 (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), consolePositions, new HUDBorder(CharSet["shadeMedium"]))), printer, eraser);
 
             pixelGridController.DefineGridSections(mapBounds, new MapSection());

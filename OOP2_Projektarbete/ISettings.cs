@@ -22,8 +22,8 @@
         int UpdateFrequency { get; }
         int WindowPadding { get; }
 
-        ConsoleColor foregroundColor { get; }
-        ConsoleColor backgroundColor { get; }
+        ConsoleColor ForegroundColor { get; }
+        ConsoleColor BackgroundColor { get; }
 
         bool LoadSettings(string[] settingsFile);
     }

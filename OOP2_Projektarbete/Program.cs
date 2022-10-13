@@ -25,15 +25,15 @@ Console.WriteLine("Settings loaded");
 
 Console.Title = settings.GameTitle;
 Console.CursorVisible = settings.DisplayCursor;
-Console.BackgroundColor = settings.backgroundColor;
-Console.ForegroundColor = settings.foregroundColor;
+Console.BackgroundColor = settings.BackgroundColor;
+Console.ForegroundColor = settings.ForegroundColor;
 
-DisplayManager displayManager = new DisplayManager(new ConsoleWindowPrinter(ConsoleColor.White, ConsoleColor.Black), new ConsoleWindowEraser(), new ConsoleWindowInfo());
-MapManager mapManager = new MapManager(new Grid2D<Tile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x, y, gridPosition) => new Tile(new Vector2Int(x, y))));
+DisplayManager displayManager = new DisplayManager(settings, new ConsoleWindowPrinter(settings.ForegroundColor, settings.BackgroundColor), new ConsoleWindowEraser(), new ConsoleWindowInfo());
 SoundManager soundManager = new SoundManager(new ConsoleSoundPlayer(settings.SoundsFolderPath), settings.SoundsFolderPath);
-
 InputManager inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
 MenuManager menuManager = new MenuManager(inputManager, displayManager, soundManager);
+
+MapManager mapManager = new MapManager(new Grid2D<Tile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x, y, gridPosition) => new Tile(new Vector2Int(x, y))));
 
 GameManager game = new GameManager(settings, displayManager, mapManager, soundManager, inputManager, menuManager);
 game.Start();
