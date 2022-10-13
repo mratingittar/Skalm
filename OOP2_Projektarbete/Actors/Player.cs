@@ -38,7 +38,7 @@ namespace Skalm.Actors
             this._attack = attack;
 
             // STATS
-            this.statsHard = new StatsObjectHard(5, 5, 5, 5, 5);
+            this.statsHard = new StatsObjectHard("name", 5, 5, 5, 5, 5);
             this.statsSoft = new StatsObjectSoft(10, 1);
         }
 

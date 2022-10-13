@@ -8,17 +8,37 @@ namespace Skalm.Actors.Stats
 {
     internal class StatsObjectSoft
     {
-        public int hpMax { get; private set; }
-        public int hpCurr { get; private set; }
+        public int HpMax { get; private set; }
+        public int HpCurrent { get; private set; }
 
-        public Stat moveSpd { get; private set; }
+        public int BaseDamage { get; private set; }
+
 
         // CONSTRUCTOR I
-        public StatsObjectSoft(int hpMax, float moveSpd)
+        public StatsObjectSoft(int hpMax, int baseDamage)
         {
-            this.hpMax = hpMax;
-            this.hpCurr = hpMax;
-            this.moveSpd = new Stat("Move Speed", moveSpd);
+            this.HpMax = hpMax;
+            this.HpCurrent = hpMax;
+            BaseDamage = baseDamage;
+        }
+
+        public void TakeDamage(int damage)
+        {
+            HpCurrent -= damage;
+            if (HpCurrent <= 0)
+                Die();
+        }
+
+        public void HealDamage(int healAmount)
+        {
+            HpCurrent += healAmount;
+            if (HpCurrent > HpMax)
+                HpCurrent = HpMax;
+        }
+
+        private void Die()
+        {
+
         }
     }
 }

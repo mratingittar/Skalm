@@ -18,7 +18,6 @@
         char SpriteFloor { get; }
         char SpriteWall { get; }
         int StatsWidth { get; }
-        int SubStatsHeight { get; }
         int UpdateFrequency { get; }
         int WindowPadding { get; }
 

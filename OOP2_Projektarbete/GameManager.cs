@@ -1,4 +1,5 @@
-﻿using Skalm.Actors.Tile;
+﻿using Skalm.Actors.Stats;
+using Skalm.Actors.Tile;
 using Skalm.Display;
 using Skalm.Grid;
 using Skalm.Input;

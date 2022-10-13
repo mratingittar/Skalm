@@ -13,10 +13,9 @@
         public int CellHeight { get; private set; } = 1;
         public int MapWidth { get; private set; } = 42;
         public int MapHeight { get; private set; } = 32;
-        public int MessageBoxHeight { get; private set; } = 5;
-        public int StatsWidth { get; private set; } = 24;
-        public int MainStatsHeight { get; private set; } = 8;
-        public int SubStatsHeight { get; private set; } = 28;
+        public int MessageBoxHeight { get; private set; } = 5; // MINIMUM 3!
+        public int StatsWidth { get; private set; } = 23; // MINIMUM 23!
+        public int MainStatsHeight { get; private set; } = 8; // MINIMUM 8!
         public int HudPadding { get; private set; } = 1;
 
         public char SpriteBorder { get; private set; } = '░';
@@ -45,7 +44,7 @@
                 "",
                 "# This is a comment.",
                 "# Write properties like this:",
-                "# type property = value",
+                "# Type Property = Value",
                 ""
             };
 
