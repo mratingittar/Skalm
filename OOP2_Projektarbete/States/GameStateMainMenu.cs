@@ -8,20 +8,20 @@ namespace Skalm.States
 {
     internal class GameStateMainMenu : IGameState
     {
-        public GameManager gameManager { get; }
+        public GameManager GameManager { get; }
 
-        InputManager inputManager { get; }
-        MenuManager menuManager { get; }
-        SoundManager soundManager { get; }
+        private MenuManager menuManager;
+        private SoundManager soundManager;
+        private InputManager inputManager;
 
         // CONSTRUCTOR I
         public GameStateMainMenu(GameManager gameManager)
         {
-            this.gameManager = gameManager;
+            this.GameManager = gameManager;
 
-            inputManager = gameManager.inputManager;
-            menuManager = gameManager.menuManager;
-            soundManager = gameManager.soundManager;
+            menuManager = GameManager.MenuManager;
+            soundManager = GameManager.SoundManager;
+            inputManager = GameManager.InputManager;
         }
 
         #region StateBasics
@@ -95,7 +95,7 @@ namespace Skalm.States
 
                 case Page.NewGame:
                     if (item == "Start New Game")
-                        gameManager.stateMachine.ChangeState(gameManager.gameStates.Find(state => state is GameStatePlaying)!);
+                        GameManager.stateMachine.ChangeState(GameManager.gameStates.Find(state => state is GameStatePlaying)!);
                     break;
 
                 case Page.Options:
@@ -110,14 +110,6 @@ namespace Skalm.States
 
                 case Page.InputMethod:
                     inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
-                    break;
-
-                // NOTE: MOVE TO MENU PAUSED STATE
-                case Page.PauseMenu:
-                    if (item == "Resume")
-                        gameManager.stateMachine.ChangeState(gameManager.gameStates.Find(state => state is GameStatePlaying)!);
-                    else if (item == "Exit")
-                        gameManager.stateMachine.ChangeState(gameManager.gameStates.Find(state => state is GameStateMainMenu)!);
                     break;
             }
         }

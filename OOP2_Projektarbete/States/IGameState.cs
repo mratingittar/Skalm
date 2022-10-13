@@ -8,7 +8,7 @@ namespace Skalm.States
 {
     internal interface IGameState
     {
-        GameManager gameManager { get; }
+        GameManager GameManager { get; }
 
         void Enter();
         void Exit();

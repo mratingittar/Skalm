@@ -1,7 +1,5 @@
 ﻿using Skalm.Actors;
-using Skalm.Actors.Tile;
 using Skalm.Display;
-using Skalm.Grid;
 using Skalm.Input;
 using Skalm.Map;
 using Skalm.Menu;
@@ -14,24 +12,28 @@ namespace Skalm
 {
     internal class GameManager
     {
-        #region FIELDS
-        private int updateFrequency;
 
+        #region PROPERTIES
         // MANAGERS
-        public InputManager inputManager;
-        public SoundManager soundManager;
-        public DisplayManager displayManager;
-        public MenuManager menuManager;
+        public InputManager InputManager { get; private set; }
+        public SoundManager SoundManager { get; private set; }
+        public DisplayManager DisplayManager { get; private set; }
+        public MenuManager MenuManager { get; private set; }
 
         // MAP MANAGERS
-        public MapManager mapManager;
-        public MapPrinter mapPrinter;
+        public MapManager MapManager { get; private set; }
+        public MapPrinter MapPrinter { get; private set; }
+
+        public ISettings Settings { get; private set; } 
+        #endregion
+
+        #region FIELDS
+        private int updateFrequency;
 
         // ANIMATION
         private List<char> animationTest;
         private int animationFrame;
         #endregion
-        public ISettings Settings { get; private set; }
 
         // PLAYER
         Player player;
@@ -46,13 +48,13 @@ namespace Skalm
             Settings = settings;
 
             // MANAGERS
-            this.displayManager = displayManager;
-            this.soundManager = soundManager;
-            this.inputManager = inputManager;
-            this.menuManager = menuManager;
+            this.DisplayManager = displayManager;
+            this.SoundManager = soundManager;
+            this.InputManager = inputManager;
+            this.MenuManager = menuManager;
 
-            this.mapManager = mapManager;
-            this.mapPrinter = new MapPrinter(mapManager, displayManager);
+            this.MapManager = mapManager;
+            this.MapPrinter = new MapPrinter(mapManager, displayManager);
 
             // UPDATE FREQUENCY
             updateFrequency = Settings.UpdateFrequency;
@@ -69,7 +71,7 @@ namespace Skalm
             stateMachine = new GameManagerStateMachine(gameStates.Find(state => state is GameStateInitializing)!);
 
             //mapManager = new MapManager(new Grid2D<BaseTile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x,y, gridPosition) => new VoidTile(new Vector2Int(x, y))), displayManager);
-            
+
             //soundManager = new SoundManager(new ConsoleSoundPlayer(Globals.G_SOUNDS_FOLDER_PATH));
 
             //inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
@@ -98,7 +100,7 @@ namespace Skalm
         {
             while (true)
             {
-                inputManager.GetInput();
+                InputManager.GetInput();
 
                 stateMachine.CurrentState.UpdateLogic();
                 stateMachine.CurrentState.UpdateDisplay();
@@ -111,18 +113,19 @@ namespace Skalm
         public void Start()
         {
             stateMachine.Initialize(gameStates.Find(state => state is GameStateInitializing)!);
-        //    stateMachine.CurrentState.Enter();
-        //    ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
-        //    Update();
+            stateMachine.CurrentState.Enter();
+            stateMachine.ChangeState(gameStates.Find(state => state is GameStateMainMenu)!);
+            //ChangeGameState(gameStates.Find(state => state is GameStateMainMenu)!);
+            Update();
         }
 
         // METHOD ANIMATE
-        private void Animate() 
+        private void Animate()
         {
             if (animationFrame == animationTest.Count)
                 animationFrame = 0;
 
-            displayManager.printer.PrintAtPosition(animationTest[animationFrame], 10, 10);
+            DisplayManager.printer.PrintAtPosition(animationTest[animationFrame], 10, 10);
             animationFrame++;
         }
 

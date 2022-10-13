@@ -9,16 +9,16 @@ namespace Skalm.States
 {
     internal class GameStateInitializing : IGameState
     {
-        public GameManager gameManager { get; }
+        public GameManager GameManager { get; }
 
         private readonly DisplayManager displayManager;
 
         // CONSTRUCTOR I
         public GameStateInitializing(GameManager gameManager)
         {
-            this.gameManager = gameManager;
+            this.GameManager = gameManager;
 
-            displayManager = gameManager.displayManager;
+            displayManager = gameManager.DisplayManager;
         }
 
         // ENTER STATE

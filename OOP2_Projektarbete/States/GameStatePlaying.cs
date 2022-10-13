@@ -14,7 +14,7 @@ namespace Skalm.States
 {
     internal class GameStatePlaying : IGameState
     {
-        public GameManager gameManager { get; }
+        public GameManager GameManager { get; }
 
         private readonly InputManager inputManager;
         private readonly DisplayManager displayManager;
@@ -22,16 +22,20 @@ namespace Skalm.States
         private readonly MapManager mapManager;
         private readonly MapPrinter mapPrinter;
 
+        private bool isResuming;
+
         // CONSTRUCTOR I
         public GameStatePlaying(GameManager gameManager)
         {
-            this.gameManager = gameManager;
+            this.GameManager = gameManager;
 
-            inputManager = gameManager.inputManager;
-            displayManager = gameManager.displayManager;
-            soundManager = gameManager.soundManager;
-            mapManager = gameManager.mapManager;
-            mapPrinter = gameManager.mapPrinter;
+            inputManager = gameManager.InputManager;
+            displayManager = gameManager.DisplayManager;
+            soundManager = gameManager.SoundManager;
+            mapManager = gameManager.MapManager;
+            mapPrinter = gameManager.MapPrinter;
+
+            isResuming = false;
         }
 
         #region State Machine Basics
@@ -39,8 +43,10 @@ namespace Skalm.States
         // ENTER GAME PLAYING STATE
         public void Enter()
         {
-            // IF NEW GAME
-            // ELSE IF RESUMING
+            //if (isResuming)
+                // ONLY DO STUFF LIKE REDRAW UI
+            //else
+                // DO EVERYTHING
 
             // INPUT EVENT SUBSCRIBE
             inputManager.OnInputMove += MoveInput;
@@ -63,6 +69,7 @@ namespace Skalm.States
         public void Exit()
         {
             // SAVING STATE
+            isResuming = true;
             displayManager.eraser.EraseAll();
         }
 
@@ -92,7 +99,7 @@ namespace Skalm.States
         private void CommandInput(InputCommands command)
         {
             if (command == InputCommands.Cancel)
-                gameManager.stateMachine.ChangeState(gameManager.gameStates.Find(state => state is GameStatePaused)!);
+                GameManager.stateMachine.ChangeState(GameManager.gameStates.Find(state => state is GameStatePaused)!);
         }
 
         #endregion
