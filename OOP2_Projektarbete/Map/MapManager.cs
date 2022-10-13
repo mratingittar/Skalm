@@ -1,5 +1,4 @@
 ﻿using Skalm.Actors;
-using Skalm.Actors.Player;
 using Skalm.Actors.Tile;
 using Skalm.Display;
 using Skalm.Grid;
@@ -29,13 +28,25 @@ namespace Skalm.Map
             freeTiles = new HashSet<Vector2Int>();
             gameObjects = new List<IGameObject>();
 
-            player = new Player(tileGrid, new Vector2Int(tileGrid.gridWidth / 2, tileGrid.gridHeight / 2), new Actors.Player.PlayerMoveInput(), new Actors.Player.PlayerAttackComponent());
+            // CREATE PLAYER
+            int posX = (int)tileGrid.gridWidth / 2;
+            int posY = (int)tileGrid.gridHeight / 2;
+
+            player = new Player(tileGrid, new Vector2Int(posX, posY), new PlayerMoveInput(), new PlayerAttackComponent());
         }
 
         // METHOD CREATE MAP
         public void CreateMap()
         {
-            CreateRoom(new Bounds(new Vector2Int(5, 5), new Vector2Int(tileGrid.gridWidth - 10, tileGrid.gridHeight - 10)));
+            CreateRoom(new Bounds(new Vector2Int(5, 5), new Vector2Int(tileGrid.gridWidth - 5, tileGrid.gridHeight - 5)));
+
+            // CREATE PLAYER
+            int posX = (int)tileGrid.gridWidth / 2;
+            int posY = (int)tileGrid.gridHeight / 2;
+
+            player = new Player(tileGrid, new Vector2Int(posX, posY), new PlayerMoveInput(), new PlayerAttackComponent());
+            gameObjects.Add(player);
+            //tileGrid.GetGridObject(posX, posY)!.actorsAtPosition.Add(player.tile);
         }
 
         // METHOD CREATE ROOM

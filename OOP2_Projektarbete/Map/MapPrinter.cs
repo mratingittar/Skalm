@@ -58,7 +58,11 @@ namespace Skalm.Map
             {
                 for (int i = 0; i < tileGrid.gridWidth; i++)
                 {
-                    DrawSingleTile(tileGrid, i, j);
+                    //BaseTile tileCurr = tileGrid.GetGridObject(i, j)!;
+                    //if (tileCurr.actorsAtPosition.Count > 0)
+                    //    DrawSingleTile(tileCurr.actorsAtPosition[0]);
+                    //else
+                        DrawSingleTile(tileGrid, i, j);
                 }
             }
 
@@ -75,7 +79,7 @@ namespace Skalm.Map
             // GET TILE AT POSITION & TILE INFO
             BaseTile tileCurr = tileGrid.GetGridObject(x, y)!;
             char toPrint = tileCurr == null ? ' ' : tileCurr!.sprite;
-            ConsoleColor printCol = tileCurr == null ? ConsoleColor.White : tileCurr.color;
+            ConsoleColor printCol = tileCurr == null ? ConsoleColor.Gray : tileCurr.color;
 
             // PRINT TO CONSOLE
             Console.ForegroundColor = printCol;
@@ -85,7 +89,7 @@ namespace Skalm.Map
             }
 
             // RESET CONSOLE PRINT COLOR
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
 
         // PRINT SINGLE TILE OVERLOAD
@@ -93,14 +97,17 @@ namespace Skalm.Map
         {
             // GET TILE AT POSITION & TILE INFO
             char toPrint = tileCurr == null ? ' ' : tileCurr!.sprite;
-            ConsoleColor printCol = tileCurr == null ? ConsoleColor.White : tileCurr.color;
+            ConsoleColor printCol = tileCurr == null ? ConsoleColor.Gray : tileCurr.color;
 
             // PRINT TO CONSOLE
             Console.ForegroundColor = printCol;
-            printer.PrintAtPosition(toPrint, tileCurr!.posXY.X, tileCurr!.posXY.Y);
+            foreach (var tile in tileGrid.GetPlanePositions(tileCurr!.posXY.X, tileCurr!.posXY.Y))
+            {
+                printer.PrintAtPosition(toPrint, tile.Y, tile.X);
+            }
 
             // RESET CONSOLE PRINT COLOR
-            Console.ForegroundColor = ConsoleColor.White;
+            Console.ForegroundColor = ConsoleColor.Gray;
         }
     }
 }
