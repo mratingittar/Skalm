@@ -40,8 +40,8 @@ namespace Skalm.States
             displayManager.DisplayHUD();
 
             // CREATE MAP
-            mapManager.CreateMap();
-            //mapManager.mapPrinter.RedrawMap();
+            mapManager.mapGenerator.CreateMap();
+            mapManager.AddActorsToMap();
 
             soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Thunder Dreams"));
             displayManager.pixelGridController.DisplayMessage("Welcome to the Land of Skälm.");

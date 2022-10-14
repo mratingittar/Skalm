@@ -26,7 +26,7 @@ namespace Skalm
 
         // MAP MANAGERS
         private MapManager mapManager;
-        private MapPrinter mapPrinter;
+        //private MapPrinter mapPrinter;
 
         // ANIMATION
         private Animator animator;
@@ -49,7 +49,7 @@ namespace Skalm
             this.menuManager = menuManager;
 
             this.mapManager = mapManager;
-            this.mapPrinter = new MapPrinter(mapManager, displayManager, settings.ForegroundColor);
+            //this.mapPrinter = new MapPrinter(mapManager, displayManager.printer, settings.ForegroundColor);
 
             // UPDATE FREQUENCY
             updateFrequency = Settings.UpdateFrequency;
@@ -80,9 +80,9 @@ namespace Skalm
 
 
             // PLAYER
-            var tileGrid = mapManager.tileGrid;
+            var tileGrid = mapManager.TileGrid;
             Vector2Int midXY = new Vector2Int(tileGrid.gridWidth / 2, tileGrid.gridHeight / 2);
-            player = new Player(mapManager.tileGrid, midXY, new PlayerMoveInput(), new PlayerAttackComponent());
+            player = new Player(mapManager.TileGrid, midXY, new PlayerMoveInput(), new PlayerAttackComponent());
             mapManager.actors.Add(player);
         }
 
@@ -104,7 +104,7 @@ namespace Skalm
                     animator.AnimatedBraziers();
 
                 if (GameState is GameStatePlaying)
-                    mapPrinter.RedrawCachedTiles();
+                    mapManager.mapPrinter.RedrawCachedTiles();
                 Thread.Sleep(1000 / updateFrequency);
             }
         }
@@ -162,7 +162,7 @@ namespace Skalm
                     if (item == "Start New Game")
                     {
                         ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
-                        mapPrinter.RedrawMap();
+                        mapManager.mapPrinter.DrawMap();
                     }
 
                     break;

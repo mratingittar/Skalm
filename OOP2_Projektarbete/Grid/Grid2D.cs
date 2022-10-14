@@ -61,27 +61,12 @@ namespace Skalm.Grid
             return GetPlanePosition(gridPosition.X, gridPosition.Y);
         }
 
-
         public (int, int) GetGridPosition(Vector2Int planePosition)
         {
             int x = (planePosition.X - origin.X) / cellWidth;
             int y = (planePosition.Y - origin.Y) / cellHeight;
             return (x, y);
         }
-
-        public T? GetGridObject(Vector2Int gridPosition)
-        {
-            return GetGridObject(gridPosition.X, gridPosition.Y);
-        }
-
-        public T? GetGridObject(int gridX, int gridY)
-        {
-            if (gridX >= 0 && gridY >= 0 && gridX < gridWidth && gridY < gridHeight)
-                return gridArray[gridX, gridY];
-            else
-                return default;
-        }
-
 
         public bool TryGetGridObject(Vector2Int gridPosition, out T obj)
         {
@@ -102,10 +87,15 @@ namespace Skalm.Grid
             }
         }
 
-        public void SetGridObject(int gridX, int gridY, T obj)
+        public bool SetGridObject(int gridX, int gridY, T obj)
         {
             if (gridX >= 0 && gridY >= 0 && gridX < gridWidth && gridY < gridHeight)
+            {
                 gridArray[gridX, gridY] = obj;
+                return true;
+            }
+            else 
+                return false;
         }
     }
 }

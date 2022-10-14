@@ -13,30 +13,21 @@ namespace Skalm.Actors.Tile
         public Vector2Int GridPosition { get; protected set; }
         public virtual char Sprite { get; protected set; }
         public ConsoleColor Color { get; protected set; }
-        public List<Actor> actorsAtPosition;
 
         public BaseTile(Vector2Int gridPosition, char sprite = ' ', ConsoleColor color = ConsoleColor.White)
         {
-            this.GridPosition = gridPosition;
-            this.Sprite = sprite;
-            this.Color = color;
-
-            actorsAtPosition = new List<Actor>();
+            GridPosition = gridPosition;
+            Sprite = sprite;
+            Color = color;
         }
-        public char GetSprite()
+        public virtual char GetSprite()
         {
-            if (actorsAtPosition.Count == 0)
                 return Sprite;
-            else
-                return actorsAtPosition.First().Sprite;
         }
 
-        public ConsoleColor GetColor()
+        public virtual ConsoleColor GetColor()
         {
-            if (actorsAtPosition.Count == 0)
                 return Color;
-            else
-                return actorsAtPosition.First().Color;
         }
     }
 }

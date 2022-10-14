@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.Map
 {
-    internal static class MapGeneration
+    internal static class MapMethods
     {
         // CARDINAL DIRS ARRAY
         public static Vector2Int[] cardinalDirs = {

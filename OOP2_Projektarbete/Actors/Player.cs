@@ -69,11 +69,11 @@ namespace Skalm.Actors
         //    }
         //}
 
-        // METHOD ON COLLISION
-        //public void OnCollision()
-        //{
+        //METHOD ON COLLISION
+        public void OnCollision()
+        {
 
-        //}
+        }
 
         // METHOD RECEIVE DAMAGE
         public void ReceiveDamage(DoDamage damage)
