@@ -144,12 +144,10 @@ namespace Skalm.Grid
             {
                 for (int y = area.StartXY.Y; y < area.EndXY.Y; y++)
                 {
-                    Pixel? cell = pixelGrid.GetGridObject(x, y);
-
-                    if (cell != null && cell.PartOfHUD is HUDBorder)
+                    if (pixelGrid.TryGetGridObject(x,y, out Pixel pixel))
                     {
-                        pixelGrid.GridArray[x, y].PartOfHUD = section;
-                        pixelsInSections[section.GetType().Name].Add(cell);
+                        pixel.PartOfHUD = section;
+                        pixelsInSections[section.GetType().Name].Add(pixel);
                     }
                 }
             }
@@ -161,13 +159,8 @@ namespace Skalm.Grid
             {
                 for (int y = 0; y < pixelGrid.gridHeight; y++)
                 {
-                    Pixel? cell = pixelGrid.GetGridObject(x, y);
-
-                    if (cell is not null)
-                    {
-                        if (cell.PartOfHUD is HUDBorder)
-                            borderCells.Add(cell);
-                    }
+                    if (pixelGrid.TryGetGridObject(x, y, out Pixel pixel) && pixel.PartOfHUD is HUDBorder)
+                        borderCells.Add(pixel);
                 }
             }
         }

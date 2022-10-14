@@ -26,7 +26,7 @@ namespace Skalm
 
         // MAP MANAGERS
         private MapManager mapManager;
-        private MapPrinter mapPrinter;
+        //private MapPrinter mapPrinter;
 
         // ANIMATION
         private Animator animator;
@@ -49,7 +49,7 @@ namespace Skalm
             this.menuManager = menuManager;
 
             this.mapManager = mapManager;
-            this.mapPrinter = new MapPrinter(mapManager, displayManager);
+            //this.mapPrinter = new MapPrinter(mapManager, displayManager.printer, settings.ForegroundColor);
 
             // UPDATE FREQUENCY
             updateFrequency = Settings.UpdateFrequency;
@@ -66,11 +66,6 @@ namespace Skalm
             GameState = gameStates.Where(state => state is GameStateInitializing).First();
             GameState.Enter();
 
-            //mapManager = new MapManager(new Grid2D<BaseTile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x,y, gridPosition) => new VoidTile(new Vector2Int(x, y))), displayManager);
-
-            //soundManager = new SoundManager(new ConsoleSoundPlayer(Globals.G_SOUNDS_FOLDER_PATH));
-
-            //inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
 
             // INPUT
             inputManager.OnInputMove += MoveInput;
@@ -85,10 +80,10 @@ namespace Skalm
 
 
             // PLAYER
-            var tileGrid = mapManager.tileGrid;
+            var tileGrid = mapManager.TileGrid;
             Vector2Int midXY = new Vector2Int(tileGrid.gridWidth / 2, tileGrid.gridHeight / 2);
-            player = new Player(mapManager.tileGrid, midXY, new PlayerMoveInput(), new PlayerAttackComponent());
-            mapManager.gameObjects.Add(player);
+            player = new Player(mapManager.TileGrid, midXY, new PlayerMoveInput(), new PlayerAttackComponent());
+            mapManager.actors.Add(player);
         }
 
         // METHOD START STATE
@@ -107,6 +102,9 @@ namespace Skalm
                 inputManager.GetInput();
                 if (GameState is GameStateMainMenu)
                     animator.AnimatedBraziers();
+
+                if (GameState is GameStatePlaying)
+                    mapManager.mapPrinter.RedrawCachedTiles();
                 Thread.Sleep(1000 / updateFrequency);
             }
         }
@@ -128,7 +126,8 @@ namespace Skalm
             }
             else if (GameState is GameStatePlaying)
             {
-
+                player.Move(direction);
+                //mapPrinter.RedrawMap();
             }
         }
 
@@ -161,7 +160,11 @@ namespace Skalm
 
                 case Page.NewGame:
                     if (item == "Start New Game")
+                    {
                         ChangeGameState(gameStates.Find(state => state is GameStatePlaying)!);
+                        mapManager.mapPrinter.DrawMap();
+                    }
+
                     break;
 
                 case Page.Options:

@@ -3,85 +3,71 @@ using Skalm.Actors.Tile;
 using Skalm.Display;
 using Skalm.Grid;
 using Skalm.Structs;
+using Skalm.Utilities;
 
 namespace Skalm.Map
 {
     internal class MapManager
     {
-        public readonly Grid2D<BaseTile> tileGrid;
-        public readonly GridHandler<BaseTile> gridHandler;
+        public Grid2D<BaseTile> TileGrid { get; private set; }
+        public readonly MapGenerator mapGenerator;
+        public readonly MapPrinter mapPrinter;
+        private ISettings settings;
 
-        public readonly DisplayManager displayManager;
-
-        private HashSet<Vector2Int> freeTiles;
         public List<IGameObject> gameObjects;
+        public List<Actor> actors;
+        private Queue<Actor> moveQueue;
 
         // CONSTRUCTOR I
-        public MapManager(Grid2D<BaseTile> tileGrid, DisplayManager displayManager)
+        public MapManager(ISettings settings, DisplayManager displayManager, Grid2D<BaseTile> tileGrid)
         {
-            this.tileGrid = tileGrid;
-            this.gridHandler = new GridHandler<BaseTile>(tileGrid);
-            this.displayManager = displayManager;
+            TileGrid = tileGrid;
+            this.settings = settings;
+            mapGenerator = new MapGenerator(tileGrid);
+            mapPrinter = new MapPrinter(tileGrid, displayManager.printer, settings.ForegroundColor);
 
-            freeTiles = new HashSet<Vector2Int>();
             gameObjects = new List<IGameObject>();
+            actors = new List<Actor>();
+
+            moveQueue = new Queue<Actor>();
+
+            Actor.OnPositionChanged += UpdateActorPosition;
+            Actor.OnMoveRequested += CheckForCollision;
         }
 
-        // METHOD CREATE MAP
-        public void CreateMap()
+        private void UpdateActorPosition(Actor actor, Vector2Int newPosition, Vector2Int oldPosition)
         {
-            CreateRoom(new Bounds(new Vector2Int(5, 5), new Vector2Int(tileGrid.gridWidth - 5, tileGrid.gridHeight - 5)));
+            TileGrid.TryGetGridObject(oldPosition, out BaseTile tileOld);
+                ((IOccupiable)tileOld).ActorsOnTile.Remove(actor);
+            TileGrid.TryGetGridObject(newPosition, out BaseTile tileNew);
+                ((IOccupiable)tileNew).ActorsOnTile.Add(actor);
         }
 
-        // METHOD CREATE ROOM
-        private void CreateRoom(Bounds roomSpace)
-        {
-            // CREATE WALLS
-            CreateRoomWalls(roomSpace);
 
-            // CREATE FLOOR
-            for (int j = roomSpace.StartXY.Y + 1; j <= roomSpace.EndXY.Y - 1; j++)
+        private bool CheckForCollision(Vector2Int positionToCheck)
+        {
+            bool collision;
+
+            if (TileGrid.TryGetGridObject(positionToCheck, out var collider))
             {
-                for (int i = roomSpace.StartXY.X + 1; i <= roomSpace.EndXY.X - 1; i++)
-                {
-                    freeTiles.Add(new Vector2Int(i, j));
-                    tileGrid.SetGridObject(i, j, new FloorTile(new Vector2Int(i, j)));
-                }
+                if (collider is ICollidable)
+                    collision = ((ICollidable)collider).ColliderIsActive;
+                else
+                    collision = false;
             }
+            else
+                collision = false;
+
+            return collision;
         }
 
-        // METHOD CREATE ROOM WALLS
-        private void CreateRoomWalls(Bounds roomSpace)
+        public void AddActorsToMap()
         {
-            int posX1, posX2, posY1, posY2;
-
-            // HORIZONTAL AXIS
-            for (int i = roomSpace.StartXY.X; i <= roomSpace.EndXY.X; i++)
+            foreach (var actor in actors)
             {
-                posY1 = roomSpace.StartXY.Y;
-                posY2 = roomSpace.EndXY.Y;
-
-                tileGrid.SetGridObject(i, posY1, new WallTile(new Vector2Int(i, posY1)));
-                tileGrid.SetGridObject(i, posY2, new WallTile(new Vector2Int(i, posY2)));
+                TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile);
+                ((IOccupiable)tile).ActorsOnTile.Add(actor);
             }
-
-            // VERTICAL AXIS
-            for (int j = roomSpace.StartXY.Y; j <= roomSpace.EndXY.Y; j++)
-            {
-                posX1 = roomSpace.StartXY.X;
-                posX2 = roomSpace.EndXY.X;
-
-                tileGrid.SetGridObject(posX1, j, new WallTile(new Vector2Int(posX1, j)));
-                tileGrid.SetGridObject(posX2, j, new WallTile(new Vector2Int(posX1, j)));
-            }
-        }
-
-        public enum MapTiles
-        {
-            Void,
-            Wall,
-            Floor,
-            Door
         }
     }
 }

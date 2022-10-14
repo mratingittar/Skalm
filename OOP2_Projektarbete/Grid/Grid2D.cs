@@ -10,9 +10,9 @@ namespace Skalm.Grid
         public readonly int cellWidth;
         public readonly int cellHeight;
         public readonly Vector2Int origin;
-        public T[,] GridArray { get; private set; }
+        private T[,] gridArray;
 
-        public Grid2D(int width, int height, int cellWidth, int cellHeight, Vector2Int origin, Func<int, int, List<Vector2Int>, T> createGridObject)
+        public Grid2D(int width, int height, int cellWidth, int cellHeight, Vector2Int origin, Func<int, int, T> createGridObject)
         {
             gridWidth = width;
             gridHeight = height;
@@ -20,13 +20,13 @@ namespace Skalm.Grid
             this.cellHeight = cellHeight;
             this.origin = origin;
 
-            GridArray = new T[width, height];
+            gridArray = new T[width, height];
 
-            for (int x = 0; x < GridArray.GetLength(0); x++)
+            for (int x = 0; x < gridArray.GetLength(0); x++)
             {
-                for (int y = 0; y < GridArray.GetLength(1); y++)
+                for (int y = 0; y < gridArray.GetLength(1); y++)
                 {
-                    GridArray[x, y] = createGridObject(x, y, GetPlanePositions(x, y));
+                    gridArray[x, y] = createGridObject(x, y);
                 }
             }
         }
@@ -61,7 +61,6 @@ namespace Skalm.Grid
             return GetPlanePosition(gridPosition.X, gridPosition.Y);
         }
 
-
         public (int, int) GetGridPosition(Vector2Int planePosition)
         {
             int x = (planePosition.X - origin.X) / cellWidth;
@@ -69,18 +68,34 @@ namespace Skalm.Grid
             return (x, y);
         }
 
-        public T? GetGridObject(int gridX, int gridY)
+        public bool TryGetGridObject(Vector2Int gridPosition, out T obj)
         {
-            if (gridX >= 0 && gridY >= 0 && gridX < gridWidth && gridY < gridHeight)
-                return GridArray[gridX, gridY];
-            else
-                return default;
+            return TryGetGridObject(gridPosition.X, gridPosition.Y, out obj);
         }
 
-        public void SetGridObject(int gridX, int gridY, T obj)
+        public bool TryGetGridObject(int gridX, int gridY, out T obj)
         {
             if (gridX >= 0 && gridY >= 0 && gridX < gridWidth && gridY < gridHeight)
-                GridArray[gridX, gridY] = obj;
+            {
+                obj = gridArray[gridX, gridY];
+                return true;
+            }
+            else
+            { 
+                obj = gridArray[0,0];
+                return false;
+            }
+        }
+
+        public bool SetGridObject(int gridX, int gridY, T obj)
+        {
+            if (gridX >= 0 && gridY >= 0 && gridX < gridWidth && gridY < gridHeight)
+            {
+                gridArray[gridX, gridY] = obj;
+                return true;
+            }
+            else 
+                return false;
         }
     }
 }
