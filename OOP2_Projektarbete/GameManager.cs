@@ -1,4 +1,5 @@
 using Skalm.Actors;
+using Skalm.Animation;
 using Skalm.Display;
 using Skalm.Input;
 using Skalm.Map;
@@ -28,10 +29,8 @@ namespace Skalm
         private MapPrinter mapPrinter;
 
         // ANIMATION
-        private List<string[]> fireAnimation;
-        private List<char> animationTest;
-        private int animationFrame;
-        private int animationFrameRate;
+        private Animator animator;
+
         #endregion
         public ISettings Settings { get; private set; }
 
@@ -82,46 +81,8 @@ namespace Skalm
             menuManager.pauseMenu.onMenuExecution += MenuExecution;
 
             // ANIMATION
-            animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
-            fireAnimation = new List<string[]>{
-            new string[] {
-                @" (  ",
-                @" )\ ",
-                @"((_)",
-                @" \/ ",
-                @" || ",
-                @" || ",
-                @"/__\"
-            },
-            new string[] {
-                @" \  ",
-                @" )\ ",
-                @"(__)",
-                @" \/ ",
-                @" || ",
-                @" || ",
-                @"/__\"
-            },
-            new string[] {
-                @"  ) ",
-                @" /( ",
-                @"(_))",
-                @" \/ ",
-                @" || ",
-                @" || ",
-                @"/__\"
-            },
-            new string[] {
-                @"  / ",
-                @" /( ",
-                @"(__)",
-                @" \/ ",
-                @" || ",
-                @" || ",
-                @"/__\"
-            }};
-            animationFrame = 0;
-            animationFrameRate = 0;
+            animator = new Animator(displayManager);
+
 
             // PLAYER
             var tileGrid = mapManager.tileGrid;
@@ -137,22 +98,6 @@ namespace Skalm
             Update();
         }
 
-        // METHOD ANIMATE
-        private void Animate()
-        {
-            if (animationFrameRate == 2)
-            {
-                animationFrameRate = 0;
-
-                if (animationFrame == fireAnimation.Count)
-                    animationFrame = 0;
-
-                displayManager.printer.PrintFromPosition(fireAnimation[animationFrame], 4, Console.WindowWidth / 2 - Console.WindowWidth / 4);
-                displayManager.printer.PrintFromPosition(fireAnimation[animationFrame], 4, Console.WindowWidth / 2 + Console.WindowWidth / 4);
-                animationFrame++;
-            }
-            animationFrameRate++;
-        }
 
         // METHOD UPDATE GAME
         private void Update()
@@ -161,7 +106,7 @@ namespace Skalm
             {
                 inputManager.GetInput();
                 if (GameState is GameStateMainMenu)
-                    Animate();
+                    animator.AnimatedBraziers();
                 Thread.Sleep(1000 / updateFrequency);
             }
         }
