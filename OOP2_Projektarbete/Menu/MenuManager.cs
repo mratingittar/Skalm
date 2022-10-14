@@ -31,6 +31,7 @@ namespace Skalm.Menu
             mainMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["MAIN MENU"], menuPagesToLoad["NEW GAME"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["CREDITS"]), displayManager, soundManager, inputManager);
             mainMenu.pages.FindNode(node => node.Value.pageName == "OPTIONS").AddChildren(menuPagesToLoad["INPUT METHOD"], menuPagesToLoad["MUSIC"]);
             pauseMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["PAUSE MENU"], menuPagesToLoad["OPTIONS"]), displayManager, soundManager, inputManager);
+            pauseMenu.pages.FindNode(node => node.Value.pageName == "OPTIONS").AddChildren(menuPagesToLoad["INPUT METHOD"], menuPagesToLoad["MUSIC"]);
             ActiveMenu = mainMenu;
         }
 
@@ -58,7 +59,6 @@ namespace Skalm.Menu
         {
             ActiveMenu = menu;
             menu.LoadMenu(3);
-            ActiveMenu.IsEnabled = true;
         }
 
         public void UnloadMenu()

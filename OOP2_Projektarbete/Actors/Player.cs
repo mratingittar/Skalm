@@ -15,11 +15,11 @@ namespace Skalm.Actors
     internal class Player : Actor, IDamageable, IGameObject
     {
         // POSITION
-        private Grid2D<BaseTile> gameGrid;
+        //private Grid2D<BaseTile> gameGrid;
         //public ActorTile tile { get; set; }
 
         // COMPONENTS
-        public IMoveInput _moveInput { get; set; }
+        //public IMoveInput _moveInput { get; set; }
         public IAttackComponent _attack { get; set; }
 
 
@@ -28,14 +28,14 @@ namespace Skalm.Actors
         private StatsObjectSoft statsSoft;
 
         // CONSTRUCTOR I
-        public Player(Grid2D<BaseTile> gameGrid, Vector2Int posXY, IMoveInput moveInput, IAttackComponent attack) : base(posXY, '@', ConsoleColor.Red)
+        public Player( Vector2Int posXY, IAttackComponent attack) : base(posXY, '@', ConsoleColor.Red)
         {
             // GAME WORLD
-            this.gameGrid = gameGrid;
+            //this.gameGrid = gameGrid;
             //this.tile = new ActorTile(posXY, '@', ConsoleColor.Red);
 
             // COMPONENTS
-            this._moveInput = moveInput;
+            //this._moveInput = moveInput;
             this._attack = attack;
 
             // STATS

@@ -22,7 +22,7 @@ namespace Skalm.Animation
             animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
 
             fireAnim1 = CreateFireAnimation(0);
-            fireAnim2 = CreateFireAnimation(2);
+            fireAnim2 = CreateFireAnimation(1);
 
             animationFrameRate = 0;
         }

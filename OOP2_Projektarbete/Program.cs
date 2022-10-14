@@ -71,4 +71,5 @@ MapManager mapManager = new MapManager(settings, displayManager, new Grid2D<Base
 GameManager game = new GameManager(settings, displayManager, mapManager, soundManager, inputManager, menuManager);
 #endregion
 
+Console.Clear();
 game.Start();

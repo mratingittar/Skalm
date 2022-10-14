@@ -10,7 +10,6 @@ namespace Skalm.States
     internal class GameStateInitializing : IGameState
     {
         public GameManager GameManager { get; }
-
         private readonly DisplayManager displayManager;
 
         // CONSTRUCTOR I

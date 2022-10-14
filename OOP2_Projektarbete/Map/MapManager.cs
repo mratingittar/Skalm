@@ -69,5 +69,11 @@ namespace Skalm.Map
                 ((IOccupiable)tile).ActorsOnTile.Add(actor);
             }
         }
+
+        public void ResetMap()
+        {
+            actors.Clear();
+            gameObjects.Clear();
+        }
     }
 }

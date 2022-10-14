@@ -40,7 +40,6 @@ namespace Skalm.States
             inputManager.OnInputCommand += CommandInput;
 
             // MENU EVENT SUBSCRIBE
-            menuManager.mainMenu.onMenuExecution += MenuExecution;
             menuManager.pauseMenu.onMenuExecution += MenuExecution;
         }
 
@@ -54,20 +53,19 @@ namespace Skalm.States
             inputManager.OnInputCommand -= CommandInput;
 
             // MENU EVENT UNSUBSCRIBE
-            menuManager.mainMenu.onMenuExecution -= MenuExecution;
             menuManager.pauseMenu.onMenuExecution -= MenuExecution;
         }
 
         // STATE UPDATE LOGIC
         public void UpdateLogic()
         {
-            throw new NotImplementedException();
+            
         }
 
         // STATE UPDATE DISPLAY
         public void UpdateDisplay()
         {
-            throw new NotImplementedException();
+            
         }
 
         #endregion
@@ -90,6 +88,13 @@ namespace Skalm.States
         {
             switch (menuPage)
             {
+                case Page.PauseMenu:
+                    if (item == "Resume")
+                        GameManager.stateMachine.ChangeState(GameManager.gameStates.Find(state => state is GameStatePlaying)!);
+                    else if (item == "Exit")
+                        GameManager.stateMachine.ChangeState(GameManager.gameStates.Find(state => state is GameStateMainMenu)!);
+                    break;
+
                 case Page.Options:
                     if (item == "Toggle Beep")
                         soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
@@ -102,13 +107,6 @@ namespace Skalm.States
 
                 case Page.InputMethod:
                     inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
-                    break;
-
-                case Page.PauseMenu:
-                    if (item == "Resume")
-                        GameManager.stateMachine.ChangeState(GameManager.gameStates.Find(state => state is GameStatePlaying)!);
-                    else if (item == "Exit")
-                        GameManager.stateMachine.ChangeState(GameManager.gameStates.Find(state => state is GameStateMainMenu)!);
                     break;
             }
         }

@@ -4,11 +4,6 @@ using Skalm.Map;
 
 using Skalm.Sounds;
 using Skalm.Structs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Skalm.States
 {
@@ -22,8 +17,6 @@ namespace Skalm.States
         private readonly MapManager mapManager;
         private readonly MapPrinter mapPrinter;
 
-        private bool isResuming;
-
         // CONSTRUCTOR I
         public GameStatePlaying(GameManager gameManager)
         {
@@ -33,9 +26,7 @@ namespace Skalm.States
             displayManager = gameManager.DisplayManager;
             soundManager = gameManager.SoundManager;
             mapManager = gameManager.MapManager;
-            mapPrinter = gameManager.MapPrinter;
-
-            isResuming = false;
+            mapPrinter = mapManager.mapPrinter;
         }
 
         #region State Machine Basics
@@ -43,37 +34,55 @@ namespace Skalm.States
         // ENTER GAME PLAYING STATE
         public void Enter()
         {
-            //if (isResuming)
-                // ONLY DO STUFF LIKE REDRAW UI
-            //else
-                // DO EVERYTHING
-
             // INPUT EVENT SUBSCRIBE
             inputManager.OnInputMove += MoveInput;
             inputManager.OnInputCommand += CommandInput;
 
-            displayManager.printer.PrintCenteredInWindow("Starting new game", displayManager.windowInfo.WindowHeight / 2);
-            Thread.Sleep(500);
+            if (GameManager.NewGame)
+            {
+                displayManager.printer.PrintCenteredInWindow("ENTERING SKÄLM", displayManager.windowInfo.WindowHeight / 2);
+                Thread.Sleep(500);
+                mapManager.ResetMap();
+
+                // CREATE PLAYER
+                GameManager.CreatePlayer();
+
+                // CREATE OTHER ACTORS
+
+
+                // CREATE ITEMS
+
+
+                // CREATE MAP
+                mapManager.mapGenerator.CreateMap();
+                mapManager.AddActorsToMap();
+            }
+
+            // DRAWING HUD & MAP
             displayManager.eraser.EraseAll();
             displayManager.DisplayHUD();
-
-            // CREATE MAP
-
-            mapManager.mapGenerator.CreateMap();
-            mapManager.AddActorsToMap();
             mapManager.mapPrinter.DrawMap();
 
 
+            if (GameManager.NewGame)
+                displayManager.pixelGridController.DisplayMessage("Welcome traveller.");
+            else
+                displayManager.pixelGridController.DisplayMessage("Welcome back.");
+
+
             soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Thunder Dreams"));
-            displayManager.pixelGridController.DisplayMessage("Welcome to the Land of Skälm.");
         }
 
         // EXIT GAME PLAYING STATE
         public void Exit()
         {
             // SAVING STATE
-            isResuming = true;
+            GameManager.NewGame = false;
             displayManager.eraser.EraseAll();
+
+            // INPUT EVENT UNSUBSCRIBE
+            inputManager.OnInputMove -= MoveInput;
+            inputManager.OnInputCommand -= CommandInput;
         }
 
         // UPDATE STATE LOGIC
@@ -85,7 +94,7 @@ namespace Skalm.States
         // UPDATE STATE DISPLAY
         public void UpdateDisplay()
         {
-            // _displayManager.UpdateDisplayWindows();
+            mapPrinter.RedrawCachedTiles();
         }
 
         #endregion
@@ -95,7 +104,7 @@ namespace Skalm.States
         //METHOD MOVE INPUT
         private void MoveInput(Vector2Int direction)
         {
-
+            GameManager.player.Move(direction);
         }
 
         // METHOD COMMAND INPUT
