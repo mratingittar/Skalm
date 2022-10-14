@@ -75,11 +75,11 @@ namespace Skalm.Menu
             switch (direction.Y)
             {
                 case < 0:
-                    if (ActiveMenu.MoveMenuDown())
+                    if (ActiveMenu.MoveMenuUp())
                         soundPlayer.Play(SoundManager.SoundType.Move);
                     break;
                 case > 0:
-                    if (ActiveMenu.MoveMenuUp())
+                    if (ActiveMenu.MoveMenuDown())
                         soundPlayer.Play(SoundManager.SoundType.Move);
                     break;
             }

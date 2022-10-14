@@ -7,9 +7,10 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors
 {
-    internal interface ICollidable
+    internal interface IGridObject
     {
-        bool ColliderIsActive { get; }
-        void OnCollision();
+        Vector2Int GridPosition { get; }
+        char Sprite { get; }
+        ConsoleColor Color { get; }
     }
 }

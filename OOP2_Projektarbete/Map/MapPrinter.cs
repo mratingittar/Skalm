@@ -17,19 +17,45 @@ namespace Skalm.Map
         DisplayManager displayManager;
         IPrinter printer;
         Grid2D<BaseTile> tileGrid;
+        HashSet<BaseTile> tileSet;
 
         private Queue<Vector2Int> positionsToUpdate;
+        private ConsoleColor foregroundColor;
 
         // CONSTRUCTOR I
-        public MapPrinter(MapManager mapManager, DisplayManager displayManager)
+        public MapPrinter(MapManager mapManager, DisplayManager displayManager, ConsoleColor foregroundColor)
         {
             this.mapManager = mapManager;
             this.displayManager = displayManager;
+            this.foregroundColor = foregroundColor;
 
             positionsToUpdate = new Queue<Vector2Int>();
 
             tileGrid = mapManager.tileGrid;
+            tileSet = GetAllTiles(tileGrid);
+
             printer = displayManager.printer;
+
+            Actor.OnPositionChanged += ActorMove;
+        }
+
+        private void ActorMove(Actor actor, Vector2Int newPos, Vector2Int oldPos)
+        {
+            CacheUpdatedTile(oldPos, newPos);
+        }
+
+        private HashSet<BaseTile> GetAllTiles(Grid2D<BaseTile> grid)
+        {
+            HashSet<BaseTile> set = new HashSet<BaseTile> ();
+            for (int x = 0; x < grid.gridWidth; x++)
+            {
+                for (int y = 0; y < grid.gridHeight; y++)
+                {
+                    if (grid.TryGetGridObject(x, y, out BaseTile tile))
+                        set.Add(tile);
+                }
+            }
+            return set;
         }
 
         // METHOD CASH UPDATED TILES
@@ -46,30 +72,49 @@ namespace Skalm.Map
             while (positionsToUpdate.Count > 0)
             {
                 tempPos = positionsToUpdate.Dequeue();
-                DrawSingleTile(tileGrid, tempPos.X, tempPos.Y);
+                DrawSingleTile(tempPos);
             }
         }
 
         // REDRAW WHOLE MAP
         public void RedrawMap()
         {
-            // LOOP THROUGH GRID COLUMNS & ROWS
-            for (int j = 0; j < tileGrid.gridHeight; j++)
+            foreach (BaseTile tile in tileSet)
             {
-                for (int i = 0; i < tileGrid.gridWidth; i++)
-                {
+                DrawSingleTile(tile.GridPosition);
+            }
+
+            //LOOP THROUGH GRID COLUMNS &ROWS
+            //for (int y = 0; y < tileGrid.gridHeight; y++)
+            //{
+            //    for (int x = 0; x < tileGrid.gridWidth; x++)
+            //    {
                     //BaseTile tileCurr = tileGrid.GetGridObject(i, j)!;
                     //if (tileCurr.actorsAtPosition.Count > 0)
                     //    DrawSingleTile(tileCurr.actorsAtPosition[0]);
                     //else
-                        DrawSingleTile(tileGrid, i, j);
-                }
-            }
+                                //DrawSingleTile(tileGrid, i, j);
+                //}
+            //}
 
             // DRAW ACTORS
-            foreach (var actor in mapManager.gameObjects)
+            //foreach (var actor in mapManager.actors)
+            //{
+            //        DrawSingleTile(actor.GridPosition);
+
+            //}
+        }
+
+        private void DrawSingleTile(Vector2Int gridPosition)
+        {
+            if (tileGrid.TryGetGridObject(gridPosition, out BaseTile tile))
             {
-                DrawSingleTile(actor.tile);
+                Console.ForegroundColor = tile.GetColor();
+                foreach (var position in tileGrid.GetPlanePositions(gridPosition))
+                {
+                    printer.PrintAtPosition(tile.GetSprite(), position.Y, position.X);
+                }
+                Console.ForegroundColor = foregroundColor;
             }
         }
 
@@ -78,8 +123,8 @@ namespace Skalm.Map
         {
             // GET TILE AT POSITION & TILE INFO
             BaseTile tileCurr = tileGrid.GetGridObject(x, y)!;
-            char toPrint = tileCurr == null ? ' ' : tileCurr!.sprite;
-            ConsoleColor printCol = tileCurr == null ? ConsoleColor.Gray : tileCurr.color;
+            char toPrint = tileCurr == null ? ' ' : tileCurr!.GetSprite();
+            ConsoleColor printCol = tileCurr == null ? ConsoleColor.Gray : tileCurr.Color;
 
             // PRINT TO CONSOLE
             Console.ForegroundColor = printCol;
@@ -96,12 +141,12 @@ namespace Skalm.Map
         private void DrawSingleTile(ActorTile tileCurr)
         {
             // GET TILE AT POSITION & TILE INFO
-            char toPrint = tileCurr == null ? ' ' : tileCurr!.sprite;
-            ConsoleColor printCol = tileCurr == null ? ConsoleColor.Gray : tileCurr.color;
+            char toPrint = tileCurr == null ? ' ' : tileCurr!.Sprite;
+            ConsoleColor printCol = tileCurr == null ? ConsoleColor.Gray : tileCurr.Color;
 
             // PRINT TO CONSOLE
             Console.ForegroundColor = printCol;
-            foreach (var tile in tileGrid.GetPlanePositions(tileCurr!.posXY.X, tileCurr!.posXY.Y))
+            foreach (var tile in tileGrid.GetPlanePositions(tileCurr!.GridPosition.X, tileCurr!.GridPosition.Y))
             {
                 printer.PrintAtPosition(toPrint, tile.Y, tile.X);
             }

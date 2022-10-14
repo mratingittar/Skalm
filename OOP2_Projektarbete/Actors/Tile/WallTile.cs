@@ -11,11 +11,13 @@ namespace Skalm.Actors.Tile
     internal class WallTile : BaseTile, ICollidable
     {
         // CONSTRUCTOR
-        public WallTile(Vector2Int posXY) : base(posXY, Globals.G_WALL, ConsoleColor.Gray) {}
+        public WallTile(Vector2Int posXY, char wallSprite = '#', ConsoleColor wallColor = ConsoleColor.Gray) : base(posXY, wallSprite, wallColor) {}
+
+        public bool ColliderIsActive => true;
 
         public void OnCollision()
         {
-
+            throw new NotImplementedException();
         }
     }
 }

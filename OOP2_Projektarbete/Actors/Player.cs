@@ -12,26 +12,27 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors
 {
-    internal class Player : IGameObject, IMoveable, ICollidable, IDamageable
+    internal class Player : Actor, IDamageable, IGameObject
     {
         // POSITION
         private Grid2D<BaseTile> gameGrid;
-        public ActorTile tile { get; set; }
+        //public ActorTile tile { get; set; }
 
         // COMPONENTS
         public IMoveInput _moveInput { get; set; }
         public IAttackComponent _attack { get; set; }
+
 
         // STATS
         private StatsObjectHard statsHard;
         private StatsObjectSoft statsSoft;
 
         // CONSTRUCTOR I
-        public Player(Grid2D<BaseTile> gameGrid, Vector2Int posXY, IMoveInput moveInput, IAttackComponent attack)
+        public Player(Grid2D<BaseTile> gameGrid, Vector2Int posXY, IMoveInput moveInput, IAttackComponent attack) : base(posXY, '@', ConsoleColor.Red)
         {
             // GAME WORLD
             this.gameGrid = gameGrid;
-            this.tile = new ActorTile(posXY, '@', ConsoleColor.Red);
+            //this.tile = new ActorTile(posXY, '@', ConsoleColor.Red);
 
             // COMPONENTS
             this._moveInput = moveInput;
@@ -49,30 +50,30 @@ namespace Skalm.Actors
         }
 
         // MOVE METHOD
-        public void Move(Vector2Int target)
-        {
-            // CHECK GRID FOR COLLISION
-            if (gameGrid.GetGridObject(target.X, target.Y) is ICollidable collidable)
-            {
-                // COLLIDE
-                collidable.OnCollision();
+        //public void Move(Vector2Int target)
+        //{
+        //    // CHECK GRID FOR COLLISION
+        //    if (gameGrid.GetGridObject(target.X, target.Y) is ICollidable collidable)
+        //    {
+        //        // COLLIDE
+        //        collidable.OnCollision();
 
-                // IF CAN BE FOUGHT, DEAL DAMAGE
-                if (collidable is IDamageable damageable)
-                {
-                    damageable.ReceiveDamage(_attack.Attack());
-                }
-            } else {
-                // CELL IS FREE = MAKE MOVE
-                tile.posXY = target;
-            }
-        }
+        //        // IF CAN BE FOUGHT, DEAL DAMAGE
+        //        if (collidable is IDamageable damageable)
+        //        {
+        //            damageable.ReceiveDamage(_attack.Attack());
+        //        }
+        //    } else {
+        //        // CELL IS FREE = MAKE MOVE
+        //        //tile.GridPosition = target;
+        //    }
+        //}
 
         // METHOD ON COLLISION
-        public void OnCollision()
-        {
+        //public void OnCollision()
+        //{
 
-        }
+        //}
 
         // METHOD RECEIVE DAMAGE
         public void ReceiveDamage(DoDamage damage)

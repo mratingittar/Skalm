@@ -10,6 +10,6 @@ namespace Skalm.Actors.Tile
 {
     internal class FloorTile : BaseTile
     {
-        public FloorTile(Vector2Int posXY) : base(posXY, Globals.G_FLOOR, ConsoleColor.Gray) {}
+        public FloorTile(Vector2Int gridPos, char sprite = '.', ConsoleColor color = ConsoleColor.Gray) : base(gridPos, sprite, color) {}
     }
 }
