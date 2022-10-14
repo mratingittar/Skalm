@@ -28,9 +28,9 @@ namespace Skalm.Menu
                 title = new string[0];
 
             Dictionary<string, MenuPage> menuPagesToLoad = CreateMenuPages();
-            mainMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["MAIN MENU"], menuPagesToLoad["NEW GAME"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["CREDITS"]), displayManager, soundManager);
+            mainMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["MAIN MENU"], menuPagesToLoad["NEW GAME"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["CREDITS"]), displayManager, soundManager, inputManager);
             mainMenu.pages.FindNode(node => node.Value.pageName == "OPTIONS").AddChildren(menuPagesToLoad["INPUT METHOD"], menuPagesToLoad["MUSIC"]);
-            pauseMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["PAUSE MENU"], menuPagesToLoad["OPTIONS"]), displayManager, soundManager);
+            pauseMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["PAUSE MENU"], menuPagesToLoad["OPTIONS"]), displayManager, soundManager, inputManager);
             ActiveMenu = mainMenu;
         }
 
@@ -75,11 +75,11 @@ namespace Skalm.Menu
             switch (direction.Y)
             {
                 case < 0:
-                    if (ActiveMenu.MoveMenuDown())
+                    if (ActiveMenu.MoveMenuUp())
                         soundPlayer.Play(SoundManager.SoundType.Move);
                     break;
                 case > 0:
-                    if (ActiveMenu.MoveMenuUp())
+                    if (ActiveMenu.MoveMenuDown())
                         soundPlayer.Play(SoundManager.SoundType.Move);
                     break;
             }

@@ -1,5 +1,7 @@
 ﻿using Skalm.Display;
+using Skalm.Input;
 using Skalm.Sounds;
+using Skalm.Utilities;
 
 namespace Skalm.Menu
 {
@@ -11,16 +13,18 @@ namespace Skalm.Menu
         private int pageStartRow;
         private DisplayManager displayManager;
         private SoundManager soundManager;
+        private InputManager inputManager;
         public event Action<Page, string>? onMenuExecution;
         #endregion
 
         #region CONSTRUCTOR
-        public Menu(string[] title, TreeNode<MenuPage> pages, DisplayManager displayManager, SoundManager soundManager)
+        public Menu(string[] title, TreeNode<MenuPage> pages, DisplayManager displayManager, SoundManager soundManager, InputManager inputManager)
         {
             this.title = title;
             this.pages = pages;
             this.displayManager = displayManager;
             this.soundManager = soundManager;
+            this.inputManager = inputManager;
             IsEnabled = false;
             ActivePage = pages.First().Value;
         }
@@ -109,7 +113,7 @@ namespace Skalm.Menu
 
         private void PrintMenu()
         {
-            displayManager.printer.PrintCenteredInWindow(displayManager.AddBordersToText(ActivePage.pageName), pageStartRow);
+            displayManager.printer.PrintCenteredInWindow(TextTools.AddLightBordersToText(ActivePage.pageName), pageStartRow);
             displayManager.printer.PrintCenteredInWindow("", pageStartRow + 3); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
             HighlightSelectedItem(pageStartRow + 4); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
         }
@@ -122,7 +126,10 @@ namespace Skalm.Menu
                 string pageItem = item.Value;
 
                 if (ActivePage.page is Page.Music && pageItem == soundManager.CurrentlyPlaying.soundName)
-                    pageItem = displayManager.CharSet["pointerRight"] + " " + item.Value + " " + displayManager.CharSet["pointerLeft"];
+                    pageItem = TextTools.AddPointersToString(pageItem, 3);
+
+                if (ActivePage.page is Page.InputMethod && pageItem == inputManager.moveInput.GetType().Name)
+                    pageItem = TextTools.AddPointersToString(pageItem, 3);
 
                 if (item.Key == ActivePage.items.Last().Key)
                 {

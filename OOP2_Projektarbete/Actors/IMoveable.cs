@@ -11,9 +11,6 @@ namespace Skalm.Actors
 {
     internal interface IMoveable
     {
-        IMoveInput _moveInput { get; set; }
-        ActorTile tile { get; set; }
-
-        void Move(Vector2Int target);
+        void Move(Vector2Int direction);
     }
 }

@@ -9,6 +9,7 @@ namespace Skalm.Actors.Tile
 {
     internal class VoidTile : BaseTile
     {
-        public VoidTile(Vector2Int posXY, char sprite = ' ', ConsoleColor color = ConsoleColor.White) : base(posXY) {}
+        public override char Sprite { get => ' '; }
+        public VoidTile(Vector2Int gridPosition) : base(gridPosition) {}
     }
 }

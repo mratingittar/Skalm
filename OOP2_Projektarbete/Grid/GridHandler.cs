@@ -24,18 +24,6 @@ namespace Skalm.Grid
         {
             return grid.GetPlanePositions(gridX, gridY);
         }
-        public bool TryGetGridObject(int gridX, int gridY, out T obj)
-        {
-            if (grid.GetGridObject(gridX, gridY) is not null)
-            {
-                obj = grid.GridArray[gridX, gridY];
-                return true;
-            }
-            else
-            {
-                obj = grid.GridArray[0,0];
-                return false;
-            }
-        }
+        
     }
 }

@@ -8,7 +8,6 @@ using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.Structs;
 using Skalm.Utilities;
-using System.Reflection;
 
 #region SETTINGS
 Console.WriteLine("Loading settings");
@@ -54,20 +53,20 @@ Dictionary<string, Bounds> sectionBounds = new Dictionary<string, Bounds>
 };
 #endregion
 
-IPrinter printer = new ConsoleWindowPrinter(settings.ForegroundColor, settings.BackgroundColor);
+IPrinter printer = new ConsoleWindowPrinter();
 IEraser eraser = new ConsoleWindowEraser();
 
 #region CREATING MANAGERS
-DisplayManager displayManager = new DisplayManager(settings, printer, eraser, new ConsoleWindowInfo(), consoleRect, sectionBounds,
-    new GridController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, settings.CellWidth, settings.CellHeight,
+DisplayManager displayManager = new DisplayManager(settings, printer, eraser, new ConsoleWindowInfo(), consoleRect,
+    new PixelController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, settings.CellWidth, settings.CellHeight,
                 new Vector2Int(settings.WindowPadding * settings.CellWidth, settings.WindowPadding * settings.CellHeight),
-                (gridX, gridY, consolePositions) => new Pixel(new(gridX, gridY), new HUDBorder(settings.SpriteBorder))), printer, eraser));
+                (x, y) => new Pixel(new Vector2Int(x, y), new HUDBorder(settings.SpriteBorder))), sectionBounds, printer, eraser));
 SoundManager soundManager = new SoundManager(new ConsoleSoundPlayer(settings.SoundsFolderPath), settings.SoundsFolderPath);
 InputManager inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
 MenuManager menuManager = new MenuManager(inputManager, displayManager, soundManager);
-MapManager mapManager = new MapManager(new Grid2D<BaseTile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, 
-    displayManager.pixelGridController.pixelGrid.GetPlanePosition(displayManager.pixelGridController.cellsInSections["MapSection"].First().gridPosition), 
-    (x, y, gridPosition) => new VoidTile(new Vector2Int(x, y))), displayManager);
+MapManager mapManager = new MapManager(settings, displayManager, new Grid2D<BaseTile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, 
+    displayManager.pixelGridController.pixelGrid.GetPlanePosition(displayManager.pixelGridController.pixelsInSections["MapSection"].First().gridPosition), 
+    (x, y) => new VoidTile(new Vector2Int(x, y))));
 
 GameManager game = new GameManager(settings, displayManager, mapManager, soundManager, inputManager, menuManager);
 #endregion

@@ -13,101 +13,82 @@ namespace Skalm.Map
 {
     internal class MapPrinter
     {
-        MapManager mapManager;
-        DisplayManager displayManager;
-        IPrinter printer;
-        Grid2D<BaseTile> tileGrid;
-
+        private IPrinter printer;
+        private Grid2D<BaseTile> tileGrid;
         private Queue<Vector2Int> positionsToUpdate;
+        private ConsoleColor foregroundColor;
 
         // CONSTRUCTOR I
-        public MapPrinter(MapManager mapManager, DisplayManager displayManager)
+        public MapPrinter(Grid2D<BaseTile> tileGrid, IPrinter printer, ConsoleColor foregroundColor)
         {
-            this.mapManager = mapManager;
-            this.displayManager = displayManager;
+            this.printer = printer;
+            this.foregroundColor = foregroundColor;
 
             positionsToUpdate = new Queue<Vector2Int>();
 
-            tileGrid = mapManager.tileGrid;
-            printer = displayManager.printer;
+            this.tileGrid = tileGrid;
+
+
+            Actor.OnPositionChanged += ActorMove;
         }
 
-        // METHOD CASH UPDATED TILES
+        private void ActorMove(Actor actor, Vector2Int newPos, Vector2Int oldPos)
+        {
+            CacheUpdatedTile(oldPos, newPos);
+        }
+
+
+        // METHOD CACHE UPDATED TILES
         public void CacheUpdatedTile(Vector2Int oldPos, Vector2Int newPos)
         {
             positionsToUpdate.Enqueue(oldPos);
             positionsToUpdate.Enqueue(newPos);
         }
 
-        // METHOD REDRAW CASHED TILES
+        // METHOD REDRAW CACHED TILES
         public void RedrawCachedTiles()
         {
             Vector2Int tempPos;
             while (positionsToUpdate.Count > 0)
             {
                 tempPos = positionsToUpdate.Dequeue();
-                DrawSingleTile(tileGrid, tempPos.X, tempPos.Y);
+                DrawSingleTile(tempPos);
             }
         }
 
-        // REDRAW WHOLE MAP
-        public void RedrawMap()
+        // DRAW WHOLE MAP
+        public void DrawMap()
         {
-            // LOOP THROUGH GRID COLUMNS & ROWS
-            for (int j = 0; j < tileGrid.gridHeight; j++)
+            for (int x = 0; x < tileGrid.gridWidth; x++)
             {
-                for (int i = 0; i < tileGrid.gridWidth; i++)
+                for (int y = 0; y < tileGrid.gridHeight; y++)
                 {
-                    //BaseTile tileCurr = tileGrid.GetGridObject(i, j)!;
-                    //if (tileCurr.actorsAtPosition.Count > 0)
-                    //    DrawSingleTile(tileCurr.actorsAtPosition[0]);
-                    //else
-                        DrawSingleTile(tileGrid, i, j);
+                        DrawSingleTile(x, y);
                 }
             }
-
-            // DRAW ACTORS
-            foreach (var actor in mapManager.gameObjects)
-            {
-                DrawSingleTile(actor.tile);
-            }
         }
 
-        // PRINT SINGLE TILE
-        private void DrawSingleTile(Grid2D<BaseTile> tileGrid, int x, int y)
+        // DRAW SINGLE TILE
+        private void DrawSingleTile(Vector2Int gridPosition)
         {
-            // GET TILE AT POSITION & TILE INFO
-            BaseTile tileCurr = tileGrid.GetGridObject(x, y)!;
-            char toPrint = tileCurr == null ? ' ' : tileCurr!.sprite;
-            ConsoleColor printCol = tileCurr == null ? ConsoleColor.Gray : tileCurr.color;
-
-            // PRINT TO CONSOLE
-            Console.ForegroundColor = printCol;
-            foreach (var tile in tileGrid.GetPlanePositions(x, y))
-            {
-                printer.PrintAtPosition(toPrint, tile.Y, tile.X);
-            }
-
-            // RESET CONSOLE PRINT COLOR
-            Console.ForegroundColor = ConsoleColor.Gray;
+            DrawSingleTile(gridPosition.X, gridPosition.Y);
         }
 
-        // PRINT SINGLE TILE OVERLOAD
-        private void DrawSingleTile(ActorTile tileCurr)
+        private void DrawSingleTile(int x, int y)
         {
-            // GET TILE AT POSITION & TILE INFO
-            char toPrint = tileCurr == null ? ' ' : tileCurr!.sprite;
-            ConsoleColor printCol = tileCurr == null ? ConsoleColor.Gray : tileCurr.color;
-
-            // PRINT TO CONSOLE
-            Console.ForegroundColor = printCol;
-            foreach (var tile in tileGrid.GetPlanePositions(tileCurr!.posXY.X, tileCurr!.posXY.Y))
+            if (tileGrid.TryGetGridObject(x, y, out BaseTile tile))
             {
-                printer.PrintAtPosition(toPrint, tile.Y, tile.X);
-            }
+                if (tile is VoidTile)
+                    return;
 
-            // RESET CONSOLE PRINT COLOR
-            Console.ForegroundColor = ConsoleColor.Gray;
+
+                Console.ForegroundColor = tile.GetColor();
+                foreach (var position in tileGrid.GetPlanePositions(x, y))
+                {
+                    printer.PrintAtPosition(tile.GetSprite(), position.Y, position.X);
+                }
+                Console.ForegroundColor = foregroundColor;
+            }
         }
     }
 }

@@ -1,23 +1,21 @@
-﻿using Skalm.Map;
-using Skalm.Structs;
+﻿using Skalm.Structs;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace Skalm.Actors.Tile
 {
-    internal class FloorTile : BaseTile, IOccupiable
+    internal class DoorTile : BaseTile, ICollidable, IInteractable, IOccupiable
     {
+        public bool ColliderIsActive {get; private set;}
         public List<Actor> ActorsOnTile { get; private set; }
-        public FloorTile(Vector2Int gridPos, char sprite = '.', ConsoleColor color = ConsoleColor.Gray) : base(gridPos, sprite, color) 
+
+        public DoorTile(Vector2Int gridPos, char sprite = '+', ConsoleColor color = ConsoleColor.White) : base(gridPos, sprite, color)
         {
             ActorsOnTile = new List<Actor>();
-            Stack<Actor> actorStack = new Stack<Actor>();
         }
-
         public override char GetSprite()
         {
             if (ActorsOnTile.Count == 0)
@@ -32,6 +30,16 @@ namespace Skalm.Actors.Tile
                 return Color;
             else
                 return ActorsOnTile.First().Color;
+        }
+
+        public void Interact()
+        {
+            ColliderIsActive = !ColliderIsActive;
+        }
+
+        public void OnCollision()
+        {
+            throw new NotImplementedException();
         }
     }
 }

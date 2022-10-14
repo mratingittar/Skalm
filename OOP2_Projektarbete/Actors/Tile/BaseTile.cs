@@ -8,20 +8,26 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors.Tile
 {
-    internal abstract class BaseTile
+    internal abstract class BaseTile : IGridObject
     {
-        public Vector2Int posXY { get; set; }
-        public char sprite { get; protected set; }
-        public ConsoleColor color { get; protected set; }
-        public List<ActorTile> actorsAtPosition;
+        public Vector2Int GridPosition { get; protected set; }
+        public virtual char Sprite { get; protected set; }
+        public ConsoleColor Color { get; protected set; }
 
-        public BaseTile(Vector2Int posXY, char sprite = ' ', ConsoleColor color = ConsoleColor.White)
+        public BaseTile(Vector2Int gridPosition, char sprite = ' ', ConsoleColor color = ConsoleColor.White)
         {
-            this.posXY = posXY;
-            this.sprite = sprite;
-            this.color = color;
+            GridPosition = gridPosition;
+            Sprite = sprite;
+            Color = color;
+        }
+        public virtual char GetSprite()
+        {
+                return Sprite;
+        }
 
-            actorsAtPosition = new List<ActorTile>();
+        public virtual ConsoleColor GetColor()
+        {
+                return Color;
         }
     }
 }

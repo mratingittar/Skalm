@@ -1,4 +1,6 @@
-﻿using Skalm.Actors;
+
+using Skalm.Actors;
+using Skalm.Animation;
 using Skalm.Display;
 using Skalm.Input;
 using Skalm.Map;
@@ -21,6 +23,7 @@ namespace Skalm
         public MenuManager MenuManager { get; private set; }
 
         // MAP MANAGERS
+
         public MapManager MapManager { get; private set; }
         public MapPrinter MapPrinter { get; private set; }
 
@@ -30,9 +33,10 @@ namespace Skalm
         #region FIELDS
         private int updateFrequency;
 
+
         // ANIMATION
-        private List<char> animationTest;
-        private int animationFrame;
+        private Animator animator;
+
         #endregion
 
         // PLAYER
@@ -53,8 +57,11 @@ namespace Skalm
             this.InputManager = inputManager;
             this.MenuManager = menuManager;
 
-            this.MapManager = mapManager;
-            this.MapPrinter = new MapPrinter(mapManager, displayManager);
+
+
+            this.mapManager = mapManager;
+            //this.mapPrinter = new MapPrinter(mapManager, displayManager.printer, settings.ForegroundColor);
+
 
             // UPDATE FREQUENCY
             updateFrequency = Settings.UpdateFrequency;
@@ -70,11 +77,13 @@ namespace Skalm
 
             stateMachine = new GameManagerStateMachine(gameStates.Find(state => state is GameStateInitializing)!);
 
+
             //mapManager = new MapManager(new Grid2D<BaseTile>(displayManager.gridMapRect.Width, displayManager.gridMapRect.Height, 2, 1, displayManager.pixelGridController.cellsInSections["MapSection"].First().planePositions.First(), (x,y, gridPosition) => new VoidTile(new Vector2Int(x, y))), displayManager);
 
             //soundManager = new SoundManager(new ConsoleSoundPlayer(Globals.G_SOUNDS_FOLDER_PATH));
 
             //inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
+
 
             // INPUT
             //inputManager.OnInputMove += MoveInput;
@@ -85,14 +94,14 @@ namespace Skalm
             //menuManager.pauseMenu.onMenuExecution += MenuExecution;
 
             // ANIMATION
-            animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
-            animationFrame = 0;
+            animator = new Animator(displayManager);
+
 
             // PLAYER
-            var tileGrid = mapManager.tileGrid;
+            var tileGrid = mapManager.TileGrid;
             Vector2Int midXY = new Vector2Int(tileGrid.gridWidth / 2, tileGrid.gridHeight / 2);
-            player = new Player(mapManager.tileGrid, midXY, new PlayerMoveInput(), new PlayerAttackComponent());
-            mapManager.gameObjects.Add(player);
+            player = new Player(mapManager.TileGrid, midXY, new PlayerMoveInput(), new PlayerAttackComponent());
+            mapManager.actors.Add(player);
         }
 
         // METHOD UPDATE GAME
@@ -119,15 +128,22 @@ namespace Skalm
             Update();
         }
 
-        // METHOD ANIMATE
-        private void Animate()
-        {
-            if (animationFrame == animationTest.Count)
-                animationFrame = 0;
 
-            DisplayManager.printer.PrintAtPosition(animationTest[animationFrame], 10, 10);
-            animationFrame++;
+        // METHOD UPDATE GAME
+        private void Update()
+        {
+            while (true)
+            {
+                inputManager.GetInput();
+                if (GameState is GameStateMainMenu)
+                    animator.AnimatedBraziers();
+
+                if (GameState is GameStatePlaying)
+                    mapManager.mapPrinter.RedrawCachedTiles();
+                Thread.Sleep(1000 / updateFrequency);
+            }
         }
+
 
         // METHOD CHANGE STATE
         //public void ChangeGameState(IGameState gameState)
@@ -138,6 +154,7 @@ namespace Skalm
         //}
 
         // METHOD MOVE INPUT
+
         //private void MoveInput(Vector2Int direction)
         //{
         //    if (GameState is GameStateMainMenu or GameStatePaused)
@@ -146,9 +163,11 @@ namespace Skalm
         //    }
         //    else if (GameState is GameStatePlaying)
         //    {
-
+                //player.Move(direction);
+                //mapPrinter.RedrawMap();
         //    }
         //}
+
 
         // METHOD COMMAND INPUT
         //private void CommandInput(InputCommands command)
@@ -165,6 +184,7 @@ namespace Skalm
         //}
 
         // METHOD EXECUTE MENU INDEX
+
         //private void MenuExecution(Page menuPage, string item)
         //{
         //    if (GameState is not GameStateMainMenu and not GameStatePaused)
@@ -204,5 +224,6 @@ namespace Skalm
         //            break;
         //    }
         //}
+
     }
 }

@@ -14,13 +14,13 @@ namespace Skalm.Input
             switch (key.Key)
             {
                 case ConsoleKey.W:
-                    direction = new Vector2Int(0, 1);
+                    direction = new Vector2Int(0, -1);
                     return true;
                 case ConsoleKey.A:
                     direction = new Vector2Int(-1, 0);
                     return true;
                 case ConsoleKey.S:
-                    direction = new Vector2Int(0, -1);
+                    direction = new Vector2Int(0, 1);
                     return true;
                 case ConsoleKey.D:
                     direction = new Vector2Int(1, 0);
