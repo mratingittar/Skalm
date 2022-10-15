@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors
 {
-    internal interface ICollidable
+    internal interface ICollider
     {
         bool ColliderIsActive { get; }
         void OnCollision();

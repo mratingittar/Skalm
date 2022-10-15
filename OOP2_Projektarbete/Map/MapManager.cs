@@ -31,16 +31,16 @@ namespace Skalm.Map
 
             moveQueue = new Queue<Actor>();
 
-            Actor.OnPositionChanged += UpdateActorPosition;
+            Actor.OnPositionChanged += UpdateMoveablePosition;
             Actor.OnMoveRequested += CheckForCollision;
         }
 
-        private void UpdateActorPosition(Actor actor, Vector2Int newPosition, Vector2Int oldPosition)
+        private void UpdateMoveablePosition(Actor actor, Vector2Int newPosition, Vector2Int oldPosition)
         {
             TileGrid.TryGetGridObject(oldPosition, out BaseTile tileOld);
-                ((IOccupiable)tileOld).ActorsOnTile.Remove(actor);
+                ((IOccupiable)tileOld).ObjectsOnTile.Remove(actor);
             TileGrid.TryGetGridObject(newPosition, out BaseTile tileNew);
-                ((IOccupiable)tileNew).ActorsOnTile.Add(actor);
+                ((IOccupiable)tileNew).ObjectsOnTile.Add(actor);
         }
 
 
@@ -50,8 +50,8 @@ namespace Skalm.Map
 
             if (TileGrid.TryGetGridObject(positionToCheck, out var collider))
             {
-                if (collider is ICollidable)
-                    collision = ((ICollidable)collider).ColliderIsActive;
+                if (collider is ICollider)
+                    collision = ((ICollider)collider).ColliderIsActive;
                 else
                     collision = false;
             }
@@ -66,7 +66,7 @@ namespace Skalm.Map
             foreach (var actor in actors)
             {
                 TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile);
-                ((IOccupiable)tile).ActorsOnTile.Add(actor);
+                ((IOccupiable)tile).ObjectsOnTile.Add(actor);
             }
         }
 

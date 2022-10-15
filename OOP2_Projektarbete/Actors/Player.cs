@@ -22,19 +22,17 @@ namespace Skalm.Actors
         //public IMoveInput _moveInput { get; set; }
         public IAttackComponent _attack { get; set; }
 
+
         // STATS
         private StatsObjectHard statsHard;
         private StatsObjectSoft statsSoft;
         
         private Queue<Vector2Int> moveQueue;
 
-
         // CONSTRUCTOR I
-        public Player( Vector2Int posXY, IAttackComponent attack) : base(posXY, '@', ConsoleColor.Red)
+        public Player( Vector2Int posXY, IAttackComponent attack, char sprite = '@', ConsoleColor color = ConsoleColor.Blue) : base(posXY, sprite, color)
         {
-            // GAME WORLD
-            //this.gameGrid = gameGrid;
-            //this.tile = new ActorTile(posXY, '@', ConsoleColor.Red);
+          
 
             // COMPONENTS
             //this._moveInput = moveInput;

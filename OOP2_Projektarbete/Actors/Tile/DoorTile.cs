@@ -7,29 +7,29 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors.Tile
 {
-    internal class DoorTile : BaseTile, ICollidable, IInteractable, IOccupiable
+    internal class DoorTile : BaseTile, ICollider, IInteractable, IOccupiable
     {
         public bool ColliderIsActive {get; private set;}
-        public List<Actor> ActorsOnTile { get; private set; }
+        public List<IGridObject> ObjectsOnTile { get; private set; }
 
         public DoorTile(Vector2Int gridPos, char sprite = '+', ConsoleColor color = ConsoleColor.White) : base(gridPos, sprite, color)
         {
-            ActorsOnTile = new List<Actor>();
+            ObjectsOnTile = new List<IGridObject>();
         }
         public override char GetSprite()
         {
-            if (ActorsOnTile.Count == 0)
+            if (ObjectsOnTile.Count == 0)
                 return Sprite;
             else
-                return ActorsOnTile.First().Sprite;
+                return ObjectsOnTile.First().Sprite;
         }
 
         public override ConsoleColor GetColor()
         {
-            if (ActorsOnTile.Count == 0)
+            if (ObjectsOnTile.Count == 0)
                 return Color;
             else
-                return ActorsOnTile.First().Color;
+                return ObjectsOnTile.First().Color;
         }
 
         public void Interact()

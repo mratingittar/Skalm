@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors.Tile
 {
-    internal class WallTile : BaseTile, ICollidable
+    internal class WallTile : BaseTile, ICollider
     {
         // CONSTRUCTOR
         public WallTile(Vector2Int posXY, char wallSprite = '#', ConsoleColor wallColor = ConsoleColor.Gray) : base(posXY, wallSprite, wallColor) {}

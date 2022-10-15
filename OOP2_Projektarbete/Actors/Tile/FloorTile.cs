@@ -11,27 +11,27 @@ namespace Skalm.Actors.Tile
 {
     internal class FloorTile : BaseTile, IOccupiable
     {
-        public List<Actor> ActorsOnTile { get; private set; }
+        public List<IGridObject> ObjectsOnTile { get; private set; }
         public FloorTile(Vector2Int gridPos, char sprite = '.', ConsoleColor color = ConsoleColor.Gray) : base(gridPos, sprite, color) 
         {
-            ActorsOnTile = new List<Actor>();
-            Stack<Actor> actorStack = new Stack<Actor>();
+            ObjectsOnTile = new List<IGridObject>();
+            //Stack<Actor> actorStack = new Stack<Actor>();
         }
 
         public override char GetSprite()
         {
-            if (ActorsOnTile.Count == 0)
+            if (ObjectsOnTile.Count == 0)
                 return Sprite;
             else
-                return ActorsOnTile.First().Sprite;
+                return ObjectsOnTile.First().Sprite;
         }
 
         public override ConsoleColor GetColor()
         {
-            if (ActorsOnTile.Count == 0)
+            if (ObjectsOnTile.Count == 0)
                 return Color;
             else
-                return ActorsOnTile.First().Color;
+                return ObjectsOnTile.First().Color;
         }
     }
 }

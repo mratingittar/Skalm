@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors
 {
-    internal abstract class Actor : IGridObject, IMoveable, ICollidable, IGameObject
+    internal abstract class Actor : IGridObject, IMoveable, ICollider, IGameObject
     {
         public Vector2Int GridPosition { get; protected set; }
 

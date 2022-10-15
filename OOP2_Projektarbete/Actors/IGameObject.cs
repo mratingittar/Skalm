@@ -10,8 +10,6 @@ namespace Skalm.Actors
 {
     internal interface IGameObject
     {
-        //ActorTile tile { get; set; }
-
         //void UpdateEarly();
         void UpdateMain();
         //void UpdateLate();

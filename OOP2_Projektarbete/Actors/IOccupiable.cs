@@ -8,6 +8,6 @@ namespace Skalm.Actors
 {
     internal interface IOccupiable
     {
-        List<Actor> ActorsOnTile { get; }
+        List<IGridObject> ObjectsOnTile { get; }
     }
 }
