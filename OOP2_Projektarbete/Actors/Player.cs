@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors
 {
-    internal class Player : Actor, IDamageable, IGameObject
+    internal class Player : Actor, IDamageable
     {
         // POSITION
         //private Grid2D<BaseTile> gameGrid;
@@ -22,10 +22,12 @@ namespace Skalm.Actors
         //public IMoveInput _moveInput { get; set; }
         public IAttackComponent _attack { get; set; }
 
-
         // STATS
         private StatsObjectHard statsHard;
         private StatsObjectSoft statsSoft;
+        
+        private Queue<Vector2Int> moveQueue;
+
 
         // CONSTRUCTOR I
         public Player( Vector2Int posXY, IAttackComponent attack) : base(posXY, '@', ConsoleColor.Red)
@@ -41,12 +43,23 @@ namespace Skalm.Actors
             // STATS
             this.statsHard = new StatsObjectHard("name", 5, 5, 5, 5, 5);
             this.statsSoft = new StatsObjectSoft(10, 1);
+
+            moveQueue = new Queue<Vector2Int>();
+
         }
 
-        // UPDATE OBJECT
-        public void UpdateMain()
+        // MOVE INPUT, QUEUED FOR UPDATEMAIN
+        public override void Move(Vector2Int direction)
         {
+            moveQueue.Enqueue(direction);
+        }
 
+
+        // UPDATE OBJECT
+        public override void UpdateMain()
+        {
+            if (moveQueue.Count > 0)
+            base.Move(moveQueue.Dequeue());            
         }
 
         // MOVE METHOD

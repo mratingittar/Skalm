@@ -88,7 +88,10 @@ namespace Skalm.States
         // UPDATE STATE LOGIC
         public void UpdateLogic()
         {
-            // _gameManager.UpdateGameLoop/(;
+            foreach (var go in GameManager.MapManager.gameObjects)
+            {
+                go.UpdateMain();
+            }
         }
 
         // UPDATE STATE DISPLAY

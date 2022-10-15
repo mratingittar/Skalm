@@ -14,8 +14,8 @@ namespace Skalm.Map
         public readonly MapPrinter mapPrinter;
         private ISettings settings;
 
-        public List<IGameObject> gameObjects;
-        public List<Actor> actors;
+        public List<IGameObject> gameObjects { get; private set; }
+        public List<Actor> actors { get; private set; }
         private Queue<Actor> moveQueue;
 
         // CONSTRUCTOR I

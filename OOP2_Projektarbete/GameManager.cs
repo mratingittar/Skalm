@@ -62,6 +62,7 @@ namespace Skalm
             updateFrequency = Settings.UpdateFrequency;
 
             // STATE MACHINE & GAME STATES
+
             gameStates = new List<IGameState>
             {
                 new GameStateInitializing(this),
@@ -70,16 +71,15 @@ namespace Skalm
                 new GameStatePlaying(this)
             };
 
-            stateMachine = new GameManagerStateMachine(gameStates.Find(state => state is GameStateInitializing)!);
+            stateMachine = new GameManagerStateMachine(gameStates.Where(state => state is GameStateInitializing).First());
             player = new Player(Vector2Int.Zero, new PlayerAttackComponent());
         }
 
         // METHOD START STATE
         public void Start()
         {
-            stateMachine.Initialize(gameStates.Find(state => state is GameStateInitializing)!);
-            //stateMachine.CurrentState.Enter();
-            stateMachine.ChangeState(gameStates.Find(state => state is GameStateMainMenu)!);
+            stateMachine.Initialize(gameStates.Where(state => state is GameStateInitializing).First());
+            stateMachine.ChangeState(gameStates.Where(state => state is GameStateMainMenu).First());
             Update();
         }
 
@@ -103,6 +103,7 @@ namespace Skalm
             Vector2Int midXY = new Vector2Int(tileGrid.gridWidth / 2, tileGrid.gridHeight / 2);
             player = new Player(midXY, new PlayerAttackComponent());
             MapManager.actors.Add(player);
+            MapManager.gameObjects.Add(player);
         }
     }
 }

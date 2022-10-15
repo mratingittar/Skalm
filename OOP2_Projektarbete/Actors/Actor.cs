@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors
 {
-    internal abstract class Actor : IGridObject, IMoveable, ICollidable
+    internal abstract class Actor : IGridObject, IMoveable, ICollidable, IGameObject
     {
         public Vector2Int GridPosition { get; protected set; }
 
@@ -27,7 +27,7 @@ namespace Skalm.Actors
             Color = color;
         }
 
-        public void Move(Vector2Int direction)
+        public virtual void Move(Vector2Int direction)
         {
             direction.Normalize();
             Vector2Int newPosition = GridPosition.Add(direction);
@@ -46,6 +46,11 @@ namespace Skalm.Actors
         public void OnCollision()
         {
             throw new NotImplementedException();
+        }
+
+        public virtual void UpdateMain()
+        {
+            
         }
     }
 }
