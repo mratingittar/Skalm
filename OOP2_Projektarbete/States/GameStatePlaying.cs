@@ -59,7 +59,7 @@ namespace Skalm.States
             else
                 displayManager.pixelGridController.DisplayMessage("Welcome back.");
 
-
+            gameManager.player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
             soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Thunder Dreams"));
         }
 
@@ -68,6 +68,7 @@ namespace Skalm.States
         {
             // SAVING STATE
             gameManager.NewGame = false;
+            gameManager.player.playerStateMachine.ChangeState(PlayerStates.PlayerStateIdle);
             displayManager.eraser.EraseAll();
 
             // INPUT EVENT UNSUBSCRIBE
@@ -97,14 +98,13 @@ namespace Skalm.States
         //METHOD MOVE INPUT
         private void MoveInput(Vector2Int direction)
         {
-            gameManager.player.Move(direction);
+            gameManager.player.playerStateMachine.CurrentState.MoveInput(direction);
         }
 
         // METHOD COMMAND INPUT
         private void CommandInput(InputCommands command)
         {
-            if (command == InputCommands.Cancel)
-                gameManager.stateMachine.ChangeState(GameStates.GameStatePaused);
+            gameManager.player.playerStateMachine.CurrentState.CommandInput(command);
         }
 
         #endregion

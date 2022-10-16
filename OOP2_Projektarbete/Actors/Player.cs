@@ -3,6 +3,7 @@ using Skalm.Actors.Stats;
 using Skalm.Actors.Tile;
 using Skalm.Grid;
 using Skalm.Input;
+using Skalm.States;
 using Skalm.Structs;
 using System;
 using System.Collections.Generic;
@@ -14,12 +15,10 @@ namespace Skalm.Actors
 {
     internal class Player : Actor, IDamageable
     {
-        // POSITION
-        //private Grid2D<BaseTile> gameGrid;
-        //public ActorTile tile { get; set; }
+        // STATE MACHINE
+        public readonly PlayerStateMachine playerStateMachine;
 
         // COMPONENTS
-        //public IMoveInput _moveInput { get; set; }
         public IAttackComponent _attack { get; set; }
 
 
@@ -30,9 +29,9 @@ namespace Skalm.Actors
         private Queue<Vector2Int> moveQueue;
 
         // CONSTRUCTOR I
-        public Player( Vector2Int posXY, IAttackComponent attack, char sprite = '@', ConsoleColor color = ConsoleColor.Blue) : base(posXY, sprite, color)
+        public Player(GameManager gameManager, Vector2Int posXY, IAttackComponent attack, char sprite = '@', ConsoleColor color = ConsoleColor.Blue) : base(posXY, sprite, color)
         {
-          
+            playerStateMachine = new PlayerStateMachine(gameManager, this, PlayerStates.PlayerStateIdle);
 
             // COMPONENTS
             //this._moveInput = moveInput;

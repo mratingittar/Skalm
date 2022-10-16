@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Skalm.Actors;
+using Skalm.Input;
+using Skalm.Structs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,13 +11,21 @@ namespace Skalm.States
 {
     internal class PlayerStateLook : PlayerStateBase
     {
-        public PlayerStateLook(GameManager gameManager) : base(gameManager) { }
+        public PlayerStateLook(GameManager gameManager, Player player) : base(gameManager, player) { }
         public override void Enter()
         {
             throw new NotImplementedException();
         }
 
         public override void Exit()
+        {
+            throw new NotImplementedException();
+        }
+        public override void MoveInput(Vector2Int direction)
+        {
+            throw new NotImplementedException();
+        }
+        public override void CommandInput(InputCommands command)
         {
             throw new NotImplementedException();
         }

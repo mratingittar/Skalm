@@ -1,15 +1,19 @@
-﻿namespace Skalm.States
+﻿using Skalm.Actors;
+
+namespace Skalm.States
 {
     internal class PlayerStateMachine : IStateMachine<PlayerStateBase, PlayerStates>
     {
         public PlayerStateBase CurrentState { get; private set; }
         private List<PlayerStateBase> availableStates;
         private GameManager gameManager;
+        public Player player;
 
         // CONSTRUCTOR I
-        public PlayerStateMachine(GameManager gameManager, PlayerStates startingState)
+        public PlayerStateMachine(GameManager gameManager, Player player, PlayerStates startingState)
         {
             this.gameManager = gameManager;
+            this.player = player;
             availableStates = new List<PlayerStateBase>();
             CurrentState = GetStateFromList(startingState);
         }
@@ -42,22 +46,22 @@
             switch (stateName)
             {
                 case "PlayerStateIdle":
-                    state = new PlayerStateIdle(gameManager);
+                    state = new PlayerStateIdle(gameManager, player);
                     break;
                 case "PlayerStateMove":
-                    state = new PlayerStateMove(gameManager);
+                    state = new PlayerStateMove(gameManager, player);
                     break;
                 case "PlayerStateAttack":
-                    state = new PlayerStateAttack(gameManager);
+                    state = new PlayerStateAttack(gameManager, player);
                     break;
                 case "PlayerStateLook":
-                    state = new PlayerStateLook(gameManager);
+                    state = new PlayerStateLook(gameManager, player);
                     break;
                 case "PlayerStateMenu":
-                    state = new PlayerStateMenu(gameManager);
+                    state = new PlayerStateMenu(gameManager, player);
                     break;
                 default:
-                    state = new PlayerStateIdle(gameManager);
+                    state = new PlayerStateIdle(gameManager, player);
                     break;
             }
 

@@ -38,9 +38,11 @@ namespace Skalm
         // PLAYER
         public Player player;
         public bool NewGame { get; set; }
+        
+        // STATE MACHINES
+        public readonly GameManagerStateMachine stateMachine;
+        //public readonly PlayerStateMachine playerStateMachine;
 
-        // GAME MANAGER STATE MACHINE
-        public GameManagerStateMachine stateMachine;
 
         // CONSTRUCTOR I
         public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager)
@@ -60,10 +62,11 @@ namespace Skalm
             // UPDATE FREQUENCY
             updateFrequency = Settings.UpdateFrequency;
 
+            player = new Player(this, Vector2Int.Zero, new PlayerAttackComponent());
+
             // STATE MACHINE & GAME STATES
             stateMachine = new GameManagerStateMachine(this, GameStates.GameStateInitializing);
-
-            player = new Player(Vector2Int.Zero, new PlayerAttackComponent());
+            //playerStateMachine = new PlayerStateMachine(this, player, PlayerStates.PlayerStateIdle);
 
             stateMachine.Initialize(GameStates.GameStateInitializing);
         }
@@ -93,7 +96,7 @@ namespace Skalm
         {
             var tileGrid = MapManager.TileGrid;
             Vector2Int midXY = new Vector2Int(tileGrid.gridWidth / 2, tileGrid.gridHeight / 2);
-            player = new Player(midXY, new PlayerAttackComponent());
+            player = new Player(this, midXY, new PlayerAttackComponent());
             MapManager.actors.Add(player);
             MapManager.gameObjects.Add(player);
         }
