@@ -41,7 +41,6 @@ namespace Skalm
 
         // GAME MANAGER STATE MACHINE
         public GameManagerStateMachine stateMachine;
-        public List<IGameState> gameStates;
 
         // CONSTRUCTOR I
         public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager)
@@ -62,24 +61,17 @@ namespace Skalm
             updateFrequency = Settings.UpdateFrequency;
 
             // STATE MACHINE & GAME STATES
+            stateMachine = new GameManagerStateMachine(this, GameStates.GameStateInitializing);
 
-            gameStates = new List<IGameState>
-            {
-                new GameStateInitializing(this),
-                new GameStateMainMenu(this),
-                new GameStatePaused(this),
-                new GameStatePlaying(this)
-            };
-
-            stateMachine = new GameManagerStateMachine(gameStates.Where(state => state is GameStateInitializing).First());
             player = new Player(Vector2Int.Zero, new PlayerAttackComponent());
+
+            stateMachine.Initialize(GameStates.GameStateInitializing);
         }
 
         // METHOD START STATE
         public void Start()
         {
-            stateMachine.Initialize(gameStates.Where(state => state is GameStateInitializing).First());
-            stateMachine.ChangeState(gameStates.Where(state => state is GameStateMainMenu).First());
+            stateMachine.ChangeState(GameStates.GameStateMainMenu);
             Update();
         }
 

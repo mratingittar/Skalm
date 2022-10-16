@@ -6,11 +6,9 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal interface IGameState : IState
+    internal interface IState
     {
-        GameManager GameManager { get; }
-
-        void UpdateLogic();
-        void UpdateDisplay();
+        void Enter();
+        void Exit();
     }
 }

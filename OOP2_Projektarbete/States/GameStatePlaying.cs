@@ -114,7 +114,7 @@ namespace Skalm.States
         private void CommandInput(InputCommands command)
         {
             if (command == InputCommands.Cancel)
-                GameManager.stateMachine.ChangeState(GameManager.gameStates.Find(state => state is GameStatePaused)!);
+                GameManager.stateMachine.ChangeState(GameStates.GameStatePaused);
         }
 
         #endregion

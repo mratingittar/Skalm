@@ -6,12 +6,8 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class GameStateFactory
+    internal interface IPlayerState : IState
     {
-        //public IGameState CreateGameState(string type)
-        //{
-        //    IGameState gameState;
-
-        //}
+        GameManager GameManager { get; }
     }
 }

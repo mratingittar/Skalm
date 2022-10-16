@@ -106,7 +106,7 @@ namespace Skalm.States
                 case Page.NewGame:
                     if (item == "Start New Game")
                         GameManager.NewGame = true;
-                        GameManager.stateMachine.ChangeState(GameManager.gameStates.Find(state => state is GameStatePlaying)!);
+                        GameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
                     break;
 
                 case Page.Options:
