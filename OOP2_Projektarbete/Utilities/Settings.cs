@@ -22,8 +22,6 @@
         public char SpriteFloor { get; private set; }
         public char SpriteDoorClosed { get; private set; }
 
-        public string SoundsFolder { get; private set; } = "";
-
         public ConsoleColor ForegroundColor { get; private set; }
 
         public ConsoleColor BackgroundColor { get; private set; }

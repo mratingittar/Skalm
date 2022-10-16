@@ -8,10 +8,10 @@ namespace Skalm.Sounds
         public ISoundPlayer player;
         public List<Sound> Tracks { get; private set; }
         public Sound CurrentlyPlaying { get; private set; }
-        public SoundManager(ISoundPlayer soundPlayer, string soundsFolder)
+        public SoundManager(ISoundPlayer soundPlayer)
         {
             player = soundPlayer;
-            Tracks = CreateSoundsList(soundsFolder);
+            Tracks = CreateSoundsList("/audio/");
         }
 
         public void PlayMusic(Sound track)

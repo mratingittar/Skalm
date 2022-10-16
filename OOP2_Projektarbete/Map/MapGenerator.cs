@@ -22,7 +22,7 @@ namespace Skalm.Map
 
         public void CreateMap()
         {
-            if (FileHandler.TryReadFile("map test.txt", out string[] map))
+            if (FileHandler.TryReadFile("map.txt", out string[] map))
                 CreateMapFromStringArray(map);
             FindWalls();
             SetBorderFloorsAsWalls();

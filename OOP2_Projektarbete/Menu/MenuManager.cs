@@ -24,7 +24,7 @@ namespace Skalm.Menu
             this.soundManager = soundManager;
             soundPlayer = soundManager.player;
 
-            if (!FileHandler.TryReadFile("Skalm_Title.txt", out string[] title))
+            if (!FileHandler.TryReadFile("skalm_title.txt", out string[] title))
                 title = new string[0];
 
             Dictionary<string, MenuPage> menuPagesToLoad = CreateMenuPages();

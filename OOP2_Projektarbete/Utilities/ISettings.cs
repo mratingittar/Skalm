@@ -12,7 +12,6 @@
         int MapHeight { get; }
         int MapWidth { get; }
         int MessageBoxHeight { get; }
-        string SoundsFolder { get; }
         char SpriteBorder { get; }
         char SpriteDoorClosed { get; }
         char SpriteDoorOpen { get; }

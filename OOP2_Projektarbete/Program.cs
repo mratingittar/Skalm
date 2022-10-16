@@ -61,7 +61,7 @@ DisplayManager displayManager = new DisplayManager(settings, printer, eraser, ne
     new PixelController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, settings.CellWidth, settings.CellHeight,
                 new Vector2Int(settings.WindowPadding * settings.CellWidth, settings.WindowPadding * settings.CellHeight),
                 (x, y) => new Pixel(new Vector2Int(x, y), new HUDBorder(settings.SpriteBorder))), sectionBounds, printer, eraser));
-SoundManager soundManager = new SoundManager(new ConsoleSoundPlayer(settings.SoundsFolder), settings.SoundsFolder);
+SoundManager soundManager = new SoundManager(new ConsoleSoundPlayer());
 InputManager inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
 MenuManager menuManager = new MenuManager(inputManager, displayManager, soundManager);
 MapManager mapManager = new MapManager(settings, displayManager, new Grid2D<BaseTile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, 

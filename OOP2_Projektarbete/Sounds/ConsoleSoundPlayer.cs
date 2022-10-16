@@ -16,10 +16,10 @@ namespace Skalm.Sounds
         public readonly string musicFolderPath;
         public bool SFXEnabled { get; set; }
 
-        public ConsoleSoundPlayer(string musicFolder)
+        public ConsoleSoundPlayer()
         {
             musicPlayer = new SoundPlayer();
-            musicFolderPath = FileHandler.rootFolder + musicFolder;
+            musicFolderPath = FileHandler.rootFolder + "/audio/";
             SFXEnabled = true;
         }
 

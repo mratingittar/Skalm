@@ -24,8 +24,6 @@
         public char SpriteDoorClosed { get; private set; } = '■';
         public char SpriteDoorOpen { get; private set; } = '□';
 
-        public string SoundsFolder { get; private set; } = "/audio/";
-
         public ConsoleColor ForegroundColor { get; private set; } = ConsoleColor.White;
 
         public ConsoleColor BackgroundColor { get; private set; } = ConsoleColor.Black;

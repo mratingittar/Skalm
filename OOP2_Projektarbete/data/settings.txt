@@ -23,6 +23,5 @@ Char SpriteWall = #
 Char SpriteFloor = ∙
 Char SpriteDoorClosed = ■
 Char SpriteDoorOpen = □
-String SoundsFolder = /audio/
 ConsoleColor ForegroundColor = White
 ConsoleColor BackgroundColor = Black
