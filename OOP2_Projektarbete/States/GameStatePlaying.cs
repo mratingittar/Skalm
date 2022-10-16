@@ -7,24 +7,14 @@ using Skalm.Structs;
 
 namespace Skalm.States
 {
-    internal class GameStatePlaying : IGameState
+    internal class GameStatePlaying : GameStateBase
     {
-        public GameManager GameManager { get; }
-
-        private readonly InputManager inputManager;
-        private readonly DisplayManager displayManager;
-        private readonly SoundManager soundManager;
         private readonly MapManager mapManager;
         private readonly MapPrinter mapPrinter;
 
         // CONSTRUCTOR I
-        public GameStatePlaying(GameManager gameManager)
+        public GameStatePlaying(GameManager gameManager) : base(gameManager)
         {
-            this.GameManager = gameManager;
-
-            inputManager = gameManager.InputManager;
-            displayManager = gameManager.DisplayManager;
-            soundManager = gameManager.SoundManager;
             mapManager = gameManager.MapManager;
             mapPrinter = mapManager.mapPrinter;
         }
@@ -32,20 +22,20 @@ namespace Skalm.States
         #region State Machine Basics
 
         // ENTER GAME PLAYING STATE
-        public void Enter()
+        public override void Enter()
         {
             // INPUT EVENT SUBSCRIBE
             inputManager.OnInputMove += MoveInput;
             inputManager.OnInputCommand += CommandInput;
 
-            if (GameManager.NewGame)
+            if (gameManager.NewGame)
             {
                 displayManager.printer.PrintCenteredInWindow("ENTERING SKÄLM", displayManager.windowInfo.WindowHeight / 2);
                 Thread.Sleep(500);
                 mapManager.ResetMap();
 
                 // CREATE PLAYER
-                GameManager.CreatePlayer();
+                gameManager.CreatePlayer();
 
                 // CREATE OTHER ACTORS
 
@@ -64,7 +54,7 @@ namespace Skalm.States
             mapManager.mapPrinter.DrawMap();
 
 
-            if (GameManager.NewGame)
+            if (gameManager.NewGame)
                 displayManager.pixelGridController.DisplayMessage("Welcome traveller.");
             else
                 displayManager.pixelGridController.DisplayMessage("Welcome back.");
@@ -74,10 +64,10 @@ namespace Skalm.States
         }
 
         // EXIT GAME PLAYING STATE
-        public void Exit()
+        public override void Exit()
         {
             // SAVING STATE
-            GameManager.NewGame = false;
+            gameManager.NewGame = false;
             displayManager.eraser.EraseAll();
 
             // INPUT EVENT UNSUBSCRIBE
@@ -86,16 +76,16 @@ namespace Skalm.States
         }
 
         // UPDATE STATE LOGIC
-        public void UpdateLogic()
+        public override void UpdateLogic()
         {
-            foreach (var go in GameManager.MapManager.gameObjects)
+            foreach (var go in gameManager.MapManager.gameObjects)
             {
                 go.UpdateMain();
             }
         }
 
         // UPDATE STATE DISPLAY
-        public void UpdateDisplay()
+        public override void UpdateDisplay()
         {
             mapPrinter.RedrawCachedTiles();
         }
@@ -107,14 +97,14 @@ namespace Skalm.States
         //METHOD MOVE INPUT
         private void MoveInput(Vector2Int direction)
         {
-            GameManager.player.Move(direction);
+            gameManager.player.Move(direction);
         }
 
         // METHOD COMMAND INPUT
         private void CommandInput(InputCommands command)
         {
             if (command == InputCommands.Cancel)
-                GameManager.stateMachine.ChangeState(GameStates.GameStatePaused);
+                gameManager.stateMachine.ChangeState(GameStates.GameStatePaused);
         }
 
         #endregion

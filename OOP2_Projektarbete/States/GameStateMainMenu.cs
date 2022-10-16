@@ -7,33 +7,21 @@ using Skalm.Structs;
 
 namespace Skalm.States
 {
-    internal class GameStateMainMenu : IGameState
+    internal class GameStateMainMenu : GameStateBase
     {
-        public GameManager GameManager { get; }
-
-        private DisplayManager displayManager;
-        private MenuManager menuManager;
-        private SoundManager soundManager;
-        private InputManager inputManager;
         private Animator fireAnimator;
-
         private bool everyOtherFrame = true;
 
         // CONSTRUCTOR I
-        public GameStateMainMenu(GameManager gameManager)
+        public GameStateMainMenu(GameManager gameManager) : base(gameManager)
         {
-            this.GameManager = gameManager;
-            displayManager = GameManager.DisplayManager;
-            menuManager = GameManager.MenuManager;
-            soundManager = GameManager.SoundManager;
-            inputManager = GameManager.InputManager;
-            fireAnimator = GameManager.FireAnimator;
+            fireAnimator = gameManager.FireAnimator;
         }
 
         #region StateBasics
 
         // ENTER STATE
-        public void Enter()
+        public override void Enter()
         {
             menuManager.LoadMenu(menuManager.mainMenu);
             soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
@@ -47,7 +35,7 @@ namespace Skalm.States
         }
 
         // EXIT STATE
-        public void Exit()
+        public override void Exit()
         {
             menuManager.UnloadMenu();
 
@@ -60,13 +48,13 @@ namespace Skalm.States
         }
 
         // UPDATE LOGIC
-        public void UpdateLogic()
+        public override void UpdateLogic()
         {
 
         }
 
         // UPDATE DISPLAY
-        public void UpdateDisplay()
+        public override void UpdateDisplay()
         {
             if (everyOtherFrame)
             {
@@ -105,8 +93,8 @@ namespace Skalm.States
 
                 case Page.NewGame:
                     if (item == "Start New Game")
-                        GameManager.NewGame = true;
-                        GameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
+                        gameManager.NewGame = true;
+                        gameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
                     break;
 
                 case Page.Options:

@@ -6,21 +6,16 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class PlayerStateMove : IPlayerState
+    internal class PlayerStateMove : PlayerStateBase
     {
-        public GameManager GameManager { get; private set; }
+        public PlayerStateMove(GameManager gameManager) : base(gameManager) { }
 
-        public PlayerStateMove(GameManager gameManager)
-        {
-            GameManager = gameManager;
-        }
-
-        public void Enter()
+        public override void Enter()
         {
             throw new NotImplementedException();
         }
 
-        public void Exit()
+        public override void Exit()
         {
             throw new NotImplementedException();
         }

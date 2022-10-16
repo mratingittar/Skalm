@@ -10,28 +10,16 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class GameStatePaused : IGameState
+    internal class GameStatePaused : GameStateBase
     {
-        public GameManager GameManager { get; }
-
-        private MenuManager menuManager;
-        private SoundManager soundManager;
-        private InputManager inputManager;
 
         #region StateMachine Basics
 
         // CONSTRUCTOR I
-        public GameStatePaused(GameManager gameManager)
-        {
-            this.GameManager = gameManager;
-
-            menuManager = GameManager.MenuManager;
-            soundManager = GameManager.SoundManager;
-            inputManager = GameManager.InputManager;
-        }
+        public GameStatePaused(GameManager gameManager) : base(gameManager) { }
 
         // STATE ENTER
-        public void Enter()
+        public override void Enter()
         {
             menuManager.LoadMenu(menuManager.pauseMenu);
 
@@ -44,7 +32,7 @@ namespace Skalm.States
         }
 
         // STATE EXIT
-        public void Exit()
+        public override void Exit()
         {
             menuManager.UnloadMenu();
 
@@ -57,13 +45,13 @@ namespace Skalm.States
         }
 
         // STATE UPDATE LOGIC
-        public void UpdateLogic()
+        public override void UpdateLogic()
         {
             
         }
 
         // STATE UPDATE DISPLAY
-        public void UpdateDisplay()
+        public override void UpdateDisplay()
         {
             
         }
@@ -90,9 +78,9 @@ namespace Skalm.States
             {
                 case Page.PauseMenu:
                     if (item == "Resume")
-                        GameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
+                        gameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
                     else if (item == "Exit")
-                        GameManager.stateMachine.ChangeState(GameStates.GameStateMainMenu);
+                        gameManager.stateMachine.ChangeState(GameStates.GameStateMainMenu);
                     break;
 
                 case Page.Options:

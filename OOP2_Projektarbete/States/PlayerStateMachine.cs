@@ -1,16 +1,16 @@
 ﻿namespace Skalm.States
 {
-    internal class PlayerStateMachine : IStateMachine<IPlayerState, PlayerStates>
+    internal class PlayerStateMachine : IStateMachine<PlayerStateBase, PlayerStates>
     {
-        public IPlayerState CurrentState { get; private set; }
-        private List<IPlayerState> availableStates;
+        public PlayerStateBase CurrentState { get; private set; }
+        private List<PlayerStateBase> availableStates;
         private GameManager gameManager;
 
         // CONSTRUCTOR I
         public PlayerStateMachine(GameManager gameManager, PlayerStates startingState)
         {
             this.gameManager = gameManager;
-            availableStates = new List<IPlayerState>();
+            availableStates = new List<PlayerStateBase>();
             CurrentState = GetStateFromList(startingState);
         }
 
@@ -30,14 +30,14 @@
         }
 
         // STATE MACHINE METHODS
-        private IPlayerState GetStateFromList(PlayerStates newState)
+        private PlayerStateBase GetStateFromList(PlayerStates newState)
         {
             return availableStates.Find(state => state.GetType().Name == newState.ToString()) ?? CreateState(newState.ToString());
         }
 
-        private IPlayerState CreateState(string stateName)
+        private PlayerStateBase CreateState(string stateName)
         {
-            IPlayerState state;
+            PlayerStateBase state;
 
             switch (stateName)
             {

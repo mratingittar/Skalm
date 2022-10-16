@@ -7,27 +7,20 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class GameStateInitializing : IGameState
+    internal class GameStateInitializing : GameStateBase
     {
-        public GameManager GameManager { get; }
-        private readonly DisplayManager displayManager;
 
         // CONSTRUCTOR I
-        public GameStateInitializing(GameManager gameManager)
-        {
-            this.GameManager = gameManager;
-
-            displayManager = gameManager.DisplayManager;
-        }
+        public GameStateInitializing(GameManager gameManager) : base(gameManager) { }
 
         // ENTER STATE
-        public void Enter()
+        public override void Enter()
         {
             displayManager.printer.PrintCenteredInWindow("Loading SKÄLM", displayManager.windowInfo.WindowHeight / 2);
         }
 
         // EXIT STATE
-        public void Exit()
+        public override void Exit()
         {
             displayManager.eraser.EraseAll(); 
             displayManager.printer.PrintCenteredInWindow("Loaded", displayManager.windowInfo.WindowHeight / 2);
@@ -36,9 +29,9 @@ namespace Skalm.States
         }
 
         // UPDATE LOGIC
-        public void UpdateDisplay() {}
+        public override void UpdateDisplay() {}
 
         // UPDATE DISPLAY
-        public void UpdateLogic() {}
+        public override void UpdateLogic() {}
     }
 }
