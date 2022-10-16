@@ -20,13 +20,15 @@
         public char SpriteBorder { get; private set; }
         public char SpriteWall { get; private set; }
         public char SpriteFloor { get; private set; }
-        public char SpriteDoor { get; private set; }
+        public char SpriteDoorClosed { get; private set; }
 
-        public string SoundsFolderPath { get; private set; } = "";
+        public string SoundsFolder { get; private set; } = "";
 
         public ConsoleColor ForegroundColor { get; private set; }
 
         public ConsoleColor BackgroundColor { get; private set; }
+
+        public char SpriteDoorOpen { get; private set; }
 
         public virtual bool LoadSettings(string[] settingsFile)
         {

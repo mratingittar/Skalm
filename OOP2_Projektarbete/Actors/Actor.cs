@@ -31,9 +31,9 @@ namespace Skalm.Actors
         {
             direction.Normalize();
             Vector2Int newPosition = GridPosition.Add(direction);
-            var moveAccepted = OnMoveRequested?.Invoke(newPosition);
-            if (moveAccepted is not null)
-                if (!moveAccepted.Value)
+            var collision = OnMoveRequested?.Invoke(newPosition);
+            if (collision is not null)
+                if (!collision.Value)
                     ExecuteMove(newPosition, GridPosition);
         }
 

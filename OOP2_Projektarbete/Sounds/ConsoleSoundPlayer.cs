@@ -1,4 +1,5 @@
 ﻿using Skalm.Structs;
+using Skalm.Utilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,10 +16,10 @@ namespace Skalm.Sounds
         public readonly string musicFolderPath;
         public bool SFXEnabled { get; set; }
 
-        public ConsoleSoundPlayer(string musicFolderPath)
+        public ConsoleSoundPlayer(string musicFolder)
         {
             musicPlayer = new SoundPlayer();
-            this.musicFolderPath = musicFolderPath;
+            musicFolderPath = FileHandler.rootFolder + musicFolder;
             SFXEnabled = true;
         }
 

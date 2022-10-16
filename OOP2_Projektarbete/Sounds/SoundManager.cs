@@ -1,4 +1,5 @@
-﻿using System.Media;
+﻿using Skalm.Utilities;
+using System.Media;
 
 namespace Skalm.Sounds
 {
@@ -7,10 +8,10 @@ namespace Skalm.Sounds
         public ISoundPlayer player;
         public List<Sound> Tracks { get; private set; }
         public Sound CurrentlyPlaying { get; private set; }
-        public SoundManager(ISoundPlayer soundPlayer, string soundsFolderPath)
+        public SoundManager(ISoundPlayer soundPlayer, string soundsFolder)
         {
             player = soundPlayer;
-            Tracks = CreateSoundsList(soundsFolderPath);
+            Tracks = CreateSoundsList(soundsFolder);
         }
 
         public void PlayMusic(Sound track)
@@ -28,11 +29,11 @@ namespace Skalm.Sounds
         /// <summary>
         /// Creates a list of Sounds to play.
         /// </summary>
-        /// <param name="path">Path to sounds folder.</param>
+        /// <param name="folder">Path to sounds folder.</param>
         /// <returns></returns>
-        private List<Sound> CreateSoundsList(string path)
+        private List<Sound> CreateSoundsList(string folder)
         {
-            List<string> fileNames = LoadFileNamesFromFolder(path);
+            List<string> fileNames = LoadFileNamesFromFolder(folder);
             List<Sound> sounds = new List<Sound>();
             foreach (string fileName in fileNames)
             {
@@ -45,11 +46,11 @@ namespace Skalm.Sounds
         /// <summary>
         /// Loads .wav files from Sounds folder on startup and places their file names into a List.
         /// </summary>
-        /// <param name="path">Path to sounds folder.</param>
+        /// <param name="folder">Path to sounds folder.</param>
         /// <returns></returns>
-        private List<string> LoadFileNamesFromFolder(string path)
-        {
-            string[] files = Directory.GetFiles(path, "*.wav");
+        private List<string> LoadFileNamesFromFolder(string folder)
+        {            
+            string[] files = Directory.GetFiles(FileHandler.rootFolder + folder, "*.wav");
             List<string> fileNames = new();
             foreach (string file in files)
                 fileNames.Add(Path.GetFileName(file));

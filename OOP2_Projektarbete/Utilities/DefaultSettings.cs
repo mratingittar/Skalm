@@ -20,10 +20,11 @@
 
         public char SpriteBorder { get; private set; } = '░';
         public char SpriteWall { get; private set; } = '#';
-        public char SpriteFloor { get; private set; } = '.';
-        public char SpriteDoor { get; private set; } = '+';
+        public char SpriteFloor { get; private set; } = '∙';
+        public char SpriteDoorClosed { get; private set; } = '■';
+        public char SpriteDoorOpen { get; private set; } = '□';
 
-        public string SoundsFolderPath { get; private set; } = "..\\..\\..\\Sounds\\";
+        public string SoundsFolder { get; private set; } = "/audio/";
 
         public ConsoleColor ForegroundColor { get; private set; } = ConsoleColor.White;
 

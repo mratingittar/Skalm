@@ -11,11 +11,18 @@ namespace Skalm.Actors.Tile
     {
         public bool ColliderIsActive {get; private set;}
         public List<IGridObject> ObjectsOnTile { get; private set; }
+        public new char Sprite { get => ColliderIsActive ? closedSprite : openSprite; }
+        private char openSprite;
+        private char closedSprite;
 
-        public DoorTile(Vector2Int gridPos, char sprite = '+', ConsoleColor color = ConsoleColor.White) : base(gridPos, sprite, color)
+        public DoorTile(Vector2Int gridPos, char openSprite = '□', char closedSprite = '■', ConsoleColor color = ConsoleColor.White) : base(gridPos, openSprite, color)
         {
             ObjectsOnTile = new List<IGridObject>();
+            this.openSprite = openSprite;
+            this.closedSprite = closedSprite;
+            ColliderIsActive = true;
         }
+
         public override char GetSprite()
         {
             if (ObjectsOnTile.Count == 0)

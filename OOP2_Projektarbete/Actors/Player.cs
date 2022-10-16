@@ -29,7 +29,7 @@ namespace Skalm.Actors
         private Queue<Vector2Int> moveQueue;
 
         // CONSTRUCTOR I
-        public Player(GameManager gameManager, Vector2Int posXY, IAttackComponent attack, char sprite = '@', ConsoleColor color = ConsoleColor.Blue) : base(posXY, sprite, color)
+        public Player(GameManager gameManager, Vector2Int posXY, IAttackComponent attack, char sprite = '@', ConsoleColor color = ConsoleColor.White) : base(posXY, sprite, color)
         {
             playerStateMachine = new PlayerStateMachine(gameManager, this, PlayerStates.PlayerStateIdle);
 

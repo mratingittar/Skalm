@@ -4,9 +4,13 @@ namespace Skalm.Utilities
 {
     internal static class FileHandler
     {
+#if DEBUG
+        public static readonly string rootFolder = Directory.GetCurrentDirectory() + "/..\\..\\..\\data/";
+#else
+        public static readonly string rootFolder = Directory.GetCurrentDirectory() + "/data/";
+#endif
         public static bool TryReadFile(string fileName, out string[] file)
         {
-            string rootFolder = Directory.GetCurrentDirectory() + "/";
             bool success;
             try
             {
@@ -23,7 +27,6 @@ namespace Skalm.Utilities
 
         public static bool WriteFile(string fileName, string[] file)
         {
-            string rootFolder = Directory.GetCurrentDirectory() + "/";
             bool success;
             try
             {

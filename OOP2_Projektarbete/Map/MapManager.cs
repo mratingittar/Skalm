@@ -23,7 +23,7 @@ namespace Skalm.Map
         {
             TileGrid = tileGrid;
             this.settings = settings;
-            mapGenerator = new MapGenerator(tileGrid);
+            mapGenerator = new MapGenerator(tileGrid, settings);
             mapPrinter = new MapPrinter(tileGrid, displayManager.printer, settings.ForegroundColor);
 
             gameObjects = new List<IGameObject>();

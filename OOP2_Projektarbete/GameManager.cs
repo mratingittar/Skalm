@@ -1,6 +1,7 @@
-
+﻿
 using Skalm.Actors;
 using Skalm.Actors.Fighting;
+using Skalm.Actors.Tile;
 using Skalm.Animation;
 using Skalm.Display;
 using Skalm.Input;
@@ -95,8 +96,9 @@ namespace Skalm
         public void CreatePlayer()
         {
             var tileGrid = MapManager.TileGrid;
-            Vector2Int midXY = new Vector2Int(tileGrid.gridWidth / 2, tileGrid.gridHeight / 2);
-            player = new Player(this, midXY, new PlayerAttackComponent());
+            Vector2Int spawnPos = MapManager.mapGenerator.GetRandomSpawnPosition();
+            //Vector2Int midXY = new Vector2Int(tileGrid.gridWidth / 2, tileGrid.gridHeight / 2);
+            player = new Player(this, spawnPos, new PlayerAttackComponent(), '☺');
             MapManager.actors.Add(player);
             MapManager.gameObjects.Add(player);
         }

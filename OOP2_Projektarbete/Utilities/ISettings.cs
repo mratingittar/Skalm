@@ -12,9 +12,10 @@
         int MapHeight { get; }
         int MapWidth { get; }
         int MessageBoxHeight { get; }
-        string SoundsFolderPath { get; }
+        string SoundsFolder { get; }
         char SpriteBorder { get; }
-        char SpriteDoor { get; }
+        char SpriteDoorClosed { get; }
+        char SpriteDoorOpen { get; }
         char SpriteFloor { get; }
         char SpriteWall { get; }
         int StatsWidth { get; }

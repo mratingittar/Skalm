@@ -87,6 +87,11 @@ namespace Skalm.Grid
             }
         }
 
+        public bool SetGridObject(Vector2Int gridPosition, T obj)
+        {
+            return SetGridObject(gridPosition.X, gridPosition.Y, obj);
+        }
+
         public bool SetGridObject(int gridX, int gridY, T obj)
         {
             if (gridX >= 0 && gridY >= 0 && gridX < gridWidth && gridY < gridHeight)

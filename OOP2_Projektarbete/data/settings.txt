@@ -1,0 +1,28 @@
+# Settings file for Skälm
+# Edit at your own risk!
+
+# This is a comment.
+# Write properties like this:
+# Type Property = Value
+
+String GameTitle = Skälm
+Boolean DisplayCursor = False
+Int32 UpdateFrequency = 20
+Int32 WindowPadding = 1
+Int32 BorderThickness = 1
+Int32 CellWidth = 2
+Int32 CellHeight = 1
+Int32 MapWidth = 42
+Int32 MapHeight = 32
+Int32 MessageBoxHeight = 5
+Int32 StatsWidth = 23
+Int32 MainStatsHeight = 8
+Int32 HudPadding = 1
+Char SpriteBorder = ░
+Char SpriteWall = #
+Char SpriteFloor = ∙
+Char SpriteDoorClosed = ■
+Char SpriteDoorOpen = □
+String SoundsFolder = /audio/
+ConsoleColor ForegroundColor = White
+ConsoleColor BackgroundColor = Black

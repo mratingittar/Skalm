@@ -34,17 +34,10 @@ namespace Skalm.States
                 Thread.Sleep(500);
                 mapManager.ResetMap();
 
-                // CREATE PLAYER
-                gameManager.CreatePlayer();
-
-                // CREATE OTHER ACTORS
-
-
-                // CREATE ITEMS
-
 
                 // CREATE MAP
                 mapManager.mapGenerator.CreateMap();
+                gameManager.CreatePlayer();
                 mapManager.AddActorsToMap();
             }
 
