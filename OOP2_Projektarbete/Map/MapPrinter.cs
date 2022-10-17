@@ -69,12 +69,12 @@ namespace Skalm.Map
         }
 
         // DRAW SINGLE TILE
-        private void DrawSingleTile(Vector2Int gridPosition)
+        public void DrawSingleTile(Vector2Int gridPosition)
         {
             DrawSingleTile(gridPosition.X, gridPosition.Y);
         }
 
-        private void DrawSingleTile(int x, int y)
+        public void DrawSingleTile(int x, int y)
         {
             if (tileGrid.TryGetGridObject(x, y, out BaseTile tile))
             {

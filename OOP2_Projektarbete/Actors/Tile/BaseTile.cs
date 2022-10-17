@@ -14,6 +14,12 @@ namespace Skalm.Actors.Tile
         public virtual char Sprite { get; protected set; }
         public ConsoleColor Color { get; protected set; }
 
+        // PATHFINDING SHOULD MOVE TO RELEVANT TILE TYPES
+        public BaseTile? Parent { get; set; }
+        public int FCost { get => GCost + HCost; }
+        public int GCost { get; set; }
+        public int HCost { get; set; }
+
         public BaseTile(Vector2Int gridPosition, char sprite = ' ', ConsoleColor color = ConsoleColor.White)
         {
             GridPosition = gridPosition;

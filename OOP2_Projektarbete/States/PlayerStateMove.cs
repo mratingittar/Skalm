@@ -30,8 +30,32 @@ namespace Skalm.States
         }
         public override void CommandInput(InputCommands command)
         {
-            if (command == InputCommands.Cancel)
-                gameManager.stateMachine.ChangeState(GameStates.GameStatePaused);
+            switch (command)
+            {
+                case InputCommands.Default:
+                    break;
+                case InputCommands.Confirm:
+                    break;
+                case InputCommands.Cancel:
+                    gameManager.stateMachine.ChangeState(GameStates.GameStatePaused);
+                    break;
+                case InputCommands.Interact:
+                    player.InteractWithNeighbours();
+                    break;
+                case InputCommands.Inventory:
+                    player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMenu);
+                    break;
+                case InputCommands.Attack:
+                    break;
+                case InputCommands.Next:
+                    break;
+                case InputCommands.Previous:
+                    break;
+                case InputCommands.Help:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

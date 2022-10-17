@@ -1,4 +1,5 @@
 ﻿using Skalm.Actors;
+using Skalm.Actors.Spawning;
 using Skalm.Actors.Tile;
 using Skalm.Display;
 using Skalm.Grid;
@@ -13,7 +14,7 @@ namespace Skalm.Map
         public readonly MapGenerator mapGenerator;
         public readonly MapPrinter mapPrinter;
         private ISettings settings;
-
+        public AStar pathfinder;
         public List<IGameObject> gameObjects { get; private set; }
         public List<Actor> actors { get; private set; }
         private Queue<Actor> moveQueue;
@@ -21,6 +22,7 @@ namespace Skalm.Map
         // CONSTRUCTOR I
         public MapManager(ISettings settings, DisplayManager displayManager, Grid2D<BaseTile> tileGrid)
         {
+            pathfinder = new AStar(this);
             TileGrid = tileGrid;
             this.settings = settings;
             mapGenerator = new MapGenerator(tileGrid, settings);

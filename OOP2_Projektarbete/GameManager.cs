@@ -1,6 +1,7 @@
 ﻿
 using Skalm.Actors;
 using Skalm.Actors.Fighting;
+using Skalm.Actors.Spawning;
 using Skalm.Actors.Tile;
 using Skalm.Animation;
 using Skalm.Display;
@@ -38,12 +39,12 @@ namespace Skalm
 
         // PLAYER
         public Player player;
+        public string PlayerName { get; set; } = "";
+        public Enemy? enemy;
         public bool NewGame { get; set; }
         
         // STATE MACHINES
         public readonly GameManagerStateMachine stateMachine;
-        //public readonly PlayerStateMachine playerStateMachine;
-
 
         // CONSTRUCTOR I
         public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager)
@@ -63,11 +64,10 @@ namespace Skalm
             // UPDATE FREQUENCY
             updateFrequency = Settings.UpdateFrequency;
 
-            player = new Player(this, Vector2Int.Zero, new PlayerAttackComponent());
+            player = new Player(this, Vector2Int.Zero, new PlayerAttackComponent(), "blank");
 
             // STATE MACHINE & GAME STATES
             stateMachine = new GameManagerStateMachine(this, GameStates.GameStateInitializing);
-            //playerStateMachine = new PlayerStateMachine(this, player, PlayerStates.PlayerStateIdle);
 
             stateMachine.Initialize(GameStates.GameStateInitializing);
         }
@@ -97,10 +97,14 @@ namespace Skalm
         {
             var tileGrid = MapManager.TileGrid;
             Vector2Int spawnPos = MapManager.mapGenerator.GetRandomSpawnPosition();
-            //Vector2Int midXY = new Vector2Int(tileGrid.gridWidth / 2, tileGrid.gridHeight / 2);
-            player = new Player(this, spawnPos, new PlayerAttackComponent(), '☺');
+            if (PlayerName.Length == 0)
+                PlayerName = "Nameless";
+            player = new Player(this, spawnPos, new PlayerAttackComponent(), PlayerName, '@', ConsoleColor.Yellow);
             MapManager.actors.Add(player);
             MapManager.gameObjects.Add(player);
+
+            enemy = new Enemy(this, MapManager.mapGenerator.GetRandomSpawnPosition(), 'Q', ConsoleColor.Red);
+            MapManager.actors.Add(enemy);
         }
     }
 }

@@ -79,7 +79,7 @@ namespace Skalm.Map
             }
         }
 
-        private List<BaseTile> GetNeighbours(Vector2Int tile)
+        public List<BaseTile> GetNeighbours(Vector2Int tile)
         {
             List<BaseTile> neighbors = new List<BaseTile>();
             if (tileGrid.TryGetGridObject(tile.Add(new Vector2Int(0, -1)), out BaseTile up))

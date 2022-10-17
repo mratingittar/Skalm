@@ -9,7 +9,6 @@ namespace Skalm.States
     {
         private Animator fireAnimator;
         private bool everyOtherFrame = true;
-        public string? playerName;
 
         // CONSTRUCTOR I
         public GameStateMainMenu(GameManager gameManager) : base(gameManager)
@@ -93,12 +92,13 @@ namespace Skalm.States
                 case Page.NewGame:
                     if (item == "Enter Name")
                     {
+                        EraseRow(menuManager.ActiveMenu.PageStartRow + 5);
                         (bool nameOK, string nameReturned) = EnterName(menuManager.ActiveMenu.PageStartRow + 5);
                         Console.CursorVisible = false;
                         if (nameOK)
-                            playerName = nameReturned;
+                            gameManager.PlayerName = nameReturned;
                         else
-                            displayManager.eraser.EraseLinesFromTo(Console.CursorTop, Console.CursorTop);
+                            EraseRow(Console.CursorTop);
                     }
 
                     if (item == "Start New Game")
@@ -124,6 +124,7 @@ namespace Skalm.States
             }
         }
 
+        // METHOD NAME ENTERING
         private (bool, string) EnterName(int height)
         {
             Console.SetCursorPosition(displayManager.windowInfo.WindowWidth / 2, height);
@@ -143,7 +144,7 @@ namespace Skalm.States
                 else if (cki.Key == ConsoleKey.Backspace && name.Length > 0)
                 {
                     name = name.Substring(0, name.Length - 1);
-                    displayManager.eraser.EraseLinesFromTo(height, height);
+                    EraseRow(height);
                 }
 
                 else
@@ -156,6 +157,11 @@ namespace Skalm.States
                 return (false, name);
             else
                 return (true, name);
+        }
+
+        private void EraseRow(int row)
+        {
+            displayManager.eraser.EraseLinesFromTo(row, row);
         }
         #endregion
     }

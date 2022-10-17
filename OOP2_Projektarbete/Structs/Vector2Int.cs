@@ -28,6 +28,26 @@ namespace Skalm.Structs
             return new Vector2Int(this.X+added.X, this.Y+added.Y);
         }
 
+        public static Vector2Int DirectionFromTo(Vector2Int start, Vector2Int end)
+        {
+            int x, y;
+
+            if (end.X < start.X)
+                x = -1;
+            else if (end.X > start.X)
+                x = 1;
+            else x = 0;
+
+            if (end.Y < start.Y)
+                y = -1;
+            else if (end.Y > start.Y)
+                y = 1;
+            else
+                y = 0;
+
+            return new Vector2Int(x, y);
+        }
+
         public static Vector2Int Zero { get => new Vector2Int(0, 0); }
 
 

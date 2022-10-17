@@ -16,7 +16,7 @@ namespace Skalm.Actors
 
         public ConsoleColor Color { get; protected set; }
 
-        public bool ColliderIsActive { get; protected set; }
+        public bool ColliderIsActive { get => true; }
         public static event Action<Actor, Vector2Int, Vector2Int>? OnPositionChanged;
         public static event Func<Vector2Int, bool>? OnMoveRequested;
 

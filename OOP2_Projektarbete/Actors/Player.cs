@@ -16,6 +16,7 @@ namespace Skalm.Actors
 {
     internal class Player : Actor, IDamageable
     {
+        private GameManager gameManager;
         // STATE MACHINE
         public readonly PlayerStateMachine playerStateMachine;
 
@@ -27,38 +28,69 @@ namespace Skalm.Actors
         // STATS
         private StatsObjectHard statsHard;
         private StatsObjectSoft statsSoft;
-        
+
+        private Vector2Int previousPosition;
         private Queue<Vector2Int> moveQueue;
+        public static event Action? playerTurn;
 
         // CONSTRUCTOR I
-        public Player(GameManager gameManager, Vector2Int posXY, IAttackComponent attack, char sprite = '@', ConsoleColor color = ConsoleColor.White) : base(posXY, sprite, color)
+        public Player(GameManager gameManager, Vector2Int posXY, IAttackComponent attack, string name, char sprite = '@', ConsoleColor color = ConsoleColor.White) : base(posXY, sprite, color)
         {
+            this.gameManager = gameManager;
             playerStateMachine = new PlayerStateMachine(gameManager, this, PlayerStates.PlayerStateIdle);
-
+            
             // COMPONENTS
             //this._moveInput = moveInput;
             this._attack = attack;
 
             // STATS
-            this.statsHard = new StatsObjectHard("name", 5, 5, 5, 5, 5);
+            this.statsHard = new StatsObjectHard(name, 5, 5, 5, 5, 5);
             this.statsSoft = new StatsObjectSoft(10, 1);
 
             moveQueue = new Queue<Vector2Int>();
             inventory = new List<Item>();
+            previousPosition = GridPosition;
         }
 
         // MOVE INPUT, QUEUED FOR UPDATEMAIN
         public override void Move(Vector2Int direction)
         {
             moveQueue.Enqueue(direction);
+            
         }
 
+        public void SendStatsToDisplay()
+        {
+            gameManager.DisplayManager.pixelGridController.DisplayStats(statsHard, statsSoft);
+            gameManager.DisplayManager.pixelGridController.DisplayInventory();
+        }
+
+        public void InteractWithNeighbours()
+        {
+            foreach (var neighbour in gameManager.MapManager.mapGenerator.GetNeighbours(GridPosition))
+            {
+                if (neighbour is IInteractable)
+                { 
+                    ((IInteractable)neighbour).Interact();
+                    gameManager.MapManager.mapPrinter.DrawSingleTile(neighbour.GridPosition);
+                }
+            }
+        }
 
         // UPDATE OBJECT
         public override void UpdateMain()
         {
             if (moveQueue.Count > 0)
-            base.Move(moveQueue.Dequeue());            
+            {
+                base.Move(moveQueue.Dequeue());
+            }
+
+            if (previousPosition.Equals(GridPosition) is false)
+            {
+                playerTurn?.Invoke();
+                previousPosition = GridPosition;
+            }
+
         }
 
         // MOVE METHOD

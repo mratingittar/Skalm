@@ -15,20 +15,43 @@ namespace Skalm.States
 
         public override void Enter()
         {
-            throw new NotImplementedException();
+
         }
 
         public override void Exit()
         {
-            throw new NotImplementedException();
+
         }
         public override void MoveInput(Vector2Int direction)
         {
-            throw new NotImplementedException();
+
         }
         public override void CommandInput(InputCommands command)
         {
-            throw new NotImplementedException();
+            switch (command)
+            {
+                case InputCommands.Default:
+                    break;
+                case InputCommands.Confirm:
+                    break;
+                case InputCommands.Cancel:
+                    player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                    break;
+                case InputCommands.Interact:
+                    break;
+                case InputCommands.Inventory:
+                    break;
+                case InputCommands.Attack:
+                    break;
+                case InputCommands.Next:
+                    break;
+                case InputCommands.Previous:
+                    break;
+                case InputCommands.Help:
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }

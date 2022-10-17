@@ -27,6 +27,7 @@ namespace Skalm.States
             // INPUT EVENT SUBSCRIBE
             inputManager.OnInputMove += MoveInput;
             inputManager.OnInputCommand += CommandInput;
+            
 
             if (gameManager.NewGame)
             {
@@ -48,10 +49,11 @@ namespace Skalm.States
 
 
             if (gameManager.NewGame)
-                displayManager.pixelGridController.DisplayMessage("Welcome traveller.");
-            else
-                displayManager.pixelGridController.DisplayMessage("Welcome back.");
+                displayManager.pixelGridController.DisplayMessage($"Welcome {gameManager.PlayerName}.");
 
+
+
+            gameManager.player.SendStatsToDisplay();
             gameManager.player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
             soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Thunder Dreams"));
         }
@@ -67,6 +69,8 @@ namespace Skalm.States
             // INPUT EVENT UNSUBSCRIBE
             inputManager.OnInputMove -= MoveInput;
             inputManager.OnInputCommand -= CommandInput;
+
+            gameManager.PlayerName = "";
         }
 
         // UPDATE STATE LOGIC
@@ -91,14 +95,17 @@ namespace Skalm.States
         //METHOD MOVE INPUT
         private void MoveInput(Vector2Int direction)
         {
+            soundManager.player.Play(SoundManager.SoundType.Move);
             gameManager.player.playerStateMachine.CurrentState.MoveInput(direction);
         }
 
         // METHOD COMMAND INPUT
         private void CommandInput(InputCommands command)
         {
+            soundManager.player.Play(SoundManager.SoundType.Confirm);
             gameManager.player.playerStateMachine.CurrentState.CommandInput(command);
         }
+
 
         #endregion
     }
