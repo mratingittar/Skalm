@@ -35,6 +35,7 @@ namespace Skalm.Menu
         public MenuPage ActivePage { get; private set; }
         public int MenuLevel => pages.FindNode(node => node.Value == ActivePage).Depth;
         public int MenuItemIndex { get; set; }
+        public int PageStartRow => pageStartRow;
         #endregion
 
         public void LoadMenu(int titlePadding)
@@ -125,11 +126,14 @@ namespace Skalm.Menu
             {
                 string pageItem = item.Value;
 
+                if (ActivePage.page is Page.NewGame && pageItem == "Start New Game")
+                    count++;
+
                 if (ActivePage.page is Page.Music && pageItem == soundManager.CurrentlyPlaying.soundName)
                     pageItem = TextTools.AddPointersToString(pageItem, 3);
 
                 if (ActivePage.page is Page.InputMethod && pageItem == inputManager.moveInput.GetType().Name)
-                    pageItem = TextTools.AddPointersToString(pageItem, 3);
+                    pageItem = TextTools.AddPointersToString(pageItem, 3);                
 
                 if (item.Key == ActivePage.items.Last().Key)
                 {

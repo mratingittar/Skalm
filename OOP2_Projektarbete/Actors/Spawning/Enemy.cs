@@ -7,12 +7,10 @@ using System.Threading.Tasks;
 
 namespace Skalm.Actors.Spawning
 {
-    internal class ItemSpawner : ISpawner<Item>
+    internal class Enemy : Actor
     {
-        public Item Spawn(Vector2Int position, char sprite, ConsoleColor color)
+        public Enemy(Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
         {
-            Console.WriteLine("Item Spawned");
-            return new Item();
         }
     }
 }

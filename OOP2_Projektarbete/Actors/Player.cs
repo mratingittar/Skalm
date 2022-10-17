@@ -1,4 +1,5 @@
 ﻿using Skalm.Actors.Fighting;
+using Skalm.Actors.Spawning;
 using Skalm.Actors.Stats;
 using Skalm.Actors.Tile;
 using Skalm.Grid;
@@ -21,6 +22,7 @@ namespace Skalm.Actors
         // COMPONENTS
         public IAttackComponent _attack { get; set; }
 
+        public List<Item> inventory;
 
         // STATS
         private StatsObjectHard statsHard;
@@ -42,7 +44,7 @@ namespace Skalm.Actors
             this.statsSoft = new StatsObjectSoft(10, 1);
 
             moveQueue = new Queue<Vector2Int>();
-
+            inventory = new List<Item>();
         }
 
         // MOVE INPUT, QUEUED FOR UPDATEMAIN

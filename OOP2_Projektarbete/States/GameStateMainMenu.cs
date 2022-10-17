@@ -1,8 +1,6 @@
 ﻿using Skalm.Animation;
-using Skalm.Display;
 using Skalm.Input;
 using Skalm.Menu;
-using Skalm.Sounds;
 using Skalm.Structs;
 
 namespace Skalm.States
@@ -11,6 +9,7 @@ namespace Skalm.States
     {
         private Animator fireAnimator;
         private bool everyOtherFrame = true;
+        public string? playerName;
 
         // CONSTRUCTOR I
         public GameStateMainMenu(GameManager gameManager) : base(gameManager)
@@ -92,9 +91,21 @@ namespace Skalm.States
                     break;
 
                 case Page.NewGame:
+                    if (item == "Enter Name")
+                    {
+                        (bool nameOK, string nameReturned) = EnterName(menuManager.ActiveMenu.PageStartRow + 5);
+                        Console.CursorVisible = false;
+                        if (nameOK)
+                            playerName = nameReturned;
+                        else
+                            displayManager.eraser.EraseLinesFromTo(Console.CursorTop, Console.CursorTop);
+                    }
+
                     if (item == "Start New Game")
+                    {
                         gameManager.NewGame = true;
                         gameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
+                    }
                     break;
 
                 case Page.Options:
@@ -111,6 +122,40 @@ namespace Skalm.States
                     inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
                     break;
             }
+        }
+
+        private (bool, string) EnterName(int height)
+        {
+            Console.SetCursorPosition(displayManager.windowInfo.WindowWidth / 2, height);
+            Console.CursorVisible = true;
+            ConsoleKeyInfo cki;
+            string name = "";
+            while (true)
+            {
+                cki = Console.ReadKey(true);
+
+                if (cki.Key == ConsoleKey.Enter)
+                    break;
+
+                else if (cki.Key == ConsoleKey.Escape)
+                    return (false, name);
+
+                else if (cki.Key == ConsoleKey.Backspace && name.Length > 0)
+                {
+                    name = name.Substring(0, name.Length - 1);
+                    displayManager.eraser.EraseLinesFromTo(height, height);
+                }
+
+                else
+                    name += cki.KeyChar;
+
+                displayManager.printer.PrintCenteredInWindow(name, height);
+            }
+
+            if (name.Length == 0)
+                return (false, name);
+            else
+                return (true, name);
         }
         #endregion
     }

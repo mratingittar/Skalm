@@ -20,7 +20,7 @@ namespace Skalm.Display
         {
             for (int x = 0; x < Console.WindowWidth; x++)
             {
-                for (int y = yStart; y < yEnd; y++)
+                for (int y = yStart; y <= yEnd; y++)
                 {
                     Console.SetCursorPosition(x, y);
                     Console.Write(" ");

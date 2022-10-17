@@ -8,6 +8,7 @@ using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.Structs;
 using Skalm.Utilities;
+using System.Text;
 
 #region SETTINGS
 Console.WriteLine("Loading settings");
@@ -27,6 +28,7 @@ Console.Title = settings.GameTitle;
 Console.CursorVisible = settings.DisplayCursor;
 Console.BackgroundColor = settings.BackgroundColor;
 Console.ForegroundColor = settings.ForegroundColor;
+//Console.InputEncoding = UTF8Encoding.UTF8;
 
 #region CALCULATING BOUNDS
 int verticalBorders = 3;

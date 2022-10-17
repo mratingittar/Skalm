@@ -99,4 +99,5 @@ namespace Skalm.Menu
     }
 }
 
+// Code heavily inspired by gt4dev:
 // https://github.com/gt4dev/yet-another-tree-structure/blob/master/csharp/CSharpTree/TreeNode.cs
