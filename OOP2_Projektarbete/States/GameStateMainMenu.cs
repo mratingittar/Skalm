@@ -7,6 +7,7 @@ namespace Skalm.States
 {
     internal class GameStateMainMenu : GameStateBase
     {
+        public string playerName = "";
         private Animator fireAnimator;
         private bool everyOtherFrame = true;
 
@@ -96,7 +97,7 @@ namespace Skalm.States
                         (bool nameOK, string nameReturned) = EnterName(menuManager.ActiveMenu.PageStartRow + 5);
                         Console.CursorVisible = false;
                         if (nameOK)
-                            gameManager.PlayerName = nameReturned;
+                            gameManager.SceneManager.playerName = nameReturned;
                         else
                             EraseRow(Console.CursorTop);
                     }

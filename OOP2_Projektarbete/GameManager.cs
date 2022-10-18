@@ -1,10 +1,7 @@
-﻿
-using Skalm.Actors;
-using Skalm.Actors.Fighting;
-using Skalm.Actors.Spawning;
-using Skalm.Actors.Tile;
-using Skalm.Animation;
+﻿using Skalm.Animation;
 using Skalm.Display;
+using Skalm.GameObjects;
+using Skalm.GameObjects.Enemies;
 using Skalm.Input;
 using Skalm.Map;
 using Skalm.Menu;
@@ -19,18 +16,19 @@ namespace Skalm
     {
 
         #region PROPERTIES
-        public ISettings Settings { get; private set; } 
+        public ISettings Settings { get; } 
 
         // MANAGERS
-        public InputManager InputManager { get; private set; }
-        public SoundManager SoundManager { get; private set; }
-        public DisplayManager DisplayManager { get; private set; }
-        public MenuManager MenuManager { get; private set; }
-        public MapManager MapManager { get; private set; }
+        public InputManager InputManager { get; }
+        public SoundManager SoundManager { get; }
+        public DisplayManager DisplayManager { get; }
+        public MenuManager MenuManager { get; }
+        public MapManager MapManager { get; }
+        public SceneManager SceneManager { get; }
 
 
         // ANIMATION
-        public Animator FireAnimator { get; private set; }
+        public Animator FireAnimator { get; }
         #endregion
 
         #region FIELDS
@@ -38,7 +36,7 @@ namespace Skalm
         #endregion
 
         // PLAYER
-        public Player player;
+        public Player? player;
         public string PlayerName { get; set; } = "";
         public Enemy? enemy;
         public bool NewGame { get; set; }
@@ -47,7 +45,7 @@ namespace Skalm
         public readonly GameManagerStateMachine stateMachine;
 
         // CONSTRUCTOR I
-        public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager)
+        public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager, SceneManager sceneManager)
         {
             Settings = settings;
 
@@ -57,6 +55,7 @@ namespace Skalm
             InputManager = inputManager;
             MenuManager = menuManager;
             MapManager = mapManager;
+            SceneManager = sceneManager;
 
             // ANIMATION
             FireAnimator = new Animator(displayManager);
@@ -64,7 +63,6 @@ namespace Skalm
             // UPDATE FREQUENCY
             updateFrequency = Settings.UpdateFrequency;
 
-            player = new Player(this, Vector2Int.Zero, new PlayerAttackComponent(), "blank");
 
             // STATE MACHINE & GAME STATES
             stateMachine = new GameManagerStateMachine(this, GameStates.GameStateInitializing);
@@ -93,18 +91,19 @@ namespace Skalm
             }
         }
 
-        public void CreatePlayer()
-        {
-            var tileGrid = MapManager.TileGrid;
-            Vector2Int spawnPos = MapManager.mapGenerator.GetRandomSpawnPosition();
-            if (PlayerName.Length == 0)
-                PlayerName = "Nameless";
-            player = new Player(this, spawnPos, new PlayerAttackComponent(), PlayerName, '@', ConsoleColor.Yellow);
-            MapManager.actors.Add(player);
-            MapManager.gameObjects.Add(player);
+        //public void CreatePlayer()
+        //{
+        //    var tileGrid = MapManager.TileGrid;
+        //    Vector2Int spawnPos = MapManager.mapGenerator.GetRandomSpawnPosition();
+        //    if (PlayerName.Length == 0)
+        //        PlayerName = "Nameless";
+        //    player = new Player(this, spawnPos, new PlayerAttackComponent(), PlayerName, '@', ConsoleColor.Yellow);
+        //    MapManager.gameObjects.Add(player);
+        //    MapManager.actors.Add(player);
 
-            enemy = new Enemy(this, MapManager.mapGenerator.GetRandomSpawnPosition(), 'Q', ConsoleColor.Red);
-            MapManager.actors.Add(enemy);
-        }
+        //    enemy = new Enemy(this, MapManager.mapGenerator.GetRandomSpawnPosition(), 'Q', ConsoleColor.Red);
+        //    MapManager.gameObjects.Add(enemy);
+        //    MapManager.actors.Add(enemy);
+        //}
     }
 }

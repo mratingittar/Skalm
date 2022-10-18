@@ -1,4 +1,4 @@
-﻿using Skalm.Actors.Tile;
+﻿using Skalm.Map.Tile;
 using Skalm.Structs;
 using System;
 using System.Collections.Generic;

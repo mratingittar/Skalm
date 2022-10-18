@@ -1,7 +1,7 @@
-﻿using Skalm.Actors;
-using Skalm.Actors.Tile;
-using Skalm.Display;
+﻿using Skalm.Display;
+using Skalm.GameObjects;
 using Skalm.Grid;
+using Skalm.Map.Tile;
 using Skalm.Structs;
 using System;
 using System.Collections.Generic;
@@ -68,6 +68,14 @@ namespace Skalm.Map
             }
         }
 
+        public void DebugPathfinder(Vector2Int position)
+        {
+            foreach (var pos in tileGrid.GetPlanePositions(position))
+            {
+                printer.PrintAtPosition('?', pos.Y, pos.X);
+            }
+        }
+
         // DRAW SINGLE TILE
         public void DrawSingleTile(Vector2Int gridPosition)
         {
@@ -82,10 +90,10 @@ namespace Skalm.Map
                     return;
 
 
-                Console.ForegroundColor = tile.GetColor();
+                Console.ForegroundColor = tile.Color;
                 foreach (var position in tileGrid.GetPlanePositions(x, y))
                 {
-                    printer.PrintAtPosition(tile.GetSprite(), position.Y, position.X);
+                    printer.PrintAtPosition(tile.Sprite, position.Y, position.X);
                 }
                 Console.ForegroundColor = foregroundColor;
             }

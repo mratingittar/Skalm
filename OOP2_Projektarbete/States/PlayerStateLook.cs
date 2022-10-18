@@ -1,4 +1,4 @@
-﻿using Skalm.Actors;
+﻿using Skalm.GameObjects;
 using Skalm.Input;
 using Skalm.Structs;
 using System;
@@ -11,7 +11,7 @@ namespace Skalm.States
 {
     internal class PlayerStateLook : PlayerStateBase
     {
-        public PlayerStateLook(GameManager gameManager, Player player) : base(gameManager, player) { }
+        public PlayerStateLook(Player player) : base(player) { }
         public override void Enter()
         {
             throw new NotImplementedException();

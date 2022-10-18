@@ -1,5 +1,4 @@
-﻿using Skalm.Actors;
-using Skalm.Actors.Tile;
+﻿using Skalm.GameObjects;
 using Skalm.Input;
 using Skalm.Structs;
 using System;
@@ -12,7 +11,8 @@ namespace Skalm.States
 {
     internal class PlayerStateMove : PlayerStateBase
     {
-        public PlayerStateMove(GameManager gameManager, Player player) : base(gameManager, player) { }
+        public static event Action? OnPauseMenuRequested;
+        public PlayerStateMove(Player player) : base(player) { }
 
         public override void Enter()
         {
@@ -37,7 +37,7 @@ namespace Skalm.States
                 case InputCommands.Confirm:
                     break;
                 case InputCommands.Cancel:
-                    gameManager.stateMachine.ChangeState(GameStates.GameStatePaused);
+                    OnPauseMenuRequested?.Invoke();
                     break;
                 case InputCommands.Interact:
                     player.InteractWithNeighbours();

@@ -1,4 +1,4 @@
-﻿using Skalm.Actors;
+﻿using Skalm.GameObjects;
 using Skalm.Input;
 using Skalm.Structs;
 using System;
@@ -11,12 +11,10 @@ namespace Skalm.States
 {
     internal abstract class PlayerStateBase : IState
     {
-        protected GameManager gameManager;
         protected Player player;
 
-        public PlayerStateBase(GameManager gameManager, Player player)
+        public PlayerStateBase( Player player)
         {
-            this.gameManager = gameManager;
             this.player = player;
         }
 

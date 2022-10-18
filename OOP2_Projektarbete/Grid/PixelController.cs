@@ -1,5 +1,5 @@
-﻿using Skalm.Actors.Stats;
-using Skalm.Display;
+﻿using Skalm.Display;
+using Skalm.GameObjects.Stats;
 using Skalm.Structs;
 using Skalm.Utilities;
 

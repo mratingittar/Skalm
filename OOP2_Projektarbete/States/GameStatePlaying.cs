@@ -1,4 +1,5 @@
 ﻿using Skalm.Display;
+using Skalm.GameObjects;
 using Skalm.Input;
 using Skalm.Map;
 
@@ -9,12 +10,14 @@ namespace Skalm.States
 {
     internal class GameStatePlaying : GameStateBase
     {
-        private readonly MapManager mapManager;
-        private readonly MapPrinter mapPrinter;
+        private SceneManager _sceneManager;
+        private MapManager mapManager;
+        private MapPrinter mapPrinter;
 
         // CONSTRUCTOR I
         public GameStatePlaying(GameManager gameManager) : base(gameManager)
         {
+            _sceneManager = gameManager.SceneManager;
             mapManager = gameManager.MapManager;
             mapPrinter = mapManager.mapPrinter;
         }
@@ -33,13 +36,12 @@ namespace Skalm.States
             {
                 displayManager.printer.PrintCenteredInWindow("ENTERING SKÄLM", displayManager.windowInfo.WindowHeight / 2);
                 Thread.Sleep(500);
-                mapManager.ResetMap();
+                _sceneManager.ResetObjectsInScene();
 
 
                 // CREATE MAP
                 mapManager.mapGenerator.CreateMap();
-                gameManager.CreatePlayer();
-                mapManager.AddActorsToMap();
+                _sceneManager.InitializeScene();
             }
 
             // DRAWING HUD & MAP
@@ -48,13 +50,9 @@ namespace Skalm.States
             mapManager.mapPrinter.DrawMap();
 
 
-            if (gameManager.NewGame)
-                displayManager.pixelGridController.DisplayMessage($"Welcome {gameManager.PlayerName}.");
-
-
-
-            gameManager.player.SendStatsToDisplay();
-            gameManager.player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+           
+            _sceneManager.Player.SendStatsToDisplay();
+            _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
             soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Thunder Dreams"));
         }
 
@@ -63,7 +61,7 @@ namespace Skalm.States
         {
             // SAVING STATE
             gameManager.NewGame = false;
-            gameManager.player.playerStateMachine.ChangeState(PlayerStates.PlayerStateIdle);
+            _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateIdle);
             displayManager.eraser.EraseAll();
 
             // INPUT EVENT UNSUBSCRIBE
@@ -76,9 +74,9 @@ namespace Skalm.States
         // UPDATE STATE LOGIC
         public override void UpdateLogic()
         {
-            foreach (var go in gameManager.MapManager.gameObjects)
+            foreach (Actor actor in _sceneManager.ActorsInScene)
             {
-                go.UpdateMain();
+                actor.UpdateMain();
             }
         }
 
@@ -96,14 +94,14 @@ namespace Skalm.States
         private void MoveInput(Vector2Int direction)
         {
             soundManager.player.Play(SoundManager.SoundType.Move);
-            gameManager.player.playerStateMachine.CurrentState.MoveInput(direction);
+            _sceneManager.Player.playerStateMachine.CurrentState.MoveInput(direction);
         }
 
         // METHOD COMMAND INPUT
         private void CommandInput(InputCommands command)
         {
             soundManager.player.Play(SoundManager.SoundType.Confirm);
-            gameManager.player.playerStateMachine.CurrentState.CommandInput(command);
+            _sceneManager.Player.playerStateMachine.CurrentState.CommandInput(command);
         }
 
 

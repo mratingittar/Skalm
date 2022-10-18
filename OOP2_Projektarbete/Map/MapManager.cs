@@ -1,8 +1,8 @@
-﻿using Skalm.Actors;
-using Skalm.Actors.Spawning;
-using Skalm.Actors.Tile;
-using Skalm.Display;
+﻿using Skalm.Display;
+using Skalm.GameObjects;
+using Skalm.GameObjects.Interfaces;
 using Skalm.Grid;
+using Skalm.Map.Tile;
 using Skalm.Structs;
 using Skalm.Utilities;
 
@@ -15,8 +15,7 @@ namespace Skalm.Map
         public readonly MapPrinter mapPrinter;
         private ISettings settings;
         public AStar pathfinder;
-        public List<IGameObject> gameObjects { get; private set; }
-        public List<Actor> actors { get; private set; }
+
         private Queue<Actor> moveQueue;
 
         // CONSTRUCTOR I
@@ -25,11 +24,8 @@ namespace Skalm.Map
             pathfinder = new AStar(this);
             TileGrid = tileGrid;
             this.settings = settings;
-            mapGenerator = new MapGenerator(tileGrid, settings);
+            mapGenerator = new MapGenerator(this, tileGrid, settings);
             mapPrinter = new MapPrinter(tileGrid, displayManager.printer, settings.ForegroundColor);
-
-            gameObjects = new List<IGameObject>();
-            actors = new List<Actor>();
 
             moveQueue = new Queue<Actor>();
 
@@ -40,9 +36,15 @@ namespace Skalm.Map
         private void UpdateMoveablePosition(Actor actor, Vector2Int newPosition, Vector2Int oldPosition)
         {
             TileGrid.TryGetGridObject(oldPosition, out BaseTile tileOld);
+            {
                 ((IOccupiable)tileOld).ObjectsOnTile.Remove(actor);
+                ((IOccupiable)tileOld).ActorPresent = false;
+            }
             TileGrid.TryGetGridObject(newPosition, out BaseTile tileNew);
+            {
                 ((IOccupiable)tileNew).ObjectsOnTile.Add(actor);
+                ((IOccupiable)tileNew).ActorPresent = true;
+            }
         }
 
 
@@ -54,6 +56,8 @@ namespace Skalm.Map
             {
                 if (collider is ICollider)
                     collision = ((ICollider)collider).ColliderIsActive;
+                else if (collider is IOccupiable)
+                    collision = ((IOccupiable)collider).ActorPresent;
                 else
                     collision = false;
             }
@@ -63,19 +67,29 @@ namespace Skalm.Map
             return collision;
         }
 
-        public void AddActorsToMap()
+        public List<BaseTile> GetNeighbours(Vector2Int tile)
         {
-            foreach (var actor in actors)
-            {
-                TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile);
-                ((IOccupiable)tile).ObjectsOnTile.Add(actor);
-            }
+            List<BaseTile> neighbors = new List<BaseTile>();
+            if (TileGrid.TryGetGridObject(tile.Add(new Vector2Int(0, -1)), out BaseTile up))
+                neighbors.Add(up);
+            if (TileGrid.TryGetGridObject(tile.Add(new Vector2Int(1, 0)), out BaseTile right))
+                neighbors.Add(right);
+            if (TileGrid.TryGetGridObject(tile.Add(new Vector2Int(0, 1)), out BaseTile down))
+                neighbors.Add(down);
+            if (TileGrid.TryGetGridObject(tile.Add(new Vector2Int(-1, 0)), out BaseTile left))
+                neighbors.Add(left);
+
+            return neighbors;
         }
 
-        public void ResetMap()
+        public Vector2Int GetRandomSpawnPosition()
         {
-            actors.Clear();
-            gameObjects.Clear();
+            if (mapGenerator.freeTiles.Count == 0)
+                throw new Exception("No free tiles to spawn in found");
+
+            Random randomPos = new Random();
+            return mapGenerator.freeTiles.ElementAt(randomPos.Next(mapGenerator.freeTiles.Count()));
         }
+
     }
 }

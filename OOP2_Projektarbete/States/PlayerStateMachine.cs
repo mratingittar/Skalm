@@ -1,18 +1,26 @@
-﻿using Skalm.Actors;
+﻿using Skalm.GameObjects;
 
 namespace Skalm.States
 {
+    internal enum PlayerStates
+    {
+        PlayerStateIdle,
+        PlayerStateMove,
+        PlayerStateAttack,
+        PlayerStateLook,
+        PlayerStateMenu
+    }
+
     internal class PlayerStateMachine : IStateMachine<PlayerStateBase, PlayerStates>
     {
-        public PlayerStateBase CurrentState { get; private set; }
+
+        private Player player;
         private List<PlayerStateBase> availableStates;
-        private GameManager gameManager;
-        public Player player;
+        public PlayerStateBase CurrentState { get; private set; }
 
         // CONSTRUCTOR I
-        public PlayerStateMachine(GameManager gameManager, Player player, PlayerStates startingState)
+        public PlayerStateMachine(Player player, PlayerStates startingState)
         {
-            this.gameManager = gameManager;
             this.player = player;
             availableStates = new List<PlayerStateBase>();
             CurrentState = GetStateFromList(startingState);
@@ -46,22 +54,22 @@ namespace Skalm.States
             switch (stateName)
             {
                 case "PlayerStateIdle":
-                    state = new PlayerStateIdle(gameManager, player);
+                    state = new PlayerStateIdle(player);
                     break;
                 case "PlayerStateMove":
-                    state = new PlayerStateMove(gameManager, player);
+                    state = new PlayerStateMove(player);
                     break;
                 case "PlayerStateAttack":
-                    state = new PlayerStateAttack(gameManager, player);
+                    state = new PlayerStateAttack(player);
                     break;
                 case "PlayerStateLook":
-                    state = new PlayerStateLook(gameManager, player);
+                    state = new PlayerStateLook(player);
                     break;
                 case "PlayerStateMenu":
-                    state = new PlayerStateMenu(gameManager, player);
+                    state = new PlayerStateMenu(player);
                     break;
                 default:
-                    state = new PlayerStateIdle(gameManager, player);
+                    state = new PlayerStateIdle(player);
                     break;
             }
 
@@ -69,12 +77,5 @@ namespace Skalm.States
             return state;
         }
     }
-    internal enum PlayerStates
-    {
-        PlayerStateIdle,
-        PlayerStateMove,
-        PlayerStateAttack,
-        PlayerStateLook,
-        PlayerStateMenu
-    }
+
 }

@@ -1,5 +1,5 @@
-﻿using Skalm.Actors.Tile;
-using Skalm.Grid;
+﻿using Skalm.Grid;
+using Skalm.Map.Tile;
 using Skalm.Structs;
 using Skalm.Utilities;
 
@@ -7,13 +7,16 @@ namespace Skalm.Map
 {
     internal class MapGenerator
     {
-        private ISettings settings;
-        private Grid2D<BaseTile> tileGrid;
-        private HashSet<Vector2Int> freeTiles;
-        private HashSet<Vector2Int> doors;
+        public HashSet<Vector2Int> freeTiles;
 
-        public MapGenerator(Grid2D<BaseTile> tileGrid, ISettings settings)
+        private MapManager mapManager;
+        private HashSet<Vector2Int> doors;
+        private Grid2D<BaseTile> tileGrid;
+        private ISettings settings;
+
+        public MapGenerator(MapManager mapManager, Grid2D<BaseTile> tileGrid, ISettings settings)
         {
+            this.mapManager = mapManager;
             this.tileGrid = tileGrid;
             freeTiles = new HashSet<Vector2Int>();
             doors = new HashSet<Vector2Int>();
@@ -29,15 +32,6 @@ namespace Skalm.Map
 
             if (freeTiles.Count == 0)
                 CreateRoomFromBounds(new Bounds(new Vector2Int(5, 5), new Vector2Int(tileGrid.gridWidth - 5, tileGrid.gridHeight - 5)));
-        }
-
-        public Vector2Int GetRandomSpawnPosition()
-        {
-            if (freeTiles.Count == 0)
-                throw new Exception("No free tiles to spawn in found");
-
-            Random randomPos = new Random();
-            return freeTiles.ElementAt(randomPos.Next(freeTiles.Count()));
         }
 
         private void CreateMapFromStringArray(string[] map)
@@ -72,26 +66,11 @@ namespace Skalm.Map
             HashSet<Vector2Int> tiles = freeTiles.Union(doors).ToHashSet();
             foreach (var tile in tiles)
             {
-                List<BaseTile> neighbors = GetNeighbours(tile);
+                List<BaseTile> neighbors = mapManager.GetNeighbours(tile);
                 foreach (var neighbor in neighbors)
                     if (neighbor is VoidTile)
                         tileGrid.SetGridObject(neighbor.GridPosition, new WallTile(neighbor.GridPosition, settings.SpriteWall));
             }
-        }
-
-        public List<BaseTile> GetNeighbours(Vector2Int tile)
-        {
-            List<BaseTile> neighbors = new List<BaseTile>();
-            if (tileGrid.TryGetGridObject(tile.Add(new Vector2Int(0, -1)), out BaseTile up))
-                neighbors.Add(up);
-            if (tileGrid.TryGetGridObject(tile.Add(new Vector2Int(1, 0)), out BaseTile right))
-                neighbors.Add(right);
-            if (tileGrid.TryGetGridObject(tile.Add(new Vector2Int(0, 1)), out BaseTile down))
-                neighbors.Add(down);
-            if (tileGrid.TryGetGridObject(tile.Add(new Vector2Int(-1, 0)), out BaseTile left))
-                neighbors.Add(left);
-
-            return neighbors;
         }
 
         private void SetBorderFloorsAsWalls()

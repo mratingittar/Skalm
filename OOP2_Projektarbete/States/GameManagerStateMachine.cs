@@ -18,6 +18,12 @@ namespace Skalm.States
             this.gameManager = gameManager;
             availableStates = new List<GameStateBase>();
             CurrentState = GetStateFromList(startingState);
+            PlayerStateMove.OnPauseMenuRequested += PauseGame;
+        }
+
+        private void PauseGame()
+        {
+            ChangeState(GameStates.GameStatePaused);
         }
 
         // INITIALIZE STATE MACHINE

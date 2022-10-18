@@ -1,9 +1,9 @@
 ﻿using Skalm;
-using Skalm.Actors.Tile;
 using Skalm.Display;
 using Skalm.Grid;
 using Skalm.Input;
 using Skalm.Map;
+using Skalm.Map.Tile;
 using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.Structs;
@@ -28,7 +28,6 @@ Console.Title = settings.GameTitle;
 Console.CursorVisible = settings.DisplayCursor;
 Console.BackgroundColor = settings.BackgroundColor;
 Console.ForegroundColor = settings.ForegroundColor;
-//Console.InputEncoding = UTF8Encoding.UTF8;
 
 #region CALCULATING BOUNDS
 int verticalBorders = 3;
@@ -69,8 +68,8 @@ MenuManager menuManager = new MenuManager(inputManager, displayManager, soundMan
 MapManager mapManager = new MapManager(settings, displayManager, new Grid2D<BaseTile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, 
     displayManager.pixelGridController.pixelGrid.GetPlanePosition(displayManager.pixelGridController.pixelsInSections["MapSection"].First().gridPosition), 
     (x, y) => new VoidTile(new Vector2Int(x, y))));
-
-GameManager game = new GameManager(settings, displayManager, mapManager, soundManager, inputManager, menuManager);
+SceneManager sceneManager = new SceneManager(mapManager);
+GameManager game = new GameManager(settings, displayManager, mapManager, soundManager, inputManager, menuManager, sceneManager);
 #endregion
 
 Console.Clear();

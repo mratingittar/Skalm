@@ -1,4 +1,4 @@
-﻿using Skalm.Actors;
+﻿using Skalm.GameObjects;
 using Skalm.Input;
 using Skalm.Structs;
 using System;
@@ -11,7 +11,7 @@ namespace Skalm.States
 {
     internal class PlayerStateIdle : PlayerStateBase
     {
-        public PlayerStateIdle(GameManager gameManager, Player player) : base(gameManager, player) { }
+        public PlayerStateIdle(Player player) : base(player) { }
 
         public override void Enter()
         {
