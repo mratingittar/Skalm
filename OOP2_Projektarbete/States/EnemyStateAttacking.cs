@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Skalm.GameObjects.Enemies;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,12 @@ namespace Skalm.States
 {
     internal class EnemyStateAttacking : EnemyStateBase
     {
+        private Enemy enemy;
+
+        public EnemyStateAttacking(Enemy enemy)
+        {
+            this.enemy = enemy;
+        }
         public override void Enter()
         {
             throw new NotImplementedException();

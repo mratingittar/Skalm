@@ -16,7 +16,12 @@ namespace Skalm.GameObjects.Items
 
         public void Interact()
         {
-            throw new NotImplementedException();
+            PickupItem();
+        }
+
+        private void PickupItem()
+        {
+            
         }
     }
 }
