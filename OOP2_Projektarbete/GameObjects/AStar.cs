@@ -16,6 +16,9 @@ namespace Skalm.GameObjects
 
         public Queue<Vector2Int> FindPath(BaseTile startTile, BaseTile targetTile)
         {
+            if (debug)
+                mapManager.mapPrinter.DrawMap();
+
             HashSet<BaseTile> openSet = new HashSet<BaseTile>();
             HashSet<BaseTile> closedSet = new HashSet<BaseTile>();
 

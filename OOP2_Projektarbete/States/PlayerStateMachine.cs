@@ -2,18 +2,8 @@
 
 namespace Skalm.States
 {
-    internal enum PlayerStates
-    {
-        PlayerStateIdle,
-        PlayerStateMove,
-        PlayerStateAttack,
-        PlayerStateLook,
-        PlayerStateMenu
-    }
-
     internal class PlayerStateMachine : IStateMachine<PlayerStateBase, PlayerStates>
     {
-
         private Player player;
         private List<PlayerStateBase> availableStates;
         public PlayerStateBase CurrentState { get; private set; }
@@ -77,5 +67,12 @@ namespace Skalm.States
             return state;
         }
     }
-
+    internal enum PlayerStates
+    {
+        PlayerStateIdle,
+        PlayerStateMove,
+        PlayerStateAttack,
+        PlayerStateLook,
+        PlayerStateMenu
+    }
 }
