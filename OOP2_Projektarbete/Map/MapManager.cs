@@ -62,11 +62,11 @@ namespace Skalm.Map
 
         public Vector2Int GetRandomSpawnPosition()
         {
-            if (mapGenerator.freeTiles.Count == 0)
+            if (mapGenerator.FloorTiles.Count == 0)
                 throw new Exception("No free tiles to spawn in found");
 
             Random randomPos = new Random();
-            return mapGenerator.freeTiles.ElementAt(randomPos.Next(mapGenerator.freeTiles.Count()));
+            return mapGenerator.FloorTiles.ElementAt(randomPos.Next(mapGenerator.FloorTiles.Count()));
         }
 
     }

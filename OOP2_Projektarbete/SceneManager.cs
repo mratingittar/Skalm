@@ -33,7 +33,8 @@ namespace Skalm
 
         public void InitializeScene()
         {
-            Vector2Int spawnPos = _mapManager.GetRandomSpawnPosition();
+            Vector2Int spawnPos = _mapManager.mapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero) 
+                ?  _mapManager.GetRandomSpawnPosition() : _mapManager.mapGenerator.PlayerFixedSpawnPosition;
             if (playerName.Length == 0)
                 playerName = "Nameless";
 
@@ -43,13 +44,22 @@ namespace Skalm
             ActorsInScene.Add(Player);
 
             // ADD ENEMIES
-            Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomSpawnPosition(), 'E', ConsoleColor.Red);
-            GameObjectsInScene.Add(enemy);
-            ActorsInScene.Add(enemy);
+            if (_mapManager.mapGenerator.EnemySpawnPositions.Count > 0)
+            {
+                foreach (Vector2Int position in _mapManager.mapGenerator.EnemySpawnPositions)
+                {
+                    Enemy enemy = _enemySpawner.Spawn(position, 'E', ConsoleColor.Red);
+                    GameObjectsInScene.Add(enemy);
+                    ActorsInScene.Add(enemy);
+                }
+            }
+            else
+            {
+                Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomSpawnPosition(), 'E', ConsoleColor.Yellow);
+                GameObjectsInScene.Add(enemy);
+                ActorsInScene.Add(enemy);
+            }
 
-            enemy = _enemySpawner.Spawn(_mapManager.GetRandomSpawnPosition(), 'E', ConsoleColor.Yellow);
-            GameObjectsInScene.Add(enemy);
-            ActorsInScene.Add(enemy);
 
             // ADD ITEMS
 
@@ -76,12 +86,12 @@ namespace Skalm
             foreach (var go in GameObjectsInScene)
             {
                 if (_mapManager.TileGrid.TryGetGridObject(go.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
-                tileOcc.ObjectsOnTile.Clear();
+                    tileOcc.ObjectsOnTile.Clear();
             }
             foreach (Actor actor in ActorsInScene)
             {
                 if (_mapManager.TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
-                tileOcc.ActorPresent = false;
+                    tileOcc.ActorPresent = false;
             }
 
             ActorsInScene.Clear();

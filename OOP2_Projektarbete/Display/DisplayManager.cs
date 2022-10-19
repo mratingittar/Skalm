@@ -27,7 +27,7 @@ namespace Skalm.Display
             CharSet = CreateCharSet();
 
             windowInfo.SetWindowSize(windowSize.Width, windowSize.Height);
-            PlayerStateLook.onNeighborSelected += DisplaySelection;
+            PlayerStateLook.OnNeighborSelected += DisplaySelection;
         }
 
         private void DisplaySelection(string msg)

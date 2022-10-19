@@ -4,11 +4,6 @@ using Skalm.Input;
 using Skalm.Map.Tile;
 using Skalm.Structs;
 using Skalm.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Skalm.States
 {
@@ -16,9 +11,9 @@ namespace Skalm.States
     {
         private List<BaseTile> _playerNeighbors;
         private BaseTile? _selectedNeigbor;
-        private Direction selectedDirection;
+        private Direction _selectedDirection;
 
-        public static event Action<string>? onNeighborSelected;
+        public static event Action<string>? OnNeighborSelected;
 
         public PlayerStateLook(Player player) : base(player) 
         {
@@ -26,7 +21,7 @@ namespace Skalm.States
         }
         public override void Enter()
         {
-            onNeighborSelected?.Invoke("Choose a direction to interact in.");
+            ExamineSameTile();
             _playerNeighbors = player.mapManager.GetNeighbours(player.GridPosition);
         }
 
@@ -34,12 +29,12 @@ namespace Skalm.States
         {
             _playerNeighbors.Clear();
             _selectedNeigbor = null;
-            onNeighborSelected?.Invoke("");
+            OnNeighborSelected?.Invoke("");
         }
 
         public override void MoveInput(Vector2Int direction)
         {
-            SelectNeighborForInteraction(direction);
+            ExamineNeighbor(direction);
         }
 
 
@@ -60,6 +55,7 @@ namespace Skalm.States
                     player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     break;
                 case InputCommands.Interact:
+                    ExamineSameTile();
                     break;
                 case InputCommands.Inventory:
                     break;
@@ -73,22 +69,28 @@ namespace Skalm.States
                     break;
             }
         }
-        private void SelectNeighborForInteraction(Vector2Int direction)
+        private void ExamineSameTile()
         {
+            player.mapManager.TileGrid.TryGetGridObject(player.GridPosition, out _selectedNeigbor);
+            string selection = $"You are standing on {_selectedNeigbor.GetType()}.";
+            OnNeighborSelected?.Invoke(selection);
+        }
 
+        private void ExamineNeighbor(Vector2Int direction)
+        {
             if (direction.Equals(Vector2Int.Up))
-                selectedDirection = Direction.Up;
+                _selectedDirection = Direction.Up;
             else if (direction.Equals(Vector2Int.Right))
-                selectedDirection = Direction.Right;
+                _selectedDirection = Direction.Right;
             else if (direction.Equals(Vector2Int.Down))
-                selectedDirection = Direction.Down;
+                _selectedDirection = Direction.Down;
             else if (direction.Equals(Vector2Int.Left))
-                selectedDirection = Direction.Left;
+                _selectedDirection = Direction.Left;
 
             _selectedNeigbor = _playerNeighbors.Find(n => n.GridPosition.Equals(player.GridPosition.Add(direction)));
             if (_selectedNeigbor != null)
             {
-                string selectionText = $"Selected {selectedDirection}: {_selectedNeigbor.GetType().Name}.";
+                string selectionText = $"Looking {_selectedDirection.ToString().ToLower()} at {_selectedNeigbor.GetType().Name}.";
 
                 if (_selectedNeigbor is IOccupiable occupiable && occupiable.ObjectsOnTile.Count > 0)
                 {
@@ -99,7 +101,7 @@ namespace Skalm.States
                     }
                 }
 
-                onNeighborSelected?.Invoke(selectionText);
+                OnNeighborSelected?.Invoke(selectionText);
             }
         }
     }
