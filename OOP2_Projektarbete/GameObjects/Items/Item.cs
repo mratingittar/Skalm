@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Items
 {
-    internal abstract class Item
+    internal class Item
     {
         public string itemName;
 
@@ -19,6 +19,9 @@ namespace Skalm.GameObjects.Items
         }
 
         // USE ITEM
-        //public abstract void Use();
+        public virtual void Use(ref Player player)
+        {
+            
+        }
     }
 }

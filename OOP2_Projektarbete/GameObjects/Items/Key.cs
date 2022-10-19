@@ -7,15 +7,26 @@ using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Items
 {
-    internal class Key : ItemPickup
+    internal class Key : Item
     {
-        public Key(Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
+        // CONSTRUCTOR I
+        public Key(string itemName) : base(itemName)
         {
         }
 
-        public void UseKey()
+        // USE ITEM
+        public override void Use(ref Player player)
         {
-
+            throw new NotImplementedException();
         }
+
+        //public Key(Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
+        //{
+        //}
+
+        //public void UseKey()
+        //{
+
+        //}
     }
 }

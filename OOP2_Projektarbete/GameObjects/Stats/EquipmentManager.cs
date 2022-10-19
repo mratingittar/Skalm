@@ -9,8 +9,12 @@ namespace Skalm.GameObjects.Stats
 {
     internal class EquipmentManager
     {
+        // CONTAINERS
         ItemEquippable[] equipArr;
         Inventory inventory;
+
+        // EVENT
+        public event Action? onEquippmentChanged;
 
         // CONSTRUCTOR I
         public EquipmentManager()
@@ -18,6 +22,10 @@ namespace Skalm.GameObjects.Stats
             equipArr = new ItemEquippable[Enum.GetValues(typeof(EquipSlots)).Length];
             inventory = new Inventory();
         }
+
+        // ADD & REMOVE ITEM TO/FROM INVENTORY
+        public void AddItemToInventory(Item item) => inventory.AddItem(item);
+        public void RemoveItemFromInventory(Item item) => inventory.RemoveItem(item);
 
         // EQUIP ITEM
         public void EquipItem(ref StatsObject playerStats, ItemEquippable item)
@@ -40,6 +48,9 @@ namespace Skalm.GameObjects.Stats
                 // ADD NEW ITEM STATS TO PLAYER STATS OBJECT
                 foreach (var itemStat in item.stats.statsArr)
                     playerStats.statsArr[(int)itemStat.statName].AddModifier(itemStat.GetValue());
+
+                // FIRE EVENTS
+                onEquippmentChanged?.Invoke();
             }
         }
     }

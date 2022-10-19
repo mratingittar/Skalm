@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -8,8 +9,10 @@ namespace Skalm.GameObjects.Stats
 {
     internal class ActorStatsObject
     {
+        // HARD STATS
         public StatsObject stats;
 
+        // SOFT STATS
         public string name;
         int HPcurr;
 
@@ -21,6 +24,9 @@ namespace Skalm.GameObjects.Stats
             this.name = name;
             HPcurr = stats.statsArr[(int)EStats.HP].GetValue();
         }
+
+        // GET CURRENT HP
+        public int GetCurrentHP() => HPcurr;
 
         // TAKE DAMAGE
         public void TakeDamage(int damage)

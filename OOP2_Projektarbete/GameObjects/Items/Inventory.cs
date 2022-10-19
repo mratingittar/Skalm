@@ -8,6 +8,9 @@ namespace Skalm.GameObjects.Items
 {
     internal class Inventory
     {
+        public event Action? onInventoryChanged;
+
+        // INVENTORY ITEM LIST
         public List<Item> itemList;
 
         // CONSTRUCTOR I
@@ -19,15 +22,21 @@ namespace Skalm.GameObjects.Items
         // ADD ITEM TO INVENTORY
         public void AddItem(Item item)
         {
-            if ((item != null) && (!item.isDefault))
-            itemList.Add(item);
+            if (item != null)
+            {
+                itemList.Add(item);
+                onInventoryChanged?.Invoke();
+            }
         }
 
         // REMOVE ITEM FROM INVENTORY
         public void RemoveItem(Item item)
         {
             if (item != null)
+            {
                 itemList.Remove(item);
+                onInventoryChanged?.Invoke();
+            }
         }
     }
 }

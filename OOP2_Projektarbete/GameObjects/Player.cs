@@ -17,11 +17,11 @@ namespace Skalm.GameObjects
         // COMPONENTS
         public IAttackComponent _attack { get; set; }
 
-        public List<Item> inventory;
-
         // STATS
-        private ActorStatsObject statsObject;
+        public ActorStatsObject statsObject;
+        public EquipmentManager equipmentManager;
 
+        // MOVEMENT
         private Vector2Int previousPosition;
         private Queue<Vector2Int> moveQueue;
         public static event Action? playerTurn;
@@ -38,9 +38,10 @@ namespace Skalm.GameObjects
 
             // STATS
             statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), name);
+            equipmentManager = new EquipmentManager();
 
-            moveQueue = new Queue<Vector2Int>();
-            inventory = new List<Item>();
+            // MOVEMENT
+            moveQueue = new Queue<Vector2Int>();            
             previousPosition = GridPosition;
         }
 

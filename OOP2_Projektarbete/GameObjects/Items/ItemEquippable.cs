@@ -12,6 +12,7 @@ namespace Skalm.GameObjects.Items
         public int equipSlot;
         public bool isDefault;
 
+        // ITEM STATS
         public StatsObject stats;
 
         // CONSTRUCTOR I
@@ -19,6 +20,13 @@ namespace Skalm.GameObjects.Items
         {
             this.equipSlot = equipSlot;
             stats = new StatsObject(0, 0, 0, 0, 0, 0, 0, 0);
+        }
+
+        // USE ITEM
+        public override void Use(ref Player player)
+        {
+            // EQUIP ITEM
+            player.equipmentManager.EquipItem(ref player.statsObject.stats, this);
         }
     }
 }

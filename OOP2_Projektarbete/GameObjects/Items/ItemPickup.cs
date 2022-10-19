@@ -10,24 +10,25 @@ namespace Skalm.GameObjects.Items
 {
     internal class ItemPickup : GameObject, IInteractable
     {
-        //public ItemInventory itemInventory;
+        // CONTAINED ITEM
+        Item item;
 
         // CONSTRUCTOR I
-        public ItemPickup(Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
+        public ItemPickup(Vector2Int gridPosition, char sprite, ConsoleColor color, Item item) : base(gridPosition, sprite, color)
         {
-            //this.itemInventory = itemInventory;
+            this.item = item;
         }
 
         // INTERACT WITH ITEM
-        public void Interact()
+        public void Interact(ref Player player)
         {
-            PickupItem();
+            PickupItem(ref player);
         }
 
         // PICKUP ITEM
-        private void PickupItem()
+        private void PickupItem(ref Player player)
         {
-            
+            player.equipmentManager.AddItemToInventory(item);
         }
     }
 }
