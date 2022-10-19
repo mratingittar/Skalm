@@ -20,8 +20,7 @@ namespace Skalm.GameObjects
         public List<Item> inventory;
 
         // STATS
-        private StatsObjectHard statsHard;
-        private StatsObjectSoft statsSoft;
+        private StatsObject statsObject;
 
         private Vector2Int previousPosition;
         private Queue<Vector2Int> moveQueue;
@@ -38,8 +37,7 @@ namespace Skalm.GameObjects
             _attack = attack;
 
             // STATS
-            statsHard = new StatsObjectHard(name, 5, 5, 5, 5, 5);
-            statsSoft = new StatsObjectSoft(10, 1);
+            statsObject = new StatsObject(name, 5, 5, 5, 5, 5, 10, 1);
 
             moveQueue = new Queue<Vector2Int>();
             inventory = new List<Item>();
@@ -49,7 +47,7 @@ namespace Skalm.GameObjects
         public void InitializePlayer(Vector2Int gridPosition, string playerName, char sprite, ConsoleColor color)
         {
             GridPosition = gridPosition;
-            statsHard.Name = playerName;
+            statsObject.name = playerName;
             _sprite = sprite;
             _color = color;
         }

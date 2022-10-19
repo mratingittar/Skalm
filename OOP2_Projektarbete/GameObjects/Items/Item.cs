@@ -10,6 +10,8 @@ namespace Skalm.GameObjects.Items
 {
     internal class Item : GameObject, IInteractable
     {
+        //ItemInventory inventoryItem;
+
         public Item(Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
         {
         }
