@@ -37,13 +37,17 @@ namespace Skalm
             if (playerName.Length == 0)
                 playerName = "Nameless";
 
-            Player.InitializePlayer(spawnPos, playerName, 'P', ConsoleColor.Cyan);
+            Player.InitializePlayer(spawnPos, playerName, 'P', ConsoleColor.Blue);
 
             GameObjectsInScene.Add(Player);
             ActorsInScene.Add(Player);
 
             // ADD ENEMIES
             Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomSpawnPosition(), 'E', ConsoleColor.Red);
+            GameObjectsInScene.Add(enemy);
+            ActorsInScene.Add(enemy);
+
+            enemy = _enemySpawner.Spawn(_mapManager.GetRandomSpawnPosition(), 'E', ConsoleColor.Yellow);
             GameObjectsInScene.Add(enemy);
             ActorsInScene.Add(enemy);
 

@@ -5,17 +5,19 @@ using Skalm.Structs;
 
 namespace Skalm.GameObjects.Enemies
 {
-    internal class Enemy : Actor
+    internal class Enemy : Actor, IDamageable
     {
         private SceneManager sceneManager;
         private MapManager mapManager;
         private EnemyStateMachine stateMachine;
         private IMoveBehaviour moveBehaviour;
-        public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
+        private IAttackComponent attackBehaviour;
+        public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, IAttackComponent attackBehaviour, Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
         {
             this.mapManager = mapManager;
             this.sceneManager = sceneManager;
             this.moveBehaviour = moveBehaviour;
+            this.attackBehaviour = attackBehaviour;
             stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
             Player.playerTurn += MoveEnemy;
             stateMachine.ChangeState(EnemyStates.EnemyStateSearching);
@@ -42,7 +44,7 @@ namespace Skalm.GameObjects.Enemies
                     {
                         if (obj is IDamageable damageable)
                         {
-                            //damageable.ReceiveDamage(_attack.Attack());
+                            damageable.ReceiveDamage(attackBehaviour.Attack());
                         }
                     }
                 }
@@ -67,6 +69,11 @@ namespace Skalm.GameObjects.Enemies
                     moveBehaviour = new MovePathfinding(mapManager, sceneManager);
                     break;
             }
+        }
+
+        public void ReceiveDamage(DoDamage damage)
+        {
+            throw new NotImplementedException();
         }
     }
     internal enum EnemyMoveBehaviours

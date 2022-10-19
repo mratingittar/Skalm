@@ -17,7 +17,7 @@ namespace Skalm.GameObjects.Enemies
 
         public Enemy Spawn(Vector2Int gridPosition, char sprite, ConsoleColor color)
         {
-            return new Enemy(mapManager, sceneManager, new MoveIdle(), gridPosition, sprite, color);
+            return new Enemy(mapManager, sceneManager, new MoveIdle(), new AttackNormal(), gridPosition, sprite, color);
         }
     }
 }
