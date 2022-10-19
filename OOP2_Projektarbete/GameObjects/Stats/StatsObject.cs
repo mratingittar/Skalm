@@ -12,7 +12,7 @@ namespace Skalm.GameObjects.Stats
         public Stat[] statsArr;
 
         // CONSTRUCTOR 1
-        public StatsObject(Stat strength, Stat dexterity, Stat constitution, Stat intelligence, Stat luck, Stat hpMax, Stat baseDamage)
+        public StatsObject(Stat strength, Stat dexterity, Stat constitution, Stat intelligence, Stat luck, Stat hpMax, Stat baseDamage, Stat armor)
         {
             statsArr = new Stat[Enum.GetValues(typeof(EStats)).Length];
 
@@ -24,10 +24,11 @@ namespace Skalm.GameObjects.Stats
 
             statsArr[(int)EStats.HP] = hpMax;
             statsArr[(int)EStats.BaseDamage] = baseDamage;
+            statsArr[(int)EStats.Armor] = armor;
         }
 
         // CONSTRUCTOR II
-        public StatsObject(int strength, int dexterity, int constitution, int intelligence, int luck, int hpMax, int baseDamage)
+        public StatsObject(int strength, int dexterity, int constitution, int intelligence, int luck, int hpMax, int baseDamage, int armor)
         {
             statsArr = new Stat[Enum.GetValues(typeof(EStats)).Length];
 
@@ -39,6 +40,7 @@ namespace Skalm.GameObjects.Stats
 
             statsArr[(int)EStats.HP] = new Stat(EStats.HP, hpMax);
             statsArr[(int)EStats.BaseDamage] = new Stat(EStats.BaseDamage, baseDamage);
+            statsArr[(int)EStats.Armor] = new Stat(EStats.Armor, armor);
         }
     }
 }

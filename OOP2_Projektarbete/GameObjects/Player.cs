@@ -37,7 +37,7 @@ namespace Skalm.GameObjects
             _attack = attack;
 
             // STATS
-            statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1), name);
+            statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), name);
 
             moveQueue = new Queue<Vector2Int>();
             inventory = new List<Item>();

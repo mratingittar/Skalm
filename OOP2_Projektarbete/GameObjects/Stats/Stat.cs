@@ -55,6 +55,7 @@ namespace Skalm.GameObjects.Stats
         Intelligence,
         Luck,
         HP,
-        BaseDamage
+        BaseDamage,
+        Armor
     }
 }
