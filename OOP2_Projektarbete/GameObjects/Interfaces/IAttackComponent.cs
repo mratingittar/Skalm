@@ -1,4 +1,5 @@
-﻿using Skalm.Structs;
+﻿using Skalm.GameObjects.Stats;
+using Skalm.Structs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace Skalm.GameObjects.Interfaces
 {
     internal interface IAttackComponent
     {
-        DoDamage Attack();
+        void Attack(ActorStatsObject statsAtk, ActorStatsObject statsDfn);
     }
 }

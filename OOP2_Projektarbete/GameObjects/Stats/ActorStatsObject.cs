@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Skalm.GameObjects.Interfaces;
+using Skalm.Structs;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection.Metadata.Ecma335;
@@ -7,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Stats
 {
-    internal class ActorStatsObject
+    internal class ActorStatsObject : IDamageable
     {
         // HARD STATS
         public StatsObject stats;
@@ -29,9 +31,9 @@ namespace Skalm.GameObjects.Stats
         public int GetCurrentHP() => HPcurr;
 
         // TAKE DAMAGE
-        public void TakeDamage(int damage)
+        public void TakeDamage(DoDamage damage)
         {
-            HPcurr -= damage;
+            HPcurr -= (int)Math.Round(damage.damage);
             if (HPcurr <= 0)
                 HandleDeath();
         }

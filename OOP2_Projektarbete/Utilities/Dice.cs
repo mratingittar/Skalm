@@ -11,13 +11,13 @@ namespace Skalm.Utilities
         static readonly Random rng = new Random();
 
         // ROLL ONE DIE
-        static int Roll(int sides = 6)
+        public static int Roll(int sides = 6)
         {
             return rng.Next(1, sides+1);
         }
 
         // ROLL SEVERAL DIE
-        static int Rolls(int rolls = 1, int sides = 6)
+        public static int Rolls(int rolls = 1, int sides = 6)
         {
             int output = 0;
 
@@ -28,7 +28,7 @@ namespace Skalm.Utilities
         }
 
         // ROLL DICE CHANCE
-        static bool Chance(int min, int rolls = 1, int sides = 6)
+        public static bool Chance(int min, int rolls = 1, int sides = 6)
         {
             bool success = false;
 

@@ -9,6 +9,6 @@ namespace Skalm.GameObjects.Interfaces
 {
     internal interface IDamageable
     {
-        void ReceiveDamage(DoDamage damage);
+        void TakeDamage(DoDamage damage);
     }
 }
