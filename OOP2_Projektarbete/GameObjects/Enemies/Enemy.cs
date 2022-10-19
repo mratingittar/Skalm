@@ -18,12 +18,12 @@ namespace Skalm.GameObjects.Enemies
             this.moveBehaviour = moveBehaviour;
             stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
             Player.playerTurn += MoveEnemy;
+            stateMachine.ChangeState(EnemyStates.EnemyStateSearching);
         }
 
         public void MoveEnemy()
         {
             base.Move(moveBehaviour.MoveDirection(GridPosition));
-
         }
 
         public void SetMoveBehaviour(EnemyMoveBehaviours behaviour)

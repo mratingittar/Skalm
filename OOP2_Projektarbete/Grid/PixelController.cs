@@ -1,4 +1,5 @@
 ﻿using Skalm.Display;
+using Skalm.GameObjects;
 using Skalm.GameObjects.Stats;
 using Skalm.Structs;
 using Skalm.Utilities;
@@ -26,6 +27,9 @@ namespace Skalm.Grid
             this.eraser = eraser;
             pixelsInSections = new Dictionary<string, HashSet<Pixel>>();
             borderCells = new HashSet<Pixel>();
+
+            Player.playerStats += DisplayStats;
+            Player.playerInventory += DisplayInventory;
 
             DefineGridSections(sectionBounds["mapBounds"], new MapSection());
             DefineGridSections(sectionBounds["messageBounds"], new MessageSection());

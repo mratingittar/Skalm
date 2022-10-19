@@ -26,6 +26,8 @@ namespace Skalm.GameObjects
         private Vector2Int previousPosition;
         private Queue<Vector2Int> moveQueue;
         public static event Action? playerTurn;
+        public static event Action<StatsObjectHard, StatsObjectSoft>? playerStats;
+        public static event Action? playerInventory;
 
         // CONSTRUCTOR I
         public Player(MapManager mapManager, Vector2Int posXY, IAttackComponent attack, string name, char sprite = '@', ConsoleColor color = ConsoleColor.White) : base(posXY, sprite, color)
@@ -49,6 +51,7 @@ namespace Skalm.GameObjects
         public void InitializePlayer(Vector2Int gridPosition, string playerName, char sprite, ConsoleColor color)
         {
             GridPosition = gridPosition;
+            previousPosition = gridPosition;
             statsHard.Name = playerName;
             _sprite = sprite;
             _color = color;
@@ -63,8 +66,8 @@ namespace Skalm.GameObjects
 
         public void SendStatsToDisplay()
         {
-            //gameManager.DisplayManager.pixelGridController.DisplayStats(statsHard, statsSoft);
-            //gameManager.DisplayManager.pixelGridController.DisplayInventory();
+            playerStats?.Invoke(statsHard, statsSoft);
+            playerInventory?.Invoke();
         }
 
         public void InteractWithNeighbours()
