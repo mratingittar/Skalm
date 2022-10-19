@@ -7,7 +7,6 @@
         Cancel,
         Interact,
         Inventory,
-        Attack,
         Next,
         Previous,
         Help

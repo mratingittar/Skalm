@@ -60,13 +60,13 @@ namespace Skalm
         {
             foreach (GameObject go in GameObjectsInScene)
             {
-                _mapManager.TileGrid.TryGetGridObject(go.GridPosition, out BaseTile tile);
-                ((IOccupiable)tile).ObjectsOnTile.Add(go);
+                if (_mapManager.TileGrid.TryGetGridObject(go.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
+                    tileOcc.ObjectsOnTile.Add(go);
             }
             foreach (Actor actor in ActorsInScene)
             {
-                _mapManager.TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile);
-                ((IOccupiable)tile).ActorPresent = true;
+                if (_mapManager.TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
+                    tileOcc.ActorPresent = true;
             }
 
         }
@@ -75,13 +75,13 @@ namespace Skalm
         {
             foreach (var go in GameObjectsInScene)
             {
-                _mapManager.TileGrid.TryGetGridObject(go.GridPosition, out BaseTile tile);
-                ((IOccupiable)tile).ObjectsOnTile.Clear();
+                if (_mapManager.TileGrid.TryGetGridObject(go.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
+                tileOcc.ObjectsOnTile.Clear();
             }
             foreach (Actor actor in ActorsInScene)
             {
-                _mapManager.TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile);
-                ((IOccupiable)tile).ActorPresent = false;                
+                if (_mapManager.TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
+                tileOcc.ActorPresent = false;
             }
 
             ActorsInScene.Clear();

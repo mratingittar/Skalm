@@ -73,7 +73,7 @@ namespace Skalm.GameObjects.Enemies
 
         public void ReceiveDamage(DoDamage damage)
         {
-            throw new NotImplementedException();
+            
         }
     }
     internal enum EnemyMoveBehaviours

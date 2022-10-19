@@ -12,7 +12,7 @@ namespace Skalm.GameObjects
     {
         public DoDamage Attack()
         {
-            throw new NotImplementedException();
+            return new DoDamage();
         }
     }
 }

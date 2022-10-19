@@ -38,7 +38,7 @@ namespace Skalm.Map.Tile
 
         public void OnCollision()
         {
-            throw new NotImplementedException();
+            
         }
     }
 }

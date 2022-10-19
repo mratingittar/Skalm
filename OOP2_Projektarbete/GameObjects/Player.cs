@@ -2,6 +2,7 @@
 using Skalm.GameObjects.Items;
 using Skalm.GameObjects.Stats;
 using Skalm.Map;
+using Skalm.Map.Tile;
 using Skalm.States;
 using Skalm.Structs;
 
@@ -12,7 +13,7 @@ namespace Skalm.GameObjects
     {
         // STATE MACHINE
         public readonly PlayerStateMachine playerStateMachine;
-        private MapManager mapManager;
+        public readonly MapManager mapManager;
 
         // COMPONENTS
         public IAttackComponent _attack { get; set; }
@@ -64,7 +65,7 @@ namespace Skalm.GameObjects
         }
 
         // MOVE METHOD
-        public override void Move(Vector2Int direction)
+        public override void Move(Vector2Int direction) // MOVE PARTS TO ACTOR CLASS, COMBINE WITH ENEMY MOVE. DRY!
         {
             Vector2Int newPosition = GridPosition.Add(direction);
 
@@ -92,15 +93,12 @@ namespace Skalm.GameObjects
             }
         }
 
-        public void InteractWithNeighbours()
+        public void InteractWithNeighbor(BaseTile neighbor)
         {
-            foreach (var neighbour in mapManager.GetNeighbours(GridPosition))
+            if (neighbor is IInteractable interactable)
             {
-                if (neighbour is IInteractable)
-                {
-                    ((IInteractable)neighbour).Interact();
-                    mapManager.mapPrinter.DrawSingleTile(neighbour.GridPosition);
-                }
+                interactable.Interact();
+                mapManager.mapPrinter.DrawSingleTile(neighbor.GridPosition);
             }
         }
 
@@ -130,7 +128,7 @@ namespace Skalm.GameObjects
         // METHOD RECEIVE DAMAGE
         public void ReceiveDamage(DoDamage damage)
         {
-
+            throw new NotImplementedException();
         }
     }
 }

@@ -13,59 +13,37 @@ namespace Skalm.Map
         public Grid2D<BaseTile> TileGrid { get; private set; }
         public readonly MapGenerator mapGenerator;
         public readonly MapPrinter mapPrinter;
-        private ISettings settings;
-        public AStar pathfinder;
-
-        private Queue<Actor> moveQueue;
+        public readonly AStar pathfinder;
+        
+        private ISettings _settings;
 
         // CONSTRUCTOR I
         public MapManager(ISettings settings, DisplayManager displayManager, Grid2D<BaseTile> tileGrid)
         {
             pathfinder = new AStar(this);
             TileGrid = tileGrid;
-            this.settings = settings;
+            _settings = settings;
             mapGenerator = new MapGenerator(this, tileGrid, settings);
             mapPrinter = new MapPrinter(tileGrid, displayManager.printer, settings.ForegroundColor);
 
-            moveQueue = new Queue<Actor>();
-
             Actor.OnPositionChanged += UpdateMoveablePosition;
-            //Actor.OnMoveRequested += CheckForCollision;
         }
 
         private void UpdateMoveablePosition(Actor actor, Vector2Int newPosition, Vector2Int oldPosition)
         {
-            TileGrid.TryGetGridObject(oldPosition, out BaseTile tileOld);
+            if (TileGrid.TryGetGridObject(oldPosition, out BaseTile tileOld) && tileOld is IOccupiable tileOldOcc)
             {
-                ((IOccupiable)tileOld).ObjectsOnTile.Remove(actor);
-                ((IOccupiable)tileOld).ActorPresent = false;
+                tileOldOcc.ObjectsOnTile.Remove(actor);
+                tileOldOcc.ActorPresent = false;
             }
-            TileGrid.TryGetGridObject(newPosition, out BaseTile tileNew);
+            if (TileGrid.TryGetGridObject(newPosition, out BaseTile tileNew) && tileNew is IOccupiable tileNewOcc)
             {
-                ((IOccupiable)tileNew).ObjectsOnTile.Add(actor);
-                ((IOccupiable)tileNew).ActorPresent = true;
+                tileNewOcc.ObjectsOnTile.Add(actor);
+                tileNewOcc.ActorPresent = true;
             }
+            mapPrinter.CacheUpdatedTile(oldPosition, newPosition);
         }
 
-
-        private bool CheckForCollision(Vector2Int positionToCheck)
-        {
-            bool collision;
-
-            if (TileGrid.TryGetGridObject(positionToCheck, out var collider))
-            {
-                if (collider is ICollider)
-                    collision = ((ICollider)collider).ColliderIsActive;
-                else if (collider is IOccupiable)
-                    collision = ((IOccupiable)collider).ActorPresent;
-                else
-                    collision = false;
-            }
-            else
-                collision = false;
-
-            return collision;
-        }
 
         public List<BaseTile> GetNeighbours(Vector2Int tile)
         {

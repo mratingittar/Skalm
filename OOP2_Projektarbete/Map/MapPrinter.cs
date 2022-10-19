@@ -2,12 +2,8 @@
 using Skalm.GameObjects;
 using Skalm.Grid;
 using Skalm.Map.Tile;
+using Skalm.States;
 using Skalm.Structs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Skalm.Map
 {
@@ -23,18 +19,10 @@ namespace Skalm.Map
         {
             this.printer = printer;
             this.foregroundColor = foregroundColor;
+            this.tileGrid = tileGrid;
 
             positionsToUpdate = new Queue<Vector2Int>();
 
-            this.tileGrid = tileGrid;
-
-
-            Actor.OnPositionChanged += ActorMove;
-        }
-
-        private void ActorMove(Actor actor, Vector2Int newPos, Vector2Int oldPos)
-        {
-            CacheUpdatedTile(oldPos, newPos);
         }
 
 
