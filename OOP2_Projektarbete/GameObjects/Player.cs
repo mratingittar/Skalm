@@ -57,17 +57,39 @@ namespace Skalm.GameObjects
             _color = color;
         }
 
-        // MOVE INPUT, QUEUED FOR UPDATEMAIN
-        public override void Move(Vector2Int direction)
-        {
-            moveQueue.Enqueue(direction);
-
-        }
-
         public void SendStatsToDisplay()
         {
             playerStats?.Invoke(statsHard, statsSoft);
             playerInventory?.Invoke();
+        }
+
+        // MOVE METHOD
+        public override void Move(Vector2Int direction)
+        {
+            Vector2Int newPosition = GridPosition.Add(direction);
+
+            // CHECK GRID FOR COLLISION
+            if (mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
+            {
+                if (tile is ICollider collider && collider.ColliderIsActive)
+                    collider.OnCollision();
+
+                else if (tile is IOccupiable occupiable && occupiable.ActorPresent)
+                {
+                    foreach (var obj in occupiable.ObjectsOnTile)
+                    {
+                        if (obj is IDamageable damageable)
+                        {
+                            damageable.ReceiveDamage(_attack.Attack());
+                        }
+                    }
+                }
+                else
+                {
+                    ExecuteMove(newPosition, GridPosition);
+                    playerTurn?.Invoke();
+                }
+            }
         }
 
         public void InteractWithNeighbours()
@@ -85,38 +107,19 @@ namespace Skalm.GameObjects
         // UPDATE OBJECT
         public override void UpdateMain()
         {
-            if (moveQueue.Count > 0)
-            {
-                base.Move(moveQueue.Dequeue());
-            }
+            //if (moveQueue.Count > 0)
+            //{
+            //    base.Move(moveQueue.Dequeue());
+            //}
 
-            if (previousPosition.Equals(GridPosition) is false)
-            {
-                playerTurn?.Invoke();
-                previousPosition = GridPosition;
-            }
+            //if (previousPosition.Equals(GridPosition) is false)
+            //{
+
+            //    previousPosition = GridPosition;
+            //}
 
         }
 
-        // MOVE METHOD
-        //public void Move(Vector2Int target)
-        //{
-        //    // CHECK GRID FOR COLLISION
-        //    if (gameGrid.GetGridObject(target.X, target.Y) is ICollidable collidable)
-        //    {
-        //        // COLLIDE
-        //        collidable.OnCollision();
-
-        //        // IF CAN BE FOUGHT, DEAL DAMAGE
-        //        if (collidable is IDamageable damageable)
-        //        {
-        //            damageable.ReceiveDamage(_attack.Attack());
-        //        }
-        //    } else {
-        //        // CELL IS FREE = MAKE MOVE
-        //        //tile.GridPosition = target;
-        //    }
-        //}
 
         //METHOD ON COLLISION
         public void OnCollision()

@@ -8,7 +8,7 @@ namespace Skalm.GameObjects.Interfaces
 {
     internal interface IOccupiable
     {
-        List<IGridObject> ObjectsOnTile { get; }
+        List<GameObject> ObjectsOnTile { get; }
         bool ActorPresent { get; set; }
     }
 }

@@ -30,7 +30,7 @@ namespace Skalm.Map
             moveQueue = new Queue<Actor>();
 
             Actor.OnPositionChanged += UpdateMoveablePosition;
-            Actor.OnMoveRequested += CheckForCollision;
+            //Actor.OnMoveRequested += CheckForCollision;
         }
 
         private void UpdateMoveablePosition(Actor actor, Vector2Int newPosition, Vector2Int oldPosition)

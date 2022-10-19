@@ -1,4 +1,5 @@
-﻿using Skalm.GameObjects.Interfaces;
+﻿using Skalm.GameObjects;
+using Skalm.GameObjects.Interfaces;
 using Skalm.Structs;
 using System;
 using System.Collections.Generic;
@@ -17,12 +18,12 @@ namespace Skalm.Map.Tile
         public override char Sprite { get => ObjectsOnTile.Count == 0 ? DoorSprite : ObjectsOnTile.First().Sprite; }
         public override ConsoleColor Color { get => ObjectsOnTile.Count == 0 ? _color : ObjectsOnTile.First().Color; }
         public bool ColliderIsActive { get; private set; }
-        public List<IGridObject> ObjectsOnTile { get; private set; }
+        public List<GameObject> ObjectsOnTile { get; private set; }
         public bool ActorPresent { get; set; }
 
         public DoorTile(Vector2Int gridPos, char openSprite = '□', char closedSprite = '■', ConsoleColor color = ConsoleColor.White) : base(gridPos, openSprite, color)
         {
-            ObjectsOnTile = new List<IGridObject>();
+            ObjectsOnTile = new List<GameObject>();
             this.openSprite = openSprite;
             this.closedSprite = closedSprite;
             ColliderIsActive = true;
