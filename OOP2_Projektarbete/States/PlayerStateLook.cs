@@ -72,7 +72,7 @@ namespace Skalm.States
         private void ExamineSameTile()
         {
             player.mapManager.TileGrid.TryGetGridObject(player.GridPosition, out _selectedNeigbor);
-            string selection = $"You are standing on {_selectedNeigbor.GetType()}.";
+            string selection = $"You are standing on {_selectedNeigbor.Label}.";
             OnNeighborSelected?.Invoke(selection);
         }
 
@@ -90,14 +90,14 @@ namespace Skalm.States
             _selectedNeigbor = _playerNeighbors.Find(n => n.GridPosition.Equals(player.GridPosition.Add(direction)));
             if (_selectedNeigbor != null)
             {
-                string selectionText = $"Looking {_selectedDirection.ToString().ToLower()} at {_selectedNeigbor.GetType().Name}.";
+                string selectionText = $"Looking {_selectedDirection.ToString().ToLower()} at {_selectedNeigbor.Label}.";
 
                 if (_selectedNeigbor is IOccupiable occupiable && occupiable.ObjectsOnTile.Count > 0)
                 {
                     selectionText += " Objects on tile:";
                     foreach (var obj in occupiable.ObjectsOnTile)
                     {
-                        selectionText += $" {obj.GetType().Name} ";
+                        selectionText += $" {obj.Label} ";
                     }
                 }
 

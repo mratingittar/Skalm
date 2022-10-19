@@ -12,5 +12,6 @@ namespace Skalm.GameObjects.Interfaces
         Vector2Int GridPosition { get; }
         char Sprite { get; }
         ConsoleColor Color { get; }
+        string Label { get; }
     }
 }
