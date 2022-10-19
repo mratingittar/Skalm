@@ -1,5 +1,4 @@
-﻿using Skalm.GameObjects.Interfaces;
-using Skalm.Structs;
+﻿using Skalm.GameObjects.Stats;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,22 +7,16 @@ using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Items
 {
-    internal class Item : GameObject, IInteractable
+    internal class Item
     {
-        //ItemInventory inventoryItem;
+        public string itemName;
+        public bool isDefault;
 
-        public Item(Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
+        // CONSTRUCTOR I
+        public Item(string itemName)
         {
-        }
-
-        public void Interact()
-        {
-            PickupItem();
-        }
-
-        private void PickupItem()
-        {
-            
+            this.itemName = itemName;
+            isDefault = false;
         }
     }
 }

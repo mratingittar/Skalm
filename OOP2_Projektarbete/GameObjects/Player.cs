@@ -20,7 +20,7 @@ namespace Skalm.GameObjects
         public List<Item> inventory;
 
         // STATS
-        private StatsObject statsObject;
+        private ActorStatsObject statsObject;
 
         private Vector2Int previousPosition;
         private Queue<Vector2Int> moveQueue;
@@ -37,7 +37,7 @@ namespace Skalm.GameObjects
             _attack = attack;
 
             // STATS
-            statsObject = new StatsObject(name, 5, 5, 5, 5, 5, 10, 1);
+            statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1), name);
 
             moveQueue = new Queue<Vector2Int>();
             inventory = new List<Item>();

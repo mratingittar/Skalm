@@ -11,6 +11,7 @@ namespace Skalm.GameObjects.Stats
         public EStats statName { get; private set; }
         private float baseValue;
 
+        // MODIFIER LIST
         private List<float> modifiers;
 
         // CONSTRUCTOR I
@@ -23,11 +24,11 @@ namespace Skalm.GameObjects.Stats
         }
 
         // GET STAT VALUE
-        public float GetValue()
+        public int GetValue()
         {
             float output = baseValue;
             modifiers.ForEach(x => output += x);
-            return output;
+            return Convert.ToInt32(output);
         }
 
         // ADD MODIFIER
@@ -45,6 +46,7 @@ namespace Skalm.GameObjects.Stats
         }
     }
 
+    // STATS ENUM
     public enum EStats
     {
         Strength,

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Items
 {
-    internal class Key : Item
+    internal class Key : ItemPickup
     {
         public Key(Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
         {

@@ -9,70 +9,36 @@ namespace Skalm.GameObjects.Stats
 {
     internal class StatsObject
     {
-        public Dictionary<EStats, Stat> statsDict;
-
-        public int HPcurr;
-
-        public string name;
+        public Stat[] statsArr;
 
         // CONSTRUCTOR 1
-        public StatsObject(string name, Stat strength, Stat dexterity, Stat constitution, Stat intelligence, Stat luck, Stat hpMax, Stat baseDamage)
+        public StatsObject(Stat strength, Stat dexterity, Stat constitution, Stat intelligence, Stat luck, Stat hpMax, Stat baseDamage)
         {
-            this.name = name;
+            statsArr = new Stat[Enum.GetValues(typeof(EStats)).Length];
 
-            statsDict = new Dictionary<EStats, Stat>();
+            statsArr[(int)EStats.Strength] = strength;
+            statsArr[(int)EStats.Dexterity] = dexterity;
+            statsArr[(int)EStats.Constitution] = constitution;
+            statsArr[(int)EStats.Intelligence] = intelligence;
+            statsArr[(int)EStats.Luck] = luck;
 
-            statsDict.Add(EStats.Strength, strength);
-            statsDict.Add(EStats.Dexterity, dexterity);
-            statsDict.Add(EStats.Constitution, constitution);
-            statsDict.Add(EStats.Intelligence, intelligence);
-            statsDict.Add(EStats.Luck, luck);
-
-            statsDict.Add(EStats.HP, hpMax);
-            statsDict.Add(EStats.BaseDamage, baseDamage);
-
-            HPcurr = (int)statsDict[EStats.HP].GetValue();
+            statsArr[(int)EStats.HP] = hpMax;
+            statsArr[(int)EStats.BaseDamage] = baseDamage;
         }
 
         // CONSTRUCTOR II
-        public StatsObject(string name, int strength, int dexterity, int constitution, int intelligence, int luck, int hpMax, int baseDamage)
+        public StatsObject(int strength, int dexterity, int constitution, int intelligence, int luck, int hpMax, int baseDamage)
         {
-            this.name = name;
+            statsArr = new Stat[Enum.GetValues(typeof(EStats)).Length];
 
-            statsDict = new Dictionary<EStats, Stat>();
+            statsArr[(int)EStats.Strength] = new Stat(EStats.Strength, strength);
+            statsArr[(int)EStats.Dexterity] = new Stat(EStats.Dexterity, dexterity);
+            statsArr[(int)EStats.Constitution] = new Stat(EStats.Constitution, constitution);
+            statsArr[(int)EStats.Intelligence] = new Stat(EStats.Intelligence, intelligence);
+            statsArr[(int)EStats.Luck] = new Stat(EStats.Luck, luck);
 
-            statsDict.Add(EStats.Strength, new Stat(EStats.Strength, strength));
-            statsDict.Add(EStats.Dexterity, new Stat(EStats.Dexterity, dexterity));
-            statsDict.Add(EStats.Constitution, new Stat(EStats.Constitution, constitution));
-            statsDict.Add(EStats.Intelligence, new Stat(EStats.Intelligence, intelligence));
-            statsDict.Add(EStats.Luck, new Stat(EStats.Luck, luck));
-
-            statsDict.Add(EStats.HP, new Stat(EStats.HP, hpMax));
-            statsDict.Add(EStats.BaseDamage, new Stat(EStats.BaseDamage, baseDamage));
-
-            HPcurr = (int)statsDict[EStats.HP].GetValue();
-        }
-
-        // TAKE DAMAGE
-        public void TakeDamage(int damage)
-        {
-            HPcurr -= damage;
-            if (HPcurr <= 0)
-                HandleDeath();
-        }
-
-        // HEAL DAMAGE
-        public void HealDamage(int healAmount)
-        {
-            HPcurr += healAmount;
-            if (HPcurr > (int)statsDict[EStats.HP].GetValue())
-                HPcurr = (int)statsDict[EStats.HP].GetValue();
-        }
-
-        // HANDLE DEATH
-        private void HandleDeath()
-        {
-
+            statsArr[(int)EStats.HP] = new Stat(EStats.HP, hpMax);
+            statsArr[(int)EStats.BaseDamage] = new Stat(EStats.BaseDamage, baseDamage);
         }
     }
 }

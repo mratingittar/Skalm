@@ -8,12 +8,12 @@ using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Items
 {
-    internal class ItemSpawner : ISpawner<Item>
+    internal class ItemSpawner : ISpawner<ItemPickup>
     {
-        public Item Spawn(Vector2Int position, char sprite, ConsoleColor color)
+        public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color)
         {
             Console.WriteLine("Item Spawned");
-            return new Item(position, sprite, color);
+            return new ItemPickup(position, sprite, color);
         }
     }
 }
