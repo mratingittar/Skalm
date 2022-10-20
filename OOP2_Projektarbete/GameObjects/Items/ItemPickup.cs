@@ -8,10 +8,11 @@ using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Items
 {
-    internal class ItemPickup : GameObject, IInteractable
+    internal class ItemPickup : GameObject, IInteractable<Item>
     {
         // CONTAINED ITEM
         Item item;
+        public event Action<ItemPickup>? onItemPickup;
 
         // CONSTRUCTOR I
         public ItemPickup(Vector2Int gridPosition, char sprite, ConsoleColor color, Item item) : base(gridPosition, sprite, color)
@@ -20,15 +21,10 @@ namespace Skalm.GameObjects.Items
         }
 
         // INTERACT WITH ITEM
-        public void Interact(ref Player player)
+        public Item Interact()
         {
-            PickupItem(ref player);
-        }
-
-        // PICKUP ITEM
-        private void PickupItem(ref Player player)
-        {
-            player.equipmentManager.AddItemToInventory(item);
+            onItemPickup?.Invoke(this);
+            return item;
         }
     }
 }

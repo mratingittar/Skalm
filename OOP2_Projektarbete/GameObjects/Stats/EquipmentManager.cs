@@ -39,6 +39,7 @@ namespace Skalm.GameObjects.Stats
                 // IF OLD ITEM NOT NULL, REMOVE STAT BONUSES & ADD TO INVENTORY
                 if (oldItem != null)
                 {
+                    //oldItem.stats.statsArr.ForEach(x => playerStats.statsArr[(int)x.statName].RemoveModifier(x.GetValue()));
                     foreach (var itemStat in oldItem.stats.statsArr)
                         playerStats.statsArr[(int)itemStat.statName].RemoveModifier(itemStat.GetValue());
 
