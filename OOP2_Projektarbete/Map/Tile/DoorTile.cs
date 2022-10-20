@@ -31,7 +31,7 @@ namespace Skalm.Map.Tile
         }
 
 
-        public void Interact()
+        public void Interact(Player player)
         {
             ColliderIsActive = !ColliderIsActive;
         }

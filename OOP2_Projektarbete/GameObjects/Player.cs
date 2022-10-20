@@ -49,6 +49,7 @@ namespace Skalm.GameObjects
             previousPosition = GridPosition;
         }
 
+        // INITIALIZE PLAYER
         public void InitializePlayer(Vector2Int gridPosition, string playerName, char sprite, ConsoleColor color)
         {
             GridPosition = gridPosition;            
@@ -60,6 +61,7 @@ namespace Skalm.GameObjects
             statsObject.name = playerName;
         }
 
+        // SEND STATS TO DISPLAY
         public void SendStatsToDisplay()
         {
             playerStats?.Invoke(statsHard, statsSoft);
@@ -68,6 +70,8 @@ namespace Skalm.GameObjects
 
         // MOVE METHOD
         public override void Move(Vector2Int direction) // MOVE PARTS TO ACTOR CLASS, COMBINE WITH ENEMY MOVE. DRY!
+        // INTERACT WITH NEIGHBOURS
+        public void InteractWithNeighbours()
         {
             Vector2Int newPosition = GridPosition.Add(direction);
 

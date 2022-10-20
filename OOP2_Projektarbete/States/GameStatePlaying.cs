@@ -48,8 +48,6 @@ namespace Skalm.States
             displayManager.eraser.EraseAll();
             displayManager.DisplayHUD();
             mapManager.mapPrinter.DrawMap();
-
-
            
             _sceneManager.Player.SendStatsToDisplay();
             _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
@@ -103,7 +101,6 @@ namespace Skalm.States
             soundManager.player.Play(SoundManager.SoundType.Mid);
             _sceneManager.Player.playerStateMachine.CurrentState.CommandInput(command);
         }
-
 
         #endregion
     }

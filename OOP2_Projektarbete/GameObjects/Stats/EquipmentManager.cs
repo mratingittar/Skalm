@@ -19,7 +19,7 @@ namespace Skalm.GameObjects.Stats
         // CONSTRUCTOR I
         public EquipmentManager()
         {
-            equipArr = new ItemEquippable[Enum.GetValues(typeof(EquipSlots)).Length];
+            equipArr = new ItemEquippable[Enum.GetValues(typeof(EEqSlots)).Length];
             inventory = new Inventory();
         }
 
@@ -57,7 +57,7 @@ namespace Skalm.GameObjects.Stats
     }
 
     // ENUM EQUIPMENT SLOTS
-    public enum EquipSlots
+    public enum EEqSlots
     {
         Head,
         Torso,

@@ -57,25 +57,25 @@ namespace Skalm.Grid
             PrintWithinBounds(msg, messageConsole);
         }
 
-        public void DisplayStats(StatsObject hardStats, StatsObjectSoft softStats)
+        public void DisplayStats(StatsObject hardStats, StatsObject softStats)
         {
-            string name = hardStats.Name;
-            if (name.Length > mainStatsConsole.Size.Width)
-                name = name.Remove(mainStatsConsole.Size.Width);
+            //string name = hardStats.Name;
+            //if (name.Length > mainStatsConsole.Size.Width)
+            //    name = name.Remove(mainStatsConsole.Size.Width);
 
-            int column = mainStatsConsole.StartXY.X;
-            int row = mainStatsConsole.StartXY.Y;
+            //int column = mainStatsConsole.StartXY.X;
+            //int row = mainStatsConsole.StartXY.Y;
 
-            printer.PrintFromPosition(name, row, column);
-            row++;
-            printer.PrintFromPosition(TextTools.RepeatChar('─', name.Length), row, column);
-            row++;
-            printer.PrintFromPosition($"Lives: {softStats.HpCurrent} / {softStats.HpMax}", row, column);
-            row++;
-            printer.PrintFromPosition($"Base damage: {softStats.BaseDamage}", row, column);
-            row += 2;
-            printer.PrintFromPosition($"Str {hardStats.Strength.GetValue()} | Dex {hardStats.Dexterity.GetValue()} " +
-                $"| Con {hardStats.Constitution.GetValue()} | Int {hardStats.Strength.GetValue()} | Lck {hardStats.Strength.GetValue()}", row, column);
+            //printer.PrintFromPosition(name, row, column);
+            //row++;
+            //printer.PrintFromPosition(TextTools.RepeatChar('─', name.Length), row, column);
+            //row++;
+            //printer.PrintFromPosition($"Lives: {softStats.HpCurrent} / {softStats.HpMax}", row, column);
+            //row++;
+            //printer.PrintFromPosition($"Base damage: {softStats.BaseDamage}", row, column);
+            //row += 2;
+            //printer.PrintFromPosition($"Str {hardStats.Strength.GetValue()} | Dex {hardStats.Dexterity.GetValue()} " +
+            //    $"| Con {hardStats.Constitution.GetValue()} | Int {hardStats.Strength.GetValue()} | Lck {hardStats.Strength.GetValue()}", row, column);
         }
 
         public void DisplayInventory()

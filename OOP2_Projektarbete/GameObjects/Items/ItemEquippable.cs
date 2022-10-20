@@ -22,6 +22,13 @@ namespace Skalm.GameObjects.Items
             stats = new StatsObject(0, 0, 0, 0, 0, 0, 0, 0);
         }
 
+        // CONSTRUCTOR II
+        public ItemEquippable(string itemName, int equipSlot, StatsObject stats) : base(itemName)
+        {
+            this.equipSlot = equipSlot;
+            this.stats = stats;
+        }
+
         // USE ITEM
         public override void Use(ref Player player)
         {

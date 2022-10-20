@@ -11,12 +11,10 @@ namespace Skalm.GameObjects
 {
     internal class PlayerAttackComponent : IAttackComponent
     {
-        Player player;
-
         // CONSTRUCTOR I
-        public PlayerAttackComponent(Player player)
+        public PlayerAttackComponent()
         {
-            this.player = player;
+
         }
 
         // ATTACK
@@ -27,7 +25,7 @@ namespace Skalm.GameObjects
             {
                 DoDamage damage = Combat.DamageCalc(statsAtk.stats, statsDfn.stats);
                 damage.sender = statsAtk;
-                damage.originXY = player.GridPosition;
+                damage.originXY = Vector2Int.Zero;
 
                 statsDfn.TakeDamage(damage);
             }

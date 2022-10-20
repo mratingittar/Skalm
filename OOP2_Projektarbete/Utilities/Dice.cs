@@ -8,7 +8,7 @@ namespace Skalm.Utilities
 {
     internal static class Dice
     {
-        static readonly Random rng = new Random();
+        public static readonly Random rng = new Random();
 
         // ROLL ONE DIE
         public static int Roll(int sides = 6)
