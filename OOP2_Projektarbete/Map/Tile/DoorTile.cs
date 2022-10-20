@@ -1,39 +1,56 @@
 ﻿using Skalm.GameObjects;
 using Skalm.GameObjects.Interfaces;
 using Skalm.Structs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Skalm.Map.Tile
 {
     internal class DoorTile : BaseTile, ICollider, IInteractable<DoorTile>, IOccupiable
     {
-        private char openSprite;
-        private char closedSprite;
+        private char _openSprite;
+        private char _closedSprite;
+        private string _label;
 
-        public char DoorSprite { get => ColliderIsActive ? closedSprite : openSprite; }
+        public char DoorSprite { get => ColliderIsActive ? _closedSprite : _openSprite; }
         public override char Sprite { get => ObjectsOnTile.Count == 0 ? DoorSprite : ObjectsOnTile.First().Sprite; }
         public override ConsoleColor Color { get => ObjectsOnTile.Count == 0 ? _color : ObjectsOnTile.First().Color; }
         public bool ColliderIsActive { get; private set; }
+        public bool IsLocked { get; private set; }
         public List<GameObject> ObjectsOnTile { get; private set; }
         public bool ActorPresent { get; set; }
+        public override string Label
+        {
+            get
+            {
+                string l;
+                if (ColliderIsActive)
+                    l = "Closed ";
+                else
+                    l = "Open ";
+                if (IsLocked)
+                    l += "and locked ";
+                l += "door";
+                return l;
+            }
+        }
 
         public DoorTile(Vector2Int gridPos, char openSprite = '□', char closedSprite = '■', ConsoleColor color = ConsoleColor.White) : base(gridPos, openSprite, color)
         {
             ObjectsOnTile = new List<GameObject>();
-            this.openSprite = openSprite;
-            this.closedSprite = closedSprite;
+            this._openSprite = openSprite;
+            this._closedSprite = closedSprite;
             ColliderIsActive = true;
+            IsLocked = true;
             ActorPresent = false;
+            _label = string.Empty;
         }
 
 
         public DoorTile Interact()
         {
-            ColliderIsActive = !ColliderIsActive;
+            if (IsLocked) // WILL REQUIRE KEY
+                IsLocked = false;
+            else
+                ColliderIsActive = !ColliderIsActive;
             return this;
         }
 
