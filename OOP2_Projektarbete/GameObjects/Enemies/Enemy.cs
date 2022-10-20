@@ -1,4 +1,5 @@
 ﻿using Skalm.GameObjects.Interfaces;
+using Skalm.GameObjects.Stats;
 using Skalm.Map;
 using Skalm.States;
 using Skalm.Structs;
@@ -8,10 +9,20 @@ namespace Skalm.GameObjects.Enemies
 {
     internal class Enemy : Actor, IDamageable
     {
-        private SceneManager sceneManager;
-        private MapManager mapManager;
+        // MANAGERS
+        private SceneManager _sceneManager;
+        private MapManager _mapManager;
+
         private EnemyStateMachine stateMachine;
+
+        // COMPONENTS
         private IMoveBehaviour moveBehaviour;
+
+        // STATS
+        //public ActorStatsObject statsObject;
+
+        // CONSTRUCTOR I
+
         private IAttackComponent attackBehaviour;
         public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, IAttackComponent attackBehaviour, Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
         {
@@ -20,10 +31,14 @@ namespace Skalm.GameObjects.Enemies
             this.moveBehaviour = moveBehaviour;
             this.attackBehaviour = attackBehaviour;
             stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
+
+            //statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), )
+
             Player.playerTurn += MoveEnemy;
             stateMachine.ChangeState(EnemyStates.EnemyStateSearching);
         }
 
+        // MOVEMENT
         public void MoveEnemy()
         {
             Move(moveBehaviour.MoveDirection(GridPosition));
@@ -57,6 +72,7 @@ namespace Skalm.GameObjects.Enemies
             ExecuteMove(newPosition, GridPosition);
         }
 
+        // SET BEHAVIOUR
         public void SetMoveBehaviour(EnemyMoveBehaviours behaviour)
         {
             switch (behaviour)
@@ -78,6 +94,8 @@ namespace Skalm.GameObjects.Enemies
 
         }
     }
+
+    // ENUM ENEMY BEHAVIOURS
     internal enum EnemyMoveBehaviours
     {
         Idle,

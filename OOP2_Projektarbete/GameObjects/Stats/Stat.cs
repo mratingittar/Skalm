@@ -8,26 +8,27 @@ namespace Skalm.GameObjects.Stats
 {
     internal class Stat
     {
-        public string name { get; private set; }
+        public EStats statName { get; private set; }
         private float baseValue;
 
+        // MODIFIER LIST
         private List<float> modifiers;
 
         // CONSTRUCTOR I
-        public Stat(string name, float baseValue)
+        public Stat(EStats statName, float baseValue)
         {
-            this.name = name;
+            this.statName = statName;
             this.baseValue = baseValue;
 
             modifiers = new List<float>();
         }
 
         // GET STAT VALUE
-        public float GetValue()
+        public int GetValue()
         {
             float output = baseValue;
             modifiers.ForEach(x => output += x);
-            return output;
+            return Convert.ToInt32(output);
         }
 
         // ADD MODIFIER
@@ -43,5 +44,18 @@ namespace Skalm.GameObjects.Stats
             if (value > 0)
                 modifiers.Remove(value);
         }
+    }
+
+    // STATS ENUM
+    public enum EStats
+    {
+        Strength,
+        Dexterity,
+        Constitution,
+        Intelligence,
+        Luck,
+        HP,
+        BaseDamage,
+        Armor
     }
 }

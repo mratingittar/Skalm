@@ -1,4 +1,5 @@
 ﻿using Skalm.GameObjects.Interfaces;
+using Skalm.GameObjects.Stats;
 using Skalm.Structs;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,26 @@ namespace Skalm.GameObjects
 {
     internal class PlayerAttackComponent : IAttackComponent
     {
-        public DoDamage Attack()
+        Player player;
+
+        // CONSTRUCTOR I
+        public PlayerAttackComponent(Player player)
         {
-            return new DoDamage();
+            this.player = player;
+        }
+
+        // ATTACK
+        public void Attack(ActorStatsObject statsAtk, ActorStatsObject statsDfn)
+        {
+            // CHECK FOR HIT OR MISS
+            if (Combat.ToHitCalc(statsAtk.stats, statsDfn.stats))
+            {
+                DoDamage damage = Combat.DamageCalc(statsAtk.stats, statsDfn.stats);
+                damage.sender = statsAtk;
+                damage.originXY = player.GridPosition;
+
+                statsDfn.TakeDamage(damage);
+            }
         }
     }
 }
