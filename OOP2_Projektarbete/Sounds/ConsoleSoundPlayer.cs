@@ -50,11 +50,14 @@ namespace Skalm.Sounds
 
             switch (soundType)
             {
-                case SoundManager.SoundType.Move:
+                case SoundManager.SoundType.Low:
                     PlayBeep(440, 100);
                     break;
-                case SoundManager.SoundType.Confirm:
+                case SoundManager.SoundType.Mid:
                     PlayBeep(880, 100);
+                    break;
+                case SoundManager.SoundType.High:
+                    PlayBeep(1760, 100);
                     break;
             }
         }

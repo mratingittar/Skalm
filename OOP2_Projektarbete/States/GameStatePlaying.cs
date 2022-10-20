@@ -93,14 +93,14 @@ namespace Skalm.States
         //METHOD MOVE INPUT
         private void MoveInput(Vector2Int direction)
         {
-            soundManager.player.Play(SoundManager.SoundType.Move);
+            soundManager.player.Play(SoundManager.SoundType.Low);
             _sceneManager.Player.playerStateMachine.CurrentState.MoveInput(direction);
         }
 
         // METHOD COMMAND INPUT
         private void CommandInput(InputCommands command)
         {
-            soundManager.player.Play(SoundManager.SoundType.Confirm);
+            soundManager.player.Play(SoundManager.SoundType.Mid);
             _sceneManager.Player.playerStateMachine.CurrentState.CommandInput(command);
         }
 

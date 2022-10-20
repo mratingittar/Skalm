@@ -52,8 +52,9 @@ namespace Skalm.Sounds
         /// </summary>
         public enum SoundType
         {
-            Move,
-            Confirm
+            Low,
+            Mid,
+            High
         }
     }
 }

@@ -2,6 +2,7 @@
 using Skalm.Map;
 using Skalm.States;
 using Skalm.Structs;
+using System.ComponentModel.DataAnnotations;
 
 namespace Skalm.GameObjects.Enemies
 {
@@ -32,27 +33,28 @@ namespace Skalm.GameObjects.Enemies
         {
             Vector2Int newPosition = GridPosition.Add(direction);
 
-            // CHECK GRID FOR COLLISION
-            if (mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
-            {
-                if (tile is ICollider collider && collider.ColliderIsActive)
-                    collider.OnCollision();
+            if (newPosition.Equals(GridPosition))
+                return;
 
-                else if (tile is IOccupiable occupiable && occupiable.ActorPresent)
-                {
-                    foreach (var obj in occupiable.ObjectsOnTile)
-                    {
-                        if (obj is IDamageable damageable)
-                        {
-                            damageable.ReceiveDamage(attackBehaviour.Attack());
-                        }
-                    }
-                }
-                else
-                {
-                    ExecuteMove(newPosition, GridPosition);
-                }
+            if (!mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
+                return;
+
+            if (tile is ICollider collider && collider.ColliderIsActive)
+            {
+                collider.OnCollision();
+                return;
             }
+
+            if (tile is IOccupiable occupiable && occupiable.ActorPresent)
+            {
+                var obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
+                obj?.ReceiveDamage(attackBehaviour.Attack());
+
+                return;
+            }
+
+
+            ExecuteMove(newPosition, GridPosition);
         }
 
         public void SetMoveBehaviour(EnemyMoveBehaviours behaviour)
@@ -73,7 +75,7 @@ namespace Skalm.GameObjects.Enemies
 
         public void ReceiveDamage(DoDamage damage)
         {
-            
+
         }
     }
     internal enum EnemyMoveBehaviours

@@ -46,7 +46,7 @@ namespace Skalm.Menu
             return new Dictionary<string, MenuPage>
             {
                 {"MAIN MENU", new MenuPage(Page.MainMenu, "MAIN MENU", "New Game", "Options", "Credits", "Exit")},
-                {"NEW GAME", new MenuPage(Page.NewGame, "NEW GAME", "Enter Name", "Start New Game", "Back")},
+                {"NEW GAME", new MenuPage(Page.NewGame, "NEW GAME", "Start New Game", "Enter Name", "Back")},
                 {"OPTIONS", new MenuPage(Page.Options, "OPTIONS", "Input Method", "Music", "Toggle Beep", "Back")},
                 {"CREDITS", new MenuPage(Page.Credits, "CREDITS", "Josef Schönbäck", "Martin Lindvik", "Music by Kevin MacLeod(incompetech.com)", "Licensed under Creative Commons: By Attribution 4.0 License", "Back")},
                 {"INPUT METHOD", new MenuPage(Page.InputMethod, "INPUT METHOD", inputs.ToArray())},
@@ -76,11 +76,11 @@ namespace Skalm.Menu
             {
                 case < 0:
                     if (ActiveMenu.MoveMenuUp())
-                        soundPlayer.Play(SoundManager.SoundType.Move);
+                        soundPlayer.Play(SoundManager.SoundType.Low);
                     break;
                 case > 0:
                     if (ActiveMenu.MoveMenuDown())
-                        soundPlayer.Play(SoundManager.SoundType.Move);
+                        soundPlayer.Play(SoundManager.SoundType.Low);
                     break;
             }
         }
@@ -90,7 +90,7 @@ namespace Skalm.Menu
             if (ActiveMenu.IsEnabled is false)
                 return;
 
-            soundPlayer.Play(SoundManager.SoundType.Confirm);
+            soundPlayer.Play(SoundManager.SoundType.Mid);
 
             switch (command)
             {

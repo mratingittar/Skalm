@@ -8,13 +8,14 @@ namespace Skalm.States
     internal class GameStateMainMenu : GameStateBase
     {
         public string playerName = "";
-        private Animator fireAnimator;
-        private bool everyOtherFrame = true;
+        private Animator _fireAnimator;
+        private bool _everyOtherFrame = true;
+        private const int _menuPageHeight = 6;
 
         // CONSTRUCTOR I
         public GameStateMainMenu(GameManager gameManager) : base(gameManager)
         {
-            fireAnimator = gameManager.FireAnimator;
+            _fireAnimator = gameManager.FireAnimator;
         }
 
         #region StateBasics
@@ -55,13 +56,13 @@ namespace Skalm.States
         // UPDATE DISPLAY
         public override void UpdateDisplay()
         {
-            if (everyOtherFrame)
+            if (_everyOtherFrame)
             {
-                fireAnimator.AnimatedBraziers();
-                everyOtherFrame = false;
+                _fireAnimator.AnimatedBraziers();
+                _everyOtherFrame = false;
             }
             else
-                everyOtherFrame = true;
+                _everyOtherFrame = true;
         }
 
         #endregion
@@ -93,8 +94,8 @@ namespace Skalm.States
                 case Page.NewGame:
                     if (item == "Enter Name")
                     {
-                        EraseRow(menuManager.ActiveMenu.PageStartRow + 5);
-                        (bool nameOK, string nameReturned) = EnterName(menuManager.ActiveMenu.PageStartRow + 5);
+                        EraseRow(menuManager.ActiveMenu.PageStartRow + _menuPageHeight);
+                        (bool nameOK, string nameReturned) = EnterName(menuManager.ActiveMenu.PageStartRow + _menuPageHeight);
                         Console.CursorVisible = false;
                         if (nameOK)
                             gameManager.SceneManager.playerName = nameReturned;

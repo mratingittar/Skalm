@@ -5,11 +5,12 @@ using Skalm.Map;
 using Skalm.Map.Tile;
 using Skalm.States;
 using Skalm.Structs;
+using System.Reflection.Emit;
 
 
 namespace Skalm.GameObjects
 {
-    internal class Player : Actor
+    internal class Player : Actor, IDamageable
     {
         // STATE MACHINE
         public readonly PlayerStateMachine playerStateMachine;
@@ -69,28 +70,25 @@ namespace Skalm.GameObjects
         {
             Vector2Int newPosition = GridPosition.Add(direction);
 
-            // CHECK GRID FOR COLLISION
-            if (mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
-            {
-                if (tile is ICollider collider && collider.ColliderIsActive)
-                    collider.OnCollision();
+            if (!mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
+                return;
 
-                else if (tile is IOccupiable occupiable && occupiable.ActorPresent)
-                {
-                    foreach (var obj in occupiable.ObjectsOnTile)
-                    {
-                        if (obj is IDamageable damageable)
-                        {
-                            damageable.ReceiveDamage(_attack.Attack());
-                        }
-                    }
-                }
-                else
-                {
-                    ExecuteMove(newPosition, GridPosition);
-                    playerTurn?.Invoke();
-                }
+            if (tile is ICollider collider && collider.ColliderIsActive)
+            {
+                collider.OnCollision();
+                return;
             }
+
+            if (tile is IOccupiable occupiable && occupiable.ActorPresent)
+            {
+                var obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
+                obj?.ReceiveDamage(_attack.Attack());
+                playerTurn?.Invoke();
+                return;
+            }
+
+            ExecuteMove(newPosition, GridPosition);
+            playerTurn?.Invoke();
         }
 
         public void InteractWithNeighbor(BaseTile neighbor)
@@ -105,16 +103,7 @@ namespace Skalm.GameObjects
         // UPDATE OBJECT
         public override void UpdateMain()
         {
-            //if (moveQueue.Count > 0)
-            //{
-            //    base.Move(moveQueue.Dequeue());
-            //}
 
-            //if (previousPosition.Equals(GridPosition) is false)
-            //{
-
-            //    previousPosition = GridPosition;
-            //}
 
         }
 
@@ -128,7 +117,7 @@ namespace Skalm.GameObjects
         // METHOD RECEIVE DAMAGE
         public void ReceiveDamage(DoDamage damage)
         {
-            throw new NotImplementedException();
+
         }
     }
 }

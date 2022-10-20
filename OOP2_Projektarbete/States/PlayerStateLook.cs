@@ -97,8 +97,10 @@ namespace Skalm.States
                     selectionText += " Objects on tile:";
                     foreach (var obj in occupiable.ObjectsOnTile)
                     {
-                        selectionText += $" {obj.Label} ";
+                        selectionText += $" {obj.Label},";
                     }
+                    selectionText = selectionText.Remove(selectionText.Length - 1);
+                    selectionText += ".";
                 }
 
                 OnNeighborSelected?.Invoke(selectionText);

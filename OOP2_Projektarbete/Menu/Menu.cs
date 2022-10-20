@@ -10,11 +10,14 @@ namespace Skalm.Menu
         #region FIELDS
         public readonly string[] title;
         public readonly TreeNode<MenuPage> pages;
-        private int pageStartRow;
-        private DisplayManager displayManager;
-        private SoundManager soundManager;
-        private InputManager inputManager;
         public event Action<Page, string>? onMenuExecution;
+
+        private int _pageStartRow;
+        private DisplayManager _displayManager;
+        private SoundManager _soundManager;
+        private InputManager _inputManager;
+        private const int _eraseBuffer = 5;
+        private const int _pageTitleHeight = 4;
         #endregion
 
         #region CONSTRUCTOR
@@ -22,9 +25,9 @@ namespace Skalm.Menu
         {
             this.title = title;
             this.pages = pages;
-            this.displayManager = displayManager;
-            this.soundManager = soundManager;
-            this.inputManager = inputManager;
+            this._displayManager = displayManager;
+            this._soundManager = soundManager;
+            this._inputManager = inputManager;
             IsEnabled = false;
             ActivePage = pages.First().Value;
         }
@@ -35,20 +38,20 @@ namespace Skalm.Menu
         public MenuPage ActivePage { get; private set; }
         public int MenuLevel => pages.FindNode(node => node.Value == ActivePage).Depth;
         public int MenuItemIndex { get; set; }
-        public int PageStartRow => pageStartRow;
+        public int PageStartRow => _pageStartRow;
         #endregion
 
         public void LoadMenu(int titlePadding)
         {
             IsEnabled = true;
             MenuItemIndex = 0;
-            displayManager.printer.PrintCenteredInWindow(title, titlePadding);
-            pageStartRow = displayManager.windowInfo.CursorPosition.Item2 + titlePadding;
+            _displayManager.printer.PrintCenteredInWindow(title, titlePadding);
+            _pageStartRow = _displayManager.windowInfo.CursorPosition.Item2 + titlePadding;
             LoadPage(pages.Value);
         }
         public void LoadPage(MenuPage page, int itemIndex = 0)
         {
-            displayManager.eraser.EraseLinesFromTo(pageStartRow, pageStartRow + ActivePage.items.Count + 5); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
+            _displayManager.eraser.EraseLinesFromTo(_pageStartRow, _pageStartRow + ActivePage.items.Count + _eraseBuffer);
             ActivePage = page;
             MenuItemIndex = itemIndex;
             PrintMenu();
@@ -114,9 +117,8 @@ namespace Skalm.Menu
 
         private void PrintMenu()
         {
-            displayManager.printer.PrintCenteredInWindow(TextTools.AddLightBordersToText(ActivePage.pageName), pageStartRow);
-            displayManager.printer.PrintCenteredInWindow("", pageStartRow + 3); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
-            HighlightSelectedItem(pageStartRow + 4); // MAGIC NUMBER; INTRODUCE FIELD OR CONSTANT
+            _displayManager.printer.PrintCenteredInWindow(TextTools.AddLightBordersToText(ActivePage.pageName), _pageStartRow);
+            HighlightSelectedItem(_pageStartRow + _pageTitleHeight);
         }
 
         private void HighlightSelectedItem(int startRow)
@@ -126,25 +128,22 @@ namespace Skalm.Menu
             {
                 string pageItem = item.Value;
 
-                if (ActivePage.page is Page.NewGame && pageItem == "Start New Game")
-                    count++;
-
-                if (ActivePage.page is Page.Music && pageItem == soundManager.CurrentlyPlaying.soundName)
+                if (ActivePage.page is Page.Music && pageItem == _soundManager.CurrentlyPlaying.soundName)
                     pageItem = TextTools.AddPointersToString(pageItem, 3);
 
-                if (ActivePage.page is Page.InputMethod && pageItem == inputManager.moveInput.GetType().Name)
+                if (ActivePage.page is Page.InputMethod && pageItem == _inputManager.moveInput.GetType().Name)
                     pageItem = TextTools.AddPointersToString(pageItem, 3);                
 
                 if (item.Key == ActivePage.items.Last().Key)
                 {
-                    displayManager.printer.PrintCenteredInWindow("", startRow + count);
+                    _displayManager.printer.PrintCenteredInWindow("", startRow + count);
                     count++;
                 }
 
                 if (item.Key == MenuItemIndex)
-                    displayManager.printer.PrintCenteredInWindow(pageItem, startRow + count, true);
+                    _displayManager.printer.PrintCenteredInWindow(pageItem, startRow + count, true);
                 else
-                    displayManager.printer.PrintCenteredInWindow(pageItem, startRow + count);
+                    _displayManager.printer.PrintCenteredInWindow(pageItem, startRow + count);
                 count++;
             }
         }
