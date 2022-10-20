@@ -12,7 +12,9 @@ namespace Skalm.GameObjects.Items
     {
         // CONTAINED ITEM
         Item item;
-        public event Action<ItemPickup>? onItemPickup;
+
+        // STATIC EVENT - ON ANY ITEM PICKED UP
+        public static event Action<ItemPickup>? onItemPickup;
 
         // CONSTRUCTOR I
         public ItemPickup(Vector2Int gridPosition, char sprite, ConsoleColor color, Item item) : base(gridPosition, sprite, color)

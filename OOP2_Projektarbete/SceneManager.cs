@@ -67,13 +67,16 @@ namespace Skalm
 
 
             // ADD ITEMS
-            var freeTiles = _mapManager.mapGenerator.FloorTiles;
-            var itemXY = freeTiles.ElementAt(Dice.rng.Next(0, freeTiles.Count));
+            var FloorTiles = _mapManager.mapGenerator.FloorTiles;
+            var itemXY = FloorTiles.ElementAt(Dice.rng.Next(0, FloorTiles.Count));
 
             ItemEquippable item1 = new ItemEquippable("Helmet of misfortune", (int)EEqSlots.Head, new StatsObject(0, 0, 2, 0, 1, 5, 0, 2));
 
             GameObjectsInScene.Add(_itemSpawner.Spawn(itemXY, 'o', ConsoleColor.Yellow, item1));
 
+            ItemPickup.onItemPickup += RemoveGameObject;
+
+            // ADD OBJECTS TO MAP
             AddObjectsToMap();
         }
 
@@ -115,5 +118,20 @@ namespace Skalm
         // ENEMY FACTORY
 
         // ITEM FACTORY
+
+        // REMOVE OBJECT FROM GAME VIEW
+        public void RemoveGameObject(GameObject obj)
+        {
+            // REMOVE OBJECT FROM OBJECT LIST
+            GameObjectsInScene.Remove(obj);
+
+            // REMOVE OBJECT FROM TILE OBJECT LIST
+            _mapManager.TileGrid.TryGetGridObject(obj.GridPosition, out BaseTile tile);
+            if (tile is IOccupiable o)
+                o.ObjectsOnTile.Remove(obj);
+
+            // CACHE TILE POSITION FOR REDRAW
+            _mapManager.mapPrinter.CacheUpdatedTile(obj.GridPosition, obj.GridPosition);
+        }
     }
 }
