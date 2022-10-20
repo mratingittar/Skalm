@@ -86,7 +86,7 @@ namespace Skalm.GameObjects
             if (tile is IOccupiable occupiable && occupiable.ActorPresent)
             {
                 var obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
-                obj?.ReceiveDamage(_attack.Attack());
+                //obj?.ReceiveDamage(_attack.Attack());
                 playerTurn?.Invoke();
                 return;
             }
@@ -113,7 +113,7 @@ namespace Skalm.GameObjects
 
             if (neighbor is IInteractable interactable)
             {
-                interactable.Interact(this);
+                equipmentManager.AddItemToInventory(item.Interact());
                 mapManager.mapPrinter.DrawSingleTile(neighbor.GridPosition);
             }
         }
@@ -132,7 +132,7 @@ namespace Skalm.GameObjects
         }
 
         // METHOD RECEIVE DAMAGE
-        public void ReceiveDamage(DoDamage damage)
+        public void TakeDamage(DoDamage damage)
         {
 
         }

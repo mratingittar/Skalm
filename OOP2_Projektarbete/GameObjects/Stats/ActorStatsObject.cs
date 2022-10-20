@@ -13,7 +13,7 @@ namespace Skalm.GameObjects.Stats
     {
         // HARD STATS
         public StatsObject stats;
-
+        
         // SOFT STATS
         public string name;
         int HPcurr;

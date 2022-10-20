@@ -26,9 +26,8 @@ namespace Skalm.GameObjects.Enemies
         public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, IAttackComponent attackBehaviour, Vector2Int gridPosition, char sprite, ConsoleColor color) 
             : base(gridPosition, sprite, color)
         {
-            // MANAGERS
-            this._mapManager = mapManager;
-            this._sceneManager = sceneManager;
+            _mapManager = mapManager;
+            _sceneManager = sceneManager;
             this.moveBehaviour = moveBehaviour;
             this.attackBehaviour = attackBehaviour;
             stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
@@ -54,7 +53,7 @@ namespace Skalm.GameObjects.Enemies
             if (newPosition.Equals(GridPosition))
                 return;
 
-            if (!mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
+            if (!_mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
                 return;
 
             if (tile is ICollider collider && collider.ColliderIsActive)
@@ -63,21 +62,16 @@ namespace Skalm.GameObjects.Enemies
                 return;
             }
 
-                else if ((tile is IOccupiable occupiable) && (occupiable.ActorPresent))
-                {
-                    foreach (var obj in occupiable.ObjectsOnTile)
-                    {
-                        if (obj is IDamageable damageable)
-                        {
-                            attackBehaviour?.Attack(statsObject, damageable.statsObject);
-                        }
-                    }
-                }
-                else
-                {
-                    ExecuteMove(newPosition, GridPosition);
-                }
+            if (tile is IOccupiable occupiable && occupiable.ActorPresent)
+            {
+                var obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
+                //obj?.TakeDamage(attackBehaviour.Attack());
+
+                return;
             }
+
+
+            ExecuteMove(newPosition, GridPosition);
         }
 
         // SET BEHAVIOUR

@@ -9,6 +9,27 @@ namespace Skalm.Utilities
 #else
         public static readonly string rootFolder = Directory.GetCurrentDirectory() + "/data/";
 #endif
+
+        public static bool TryReadFolder(string folderName, out List<string[]> files)
+        {
+            files = new List<string[]>();
+            bool success;
+            try
+            {
+                var fileNames = Directory.EnumerateFiles(rootFolder + folderName);
+                foreach (string fileName in fileNames)
+                {
+                    files.Add(File.ReadAllLines(fileName, Encoding.UTF8));
+                }
+                success = true;
+            }
+            catch (Exception)
+            {
+
+                success = false;
+            }
+            return success;
+        }
         public static bool TryReadFile(string fileName, out string[] file)
         {
             bool success;

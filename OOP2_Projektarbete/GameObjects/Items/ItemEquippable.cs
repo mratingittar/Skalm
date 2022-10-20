@@ -16,10 +16,11 @@ namespace Skalm.GameObjects.Items
         public StatsObject stats;
 
         // CONSTRUCTOR I
-        public ItemEquippable(string itemName, int equipSlot) : base(itemName)
+        public ItemEquippable(string itemName, int equipSlot, bool isDefault = false) : base(itemName)
         {
             this.equipSlot = equipSlot;
             stats = new StatsObject(0, 0, 0, 0, 0, 0, 0, 0);
+            this.isDefault = isDefault;
         }
 
         // CONSTRUCTOR II

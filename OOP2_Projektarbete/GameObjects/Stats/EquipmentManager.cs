@@ -10,8 +10,8 @@ namespace Skalm.GameObjects.Stats
     internal class EquipmentManager
     {
         // CONTAINERS
-        ItemEquippable[] equipArr;
-        Inventory inventory;
+        public ItemEquippable[] equipArr;
+        public Inventory inventory;
 
         // EVENT
         public event Action? onEquippmentChanged;
@@ -21,6 +21,12 @@ namespace Skalm.GameObjects.Stats
         {
             equipArr = new ItemEquippable[Enum.GetValues(typeof(EEqSlots)).Length];
             inventory = new Inventory();
+
+            for (int i = 0; i < equipArr.Length; i++)
+            {
+                equipArr[i] = new ItemEquippable("Empty slot", i, true);
+            }
+
         }
 
         // ADD & REMOVE ITEM TO/FROM INVENTORY

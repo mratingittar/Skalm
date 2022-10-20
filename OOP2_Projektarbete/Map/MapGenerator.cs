@@ -15,6 +15,7 @@ namespace Skalm.Map
         private MapManager _mapManager;
         private HashSet<Vector2Int> _doors;
         private Grid2D<BaseTile> _tileGrid;
+        private Dictionary<int, Map> _maps;
         private readonly ISettings _settings;
 
         public MapGenerator(MapManager mapManager, Grid2D<BaseTile> tileGrid, ISettings settings)
@@ -23,33 +24,44 @@ namespace Skalm.Map
             _tileGrid = tileGrid;
             _settings = settings;
             _doors = new HashSet<Vector2Int>();
+            _maps = new Dictionary<int, Map>();
             FloorTiles = new HashSet<Vector2Int>();
             EnemySpawnPositions = new List<Vector2Int>();
             ItemSpawnPositions = new List<Vector2Int>();
             PlayerFixedSpawnPosition = Vector2Int.Zero;
+
+            LoadMaps();
+        }
+
+        private void LoadMaps()
+        {
+            if (FileHandler.TryReadFolder("maps", out List<string[]> mapList))
+            {
+                int counter = 0;
+                foreach (var map in mapList)
+                {
+                    _maps.Add(counter, new Map(map, _settings.MapHeight));
+                    counter++;
+                }
+            }
         }
 
         public void CreateMap()
         {
-            if (FileHandler.TryReadFile("map.txt", out string[] map))
-            {
-                
-                CreateMapFromStringArray(FlipMapVertical(FlipMapHorizontal(map)));
-            }
+            Random random = new Random();
+            LoadMapIntoGrid(_maps[random.Next(_maps.Count)]); //Create failsafe if map folder is empty
             FindWalls();
             SetBorderFloorsAsWalls();
-
-            if (FloorTiles.Count == 0)
-                CreateRoomFromBounds(new Bounds(new Vector2Int(5, 5), new Vector2Int(_tileGrid.gridWidth - 5, _tileGrid.gridHeight - 5)));
         }
 
-        private void CreateMapFromStringArray(string[] map)
+        private void LoadMapIntoGrid(Map map)
         {
-            if (map.Length == 0 || map.Min() == null)
+            string[] mapArray = map.MapString;
+            if (mapArray.Length == 0 || mapArray.Min() == null)
                 throw new ArgumentException("map file is empty");
 
-            int mapHeight = Math.Min(map.Length, _settings.MapHeight);
-            int mapWidth = Math.Min(map.Select(s => s.Length).Max(), _settings.MapWidth);
+            int mapHeight = Math.Min(mapArray.Length, _settings.MapHeight);
+            int mapWidth = Math.Min(mapArray.Select(s => s.Length).Max(), _settings.MapWidth);
 
             int startX = 0;
             int startY = 0;
@@ -62,10 +74,10 @@ namespace Skalm.Map
 
             for (int y = 0; y < mapHeight; y++)
             {
-                int width = Math.Min(map[y].Length, _settings.MapWidth);
+                int width = Math.Min(mapArray[y].Length, _settings.MapWidth);
                 for (int x = 0; x < width; x++)
                 {
-                    switch (map[y][x])
+                    switch (mapArray[y][x])
                     {
                         case 'f':
                             CreateFloorTile(x + startX, y + startY);
@@ -124,47 +136,6 @@ namespace Skalm.Map
                     || position.Y == _tileGrid.gridHeight - 1)
                     _tileGrid.SetGridObject(position, new WallTile(position, _settings.SpriteWall));
             }
-        }
-
-
-        private string[] FlipMapHorizontal(string[] mapInput)
-        {
-            mapInput = PadStringsInArrayToEqualLength(mapInput);
-            if (mapInput.Max() is null)
-                return mapInput;
-
-            for (int i = 0; i < mapInput.Length; i++)
-            {
-                mapInput[i] = new string(mapInput[i].Reverse().ToArray());
-            }
-
-            return mapInput;
-        }
-
-        private string[] FlipMapVertical(string[] mapInput)
-        {
-            mapInput = PadStringsInArrayToEqualLength(mapInput);
-            if (mapInput.Max() is null)
-                return mapInput;
-
-            string[] mapOutput = new string[mapInput.Length];
-            for (int i = 0; i < mapInput.Length; i++)
-            {
-                mapOutput[^(i+1)] = mapInput[i];
-            }
-
-            return mapOutput;
-        }
-
-        private string[] PadStringsInArrayToEqualLength(string[] input)
-        {
-            int maxWidth = input.Select(s => s.Length).Max();
-            for (int i = 0; i < input.Length; i++)
-            {
-                if (input[i].Length < maxWidth)
-                    input[i] = input[i].PadRight(maxWidth, ' ');
-            }
-            return input;
         }
 
         private void CreateRoomFromBounds(Bounds roomSpace)

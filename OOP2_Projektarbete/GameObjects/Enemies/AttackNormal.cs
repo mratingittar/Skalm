@@ -15,5 +15,10 @@ namespace Skalm.GameObjects.Enemies
         {
             
         }
+
+        public void Attack(ActorStatsObject statsAtk, ActorStatsObject statsDfn)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
