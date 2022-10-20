@@ -18,12 +18,11 @@ namespace Skalm.GameObjects
         // COMPONENTS
         public IAttackComponent _attack { get; set; }
 
-        public List<Item> inventory;
-
         // STATS
-        private StatsObjectHard statsHard;
-        private StatsObjectSoft statsSoft;
+        public ActorStatsObject statsObject;
+        public EquipmentManager equipmentManager;
 
+        // MOVEMENT
         private Vector2Int previousPosition;
         private Queue<Vector2Int> moveQueue;
         public static event Action? playerTurn;
@@ -41,21 +40,23 @@ namespace Skalm.GameObjects
             _attack = attack;
 
             // STATS
-            statsHard = new StatsObjectHard(name, 5, 5, 5, 5, 5);
-            statsSoft = new StatsObjectSoft(10, 1);
+            statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), name);
+            equipmentManager = new EquipmentManager();
 
-            moveQueue = new Queue<Vector2Int>();
-            inventory = new List<Item>();
+            // MOVEMENT
+            moveQueue = new Queue<Vector2Int>();            
             previousPosition = GridPosition;
         }
 
         public void InitializePlayer(Vector2Int gridPosition, string playerName, char sprite, ConsoleColor color)
         {
-            GridPosition = gridPosition;
+            GridPosition = gridPosition;            
             previousPosition = gridPosition;
-            statsHard.Name = playerName;
+            
             _sprite = sprite;
             _color = color;
+            
+            statsObject.name = playerName;
         }
 
         public void SendStatsToDisplay()
@@ -117,7 +118,6 @@ namespace Skalm.GameObjects
             //}
 
         }
-
 
         //METHOD ON COLLISION
         public void OnCollision()

@@ -1,21 +1,27 @@
+﻿using Microsoft.Win32;
+using Skalm.GameObjects.Stats;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 ﻿using Skalm.GameObjects.Interfaces;
 using Skalm.Structs;
 
-
 namespace Skalm.GameObjects.Items
 {
-    internal class Item : GameObject, IInteractable
+    internal class Item
     {
-        public Item(Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
+        public string itemName;
+
+        // CONSTRUCTOR I
+        public Item(string itemName)
         {
+            this.itemName = itemName;
         }
 
-        public void Interact()
-        {
-            PickupItem();
-        }
-
-        private void PickupItem()
+        // USE ITEM
+        public virtual void Use(ref Player player)
         {
             
         }

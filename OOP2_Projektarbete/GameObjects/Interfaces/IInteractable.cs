@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Interfaces
 {
-    internal interface IInteractable
+    internal interface IInteractable<T>
     {
-        void Interact();
+        T Interact();
     }
 }

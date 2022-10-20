@@ -57,7 +57,7 @@ namespace Skalm.Grid
             PrintWithinBounds(msg, messageConsole);
         }
 
-        public void DisplayStats(StatsObjectHard hardStats, StatsObjectSoft softStats)
+        public void DisplayStats(StatsObject hardStats, StatsObjectSoft softStats)
         {
             string name = hardStats.Name;
             if (name.Length > mainStatsConsole.Size.Width)
