@@ -66,8 +66,8 @@ namespace Skalm
 
 
             // ADD ITEMS
-            var freeTiles = _mapManager.mapGenerator.FloorTiles;
-            var itemXY = freeTiles.ElementAt(Dice.rng.Next(0, freeTiles.Count));
+            var FloorTiles = _mapManager.mapGenerator.FloorTiles;
+            var itemXY = FloorTiles.ElementAt(Dice.rng.Next(0, FloorTiles.Count));
 
             ItemEquippable item1 = new ItemEquippable("Helmet of misfortune", (int)EEqSlots.Head, new StatsObject(0, 0, 2, 0, 1, 5, 0, 2));
 
