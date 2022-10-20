@@ -18,10 +18,12 @@ namespace Skalm.Grid
         public Dictionary<string, HashSet<Pixel>> pixelsInSections;
         public HashSet<Pixel> borderCells;
 
+        // HUD BOUNDS
         private readonly Bounds messageConsole;
         private readonly Bounds mainStatsConsole;
         private readonly Bounds subStatsConsole;
 
+        // CONSTRUCTOR I
         public PixelController(Grid2D<Pixel> sectionGrid, Dictionary<string, Bounds> sectionBounds, IPrinter printer, IEraser eraser)
         {
             this.pixelGrid = sectionGrid;
@@ -51,13 +53,14 @@ namespace Skalm.Grid
             subStatsConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, subStats.StartXY.Y + 1), new Vector2Int(subStats.EndXY.X - 2, subStats.EndXY.Y - 1));
         }
 
-
+        // DISPLAY MESSAGE BOTTOM SECTION
         public void DisplayMessage(string msg)
         {
             ClearSection("MessageSection");
             PrintWithinBounds(msg, messageConsole);
         }
 
+        // DISPLAY STATS MAIN SECTION
         public void DisplayStats(ActorStatsObject playerStats)
         {
             ClearSection("MainStatsSection");
@@ -86,6 +89,7 @@ namespace Skalm.Grid
                 $"| Lck {statsObject.statsArr[(int)EStats.Luck].GetValue()}", row, column);
         }
 
+        // DISPLAY INVENTORY SECTION
         public void DisplayInventory(EquipmentManager im)
         {
             ClearSection("SubStatsSection");
@@ -123,6 +127,7 @@ namespace Skalm.Grid
             }
         }
 
+        // PRINT WITHIN BOUNDS
         private void PrintWithinBounds(string msg, Bounds bounds)
         {
             int counter = 0;
@@ -139,6 +144,7 @@ namespace Skalm.Grid
             }
         }
 
+        // PRINT BORDERS
         public void PrintBorders()
         {
             foreach (Pixel cell in borderCells)
@@ -150,6 +156,7 @@ namespace Skalm.Grid
             }
         }
 
+        // CLEAR SECTION
         public void ClearSection(string section)
         {
             foreach (Pixel pixel in pixelsInSections[section])
@@ -162,12 +169,14 @@ namespace Skalm.Grid
         }
 
         #region INITIALIZATION
+        // FIND CONSOLE BOUNDS OF SECTION
         private Bounds FindConsoleBoundsOfSection(string sectionName)
         {
             return new Bounds(pixelGrid.GetPlanePosition(pixelsInSections[sectionName].First().gridPosition),
                 pixelGrid.GetPlanePosition(pixelsInSections[sectionName].Last().gridPosition));
         }
 
+        // DEFINE GRID SECTIONS
         private void DefineGridSections(Bounds area, Section section)
         {
             if (!pixelsInSections.ContainsKey(section.GetType().Name))
@@ -186,6 +195,7 @@ namespace Skalm.Grid
             }
         }
 
+        // FIND BORDER PIXELS
         private void FindBorderPixels()
         {
             for (int x = 0; x < pixelGrid.gridWidth; x++)

@@ -10,6 +10,6 @@ namespace Skalm.GameObjects.Interfaces
 {
     internal interface IAttackComponent
     {
-        void Attack(ActorStatsObject statsAtk, ActorStatsObject statsDfn);
+        string Attack(ActorStatsObject statsAtk, ActorStatsObject statsDfn);
     }
 }

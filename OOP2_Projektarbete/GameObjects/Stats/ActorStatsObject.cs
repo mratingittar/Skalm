@@ -19,6 +19,7 @@ namespace Skalm.GameObjects.Stats
         int HPcurr;
 
         public event Action? OnStatsChanged;
+        public event Action? OnDeath;
 
         // CONSTRUCTOR I
         public ActorStatsObject(StatsObject stats, string name)
@@ -53,7 +54,7 @@ namespace Skalm.GameObjects.Stats
         // HANDLE DEATH
         private void HandleDeath()
         {
-
+            OnDeath?.Invoke();
         }
     }
 }

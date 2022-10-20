@@ -11,8 +11,10 @@ namespace Skalm.GameObjects.Enemies
 {
     internal class AttackNormal : IAttackComponent
     {
-        public void Attack(ActorStatsObject statsAtk, ActorStatsObject statsDfn)
+        public string Attack(ActorStatsObject statsAtk, ActorStatsObject statsDfn)
         {
+            string outMsg = "";
+
             // CHECK FOR HIT OR MISS
             if (Combat.ToHitCalc(statsAtk.stats, statsDfn.stats))
             {
@@ -22,6 +24,8 @@ namespace Skalm.GameObjects.Enemies
 
                 statsDfn.TakeDamage(damage);
             }
+
+            return outMsg;
         }
 
     }

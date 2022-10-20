@@ -16,6 +16,7 @@ namespace Skalm.Display
         public readonly Dictionary<string, char> CharSet;
         #endregion
 
+        // CONSTRUCTOR I
         public DisplayManager(ISettings settings, IPrinter printer, IEraser eraser, IWindowInfo windowInfo, Rectangle windowSize, PixelController gridController)
         {
             this.printer = printer;
@@ -30,11 +31,11 @@ namespace Skalm.Display
             PlayerStateLook.OnNeighborSelected += DisplaySelection;
         }
 
+        // DISPLAY SELECTION
         private void DisplaySelection(string msg)
         {
             pixelGridController.DisplayMessage(msg);
         }
-
 
         // DISPLAY HUD
         public void DisplayHUD()
