@@ -36,7 +36,6 @@ namespace Skalm.Map
             if (FileHandler.TryReadFile("map.txt", out string[] map))
             {
                 _maps.Add(0,new Map(map, _settings.MapHeight));
-                _maps[0].RotateMap(true);
                 LoadMapIntoGrid(_maps[0]);
             }
             FindWalls();
@@ -48,7 +47,7 @@ namespace Skalm.Map
 
         private void LoadMapIntoGrid(Map map)
         {
-            string[] mapArray = map.MapString.Select(s => s.TrimEnd()).ToArray();
+            string[] mapArray = map.MapString;
             if (mapArray.Length == 0 || mapArray.Min() == null)
                 throw new ArgumentException("map file is empty");
 

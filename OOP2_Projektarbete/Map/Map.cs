@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Skalm.Map
+﻿namespace Skalm.Map
 {
     internal class Map
     {
@@ -80,34 +74,40 @@ namespace Skalm.Map
             int height = input.Length;
             int width = input.First().Length;
 
-            // Pad width to match height
-            if (height > width)
+            // Match width to limit
+            if (width < limit)
             {
                 for (int i = 0; i < input.Length; i++)
                 {
                     input[i].PadRight(limit, ' ');
                 }
             }
-            // Pad height to match width
-            else if (width > height)
-            {
-                for (int i = 0; i < width - height; i++)
-                {
-                    input.Append("");
-                }
-            }
-
-            // Trim width to match limit
-            if (input.First().Length > limit)
+            else if (width > limit)
                 input = input.Select(s => s.Remove(limit)).ToArray();
 
-            // Trim height to match limit
-            if (input.Length > limit)
+            // Match height to limit
+            if (height < limit)
+            {
+                for (int i = 0; i < limit - height; i++)
+                {
+                    input = input.Append("".PadRight(limit)).ToArray();
+                }
+            }
+            else if (height > limit)
                 input = input.Take(limit).ToArray();
 
             return input;
         }
 
+        private string EmptyStringOfLength(int length)
+        {
+            string empty = "";
+            for (int i = 0; i < length; i++)
+            {
+                empty += " ";
+            }
+            return empty;
+        }
         private char[,] RotateCharMatrixClockwise(char[,] matrix, int n)
         {
             char[,] result = new char[n, n];
