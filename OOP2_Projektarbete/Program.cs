@@ -67,8 +67,8 @@ SoundManager soundManager = new SoundManager(new ConsoleSoundPlayer());
 InputManager inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
 MenuManager menuManager = new MenuManager(inputManager, displayManager, soundManager);
 MapManager mapManager = new MapManager(settings, displayManager, new Grid2D<BaseTile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, 
-    displayManager.pixelGridController.GetMapOrigin(), (x, y) => new VoidTile(new Vector2Int(x, y))));
-SceneManager sceneManager = new SceneManager(mapManager);
+    displayManager.GetMapOrigin(), (x, y) => new VoidTile(new Vector2Int(x, y))));
+SceneManager sceneManager = new SceneManager(mapManager, displayManager);
 GameManager game = new GameManager(settings, displayManager, mapManager, soundManager, inputManager, menuManager, sceneManager);
 #endregion
 

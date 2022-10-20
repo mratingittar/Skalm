@@ -26,7 +26,7 @@ namespace Skalm.GameObjects.Enemies
             this.moveBehaviour = moveBehaviour;
             stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
 
-            Player.playerTurn += MoveEnemy;
+            Player.OnPlayerTurn += MoveEnemy;
             stateMachine.ChangeState(EnemyStates.EnemyStateSearching);
         }
 

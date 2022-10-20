@@ -1,4 +1,5 @@
-﻿using Skalm.GameObjects;
+﻿using Skalm.Display;
+using Skalm.GameObjects;
 using Skalm.Input;
 using Skalm.Structs;
 using System;
@@ -9,24 +10,29 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class PlayerStateMove : PlayerStateBase
+    internal class PlayerStateMessage : PlayerStateBase
     {
-        public static event Action? OnPauseMenuRequested;
-        public PlayerStateMove(Player player) : base(player) { }
+        private DisplayManager _displayManager;
+        public PlayerStateMessage(Player player, DisplayManager displayManager) : base(player) 
+        { 
+            _displayManager = displayManager;
+        }
+
 
         public override void Enter()
         {
-            
+            ReadMessage();
         }
 
         public override void Exit()
         {
-            
+            _displayManager.ClearMessageSection();
+            Console.CursorVisible = false;
         }
 
         public override void MoveInput(Vector2Int direction)
         {
-            player.Move(direction);
+            
         }
         public override void CommandInput(InputCommands command)
         {
@@ -35,15 +41,15 @@ namespace Skalm.States
                 case InputCommands.Default:
                     break;
                 case InputCommands.Confirm:
+                    ReadMessage();
                     break;
                 case InputCommands.Cancel:
-                    OnPauseMenuRequested?.Invoke();
+                    ReadMessage();
                     break;
                 case InputCommands.Interact:
-                    player.playerStateMachine.ChangeState(PlayerStates.PlayerStateInteract);
+                    ReadMessage();
                     break;
                 case InputCommands.Inventory:
-                    player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMenu);
                     break;
                 case InputCommands.Next:
                     break;
@@ -54,6 +60,14 @@ namespace Skalm.States
                 default:
                     break;
             }
+        }
+
+        private void ReadMessage()
+        {
+            if (_displayManager.MessagesInQueue == 0)
+                player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+            else
+            _displayManager.DisplayNextMessage();
         }
     }
 }

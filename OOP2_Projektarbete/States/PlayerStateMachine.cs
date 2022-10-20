@@ -1,18 +1,21 @@
-﻿using Skalm.GameObjects;
+﻿using Skalm.Display;
+using Skalm.GameObjects;
 
 namespace Skalm.States
 {
     internal class PlayerStateMachine : IStateMachine<PlayerStateBase, PlayerStates>
     {
-        private Player player;
-        private List<PlayerStateBase> availableStates;
         public PlayerStateBase CurrentState { get; private set; }
+        private List<PlayerStateBase> _availableStates;
+        private Player _player;
+        private DisplayManager _displayManager;
 
         // CONSTRUCTOR I
-        public PlayerStateMachine(Player player, PlayerStates startingState)
+        public PlayerStateMachine(Player player, DisplayManager displayManager, PlayerStates startingState)
         {
-            this.player = player;
-            availableStates = new List<PlayerStateBase>();
+            _availableStates = new List<PlayerStateBase>();
+            _player = player;
+            _displayManager = displayManager;
             CurrentState = GetStateFromList(startingState);
         }
 
@@ -34,7 +37,7 @@ namespace Skalm.States
         // STATE MACHINE METHODS
         private PlayerStateBase GetStateFromList(PlayerStates newState)
         {
-            return availableStates.Find(state => state.GetType().Name == newState.ToString()) ?? CreateState(newState.ToString());
+            return _availableStates.Find(state => state.GetType().Name == newState.ToString()) ?? CreateState(newState.ToString());
         }
 
         private PlayerStateBase CreateState(string stateName)
@@ -44,35 +47,35 @@ namespace Skalm.States
             switch (stateName)
             {
                 case "PlayerStateIdle":
-                    state = new PlayerStateIdle(player);
+                    state = new PlayerStateIdle(_player);
                     break;
-                case "PlayerStateMove":
-                    state = new PlayerStateMove(player);
-                    break;
-                case "PlayerStateAttack":
-                    state = new PlayerStateAttack(player);
-                    break;
-                case "PlayerStateLook":
-                    state = new PlayerStateLook(player);
+                case "PlayerStateInteract":
+                    state = new PlayerStateInteract(_player, _displayManager);
                     break;
                 case "PlayerStateMenu":
-                    state = new PlayerStateMenu(player);
+                    state = new PlayerStateMenu(_player);
+                    break;
+                case "PlayerStateMessage":
+                    state = new PlayerStateMessage(_player, _displayManager);
+                    break;
+                case "PlayerStateMove":
+                    state = new PlayerStateMove(_player);
                     break;
                 default:
-                    state = new PlayerStateIdle(player);
+                    state = new PlayerStateIdle(_player);
                     break;
             }
 
-            availableStates.Add(state);
+            _availableStates.Add(state);
             return state;
         }
     }
     internal enum PlayerStates
     {
         PlayerStateIdle,
-        PlayerStateMove,
-        PlayerStateAttack,
-        PlayerStateLook,
-        PlayerStateMenu
+        PlayerStateInteract,
+        PlayerStateMenu,
+        PlayerStateMessage,
+        PlayerStateMove
     }
 }

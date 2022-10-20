@@ -13,7 +13,7 @@ namespace Skalm.GameObjects.Enemies
     {
         public string Attack(ActorStatsObject statsAtk, ActorStatsObject statsDfn)
         {
-            string outMsg = "";
+            string outputMsg = "";
 
             // CHECK FOR HIT OR MISS
             if (Combat.ToHitCalc(statsAtk.stats, statsDfn.stats))
@@ -23,9 +23,16 @@ namespace Skalm.GameObjects.Enemies
                 damage.originXY = Vector2Int.Zero;
 
                 statsDfn.TakeDamage(damage);
+
+                outputMsg = $"{statsAtk.name} hit {statsDfn.name}, dealing {damage.damage} damage!\n" +
+                $"{statsDfn.name} has {statsDfn.GetCurrentHP()}/{statsDfn.stats.statsArr[(int)EStats.HP].GetValue()} hp left...";
+            }
+            else
+            {
+                outputMsg = $"{statsAtk.name} missed {statsDfn.name}...";
             }
 
-            return outMsg;
+            return outputMsg;
         }
 
     }

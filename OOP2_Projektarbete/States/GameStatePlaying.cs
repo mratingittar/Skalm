@@ -34,7 +34,7 @@ namespace Skalm.States
 
             if (gameManager.NewGame)
             {
-                displayManager.printer.PrintCenteredInWindow("ENTERING SKÄLM", displayManager.windowInfo.WindowHeight / 2);
+                displayManager.Printer.PrintCenteredInWindow("ENTERING SKÄLM", displayManager.WindowInfo.WindowHeight / 2);
                 Thread.Sleep(500);
                 _sceneManager.ResetObjectsInScene();
 
@@ -45,7 +45,7 @@ namespace Skalm.States
             }
 
             // DRAWING HUD & MAP
-            displayManager.eraser.EraseAll();
+            displayManager.Eraser.EraseAll();
             displayManager.DisplayHUD();
             mapManager.mapPrinter.DrawMap();
            
@@ -60,7 +60,7 @@ namespace Skalm.States
             // SAVING STATE
             gameManager.NewGame = false;
             _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateIdle);
-            displayManager.eraser.EraseAll();
+            displayManager.Eraser.EraseAll();
 
             // INPUT EVENT UNSUBSCRIBE
             inputManager.OnInputMove -= MoveInput;
@@ -82,6 +82,8 @@ namespace Skalm.States
         public override void UpdateDisplay()
         {
             mapPrinter.RedrawCachedTiles();
+            if (displayManager.MessagesInQueue > 0 && _sceneManager.Player.playerStateMachine.CurrentState is not PlayerStateMessage)
+                _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMessage);
         }
 
         #endregion

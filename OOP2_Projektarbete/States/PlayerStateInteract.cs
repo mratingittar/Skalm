@@ -1,4 +1,5 @@
-﻿using Skalm.GameObjects;
+﻿using Skalm.Display;
+using Skalm.GameObjects;
 using Skalm.GameObjects.Interfaces;
 using Skalm.Input;
 using Skalm.Map.Tile;
@@ -7,17 +8,17 @@ using Skalm.Utilities;
 
 namespace Skalm.States
 {
-    internal class PlayerStateLook : PlayerStateBase
+    internal class PlayerStateInteract : PlayerStateBase
     {
         private List<BaseTile> _playerNeighbors;
-        private BaseTile? _selectedNeigbor;
+        private BaseTile? _selectedTile;
         private Direction _selectedDirection;
+        private DisplayManager _displayManager;
 
-        public static event Action<string>? OnNeighborSelected;
-
-        public PlayerStateLook(Player player) : base(player) 
+        public PlayerStateInteract(Player player, DisplayManager displayManager) : base(player)
         {
             _playerNeighbors = new List<BaseTile>();
+            _displayManager = displayManager;
         }
         public override void Enter()
         {
@@ -28,8 +29,8 @@ namespace Skalm.States
         public override void Exit()
         {
             _playerNeighbors.Clear();
-            _selectedNeigbor = null;
-            OnNeighborSelected?.Invoke("");
+            _selectedTile = null;
+            _displayManager.ClearMessageSection();
         }
 
         public override void MoveInput(Vector2Int direction)
@@ -45,9 +46,9 @@ namespace Skalm.States
                 case InputCommands.Default:
                     break;
                 case InputCommands.Confirm:
-                    if (_selectedNeigbor != null)
+                    if (_selectedTile != null)
                     {
-                        player.InteractWithNeighbor(_selectedNeigbor);
+                        player.InteractWithNeighbor(_selectedTile);
                         player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     }
                     break;
@@ -71,8 +72,8 @@ namespace Skalm.States
         }
         private void ExamineSameTile()
         {
-            player.mapManager.TileGrid.TryGetGridObject(player.GridPosition, out _selectedNeigbor);
-            PrintSelectedTile($"You are standing on {_selectedNeigbor.Label}");
+            player.mapManager.TileGrid.TryGetGridObject(player.GridPosition, out _selectedTile);
+            PrintSelectedTile($"You are standing on {_selectedTile.Label}");
         }
 
         private void ExamineNeighbor(Vector2Int direction)
@@ -86,27 +87,31 @@ namespace Skalm.States
             else if (direction.Equals(Vector2Int.Left))
                 _selectedDirection = Direction.West;
 
-            _selectedNeigbor = _playerNeighbors.Find(n => n.GridPosition.Equals(player.GridPosition.Add(direction)));
-            if (_selectedNeigbor != null)
+            _selectedTile = _playerNeighbors.Find(n => n.GridPosition.Equals(player.GridPosition.Add(direction)));
+            if (_selectedTile != null)
             {
-                PrintSelectedTile($"Looking {_selectedDirection.ToString().ToLower()} at {_selectedNeigbor.Label}.");
+                PrintSelectedTile($"Looking {_selectedDirection.ToString().ToLower()} at {_selectedTile.Label}");
             }
         }
 
         private void PrintSelectedTile(string baseText)
         {
-            if (_selectedNeigbor is IOccupiable occupiable && occupiable.ObjectsOnTile.Count > 0)
+            if (_selectedTile is IOccupiable occupiable && occupiable.ObjectsOnTile.Count > 0)
             {
-                baseText += " Objects on tile:";
-                foreach (var obj in occupiable.ObjectsOnTile)
+                if (occupiable.ObjectsOnTile.Count == 1 && occupiable.ObjectsOnTile.Peek() is Player)
+                    baseText += ". You are alone here.";
+                else
                 {
-                    baseText += $" {obj.Label},";
+                    baseText += ". Objects on tile:";
+                    foreach (var obj in occupiable.ObjectsOnTile)
+                    {
+                        baseText += $" {obj.Label},";
+                    }
+                    baseText = baseText.Remove(baseText.Length - 1);
+                    baseText += ".";
                 }
-                baseText = baseText.Remove(baseText.Length - 1);
-                baseText += ".";
             }
-
-            OnNeighborSelected?.Invoke(baseText);
+            _displayManager.DisplayInstantMessage(baseText);
         }
     }
 }

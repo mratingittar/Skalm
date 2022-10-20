@@ -129,7 +129,7 @@ namespace Skalm.States
         // METHOD NAME ENTERING
         private (bool, string) EnterName(int height)
         {
-            Console.SetCursorPosition(displayManager.windowInfo.WindowWidth / 2, height);
+            Console.SetCursorPosition(displayManager.WindowInfo.WindowWidth / 2, height);
             Console.CursorVisible = true;
             ConsoleKeyInfo cki;
             string name = "";
@@ -152,7 +152,7 @@ namespace Skalm.States
                 else
                     name += cki.KeyChar;
 
-                displayManager.printer.PrintCenteredInWindow(name, height);
+                displayManager.Printer.PrintCenteredInWindow(name, height);
             }
 
             if (name.Length == 0)
@@ -163,7 +163,7 @@ namespace Skalm.States
 
         private void EraseRow(int row)
         {
-            displayManager.eraser.EraseLinesFromTo(row, row);
+            displayManager.Eraser.EraseLinesFromTo(row, row);
         }
         #endregion
     }

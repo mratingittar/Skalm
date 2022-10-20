@@ -16,16 +16,16 @@ namespace Skalm.States
         // ENTER STATE
         public override void Enter()
         {
-            displayManager.printer.PrintCenteredInWindow("Loading SKÄLM", displayManager.windowInfo.WindowHeight / 2);
+            displayManager.Printer.PrintCenteredInWindow("Loading SKÄLM", displayManager.WindowInfo.WindowHeight / 2);
         }
 
         // EXIT STATE
         public override void Exit()
         {
-            displayManager.eraser.EraseAll(); 
-            displayManager.printer.PrintCenteredInWindow("Loaded", displayManager.windowInfo.WindowHeight / 2);
+            displayManager.Eraser.EraseAll(); 
+            displayManager.Printer.PrintCenteredInWindow("Loaded", displayManager.WindowInfo.WindowHeight / 2);
             Thread.Sleep(500);
-            displayManager.eraser.EraseAll();
+            displayManager.Eraser.EraseAll();
         }
 
         // UPDATE LOGIC

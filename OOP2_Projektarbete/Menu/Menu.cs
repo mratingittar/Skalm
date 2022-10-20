@@ -45,13 +45,13 @@ namespace Skalm.Menu
         {
             IsEnabled = true;
             MenuItemIndex = 0;
-            _displayManager.printer.PrintCenteredInWindow(title, titlePadding);
-            _pageStartRow = _displayManager.windowInfo.CursorPosition.Item2 + titlePadding;
+            _displayManager.Printer.PrintCenteredInWindow(title, titlePadding);
+            _pageStartRow = _displayManager.WindowInfo.CursorPosition.Item2 + titlePadding;
             LoadPage(pages.Value);
         }
         public void LoadPage(MenuPage page, int itemIndex = 0)
         {
-            _displayManager.eraser.EraseLinesFromTo(_pageStartRow, _pageStartRow + ActivePage.items.Count + _eraseBuffer);
+            _displayManager.Eraser.EraseLinesFromTo(_pageStartRow, _pageStartRow + ActivePage.items.Count + _eraseBuffer);
             ActivePage = page;
             MenuItemIndex = itemIndex;
             PrintMenu();
@@ -117,7 +117,7 @@ namespace Skalm.Menu
 
         private void PrintMenu()
         {
-            _displayManager.printer.PrintCenteredInWindow(TextTools.AddLightBordersToText(ActivePage.pageName), _pageStartRow);
+            _displayManager.Printer.PrintCenteredInWindow(TextTools.AddLightBordersToText(ActivePage.pageName), _pageStartRow);
             HighlightSelectedItem(_pageStartRow + _pageTitleHeight);
         }
 
@@ -136,14 +136,14 @@ namespace Skalm.Menu
 
                 if (item.Key == ActivePage.items.Last().Key)
                 {
-                    _displayManager.printer.PrintCenteredInWindow("", startRow + count);
+                    _displayManager.Printer.PrintCenteredInWindow("", startRow + count);
                     count++;
                 }
 
                 if (item.Key == MenuItemIndex)
-                    _displayManager.printer.PrintCenteredInWindow(pageItem, startRow + count, true);
+                    _displayManager.Printer.PrintCenteredInWindow(pageItem, startRow + count, true);
                 else
-                    _displayManager.printer.PrintCenteredInWindow(pageItem, startRow + count);
+                    _displayManager.Printer.PrintCenteredInWindow(pageItem, startRow + count);
                 count++;
             }
         }

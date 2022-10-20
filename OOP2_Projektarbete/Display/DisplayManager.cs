@@ -1,4 +1,5 @@
-﻿using Skalm.Grid;
+﻿using Skalm.GameObjects;
+using Skalm.Grid;
 using Skalm.Map;
 using Skalm.States;
 using Skalm.Structs;
@@ -9,39 +10,65 @@ namespace Skalm.Display
     internal class DisplayManager
     {
         #region FIELDS
-        public readonly IPrinter printer;
-        public readonly IEraser eraser;
-        public readonly IWindowInfo windowInfo;
-        public readonly PixelController pixelGridController;
-        public readonly Dictionary<string, char> CharSet;
+        public IPrinter Printer { get; }
+        public IEraser Eraser { get; }
+        public IWindowInfo WindowInfo { get; }
+        public int MessagesInQueue { get => _messageQueue.Count; }
+
+        private SceneManager? _sceneManager;
+        private readonly PixelController _pixelGridController;
+        private Queue<string> _messageQueue;
+        //private readonly Dictionary<string, char> CharSet;
         #endregion
 
         // CONSTRUCTOR I
         public DisplayManager(ISettings settings, IPrinter printer, IEraser eraser, IWindowInfo windowInfo, Rectangle windowSize, PixelController gridController)
         {
-            this.printer = printer;
-            this.eraser = eraser;
-            this.windowInfo = windowInfo;
-            pixelGridController = gridController;
-
+            Printer = printer;
+            Eraser = eraser;
+            WindowInfo = windowInfo;
+            _pixelGridController = gridController;
+            _messageQueue = new Queue<string>();
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            CharSet = CreateCharSet();
+            //CharSet = CreateCharSet();
 
             windowInfo.SetWindowSize(windowSize.Width, windowSize.Height);
-            PlayerStateLook.OnNeighborSelected += DisplaySelection;
+            Actor.OnCombatEvent += QueueMessage;
         }
 
-        // DISPLAY SELECTION
-        private void DisplaySelection(string msg)
+        public void SetSceneManager(SceneManager sm) => _sceneManager = sm;
+
+        public void DisplayInstantMessage(string msg) => _pixelGridController.DisplayMessage(msg);
+
+
+
+        public void DisplayNextMessage()
         {
-            pixelGridController.DisplayMessage(msg);
+            if (_messageQueue.Count == 0)
+                return;
+
+            _pixelGridController.DisplayMessage(_messageQueue.Dequeue(), true);
+
+        }
+
+        public void ClearMessageSection() => _pixelGridController.ClearSection("MessageSection");
+
+        // DISPLAY SELECTION
+        private void QueueMessage(string msg)
+        {
+            if (msg == "")
+                return;
+
+            _messageQueue.Enqueue(msg);
+
+            //if (_sceneManager?.Player.playerStateMachine.CurrentState is not PlayerStateMessage)
+            //    _sceneManager?.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMessage);
         }
 
         // DISPLAY HUD
-        public void DisplayHUD()
-        {
-            pixelGridController.PrintBorders();
-        }
+        public void DisplayHUD() => _pixelGridController.PrintBorders();
+
+        public Vector2Int GetMapOrigin() => _pixelGridController.GetMapOrigin();
 
         private Dictionary<string, char> CreateCharSet()
         {

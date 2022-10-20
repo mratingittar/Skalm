@@ -1,4 +1,5 @@
-﻿using Skalm.GameObjects.Interfaces;
+﻿using Skalm.Display;
+using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Items;
 using Skalm.GameObjects.Stats;
 using Skalm.Map;
@@ -21,16 +22,16 @@ namespace Skalm.GameObjects
         //private Vector2Int previousPosition;
 
         // EVENTS
-        public static event Action? playerTurn;
+        public static event Action? OnPlayerTurn;
         public static event Action<ActorStatsObject>? OnPlayerStatsUpdated;
         public static event Action<EquipmentManager>? OnPlayerInventoryUpdated;
 
         // CONSTRUCTOR I
-        public Player(MapManager mapManager, Vector2Int posXY, IAttackComponent attack, ActorStatsObject statsObject, string name, char sprite = '@', ConsoleColor color = ConsoleColor.White) 
-            : base(mapManager, attack, statsObject, posXY, sprite, color)
+        public Player(MapManager mapManager, DisplayManager displayManager, IAttackComponent attack, ActorStatsObject statsObject, string name, Vector2Int gridPosition, char sprite = '@', ConsoleColor color = ConsoleColor.White) 
+            : base(mapManager, attack, statsObject, gridPosition, sprite, color)
         {
             this.mapManager = mapManager;
-            playerStateMachine = new PlayerStateMachine(this, PlayerStates.PlayerStateIdle);
+            playerStateMachine = new PlayerStateMachine(this, displayManager, PlayerStates.PlayerStateIdle);
 
             // INVENTORY
             equipmentManager = new EquipmentManager();
@@ -77,7 +78,7 @@ namespace Skalm.GameObjects
         public override void Move(Vector2Int direction)
         {
             base.Move(direction);
-            playerTurn?.Invoke();
+            OnPlayerTurn?.Invoke();
         }
 
         // INTERACT WITH NEIGHBOURS
@@ -96,7 +97,7 @@ namespace Skalm.GameObjects
                         break;
                     }
                 }
-
+                OnPlayerTurn?.Invoke();
                 return;
             }
 
@@ -105,6 +106,7 @@ namespace Skalm.GameObjects
             {
                 interactable.Interact(this);
                 mapManager.mapPrinter.DrawSingleTile(neighbor.GridPosition);
+                OnPlayerTurn?.Invoke();
             }
         }
     }

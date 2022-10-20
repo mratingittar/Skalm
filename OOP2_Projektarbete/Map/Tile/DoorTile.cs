@@ -23,7 +23,7 @@ namespace Skalm.Map.Tile
             {
                 string l;
                 if (ColliderIsActive)
-                    l = "Closed ";
+                    l = "closed ";
                 else
                     l = "Open ";
 
@@ -54,7 +54,10 @@ namespace Skalm.Map.Tile
         public void Interact(Player player)
         {
             if (IsLocked) // WILL REQUIRE KEY
+            { 
                 IsLocked = false;
+                ColliderIsActive = false;
+            }
             else
                 ColliderIsActive = !ColliderIsActive;
         }

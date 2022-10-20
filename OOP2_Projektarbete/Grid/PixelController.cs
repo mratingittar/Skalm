@@ -48,16 +48,15 @@ namespace Skalm.Grid
             subStatsConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, subStats.StartXY.Y + 1), new Vector2Int(subStats.EndXY.X - 2, subStats.EndXY.Y - 1));
         }
 
-        public Vector2Int GetMapOrigin()
-        {
-            return pixelGrid.GetPlanePosition(pixelsInSections["MapSection"].First().gridPosition);
-        }
+        
 
         // DISPLAY MESSAGE BOTTOM SECTION
-        public void DisplayMessage(string msg)
+        public void DisplayMessage(string msg, bool showMarker = false)
         {
             ClearSection("MessageSection");
             PrintWithinBounds(msg, messageConsole);
+            if (showMarker)
+                Console.CursorVisible = true;
         }
 
         // DISPLAY STATS MAIN SECTION
@@ -166,6 +165,11 @@ namespace Skalm.Grid
                     printer.PrintAtPosition(' ', position.Y, position.X);
                 }
             }
+        }
+
+        public Vector2Int GetMapOrigin()
+        {
+            return pixelGrid.GetPlanePosition(pixelsInSections["MapSection"].First().gridPosition);
         }
 
         #region INITIALIZATION

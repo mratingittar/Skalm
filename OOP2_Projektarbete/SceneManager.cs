@@ -1,4 +1,5 @@
-﻿using Skalm.GameObjects;
+﻿using Skalm.Display;
+using Skalm.GameObjects;
 using Skalm.GameObjects.Enemies;
 using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Items;
@@ -16,6 +17,7 @@ namespace Skalm
         public string playerName = "";
 
         private MapManager _mapManager;
+        private DisplayManager _displayManager;
         private EnemySpawner _enemySpawner;
         private ItemSpawner _itemSpawner;
 
@@ -24,10 +26,11 @@ namespace Skalm
         public Player Player { get; }
 
         // CONSTRUCTOR I
-        public SceneManager(MapManager mapManager)
+        public SceneManager(MapManager mapManager, DisplayManager displayManager)
         {
             _mapManager = mapManager;
-            Player = new Player(mapManager, Vector2Int.Zero, new PlayerAttackComponent(), new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Nameless"), "Nameless");
+            _displayManager = displayManager;
+            Player = new Player(mapManager, displayManager, new PlayerAttackComponent(), new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Nameless"), "Nameless", Vector2Int.Zero);
             ActorsInScene = new List<Actor>();
             GameObjectsInScene = new List<GameObject>();
 

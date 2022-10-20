@@ -14,9 +14,10 @@ namespace Skalm.GameObjects
     internal abstract class Actor : GameObject, ICollider, IDamageable
     {
         public bool ColliderIsActive { get { return true; } set { } }
-
-        public static event Action<Actor, Vector2Int, Vector2Int>? OnPositionChanged;
         public ActorStatsObject statsObject { get; set; }
+        public static event Action<Actor, Vector2Int, Vector2Int>? OnPositionChanged;
+        public static event Action<string>? OnCombatEvent;
+
         protected IAttackComponent _attackComponent;
         protected MapManager _mapManager;
 
@@ -58,7 +59,10 @@ namespace Skalm.GameObjects
         {
             IDamageable? obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
             if (obj != null)
-                _attackComponent.Attack(statsObject, obj.statsObject);
+            {
+                string msg = _attackComponent.Attack(statsObject, obj.statsObject);
+                OnCombatEvent?.Invoke(msg);
+            }
         }
 
         protected void ExecuteMove(Vector2Int newPosition, Vector2Int oldPosition)

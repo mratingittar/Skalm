@@ -56,6 +56,8 @@ namespace Skalm
             MapManager = mapManager;
             SceneManager = sceneManager;
 
+            displayManager.SetSceneManager(sceneManager);
+
             // ANIMATION
             FireAnimator = new Animator(displayManager);
 

@@ -32,8 +32,8 @@ namespace Skalm.Animation
             {
                 animationFrameRate = 0;
 
-                displayManager.printer.PrintFromPosition(fireAnim1.NextFrame().Lines, 4, Console.WindowWidth / 2 - Console.WindowWidth / 4 - 4);
-                displayManager.printer.PrintFromPosition(fireAnim2.NextFrame().Lines, 4, Console.WindowWidth / 2 + Console.WindowWidth / 4);
+                displayManager.Printer.PrintFromPosition(fireAnim1.NextFrame().Lines, 4, Console.WindowWidth / 2 - Console.WindowWidth / 4 - 4);
+                displayManager.Printer.PrintFromPosition(fireAnim2.NextFrame().Lines, 4, Console.WindowWidth / 2 + Console.WindowWidth / 4);
 
             }
             animationFrameRate++;

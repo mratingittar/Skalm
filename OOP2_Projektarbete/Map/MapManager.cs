@@ -24,7 +24,7 @@ namespace Skalm.Map
             TileGrid = tileGrid;
             _settings = settings;
             mapGenerator = new MapGenerator(this, tileGrid, settings);
-            mapPrinter = new MapPrinter(tileGrid, displayManager.printer, settings.ForegroundColor);
+            mapPrinter = new MapPrinter(tileGrid, displayManager.Printer, settings.ForegroundColor);
 
             Actor.OnPositionChanged += UpdateMoveablePosition;
         }
@@ -33,20 +33,7 @@ namespace Skalm.Map
         {
             if (TileGrid.TryGetGridObject(oldPosition, out BaseTile tileOld) && tileOld is IOccupiable tileOldOcc)
             {
-                Stack<GameObject> objects = new Stack<GameObject>();
-
-                while (tileOldOcc.ObjectsOnTile.Peek() != actor)
-                {
-                    objects.Push(tileOldOcc.ObjectsOnTile.Pop());
-                }
-                tileOldOcc.ObjectsOnTile.Pop();
-
-                while (objects.Count > 0)
-                {
-                    tileOldOcc.ObjectsOnTile.Push(objects.Pop());
-                }
-
-                tileOldOcc.ActorPresent = false;
+                RemoveActorFromTile(actor, tileOldOcc);
             }
             if (TileGrid.TryGetGridObject(newPosition, out BaseTile tileNew) && tileNew is IOccupiable tileNewOcc)
             {
@@ -56,6 +43,23 @@ namespace Skalm.Map
             mapPrinter.CacheUpdatedTile(oldPosition, newPosition);
         }
 
+        private void RemoveActorFromTile(Actor actor, IOccupiable tileOldOcc)
+        {
+            Stack<GameObject> objects = new Stack<GameObject>();
+
+            while (tileOldOcc.ObjectsOnTile.Peek() != actor)
+            {
+                objects.Push(tileOldOcc.ObjectsOnTile.Pop());
+            }
+            tileOldOcc.ObjectsOnTile.Pop();
+
+            while (objects.Count > 0)
+            {
+                tileOldOcc.ObjectsOnTile.Push(objects.Pop());
+            }
+
+            tileOldOcc.ActorPresent = false;
+        }
 
         public List<BaseTile> GetNeighbours(Vector2Int tile)
         {

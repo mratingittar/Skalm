@@ -64,7 +64,7 @@ namespace Skalm.Menu
         public void UnloadMenu()
         {
             ActiveMenu.IsEnabled = false;
-            displayManager.eraser.EraseAll();
+            displayManager.Eraser.EraseAll();
         }
 
         public void TraverseMenu(Vector2Int direction)
