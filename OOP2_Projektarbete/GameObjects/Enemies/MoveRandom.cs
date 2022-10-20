@@ -19,10 +19,10 @@ namespace Skalm.GameObjects.Enemies
 
         private Vector2Int RandomDirection(Direction dir) => dir switch
         {
-            Direction.Up => new Vector2Int(0, -1),
-            Direction.Right => new Vector2Int(1, 0),
-            Direction.Down => new Vector2Int(0, 1),
-            Direction.Left => new Vector2Int(-1, 0),
+            Direction.North => new Vector2Int(0, -1),
+            Direction.East => new Vector2Int(1, 0),
+            Direction.South => new Vector2Int(0, 1),
+            Direction.West => new Vector2Int(-1, 0),
             _ => throw new InvalidOperationException("Not a direction"),
         };
     }

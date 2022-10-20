@@ -72,39 +72,41 @@ namespace Skalm.States
         private void ExamineSameTile()
         {
             player.mapManager.TileGrid.TryGetGridObject(player.GridPosition, out _selectedNeigbor);
-            string selection = $"You are standing on {_selectedNeigbor.Label}.";
-            OnNeighborSelected?.Invoke(selection);
+            PrintSelectedTile($"You are standing on {_selectedNeigbor.Label}");
         }
 
         private void ExamineNeighbor(Vector2Int direction)
         {
             if (direction.Equals(Vector2Int.Up))
-                _selectedDirection = Direction.Up;
+                _selectedDirection = Direction.North;
             else if (direction.Equals(Vector2Int.Right))
-                _selectedDirection = Direction.Right;
+                _selectedDirection = Direction.East;
             else if (direction.Equals(Vector2Int.Down))
-                _selectedDirection = Direction.Down;
+                _selectedDirection = Direction.South;
             else if (direction.Equals(Vector2Int.Left))
-                _selectedDirection = Direction.Left;
+                _selectedDirection = Direction.West;
 
             _selectedNeigbor = _playerNeighbors.Find(n => n.GridPosition.Equals(player.GridPosition.Add(direction)));
             if (_selectedNeigbor != null)
             {
-                string selectionText = $"Looking {_selectedDirection.ToString().ToLower()} at {_selectedNeigbor.Label}.";
-
-                if (_selectedNeigbor is IOccupiable occupiable && occupiable.ObjectsOnTile.Count > 0)
-                {
-                    selectionText += " Objects on tile:";
-                    foreach (var obj in occupiable.ObjectsOnTile)
-                    {
-                        selectionText += $" {obj.Label},";
-                    }
-                    selectionText = selectionText.Remove(selectionText.Length - 1);
-                    selectionText += ".";
-                }
-
-                OnNeighborSelected?.Invoke(selectionText);
+                PrintSelectedTile($"Looking {_selectedDirection.ToString().ToLower()} at {_selectedNeigbor.Label}.");
             }
+        }
+
+        private void PrintSelectedTile(string baseText)
+        {
+            if (_selectedNeigbor is IOccupiable occupiable && occupiable.ObjectsOnTile.Count > 0)
+            {
+                baseText += " Objects on tile:";
+                foreach (var obj in occupiable.ObjectsOnTile)
+                {
+                    baseText += $" {obj.Label},";
+                }
+                baseText = baseText.Remove(baseText.Length - 1);
+                baseText += ".";
+            }
+
+            OnNeighborSelected?.Invoke(baseText);
         }
     }
 }

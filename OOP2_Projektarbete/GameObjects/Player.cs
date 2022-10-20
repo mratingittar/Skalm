@@ -51,8 +51,7 @@ namespace Skalm.GameObjects
             _sprite = sprite;
             _color = color;
             
-            statsObject.name = playerName;
-            
+            statsObject.name = playerName;            
         }
 
         // SEND STATS TO DISPLAY

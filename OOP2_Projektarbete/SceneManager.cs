@@ -65,11 +65,11 @@ namespace Skalm
                 ActorsInScene.Add(enemy);
             }
 
-
             // ADD ITEMS
             var FloorTiles = _mapManager.mapGenerator.FloorTiles;
             var itemXY = FloorTiles.ElementAt(Dice.rng.Next(0, FloorTiles.Count));
 
+            // CREATING TEST ITEM
             ItemEquippable item1 = new ItemEquippable("Helmet of misfortune", (int)EEqSlots.Head, new StatsObject(0, 0, 2, 0, 1, 5, 0, 2));
 
             GameObjectsInScene.Add(_itemSpawner.Spawn(itemXY, 'o', ConsoleColor.Yellow, item1));
@@ -86,7 +86,7 @@ namespace Skalm
             foreach (GameObject go in GameObjectsInScene)
             {
                 if (_mapManager.TileGrid.TryGetGridObject(go.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
-                    tileOcc.ObjectsOnTile.Add(go);
+                    tileOcc.ObjectsOnTile.Push(go);
             }
 
             foreach (Actor actor in ActorsInScene)
@@ -99,12 +99,14 @@ namespace Skalm
         // RESET OBJECTS IN SCENE
         public void ResetObjectsInScene()
         {
+            // CLEAR GAME OBJECTS LISTS
             foreach (var go in GameObjectsInScene)
             {
                 if (_mapManager.TileGrid.TryGetGridObject(go.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
                     tileOcc.ObjectsOnTile.Clear();
             }
 
+            // CLEAR ACTORS LIST
             foreach (Actor actor in ActorsInScene)
             {
                 if (_mapManager.TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
@@ -127,8 +129,21 @@ namespace Skalm
 
             // REMOVE OBJECT FROM TILE OBJECT LIST
             _mapManager.TileGrid.TryGetGridObject(obj.GridPosition, out BaseTile tile);
-            if (tile is IOccupiable o)
-                o.ObjectsOnTile.Remove(obj);
+            if (tile is IOccupiable occ)
+            {
+                Stack<GameObject> objects = new Stack<GameObject>();
+
+                while (occ.ObjectsOnTile.Peek() != obj)
+                {
+                    objects.Push(occ.ObjectsOnTile.Pop());
+                }
+                occ.ObjectsOnTile.Pop();
+
+                while (objects.Count > 0)
+                {
+                    occ.ObjectsOnTile.Push(objects.Pop());
+                }
+            }
 
             // CACHE TILE POSITION FOR REDRAW
             _mapManager.mapPrinter.CacheUpdatedTile(obj.GridPosition, obj.GridPosition);

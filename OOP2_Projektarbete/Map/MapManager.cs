@@ -14,7 +14,7 @@ namespace Skalm.Map
         public readonly MapGenerator mapGenerator;
         public readonly MapPrinter mapPrinter;
         public readonly AStar pathfinder;
-        
+
         private ISettings _settings;
 
         // CONSTRUCTOR I
@@ -33,12 +33,24 @@ namespace Skalm.Map
         {
             if (TileGrid.TryGetGridObject(oldPosition, out BaseTile tileOld) && tileOld is IOccupiable tileOldOcc)
             {
-                tileOldOcc.ObjectsOnTile.Remove(actor);
+                Stack<GameObject> objects = new Stack<GameObject>();
+
+                while (tileOldOcc.ObjectsOnTile.Peek() != actor)
+                {
+                    objects.Push(tileOldOcc.ObjectsOnTile.Pop());
+                }
+                tileOldOcc.ObjectsOnTile.Pop();
+
+                while (objects.Count > 0)
+                {
+                    tileOldOcc.ObjectsOnTile.Push(objects.Pop());
+                }
+
                 tileOldOcc.ActorPresent = false;
             }
             if (TileGrid.TryGetGridObject(newPosition, out BaseTile tileNew) && tileNew is IOccupiable tileNewOcc)
             {
-                tileNewOcc.ObjectsOnTile.Add(actor);
+                tileNewOcc.ObjectsOnTile.Push(actor);
                 tileNewOcc.ActorPresent = true;
             }
             mapPrinter.CacheUpdatedTile(oldPosition, newPosition);

@@ -15,7 +15,7 @@ namespace Skalm.Map.Tile
         public override ConsoleColor Color { get => ObjectsOnTile.Count == 0 ? _color : ObjectsOnTile.First().Color; }
         public bool ColliderIsActive { get; private set; }
         public bool IsLocked { get; private set; }
-        public List<GameObject> ObjectsOnTile { get; private set; }
+        public Stack<GameObject> ObjectsOnTile { get; private set; }
         public bool ActorPresent { get; set; }
         public override string Label
         {
@@ -26,16 +26,22 @@ namespace Skalm.Map.Tile
                     l = "Closed ";
                 else
                     l = "Open ";
+
                 if (IsLocked)
                     l += "and locked ";
-                l += "door";
+                l += "door.";
+
+                if (IsLocked)
+                    l += " Unlock it?";
+                else if (ColliderIsActive)
+                    l += " Open it?";
                 return l;
             }
         }
 
         public DoorTile(Vector2Int gridPos, char openSprite = '□', char closedSprite = '■', ConsoleColor color = ConsoleColor.White) : base(gridPos, openSprite, color)
         {
-            ObjectsOnTile = new List<GameObject>();
+            ObjectsOnTile = new Stack<GameObject>();
             this._openSprite = openSprite;
             this._closedSprite = closedSprite;
             ColliderIsActive = true;

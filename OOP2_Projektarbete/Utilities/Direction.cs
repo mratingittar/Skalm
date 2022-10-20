@@ -9,9 +9,9 @@ namespace Skalm.Utilities
 {
     internal enum Direction
     {
-        Up,
-        Right,
-        Down,
-        Left
+        North,
+        East,
+        South,
+        West
     }
 }
