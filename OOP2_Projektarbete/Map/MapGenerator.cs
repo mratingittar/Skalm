@@ -29,11 +29,12 @@ namespace Skalm.Map
             EnemySpawnPositions = new List<Vector2Int>();
             ItemSpawnPositions = new List<Vector2Int>();
             PlayerFixedSpawnPosition = Vector2Int.Zero;
+
+            LoadMaps();
         }
 
-        public void CreateMap()
+        private void LoadMaps()
         {
-
             if (FileHandler.TryReadFolder("maps", out List<string[]> mapList))
             {
                 int counter = 0;
@@ -43,15 +44,14 @@ namespace Skalm.Map
                     counter++;
                 }
             }
-            Random random = new Random();
+        }
 
-            LoadMapIntoGrid(_maps[random.Next(_maps.Count)]);
-           
+        public void CreateMap()
+        {
+            Random random = new Random();
+            LoadMapIntoGrid(_maps[random.Next(_maps.Count)]); //Create failsafe if map folder is empty
             FindWalls();
             SetBorderFloorsAsWalls();
-
-            if (FloorTiles.Count == 0)
-                CreateRoomFromBounds(new Bounds(new Vector2Int(5, 5), new Vector2Int(_tileGrid.gridWidth - 5, _tileGrid.gridHeight - 5)));
         }
 
         private void LoadMapIntoGrid(Map map)
