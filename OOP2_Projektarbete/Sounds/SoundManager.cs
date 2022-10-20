@@ -26,11 +26,6 @@ namespace Skalm.Sounds
             player.Play(Tracks[random.Next(Tracks.Count)]);
         }
 
-        /// <summary>
-        /// Creates a list of Sounds to play.
-        /// </summary>
-        /// <param name="folder">Path to sounds folder.</param>
-        /// <returns></returns>
         private List<Sound> CreateSoundsList(string folder)
         {
             List<string> fileNames = LoadFileNamesFromFolder(folder);
@@ -43,11 +38,6 @@ namespace Skalm.Sounds
             return sounds;
         }
 
-        /// <summary>
-        /// Loads .wav files from Sounds folder on startup and places their file names into a List.
-        /// </summary>
-        /// <param name="folder">Path to sounds folder.</param>
-        /// <returns></returns>
         private List<string> LoadFileNamesFromFolder(string folder)
         {            
             string[] files = Directory.GetFiles(FileHandler.rootFolder + folder, "*.wav");

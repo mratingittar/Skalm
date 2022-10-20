@@ -17,6 +17,7 @@ namespace Skalm.Map.Tile
         public Vector2Int GridPosition { get; protected set; }
         public virtual char Sprite { get => _sprite; }
         public virtual ConsoleColor Color { get => _color; }
+        public virtual string Label { get; protected set; }
 
         // PATHFINDING PROPERTIES
         public BaseTile Parent { get; set; }
@@ -30,6 +31,7 @@ namespace Skalm.Map.Tile
             GridPosition = gridPosition;
             _sprite = sprite;
             _color = color;
+            Label = GetType().Name;
             Parent = this;
         }
     }

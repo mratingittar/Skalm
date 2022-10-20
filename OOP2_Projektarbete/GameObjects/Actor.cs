@@ -23,15 +23,15 @@ namespace Skalm.GameObjects
         // METHOD MOVE
         public virtual void Move(Vector2Int direction)
         {
-            direction.Normalize();
-            Vector2Int newPosition = GridPosition.Add(direction);
-            var collision = OnMoveRequested?.Invoke(newPosition);
-            if (collision is not null)
-                if (!collision.Value)
-                    ExecuteMove(newPosition, GridPosition);
+            //direction.Normalize();
+            //Vector2Int newPosition = GridPosition.Add(direction);
+            //var collision = OnMoveRequested?.Invoke(newPosition);
+            //if (collision is not null)
+            //    if (!collision.Value)
+            //        ExecuteMove(newPosition, GridPosition);
         }
 
-        private void ExecuteMove(Vector2Int newPosition, Vector2Int oldPosition)
+        protected void ExecuteMove(Vector2Int newPosition, Vector2Int oldPosition)
         {
             GridPosition = newPosition;
             OnPositionChanged?.Invoke(this, newPosition, oldPosition);
