@@ -33,11 +33,20 @@ namespace Skalm.Map
 
         public void CreateMap()
         {
-            if (FileHandler.TryReadFile("map.txt", out string[] map))
+
+            if (FileHandler.TryReadFolder("maps", out List<string[]> mapList))
             {
-                _maps.Add(0,new Map(map, _settings.MapHeight));
-                LoadMapIntoGrid(_maps[0]);
+                int counter = 0;
+                foreach (var map in mapList)
+                {
+                    _maps.Add(counter, new Map(map, _settings.MapHeight));
+                    counter++;
+                }
             }
+            Random random = new Random();
+
+            LoadMapIntoGrid(_maps[random.Next(_maps.Count)]);
+           
             FindWalls();
             SetBorderFloorsAsWalls();
 

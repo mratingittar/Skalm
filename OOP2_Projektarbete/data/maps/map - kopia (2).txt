@@ -1,0 +1,9 @@
+ fffffffff   fffffffffff       fief
+ fffpfffff   fffffffffff       ffff
+ fffffffff   fffffffffff        ff  
+ fffffffff   fffffffffff        ff
+    ff             f             f 
+    ff             f             d       
+    fffffffffffffffffffffffffffffffffff
+                f                 fffif
+          fffffffffffffffffffffffffffff

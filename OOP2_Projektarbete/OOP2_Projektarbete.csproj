@@ -32,4 +32,8 @@
     </None>
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="data\maps\" />
+  </ItemGroup>
+
 </Project>
