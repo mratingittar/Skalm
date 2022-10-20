@@ -17,7 +17,7 @@ namespace Skalm.GameObjects.Enemies
 
         // COMPONENTS
         private IMoveBehaviour moveBehaviour;
-        private IAttackComponent attackBehaviour;
+        private IAttackComponent _attackComponent;
 
         // STATS
         public ActorStatsObject statsObject { get; set; }
@@ -29,7 +29,7 @@ namespace Skalm.GameObjects.Enemies
             _mapManager = mapManager;
             _sceneManager = sceneManager;
             this.moveBehaviour = moveBehaviour;
-            this.attackBehaviour = attackBehaviour;
+            this._attackComponent = attackBehaviour;
             stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
 
             // STATS
@@ -65,7 +65,8 @@ namespace Skalm.GameObjects.Enemies
             if (tile is IOccupiable occupiable && occupiable.ActorPresent)
             {
                 var obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
-                //obj?.TakeDamage(attackBehaviour.Attack());
+                if (obj != null)
+                    _attackComponent.Attack(statsObject, obj.statsObject);
 
                 return;
             }

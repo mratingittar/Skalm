@@ -93,19 +93,19 @@ namespace Skalm.Grid
             row++;
             printer.PrintFromPosition("─────────", row, column);
             row += 2;
-            printer.PrintFromPosition($"Head:       {im.equipArr[(int)EquipSlots.Head].itemName}", row, column);
+            printer.PrintFromPosition($"Head:       {im.equipArr[(int)EEqSlots.Head].itemName}", row, column);
             row++;
-            printer.PrintFromPosition($"Torso:      {im.equipArr[(int)EquipSlots.Torso].itemName}", row, column);
+            printer.PrintFromPosition($"Torso:      {im.equipArr[(int)EEqSlots.Torso].itemName}", row, column);
             row++;
-            printer.PrintFromPosition($"Left hand:  {im.equipArr[(int)EquipSlots.LHand].itemName}", row, column);
+            printer.PrintFromPosition($"Left hand:  {im.equipArr[(int)EEqSlots.LHand].itemName}", row, column);
             row++;
-            printer.PrintFromPosition($"Left ring:  {im.equipArr[(int)EquipSlots.LFinger].itemName}", row, column);
+            printer.PrintFromPosition($"Left ring:  {im.equipArr[(int)EEqSlots.LFinger].itemName}", row, column);
             row++;
-            printer.PrintFromPosition($"Right hand: {im.equipArr[(int)EquipSlots.RHand].itemName}", row, column);
+            printer.PrintFromPosition($"Right hand: {im.equipArr[(int)EEqSlots.RHand].itemName}", row, column);
             row++;
-            printer.PrintFromPosition($"Right ring: {im.equipArr[(int)EquipSlots.RFinger].itemName}", row, column);
+            printer.PrintFromPosition($"Right ring: {im.equipArr[(int)EEqSlots.RFinger].itemName}", row, column);
             row++;
-            printer.PrintFromPosition($"Feet:       {im.equipArr[(int)EquipSlots.Feet].itemName}", row, column);
+            printer.PrintFromPosition($"Feet:       {im.equipArr[(int)EEqSlots.Feet].itemName}", row, column);
             row += 3;
 
             printer.PrintFromPosition("Inventory", row, column);

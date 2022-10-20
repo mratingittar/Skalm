@@ -13,12 +13,16 @@ namespace Skalm.GameObjects.Enemies
     {
         public void Attack(ActorStatsObject statsAtk, ActorStatsObject statsDfn)
         {
-            
+            // CHECK FOR HIT OR MISS
+            if (Combat.ToHitCalc(statsAtk.stats, statsDfn.stats))
+            {
+                DoDamage damage = Combat.DamageCalc(statsAtk.stats, statsDfn.stats);
+                damage.sender = statsAtk;
+                damage.originXY = Vector2Int.Zero;
+
+                statsDfn.TakeDamage(damage);
+            }
         }
 
-        public void Attack(ActorStatsObject statsAtk, ActorStatsObject statsDfn)
-        {
-            throw new NotImplementedException();
-        }
     }
 }

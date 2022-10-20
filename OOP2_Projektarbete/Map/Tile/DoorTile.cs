@@ -4,7 +4,7 @@ using Skalm.Structs;
 
 namespace Skalm.Map.Tile
 {
-    internal class DoorTile : BaseTile, ICollider, IInteractable<DoorTile>, IOccupiable
+    internal class DoorTile : BaseTile, ICollider, IInteractable, IOccupiable
     {
         private char _openSprite;
         private char _closedSprite;
@@ -45,13 +45,12 @@ namespace Skalm.Map.Tile
         }
 
 
-        public DoorTile Interact()
+        public void Interact(Player player)
         {
             if (IsLocked) // WILL REQUIRE KEY
                 IsLocked = false;
             else
                 ColliderIsActive = !ColliderIsActive;
-            return this;
         }
 
         public void OnCollision()

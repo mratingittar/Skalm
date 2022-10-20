@@ -17,10 +17,10 @@ namespace Skalm.GameObjects
         public readonly MapManager mapManager;
 
         // COMPONENTS
-        public IAttackComponent _attack { get; set; }
+        public IAttackComponent _attackComponent { get; set; }
 
         // STATS
-        public ActorStatsObject statsObject;
+        public ActorStatsObject statsObject { get; set; }
         public EquipmentManager equipmentManager;
 
         // MOVEMENT
@@ -39,7 +39,7 @@ namespace Skalm.GameObjects
 
             // COMPONENTS
             //this._moveInput = moveInput;
-            _attack = attack;
+            _attackComponent = attack;
 
             // STATS
             statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), name);
@@ -85,8 +85,9 @@ namespace Skalm.GameObjects
 
             if (tile is IOccupiable occupiable && occupiable.ActorPresent)
             {
-                var obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
-                //obj?.ReceiveDamage(_attack.Attack());
+                IDamageable? obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
+                if (obj != null)
+                    _attackComponent.Attack(statsObject, obj.statsObject);
                 playerTurn?.Invoke();
                 return;
             }
@@ -113,7 +114,7 @@ namespace Skalm.GameObjects
 
             if (neighbor is IInteractable interactable)
             {
-                equipmentManager.AddItemToInventory(item.Interact());
+                interactable.Interact(this);
                 mapManager.mapPrinter.DrawSingleTile(neighbor.GridPosition);
             }
         }
