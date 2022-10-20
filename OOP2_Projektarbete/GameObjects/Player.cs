@@ -53,7 +53,6 @@ namespace Skalm.GameObjects
             statsObject.OnStatsChanged += UpdateStatDisplay;
         }
 
-
         // INITIALIZE PLAYER
         public void InitializePlayer(Vector2Int gridPosition, string playerName, char sprite, ConsoleColor color)
         {
@@ -74,11 +73,13 @@ namespace Skalm.GameObjects
             UpdateInventoryDisplay();
         }
 
+        // UPDATE STATS DISPLAY
         private void UpdateStatDisplay()
         {
             OnPlayerStatsUpdated?.Invoke(statsObject);
         }
 
+        // UPDATE INVENTORY DISPLAY
         private void UpdateInventoryDisplay()
         {
             OnPlayerInventoryUpdated?.Invoke(equipmentManager);
@@ -114,19 +115,24 @@ namespace Skalm.GameObjects
         // INTERACT WITH NEIGHBOURS
         public void InteractWithNeighbor(BaseTile neighbor)
         {
+            // CHECK FOR OCCUPIABLE TILE
             if ((neighbor is IOccupiable occupiable)
                 && (occupiable.ObjectsOnTile.Count > 0))
             {
-                //occupiable.ObjectsOnTile.ForEach(x => x is ItemPickup )
+                // IF PICKUP ITEM, PICK IT UP
                 foreach (var item in occupiable.ObjectsOnTile)
                 {
                     if (item is ItemPickup i)
+                    {
                         i.Interact(this);
+                        break;
+                    }
                 }
 
                 return;
             }
 
+            // CHECK FOR INTERACTABLE TILE
             if (neighbor is IInteractable interactable)
             {
                 interactable.Interact(this);
