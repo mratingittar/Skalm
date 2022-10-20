@@ -73,6 +73,9 @@ namespace Skalm
 
             GameObjectsInScene.Add(_itemSpawner.Spawn(itemXY, 'o', ConsoleColor.Yellow, item1));
 
+            ItemPickup.onItemPickup += RemoveGameObject;
+
+            // ADD OBJECTS TO MAP
             AddObjectsToMap();
         }
 
@@ -114,5 +117,20 @@ namespace Skalm
         // ENEMY FACTORY
 
         // ITEM FACTORY
+
+        // REMOVE OBJECT FROM GAME VIEW
+        public void RemoveGameObject(GameObject obj)
+        {
+            // REMOVE OBJECT FROM OBJECT LIST
+            GameObjectsInScene.Remove(obj);
+
+            // REMOVE OBJECT FROM TILE OBJECT LIST
+            _mapManager.TileGrid.TryGetGridObject(obj.GridPosition, out BaseTile tile);
+            if (tile is IOccupiable o)
+                o.ObjectsOnTile.Remove(obj);
+
+            // CACHE TILE POSITION FOR REDRAW
+            _mapManager.mapPrinter.CacheUpdatedTile(obj.GridPosition, obj.GridPosition);
+        }
     }
 }
