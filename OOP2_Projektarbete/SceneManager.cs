@@ -7,6 +7,7 @@ using Skalm.Map;
 using Skalm.Map.Tile;
 using Skalm.Structs;
 using Skalm.Utilities;
+using System.Xml.Linq;
 
 namespace Skalm
 {
@@ -26,7 +27,7 @@ namespace Skalm
         public SceneManager(MapManager mapManager)
         {
             _mapManager = mapManager;
-            Player = new Player(mapManager, Vector2Int.Zero, new PlayerAttackComponent(), "Nameless");
+            Player = new Player(mapManager, Vector2Int.Zero, new PlayerAttackComponent(), new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Nameless"), "Nameless");
             ActorsInScene = new List<Actor>();
             GameObjectsInScene = new List<GameObject>();
 

@@ -11,21 +11,18 @@ namespace Skalm.Grid
 {
     internal class PixelController
     {
-        public readonly Grid2D<Pixel> pixelGrid;
+        private HashSet<Pixel> borderCells;
+        private Dictionary<string, HashSet<Pixel>> pixelsInSections;
+        private readonly Grid2D<Pixel> pixelGrid;
         private readonly IPrinter printer;
         private readonly IEraser eraser;
-        public Dictionary<string, Bounds> sectionBounds { get; private set; }
-        public Dictionary<string, HashSet<Pixel>> pixelsInSections;
-        public HashSet<Pixel> borderCells;
-
         private readonly Bounds messageConsole;
         private readonly Bounds mainStatsConsole;
         private readonly Bounds subStatsConsole;
 
-        public PixelController(Grid2D<Pixel> sectionGrid, Dictionary<string, Bounds> sectionBounds, IPrinter printer, IEraser eraser)
+        public PixelController(Grid2D<Pixel> pixelGrid, Dictionary<string, Bounds> sectionBounds, IPrinter printer, IEraser eraser)
         {
-            this.pixelGrid = sectionGrid;
-            this.sectionBounds = sectionBounds;
+            this.pixelGrid = pixelGrid;
             this.printer = printer;
             this.eraser = eraser;
             pixelsInSections = new Dictionary<string, HashSet<Pixel>>();
@@ -51,6 +48,10 @@ namespace Skalm.Grid
             subStatsConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, subStats.StartXY.Y + 1), new Vector2Int(subStats.EndXY.X - 2, subStats.EndXY.Y - 1));
         }
 
+        public Vector2Int GetMapOrigin()
+        {
+            return pixelGrid.GetPlanePosition(pixelsInSections["MapSection"].First().gridPosition);
+        }
 
         public void DisplayMessage(string msg)
         {

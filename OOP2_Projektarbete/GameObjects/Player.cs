@@ -10,44 +10,33 @@ using System.Reflection.Emit;
 
 namespace Skalm.GameObjects
 {
-    internal class Player : Actor, IDamageable
+    internal class Player : Actor
     {
         // STATE MACHINE
         public readonly PlayerStateMachine playerStateMachine;
         public readonly MapManager mapManager;
-
-        // COMPONENTS
-        public IAttackComponent _attackComponent { get; set; }
-
-        // STATS
-        public ActorStatsObject statsObject { get; set; }
         public EquipmentManager equipmentManager;
 
         // MOVEMENT
-        private Vector2Int previousPosition;
-        private Queue<Vector2Int> moveQueue;
+        //private Vector2Int previousPosition;
+
+        // EVENTS
         public static event Action? playerTurn;
         public static event Action<ActorStatsObject>? OnPlayerStatsUpdated;
         public static event Action<EquipmentManager>? OnPlayerInventoryUpdated;
 
         // CONSTRUCTOR I
-        public Player(MapManager mapManager, Vector2Int posXY, IAttackComponent attack, string name, char sprite = '@', ConsoleColor color = ConsoleColor.White) 
-            : base(posXY, sprite, color)
+        public Player(MapManager mapManager, Vector2Int posXY, IAttackComponent attack, ActorStatsObject statsObject, string name, char sprite = '@', ConsoleColor color = ConsoleColor.White) 
+            : base(mapManager, attack, statsObject, posXY, sprite, color)
         {
             this.mapManager = mapManager;
             playerStateMachine = new PlayerStateMachine(this, PlayerStates.PlayerStateIdle);
 
-            // COMPONENTS
-            //this._moveInput = moveInput;
-            _attackComponent = attack;
-
-            // STATS
-            statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), name);
+            // INVENTORY
             equipmentManager = new EquipmentManager();
 
-            // MOVEMENT
-            moveQueue = new Queue<Vector2Int>();            
-            previousPosition = GridPosition;
+            // MOVEMENT      
+            //previousPosition = GridPosition;
 
             equipmentManager.inventory.onInventoryChanged += UpdateInventoryDisplay;
             statsObject.OnStatsChanged += UpdateStatDisplay;
@@ -58,7 +47,7 @@ namespace Skalm.GameObjects
         public void InitializePlayer(Vector2Int gridPosition, string playerName, char sprite, ConsoleColor color)
         {
             GridPosition = gridPosition;            
-            previousPosition = gridPosition;
+            //previousPosition = gridPosition;
             
             _sprite = sprite;
             _color = color;
@@ -85,29 +74,9 @@ namespace Skalm.GameObjects
         }
 
         // MOVE METHOD
-        public override void Move(Vector2Int direction) // MOVE PARTS TO ACTOR CLASS, COMBINE WITH ENEMY MOVE. DRY!
+        public override void Move(Vector2Int direction)
         {
-            Vector2Int newPosition = GridPosition.Add(direction);
-
-            if (!mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
-                return;
-
-            if (tile is ICollider collider && collider.ColliderIsActive)
-            {
-                collider.OnCollision();
-                return;
-            }
-
-            if (tile is IOccupiable occupiable && occupiable.ActorPresent)
-            {
-                IDamageable? obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
-                if (obj != null)
-                    _attackComponent.Attack(statsObject, obj.statsObject);
-                playerTurn?.Invoke();
-                return;
-            }
-
-            ExecuteMove(newPosition, GridPosition);
+            base.Move(direction);
             playerTurn?.Invoke();
         }
 
@@ -132,25 +101,6 @@ namespace Skalm.GameObjects
                 interactable.Interact(this);
                 mapManager.mapPrinter.DrawSingleTile(neighbor.GridPosition);
             }
-        }
-
-        // UPDATE OBJECT
-        public override void UpdateMain()
-        {
-
-
-        }
-
-        //METHOD ON COLLISION
-        public void OnCollision()
-        {
-
-        }
-
-        // METHOD RECEIVE DAMAGE
-        public void TakeDamage(DoDamage damage)
-        {
-
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Skalm.Map;
+﻿using Skalm.GameObjects.Stats;
+using Skalm.Map;
 using Skalm.Structs;
 
 
@@ -17,7 +18,8 @@ namespace Skalm.GameObjects.Enemies
 
         public Enemy Spawn(Vector2Int gridPosition, char sprite, ConsoleColor color)
         {
-            return new Enemy(mapManager, sceneManager, new MoveIdle(), new AttackNormal(), gridPosition, sprite, color);
+            return new Enemy(mapManager, sceneManager, new MoveIdle(), new AttackNormal(), 
+                new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Monster"), gridPosition, sprite, color);
         }
     }
 }

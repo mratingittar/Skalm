@@ -3,37 +3,28 @@ using Skalm.GameObjects.Stats;
 using Skalm.Map;
 using Skalm.States;
 using Skalm.Structs;
-using System.ComponentModel.DataAnnotations;
 
 namespace Skalm.GameObjects.Enemies
 {
-    internal class Enemy : Actor, IDamageable
+    internal class Enemy : Actor
     {
         // MANAGERS
         private SceneManager _sceneManager;
-        private MapManager _mapManager;
+        private new MapManager _mapManager;
 
         private EnemyStateMachine stateMachine;
 
         // COMPONENTS
         private IMoveBehaviour moveBehaviour;
-        private IAttackComponent _attackComponent;
-
-        // STATS
-        public ActorStatsObject statsObject { get; set; }
 
         // CONSTRUCTOR I
-        public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, IAttackComponent attackBehaviour, Vector2Int gridPosition, char sprite, ConsoleColor color) 
-            : base(gridPosition, sprite, color)
+        public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, IAttackComponent attackBehaviour, ActorStatsObject statsObject, 
+            Vector2Int gridPosition, char sprite, ConsoleColor color) : base(mapManager, attackBehaviour, statsObject, gridPosition, sprite, color)
         {
             _mapManager = mapManager;
             _sceneManager = sceneManager;
             this.moveBehaviour = moveBehaviour;
-            this._attackComponent = attackBehaviour;
             stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
-
-            // STATS
-            statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Monster");
 
             Player.playerTurn += MoveEnemy;
             stateMachine.ChangeState(EnemyStates.EnemyStateSearching);
@@ -43,36 +34,6 @@ namespace Skalm.GameObjects.Enemies
         public void MoveEnemy()
         {
             Move(moveBehaviour.MoveDirection(GridPosition));
-        }
-
-        // MOVE
-        public override void Move(Vector2Int direction)
-        {
-            Vector2Int newPosition = GridPosition.Add(direction);
-
-            if (newPosition.Equals(GridPosition))
-                return;
-
-            if (!_mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
-                return;
-
-            if (tile is ICollider collider && collider.ColliderIsActive)
-            {
-                collider.OnCollision();
-                return;
-            }
-
-            if (tile is IOccupiable occupiable && occupiable.ActorPresent)
-            {
-                var obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
-                if (obj != null)
-                    _attackComponent.Attack(statsObject, obj.statsObject);
-
-                return;
-            }
-
-
-            ExecuteMove(newPosition, GridPosition);
         }
 
         // SET BEHAVIOUR
@@ -90,12 +51,6 @@ namespace Skalm.GameObjects.Enemies
                     moveBehaviour = new MovePathfinding(_mapManager, _sceneManager);
                     break;
             }
-        }
-
-        // TAKE DAMAGE
-        public void TakeDamage(DoDamage damage)
-        {
-            statsObject.TakeDamage(damage);
         }
     }
 

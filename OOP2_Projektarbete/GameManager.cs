@@ -38,7 +38,6 @@ namespace Skalm
         // PLAYER
         public Player? player;
         public string PlayerName { get; set; } = "";
-        public Enemy? enemy;
         public bool NewGame { get; set; }
         
         // STATE MACHINES
@@ -66,7 +65,6 @@ namespace Skalm
 
             // STATE MACHINE & GAME STATES
             stateMachine = new GameManagerStateMachine(this, GameStates.GameStateInitializing);
-
             stateMachine.Initialize(GameStates.GameStateInitializing);
         }
 
@@ -90,20 +88,5 @@ namespace Skalm
                 Thread.Sleep(1000 / updateFrequency);
             }
         }
-
-        //public void CreatePlayer()
-        //{
-        //    var tileGrid = MapManager.TileGrid;
-        //    Vector2Int spawnPos = MapManager.mapGenerator.GetRandomSpawnPosition();
-        //    if (PlayerName.Length == 0)
-        //        PlayerName = "Nameless";
-        //    player = new Player(this, spawnPos, new PlayerAttackComponent(), PlayerName, '@', ConsoleColor.Yellow);
-        //    MapManager.gameObjects.Add(player);
-        //    MapManager.actors.Add(player);
-
-        //    enemy = new Enemy(this, MapManager.mapGenerator.GetRandomSpawnPosition(), 'Q', ConsoleColor.Red);
-        //    MapManager.gameObjects.Add(enemy);
-        //    MapManager.actors.Add(enemy);
-        //}
     }
 }
