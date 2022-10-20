@@ -1,4 +1,5 @@
-﻿using Skalm.GameObjects.Interfaces;
+﻿using Skalm.GameObjects;
+using Skalm.GameObjects.Interfaces;
 using Skalm.Structs;
 using System;
 using System.Collections.Generic;
@@ -30,7 +31,7 @@ namespace Skalm.Map.Tile
         }
 
 
-        public void Interact()
+        public void Interact(Player player)
         {
             ColliderIsActive = !ColliderIsActive;
         }

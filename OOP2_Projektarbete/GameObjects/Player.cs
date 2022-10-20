@@ -45,6 +45,7 @@ namespace Skalm.GameObjects
             previousPosition = GridPosition;
         }
 
+        // INITIALIZE PLAYER
         public void InitializePlayer(Vector2Int gridPosition, string playerName, char sprite, ConsoleColor color)
         {
             GridPosition = gridPosition;
@@ -60,19 +61,21 @@ namespace Skalm.GameObjects
 
         }
 
+        // SEND STATS TO DISPLAY
         public void SendStatsToDisplay()
         {
             //gameManager.DisplayManager.pixelGridController.DisplayStats(statsHard, statsSoft);
             //gameManager.DisplayManager.pixelGridController.DisplayInventory();
         }
 
+        // INTERACT WITH NEIGHBOURS
         public void InteractWithNeighbours()
         {
             foreach (var neighbour in mapManager.GetNeighbours(GridPosition))
             {
                 if (neighbour is IInteractable)
                 {
-                    ((IInteractable)neighbour).Interact();
+                    ((IInteractable)neighbour).Interact(this);
                     mapManager.mapPrinter.DrawSingleTile(neighbour.GridPosition);
                 }
             }

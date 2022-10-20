@@ -2,9 +2,11 @@
 using Skalm.GameObjects.Enemies;
 using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Items;
+using Skalm.GameObjects.Stats;
 using Skalm.Map;
 using Skalm.Map.Tile;
 using Skalm.Structs;
+using Skalm.Utilities;
 
 namespace Skalm
 {
@@ -20,6 +22,7 @@ namespace Skalm
         public List<Actor> ActorsInScene { get; }
         public Player Player { get; }
 
+        // CONSTRUCTOR I
         public SceneManager(MapManager mapManager)
         {
             _mapManager = mapManager;
@@ -31,6 +34,7 @@ namespace Skalm
             _itemSpawner = new ItemSpawner();
         }
 
+        // INITIALIZE SCENE
         public void InitializeScene()
         {
             Vector2Int spawnPos = _mapManager.GetRandomSpawnPosition();
@@ -48,10 +52,17 @@ namespace Skalm
             ActorsInScene.Add(enemy);
 
             // ADD ITEMS
+            var freeTiles = _mapManager.mapGenerator.freeTiles;
+            var itemXY = freeTiles.ElementAt(Dice.rng.Next(0, freeTiles.Count));
+
+            ItemEquippable item1 = new ItemEquippable("Helmet of misfortune", (int)EEqSlots.Head, new StatsObject(0, 0, 2, 0, 1, 5, 0, 2));
+
+            GameObjectsInScene.Add(_itemSpawner.Spawn(itemXY, 'o', ConsoleColor.Yellow, item1));
 
             AddObjectsToMap();
         }
 
+        // ADD OBJECTS TO MAP
         private void AddObjectsToMap()
         {
             foreach (GameObject go in GameObjectsInScene)
@@ -59,14 +70,15 @@ namespace Skalm
                 _mapManager.TileGrid.TryGetGridObject(go.GridPosition, out BaseTile tile);
                 ((IOccupiable)tile).ObjectsOnTile.Add(go);
             }
+
             foreach (Actor actor in ActorsInScene)
             {
                 _mapManager.TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile);
                 ((IOccupiable)tile).ActorPresent = true;
             }
-
         }
 
+        // RESET OBJECTS IN SCENE
         public void ResetObjectsInScene()
         {
             foreach (var go in GameObjectsInScene)
@@ -74,6 +86,7 @@ namespace Skalm
                 _mapManager.TileGrid.TryGetGridObject(go.GridPosition, out BaseTile tile);
                 ((IOccupiable)tile).ObjectsOnTile.Clear();
             }
+
             foreach (Actor actor in ActorsInScene)
             {
                 _mapManager.TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile);
