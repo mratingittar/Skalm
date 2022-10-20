@@ -89,19 +89,35 @@ namespace Skalm.Grid
             int column = subStatsConsole.StartXY.X;
             int row = subStatsConsole.StartXY.Y;
 
+
+
             printer.PrintFromPosition("Equipment", row, column);
             row++;
             printer.PrintFromPosition("─────────", row, column);
             row += 2;
-            printer.PrintFromPosition("Head:  ", row, column);
+            printer.PrintFromPosition($"Head:       {im.equipArr[(int)EquipSlots.Head].itemName}", row, column);
             row++;
-            printer.PrintFromPosition("Torso: ", row, column);
+            printer.PrintFromPosition($"Torso:      {im.equipArr[(int)EquipSlots.Torso].itemName}", row, column);
             row++;
-            printer.PrintFromPosition("Hands: ", row, column);
+            printer.PrintFromPosition($"Left hand:  {im.equipArr[(int)EquipSlots.LHand].itemName}", row, column);
             row++;
-            printer.PrintFromPosition("Feet:  ", row, column);
+            printer.PrintFromPosition($"Left ring:  {im.equipArr[(int)EquipSlots.LFinger].itemName}", row, column);
+            row++;
+            printer.PrintFromPosition($"Right hand: {im.equipArr[(int)EquipSlots.RHand].itemName}", row, column);
+            row++;
+            printer.PrintFromPosition($"Right ring: {im.equipArr[(int)EquipSlots.RFinger].itemName}", row, column);
+            row++;
+            printer.PrintFromPosition($"Feet:       {im.equipArr[(int)EquipSlots.Feet].itemName}", row, column);
+            row += 3;
+            printer.PrintFromPosition("Inventory", row, column);
+            row++;
+            printer.PrintFromPosition("─────────", row, column);
             row += 2;
-            printer.PrintFromPosition("2 Keys", row, column);
+            foreach (var item in im.inventory.itemList)
+            {
+                printer.PrintFromPosition(item.itemName, row, column);
+                row++;
+            }
         }
 
         private void PrintWithinBounds(string msg, Bounds bounds)
