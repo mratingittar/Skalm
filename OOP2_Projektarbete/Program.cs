@@ -10,6 +10,7 @@ using Skalm.Structs;
 using Skalm.Utilities;
 using System.Text;
 
+
 #region SETTINGS
 Console.WriteLine("Loading settings");
 ISettings settings = new Settings();

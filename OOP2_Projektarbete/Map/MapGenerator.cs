@@ -7,20 +7,26 @@ namespace Skalm.Map
 {
     internal class MapGenerator
     {
-        public HashSet<Vector2Int> freeTiles;
+        public HashSet<Vector2Int> FloorTiles { get; private set; }
+        public List<Vector2Int> EnemySpawnPositions { get; private set; }
+        public List<Vector2Int> ItemSpawnPositions { get; private set; }
+        public Vector2Int PlayerFixedSpawnPosition { get; private set; }
 
-        private MapManager mapManager;
-        private HashSet<Vector2Int> doors;
-        private Grid2D<BaseTile> tileGrid;
-        private ISettings settings;
+        private MapManager _mapManager;
+        private HashSet<Vector2Int> _doors;
+        private Grid2D<BaseTile> _tileGrid;
+        private readonly ISettings _settings;
 
         public MapGenerator(MapManager mapManager, Grid2D<BaseTile> tileGrid, ISettings settings)
         {
-            this.mapManager = mapManager;
-            this.tileGrid = tileGrid;
-            freeTiles = new HashSet<Vector2Int>();
-            doors = new HashSet<Vector2Int>();
-            this.settings = settings;
+            _mapManager = mapManager;
+            _tileGrid = tileGrid;
+            _settings = settings;
+            _doors = new HashSet<Vector2Int>();
+            FloorTiles = new HashSet<Vector2Int>();
+            EnemySpawnPositions = new List<Vector2Int>();
+            ItemSpawnPositions = new List<Vector2Int>();
+            PlayerFixedSpawnPosition = Vector2Int.Zero;
         }
 
         public void CreateMap()
@@ -30,58 +36,90 @@ namespace Skalm.Map
             FindWalls();
             SetBorderFloorsAsWalls();
 
-            if (freeTiles.Count == 0)
-                CreateRoomFromBounds(new Bounds(new Vector2Int(5, 5), new Vector2Int(tileGrid.gridWidth - 5, tileGrid.gridHeight - 5)));
+            if (FloorTiles.Count == 0)
+                CreateRoomFromBounds(new Bounds(new Vector2Int(5, 5), new Vector2Int(_tileGrid.gridWidth - 5, _tileGrid.gridHeight - 5)));
         }
 
         private void CreateMapFromStringArray(string[] map)
         {
-            if (map.Length == 0)
+            if (map.Length == 0 || map.Min() == null)
                 throw new ArgumentException("map file is empty");
 
-            int height = Math.Min(map.Length, settings.MapHeight);
+            int mapHeight = Math.Min(map.Length, _settings.MapHeight);
+            int mapWidth = Math.Min(map.Select(s => s.Length).Max(), _settings.MapWidth);
 
-            for (int y = 0; y < height; y++)
+            int startX = 0;
+            int startY = 0;
+
+            if (mapWidth < _settings.MapWidth)
+                startX = (_settings.MapWidth - mapWidth) / 2;
+
+            if (mapHeight < _settings.MapHeight)
+                startY = (_settings.MapHeight - mapHeight) / 2;
+
+            for (int y = 0; y < mapHeight; y++)
             {
-                int width = Math.Min(map[y].Length, settings.MapWidth);
+                int width = Math.Min(map[y].Length, _settings.MapWidth);
                 for (int x = 0; x < width; x++)
                 {
-                    if (map[y][x] == 'f')
+                    switch (map[y][x])
                     {
-                        tileGrid.SetGridObject(x, y, new FloorTile(new Vector2Int(x, y), settings.SpriteFloor));
-                        freeTiles.Add(new Vector2Int(x, y));
-                    }
-
-                    else if (map[y][x] == 'd')
-                    {
-                        tileGrid.SetGridObject(x, y, new DoorTile(new Vector2Int(x, y), settings.SpriteDoorOpen, settings.SpriteDoorClosed));
-                        doors.Add(new Vector2Int(x, y));
+                        case 'f':
+                            CreateFloorTile(x+startX, y+startY);
+                            break;
+                        case 'd':
+                            CreateDoorTile(x + startX, y + startY);
+                            break;
+                        case 'e':
+                            CreateFloorTile(x + startX, y + startY);
+                            EnemySpawnPositions.Add(new Vector2Int(x + startX, y + startY));
+                            break;
+                        case 'i':
+                            CreateFloorTile(x + startX, y + startY);
+                            ItemSpawnPositions.Add(new Vector2Int(x + startX, y + startY));
+                            break;
+                        case 'p':
+                            CreateFloorTile(x + startX, y + startY);
+                            PlayerFixedSpawnPosition = new Vector2Int(x + startX, y + startY);
+                            break;
                     }
                 }
             }
         }
 
+        private void CreateDoorTile(int x, int y)
+        {
+            _tileGrid.SetGridObject(x, y, new DoorTile(new Vector2Int(x, y), _settings.SpriteDoorOpen, _settings.SpriteDoorClosed));
+            _doors.Add(new Vector2Int(x, y));
+        }
+
+        private void CreateFloorTile(int x, int y)
+        {
+            _tileGrid.SetGridObject(x, y, new FloorTile(new Vector2Int(x, y), _settings.SpriteFloor));
+            FloorTiles.Add(new Vector2Int(x, y));
+        }
+
         private void FindWalls()
         {
-            HashSet<Vector2Int> tiles = freeTiles.Union(doors).ToHashSet();
+            HashSet<Vector2Int> tiles = FloorTiles.Union(_doors).ToHashSet();
             foreach (var tile in tiles)
             {
-                List<BaseTile> neighbors = mapManager.GetNeighbours(tile);
+                List<BaseTile> neighbors = _mapManager.GetNeighbours(tile);
                 foreach (var neighbor in neighbors)
                     if (neighbor is VoidTile)
-                        tileGrid.SetGridObject(neighbor.GridPosition, new WallTile(neighbor.GridPosition, settings.SpriteWall));
+                        _tileGrid.SetGridObject(neighbor.GridPosition, new WallTile(neighbor.GridPosition, _settings.SpriteWall));
             }
         }
 
         private void SetBorderFloorsAsWalls()
         {
-            foreach (var position in freeTiles)
+            foreach (var position in FloorTiles)
             {
                 if (position.X == 0
-                    || position.X == tileGrid.gridWidth - 1
+                    || position.X == _tileGrid.gridWidth - 1
                     || position.Y == 0
-                    || position.Y == tileGrid.gridHeight -1 )
-                    tileGrid.SetGridObject(position, new WallTile(position, settings.SpriteWall));
+                    || position.Y == _tileGrid.gridHeight -1 )
+                    _tileGrid.SetGridObject(position, new WallTile(position, _settings.SpriteWall));
             }
         }
 
@@ -95,8 +133,8 @@ namespace Skalm.Map
             {
                 for (int i = roomSpace.StartXY.X + 1; i <= roomSpace.EndXY.X - 1; i++)
                 {
-                    freeTiles.Add(new Vector2Int(i, j));
-                    tileGrid.SetGridObject(i, j, new FloorTile(new Vector2Int(i, j)));
+                    FloorTiles.Add(new Vector2Int(i, j));
+                    _tileGrid.SetGridObject(i, j, new FloorTile(new Vector2Int(i, j)));
                 }
             }
         }
@@ -112,8 +150,8 @@ namespace Skalm.Map
                 posY1 = roomSpace.StartXY.Y;
                 posY2 = roomSpace.EndXY.Y;
 
-                tileGrid.SetGridObject(i, posY1, new WallTile(new Vector2Int(i, posY1)));
-                tileGrid.SetGridObject(i, posY2, new WallTile(new Vector2Int(i, posY2)));
+                _tileGrid.SetGridObject(i, posY1, new WallTile(new Vector2Int(i, posY1)));
+                _tileGrid.SetGridObject(i, posY2, new WallTile(new Vector2Int(i, posY2)));
             }
 
             // VERTICAL AXIS
@@ -122,8 +160,8 @@ namespace Skalm.Map
                 posX1 = roomSpace.StartXY.X;
                 posX2 = roomSpace.EndXY.X;
 
-                tileGrid.SetGridObject(posX1, j, new WallTile(new Vector2Int(posX1, j)));
-                tileGrid.SetGridObject(posX2, j, new WallTile(new Vector2Int(posX1, j)));
+                _tileGrid.SetGridObject(posX1, j, new WallTile(new Vector2Int(posX1, j)));
+                _tileGrid.SetGridObject(posX2, j, new WallTile(new Vector2Int(posX1, j)));
             }
         }
     }

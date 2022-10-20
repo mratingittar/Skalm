@@ -1,5 +1,8 @@
 ﻿using Skalm.Display;
+using Skalm.GameObjects;
 using Skalm.GameObjects.Stats;
+using Skalm.Map.Tile;
+using Skalm.States;
 using Skalm.Structs;
 using Skalm.Utilities;
 
@@ -27,6 +30,9 @@ namespace Skalm.Grid
             pixelsInSections = new Dictionary<string, HashSet<Pixel>>();
             borderCells = new HashSet<Pixel>();
 
+            Player.playerStats += DisplayStats;
+            Player.playerInventory += DisplayInventory;
+
             DefineGridSections(sectionBounds["mapBounds"], new MapSection());
             DefineGridSections(sectionBounds["messageBounds"], new MessageSection());
             DefineGridSections(sectionBounds["mainStatsBounds"], new MainStatsSection());
@@ -44,8 +50,10 @@ namespace Skalm.Grid
             subStatsConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, subStats.StartXY.Y + 1), new Vector2Int(subStats.EndXY.X - 2, subStats.EndXY.Y - 1));
         }
 
+
         public void DisplayMessage(string msg)
         {
+            ClearSection("MessageSection");
             PrintWithinBounds(msg, messageConsole);
         }
 
@@ -117,9 +125,9 @@ namespace Skalm.Grid
             }
         }
 
-        public void ClearSection(Section section)
+        public void ClearSection(string section)
         {
-            foreach (Pixel pixel in pixelsInSections[section.GetType().Name])
+            foreach (Pixel pixel in pixelsInSections[section])
             {
                 foreach (var position in pixelGrid.GetPlanePositions(pixel.gridPosition))
                 {

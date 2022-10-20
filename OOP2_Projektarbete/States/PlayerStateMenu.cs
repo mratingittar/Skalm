@@ -41,8 +41,6 @@ namespace Skalm.States
                     break;
                 case InputCommands.Inventory:
                     break;
-                case InputCommands.Attack:
-                    break;
                 case InputCommands.Next:
                     break;
                 case InputCommands.Previous:

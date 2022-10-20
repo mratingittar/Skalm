@@ -1,5 +1,6 @@
 ﻿using Skalm.Grid;
 using Skalm.Map;
+using Skalm.States;
 using Skalm.Structs;
 using Skalm.Utilities;
 
@@ -11,10 +12,9 @@ namespace Skalm.Display
         public readonly IPrinter printer;
         public readonly IEraser eraser;
         public readonly IWindowInfo windowInfo;
-        #endregion
-
         public readonly PixelController pixelGridController;
         public readonly Dictionary<string, char> CharSet;
+        #endregion
 
         public DisplayManager(ISettings settings, IPrinter printer, IEraser eraser, IWindowInfo windowInfo, Rectangle windowSize, PixelController gridController)
         {
@@ -27,6 +27,12 @@ namespace Skalm.Display
             CharSet = CreateCharSet();
 
             windowInfo.SetWindowSize(windowSize.Width, windowSize.Height);
+            PlayerStateLook.OnNeighborSelected += DisplaySelection;
+        }
+
+        private void DisplaySelection(string msg)
+        {
+            pixelGridController.DisplayMessage(msg);
         }
 
 

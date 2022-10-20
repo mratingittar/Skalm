@@ -6,11 +6,12 @@ using Skalm.Structs;
 
 namespace Skalm.GameObjects.Enemies
 {
-    internal class Enemy : Actor
+    internal class Enemy : Actor, IDamageable
     {
         // MANAGERS
         private SceneManager _sceneManager;
         private MapManager _mapManager;
+
         private EnemyStateMachine stateMachine;
 
         // COMPONENTS
@@ -20,22 +21,53 @@ namespace Skalm.GameObjects.Enemies
         //public ActorStatsObject statsObject;
 
         // CONSTRUCTOR I
-        public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
+
+        private IAttackComponent attackBehaviour;
+        public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, IAttackComponent attackBehaviour, Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
         {
-            _mapManager = mapManager;
-            _sceneManager = sceneManager;
+            this.mapManager = mapManager;
+            this.sceneManager = sceneManager;
             this.moveBehaviour = moveBehaviour;
+            this.attackBehaviour = attackBehaviour;
             stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
 
             //statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), )
 
             Player.playerTurn += MoveEnemy;
+            stateMachine.ChangeState(EnemyStates.EnemyStateSearching);
         }
 
         // MOVEMENT
         public void MoveEnemy()
         {
-            base.Move(moveBehaviour.MoveDirection(GridPosition));
+            Move(moveBehaviour.MoveDirection(GridPosition));
+        }
+
+        public override void Move(Vector2Int direction)
+        {
+            Vector2Int newPosition = GridPosition.Add(direction);
+
+            // CHECK GRID FOR COLLISION
+            if (mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
+            {
+                if (tile is ICollider collider && collider.ColliderIsActive)
+                    collider.OnCollision();
+
+                else if (tile is IOccupiable occupiable && occupiable.ActorPresent)
+                {
+                    foreach (var obj in occupiable.ObjectsOnTile)
+                    {
+                        if (obj is IDamageable damageable)
+                        {
+                            damageable.ReceiveDamage(attackBehaviour.Attack());
+                        }
+                    }
+                }
+                else
+                {
+                    ExecuteMove(newPosition, GridPosition);
+                }
+            }
         }
 
         // SET BEHAVIOUR
@@ -50,9 +82,14 @@ namespace Skalm.GameObjects.Enemies
                     moveBehaviour = new MoveRandom();
                     break;
                 case EnemyMoveBehaviours.Pathfinding:
-                    moveBehaviour = new MovePathfinding(_mapManager, _sceneManager);
+                    moveBehaviour = new MovePathfinding(mapManager, sceneManager);
                     break;
             }
+        }
+
+        public void ReceiveDamage(DoDamage damage)
+        {
+            
         }
     }
 

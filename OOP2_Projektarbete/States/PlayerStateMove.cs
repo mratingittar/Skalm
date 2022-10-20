@@ -40,12 +40,10 @@ namespace Skalm.States
                     OnPauseMenuRequested?.Invoke();
                     break;
                 case InputCommands.Interact:
-                    player.InteractWithNeighbours();
+                    player.playerStateMachine.ChangeState(PlayerStates.PlayerStateLook);
                     break;
                 case InputCommands.Inventory:
                     player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMenu);
-                    break;
-                case InputCommands.Attack:
                     break;
                 case InputCommands.Next:
                     break;

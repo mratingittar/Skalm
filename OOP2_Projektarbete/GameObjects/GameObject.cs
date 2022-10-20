@@ -18,6 +18,7 @@ namespace Skalm.GameObjects
         public Vector2Int GridPosition { get; protected set; }
         public char Sprite { get => _sprite; }
         public ConsoleColor Color { get => _color; }
+        public virtual string Label { get; protected set; }
 
         // CONSTRUCTOR I
         public GameObject(Vector2Int gridPosition, char sprite, ConsoleColor color)
@@ -25,6 +26,7 @@ namespace Skalm.GameObjects
             GridPosition = gridPosition;
             _sprite = sprite;
             _color = color;
+            Label = GetType().Name;
         }
     }
 }
