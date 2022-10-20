@@ -1,4 +1,5 @@
-﻿using Skalm.Grid;
+﻿using Skalm.Display;
+using Skalm.Grid;
 using Skalm.Map.Tile;
 using Skalm.Structs;
 using Skalm.Utilities;
@@ -13,14 +14,16 @@ namespace Skalm.Map
         public Vector2Int PlayerFixedSpawnPosition { get; private set; }
 
         private MapManager _mapManager;
+        private DisplayManager _displayManager;
         private HashSet<Vector2Int> _doors;
         private Grid2D<BaseTile> _tileGrid;
         private Dictionary<int, Map> _maps;
         private readonly ISettings _settings;
 
-        public MapGenerator(MapManager mapManager, Grid2D<BaseTile> tileGrid, ISettings settings)
+        public MapGenerator(MapManager mapManager, DisplayManager displayManager, Grid2D<BaseTile> tileGrid, ISettings settings)
         {
             _mapManager = mapManager;
+            _displayManager = displayManager;
             _tileGrid = tileGrid;
             _settings = settings;
             _doors = new HashSet<Vector2Int>();
@@ -52,6 +55,19 @@ namespace Skalm.Map
             LoadMapIntoGrid(_maps[random.Next(_maps.Count)]); //Create failsafe if map folder is empty
             FindWalls();
             SetBorderFloorsAsWalls();
+        }
+
+        public void ClearTileGrid()
+        {
+            //for (int x = 0; x < _tileGrid.gridWidth; x++)
+            //{
+            //    for (int y = 0; y < _tileGrid.gridHeight; y++)
+            //    {
+            //        _tileGrid.SetGridObject(x, y, new VoidTile(new Vector2Int(x, y)));
+            //    }
+            //}
+            _tileGrid = new Grid2D<BaseTile>(_settings.MapWidth, _settings.MapHeight, _settings.CellWidth, _settings.CellHeight,
+                _displayManager.GetMapOrigin(), (x, y) => new VoidTile(new Vector2Int(x, y)));
         }
 
         private void LoadMapIntoGrid(Map map)

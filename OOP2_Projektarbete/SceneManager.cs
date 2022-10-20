@@ -100,7 +100,7 @@ namespace Skalm
         }
 
         // RESET OBJECTS IN SCENE
-        public void ResetObjectsInScene()
+        public void ResetScene()
         {
             // CLEAR GAME OBJECTS LISTS
             foreach (var go in GameObjectsInScene)
@@ -118,6 +118,9 @@ namespace Skalm
 
             ActorsInScene.Clear();
             GameObjectsInScene.Clear();
+            _displayManager.ClearMessageQueue();
+            _displayManager.ClearMessageSection();
+            _mapManager.mapGenerator.ClearTileGrid();
         }
 
         // ENEMY FACTORY
@@ -134,9 +137,12 @@ namespace Skalm
             _mapManager.TileGrid.TryGetGridObject(obj.GridPosition, out BaseTile tile);
             if (tile is IOccupiable occ)
             {
+                if (obj is Actor)
+                    occ.ActorPresent = false;
+
                 Stack<GameObject> objects = new Stack<GameObject>();
 
-                while (occ.ObjectsOnTile.Peek() != obj)
+                while (occ.ObjectsOnTile.Count > 0 && occ.ObjectsOnTile.Peek() != obj)
                 {
                     objects.Push(occ.ObjectsOnTile.Pop());
                 }
@@ -149,7 +155,7 @@ namespace Skalm
             }
 
             // CACHE TILE POSITION FOR REDRAW
-            _mapManager.mapPrinter.CacheUpdatedTile(obj.GridPosition, obj.GridPosition);
+            _mapManager.mapPrinter.CacheUpdatedTile(obj.GridPosition);
         }
     }
 }

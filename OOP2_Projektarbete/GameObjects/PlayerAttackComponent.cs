@@ -34,13 +34,16 @@ namespace Skalm.GameObjects
                 statsDfn.TakeDamage(damage);
 
                 // CREATE HIT & DAMAGE MESSAGE
-                outputMsg = $"{statsAtk.name} hit {statsDfn.name}, dealing {damage.damage} damage!\n" +
-                    $"{statsDfn.name} has {statsDfn.GetCurrentHP()}/{statsDfn.stats.statsArr[(int)EStats.HP].GetValue()} hp left...";
+                outputMsg = $"{statsAtk.name} hit {statsDfn.name}, dealing {damage.damage} damage! ";
+                if (statsDfn.GetCurrentHP() > 0)
+                    outputMsg += $"{statsDfn.name} has {statsDfn.GetCurrentHP()}/{statsDfn.stats.statsArr[(int)EStats.HP].GetValue()} hp left...";
+                else
+                    outputMsg += $"{statsDfn.name} is dead.";
             }
             else
             {
                 // CREATE MISS MESSAGE
-                outputMsg = $"{statsAtk.name} missed {statsDfn}...";
+                outputMsg = $"{statsAtk.name} missed {statsDfn.name}...";
             }
 
             // RETURN ATTACK INFO MESSAGE

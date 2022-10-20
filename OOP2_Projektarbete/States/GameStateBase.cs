@@ -17,6 +17,7 @@ namespace Skalm.States
         protected MenuManager menuManager;
         protected SoundManager soundManager;
         protected InputManager inputManager;
+        protected SceneManager sceneManager;
 
         public GameStateBase(GameManager gameManager)
         {
@@ -25,6 +26,7 @@ namespace Skalm.States
             this.menuManager = gameManager.MenuManager;
             this.soundManager = gameManager.SoundManager;
             this.inputManager = gameManager.InputManager;
+            sceneManager = gameManager.SceneManager;
         }
 
         public abstract void Enter();

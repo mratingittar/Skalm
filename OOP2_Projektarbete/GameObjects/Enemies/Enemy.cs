@@ -10,9 +10,8 @@ namespace Skalm.GameObjects.Enemies
     {
         // MANAGERS
         private SceneManager _sceneManager;
-        private new MapManager _mapManager;
-
-        private EnemyStateMachine stateMachine;
+        private bool _isAlive;
+        private EnemyStateMachine _stateMachine;
 
         // COMPONENTS
         private IMoveBehaviour moveBehaviour;
@@ -21,19 +20,29 @@ namespace Skalm.GameObjects.Enemies
         public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, IAttackComponent attackBehaviour, ActorStatsObject statsObject, 
             Vector2Int gridPosition, char sprite, ConsoleColor color) : base(mapManager, attackBehaviour, statsObject, gridPosition, sprite, color)
         {
+            _isAlive = true;
             _mapManager = mapManager;
             _sceneManager = sceneManager;
             this.moveBehaviour = moveBehaviour;
-            stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
+            _stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
 
             Player.OnPlayerTurn += MoveEnemy;
-            stateMachine.ChangeState(EnemyStates.EnemyStateSearching);
+            statsObject.OnDeath += Die;
+            _stateMachine.ChangeState(EnemyStates.EnemyStateSearching);
+        }
+
+        private void Die()
+        {
+            _isAlive = false;
+            _sceneManager.RemoveGameObject(this);
+            _mapManager.mapPrinter.CacheUpdatedTile(GridPosition);
         }
 
         // MOVEMENT
         public void MoveEnemy()
         {
-            Move(moveBehaviour.MoveDirection(GridPosition));
+            if (_isAlive)
+                Move(moveBehaviour.MoveDirection(GridPosition));
         }
 
         // SET BEHAVIOUR

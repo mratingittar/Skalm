@@ -36,7 +36,7 @@ namespace Skalm.States
             {
                 displayManager.Printer.PrintCenteredInWindow("ENTERING SKÄLM", displayManager.WindowInfo.WindowHeight / 2);
                 Thread.Sleep(500);
-                _sceneManager.ResetObjectsInScene();
+                
 
 
                 // CREATE MAP

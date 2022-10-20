@@ -6,14 +6,14 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class GameManagerStateMachine : IStateMachine<GameStateBase, GameStates>
+    internal class GameStateMachine : IStateMachine<GameStateBase, GameStates>
     {
         public GameStateBase CurrentState { get; private set; }
         private List<GameStateBase> availableStates;
         private GameManager gameManager;
 
         // CONSTRUCTOR I
-        public GameManagerStateMachine(GameManager gameManager, GameStates startingState)
+        public GameStateMachine(GameManager gameManager, GameStates startingState)
         {
             this.gameManager = gameManager;
             availableStates = new List<GameStateBase>();
@@ -64,6 +64,9 @@ namespace Skalm.States
                 case "GameStatePlaying":
                     state = new GameStatePlaying(gameManager);
                     break;
+                case "GameStateGameOver":
+                    state = new GameStateGameOver(gameManager);
+                    break;
                 default:
                     state = new GameStateInitializing(gameManager);
                     break;
@@ -77,6 +80,7 @@ namespace Skalm.States
         GameStateInitializing,
         GameStateMainMenu,
         GameStatePaused,
-        GameStatePlaying
+        GameStatePlaying,
+        GameStateGameOver
     }
 }

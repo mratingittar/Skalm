@@ -36,12 +36,11 @@ namespace Skalm
         #endregion
 
         // PLAYER
-        public Player? player;
         public string PlayerName { get; set; } = "";
         public bool NewGame { get; set; }
         
         // STATE MACHINES
-        public readonly GameManagerStateMachine stateMachine;
+        public readonly GameStateMachine stateMachine;
 
         // CONSTRUCTOR I
         public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager, SceneManager sceneManager)
@@ -66,8 +65,15 @@ namespace Skalm
 
 
             // STATE MACHINE & GAME STATES
-            stateMachine = new GameManagerStateMachine(this, GameStates.GameStateInitializing);
+            stateMachine = new GameStateMachine(this, GameStates.GameStateInitializing);
             stateMachine.Initialize(GameStates.GameStateInitializing);
+
+            sceneManager.Player.statsObject.OnDeath += GameOver;
+        }
+
+        private void GameOver()
+        {
+            stateMachine.ChangeState(GameStates.GameStateGameOver);
         }
 
         // METHOD START STATE

@@ -33,6 +33,11 @@ namespace Skalm.Map
             positionsToUpdate.Enqueue(newPos);
         }
 
+        public void CacheUpdatedTile(Vector2Int position)
+        {
+            positionsToUpdate.Enqueue(position);
+        }
+
         // METHOD REDRAW CACHED TILES
         public void RedrawCachedTiles()
         {

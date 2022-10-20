@@ -16,7 +16,7 @@ namespace Skalm.Display
         public int MessagesInQueue { get => _messageQueue.Count; }
 
         private SceneManager? _sceneManager;
-        private readonly PixelController _pixelGridController;
+        private PixelController _pixelGridController;
         private Queue<string> _messageQueue;
         //private readonly Dictionary<string, char> CharSet;
         #endregion
@@ -40,18 +40,17 @@ namespace Skalm.Display
 
         public void DisplayInstantMessage(string msg) => _pixelGridController.DisplayMessage(msg);
 
-
-
         public void DisplayNextMessage()
         {
             if (_messageQueue.Count == 0)
                 return;
 
             _pixelGridController.DisplayMessage(_messageQueue.Dequeue(), true);
-
         }
 
         public void ClearMessageSection() => _pixelGridController.ClearSection("MessageSection");
+
+        public void ClearMessageQueue() => _messageQueue.Clear();
 
         // DISPLAY SELECTION
         private void QueueMessage(string msg)
@@ -60,9 +59,6 @@ namespace Skalm.Display
                 return;
 
             _messageQueue.Enqueue(msg);
-
-            //if (_sceneManager?.Player.playerStateMachine.CurrentState is not PlayerStateMessage)
-            //    _sceneManager?.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMessage);
         }
 
         // DISPLAY HUD

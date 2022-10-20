@@ -25,7 +25,6 @@ namespace Skalm.GameObjects.Stats
         public ActorStatsObject(StatsObject stats, string name)
         {
             this.stats = stats;
-
             this.name = name;
             HPcurr = stats.statsArr[(int)EStats.HP].GetValue();
         }

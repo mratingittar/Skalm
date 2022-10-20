@@ -23,7 +23,7 @@ namespace Skalm.Map
             pathfinder = new AStar(this);
             TileGrid = tileGrid;
             _settings = settings;
-            mapGenerator = new MapGenerator(this, tileGrid, settings);
+            mapGenerator = new MapGenerator(this, displayManager, tileGrid, settings);
             mapPrinter = new MapPrinter(tileGrid, displayManager.Printer, settings.ForegroundColor);
 
             Actor.OnPositionChanged += UpdateMoveablePosition;
@@ -47,7 +47,7 @@ namespace Skalm.Map
         {
             Stack<GameObject> objects = new Stack<GameObject>();
 
-            while (tileOldOcc.ObjectsOnTile.Peek() != actor)
+            while (tileOldOcc.ObjectsOnTile.Count > 0 && tileOldOcc.ObjectsOnTile.Peek() != actor)
             {
                 objects.Push(tileOldOcc.ObjectsOnTile.Pop());
             }
