@@ -24,7 +24,7 @@ namespace Skalm.GameObjects.Stats
 
             for (int i = 0; i < equipArr.Length; i++)
             {
-                equipArr[i] = new ItemEquippable("Empty slot", i);
+                equipArr[i] = new ItemEquippable("Empty slot", i, true);
             }
 
         }
