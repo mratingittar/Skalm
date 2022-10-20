@@ -1,4 +1,5 @@
 ﻿using Skalm.GameObjects.Interfaces;
+using Skalm.GameObjects.Stats;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace Skalm.Structs
     {
         public float damage;
         public Vector2Int originXY;
-        public IDamageable sender;
+        public ActorStatsObject sender;
     }
 }

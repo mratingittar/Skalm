@@ -26,11 +26,12 @@ namespace Skalm.GameObjects
         private Vector2Int previousPosition;
         private Queue<Vector2Int> moveQueue;
         public static event Action? playerTurn;
-        public static event Action<StatsObjectHard, StatsObjectSoft>? playerStats;
-        public static event Action? playerInventory;
+        public static event Action<ActorStatsObject>? playerStats;
+        public static event Action<EquipmentManager>? playerInventory;
 
         // CONSTRUCTOR I
-        public Player(MapManager mapManager, Vector2Int posXY, IAttackComponent attack, string name, char sprite = '@', ConsoleColor color = ConsoleColor.White) : base(posXY, sprite, color)
+        public Player(MapManager mapManager, Vector2Int posXY, IAttackComponent attack, string name, char sprite = '@', ConsoleColor color = ConsoleColor.White) 
+            : base(posXY, sprite, color)
         {
             this.mapManager = mapManager;
             playerStateMachine = new PlayerStateMachine(this, PlayerStates.PlayerStateIdle);
@@ -63,14 +64,12 @@ namespace Skalm.GameObjects
         // SEND STATS TO DISPLAY
         public void SendStatsToDisplay()
         {
-            playerStats?.Invoke(statsHard, statsSoft);
-            playerInventory?.Invoke();
+            playerStats?.Invoke(statsObject);
+            playerInventory?.Invoke(equipmentManager);
         }
 
         // MOVE METHOD
         public override void Move(Vector2Int direction) // MOVE PARTS TO ACTOR CLASS, COMBINE WITH ENEMY MOVE. DRY!
-        // INTERACT WITH NEIGHBOURS
-        public void InteractWithNeighbours()
         {
             Vector2Int newPosition = GridPosition.Add(direction);
 
@@ -86,7 +85,7 @@ namespace Skalm.GameObjects
                     {
                         if (obj is IDamageable damageable)
                         {
-                            damageable.ReceiveDamage(_attack.Attack());
+                            //damageable.TakeDamage(_attack());
                         }
                     }
                 }
@@ -98,11 +97,25 @@ namespace Skalm.GameObjects
             }
         }
 
+        // INTERACT WITH NEIGHBOURS
         public void InteractWithNeighbor(BaseTile neighbor)
         {
+            if ((neighbor is IOccupiable occupiable)
+                && (occupiable.ObjectsOnTile.Count > 0))
+            {
+                //occupiable.ObjectsOnTile.ForEach(x => x is ItemPickup )
+                foreach (var item in occupiable.ObjectsOnTile)
+                {
+                    if (item is ItemPickup i)
+                        i.Interact(this);
+                }
+
+                return;
+            }
+
             if (neighbor is IInteractable interactable)
             {
-                interactable.Interact();
+                interactable.Interact(this);
                 mapManager.mapPrinter.DrawSingleTile(neighbor.GridPosition);
             }
         }

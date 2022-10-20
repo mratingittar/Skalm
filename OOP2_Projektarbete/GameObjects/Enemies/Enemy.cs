@@ -16,22 +16,24 @@ namespace Skalm.GameObjects.Enemies
 
         // COMPONENTS
         private IMoveBehaviour moveBehaviour;
+        private IAttackComponent attackBehaviour;
 
         // STATS
-        //public ActorStatsObject statsObject;
+        public ActorStatsObject statsObject { get; set; }
 
         // CONSTRUCTOR I
-
-        private IAttackComponent attackBehaviour;
-        public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, IAttackComponent attackBehaviour, Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
+        public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, IAttackComponent attackBehaviour, Vector2Int gridPosition, char sprite, ConsoleColor color) 
+            : base(gridPosition, sprite, color)
         {
-            this.mapManager = mapManager;
-            this.sceneManager = sceneManager;
+            // MANAGERS
+            this._mapManager = mapManager;
+            this._sceneManager = sceneManager;
             this.moveBehaviour = moveBehaviour;
             this.attackBehaviour = attackBehaviour;
             stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
 
-            //statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), )
+            // STATS
+            statsObject = new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Monster");
 
             Player.playerTurn += MoveEnemy;
             stateMachine.ChangeState(EnemyStates.EnemyStateSearching);
@@ -43,23 +45,24 @@ namespace Skalm.GameObjects.Enemies
             Move(moveBehaviour.MoveDirection(GridPosition));
         }
 
+        // MOVE
         public override void Move(Vector2Int direction)
         {
             Vector2Int newPosition = GridPosition.Add(direction);
 
             // CHECK GRID FOR COLLISION
-            if (mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
+            if (_mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
             {
-                if (tile is ICollider collider && collider.ColliderIsActive)
+                if ((tile is ICollider collider) && (collider.ColliderIsActive))
                     collider.OnCollision();
 
-                else if (tile is IOccupiable occupiable && occupiable.ActorPresent)
+                else if ((tile is IOccupiable occupiable) && (occupiable.ActorPresent))
                 {
                     foreach (var obj in occupiable.ObjectsOnTile)
                     {
                         if (obj is IDamageable damageable)
                         {
-                            damageable.ReceiveDamage(attackBehaviour.Attack());
+                            attackBehaviour?.Attack(statsObject, damageable.statsObject);
                         }
                     }
                 }
@@ -82,14 +85,15 @@ namespace Skalm.GameObjects.Enemies
                     moveBehaviour = new MoveRandom();
                     break;
                 case EnemyMoveBehaviours.Pathfinding:
-                    moveBehaviour = new MovePathfinding(mapManager, sceneManager);
+                    moveBehaviour = new MovePathfinding(_mapManager, _sceneManager);
                     break;
             }
         }
 
-        public void ReceiveDamage(DoDamage damage)
+        // TAKE DAMAGE
+        public void TakeDamage(DoDamage damage)
         {
-            
+            statsObject.TakeDamage(damage);
         }
     }
 

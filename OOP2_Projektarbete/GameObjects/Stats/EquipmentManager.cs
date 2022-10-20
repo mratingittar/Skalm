@@ -43,7 +43,8 @@ namespace Skalm.GameObjects.Stats
                     foreach (var itemStat in oldItem.stats.statsArr)
                         playerStats.statsArr[(int)itemStat.statName].RemoveModifier(itemStat.GetValue());
 
-                    inventory.AddItem(oldItem);
+                    if (!item.isDefault)
+                        inventory.AddItem(oldItem);
                 }
 
                 // ADD NEW ITEM STATS TO PLAYER STATS OBJECT
