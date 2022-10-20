@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Items
 {
-    internal class ItemPickup : GameObject, IInteractable<Item>
+    internal class ItemPickup : GameObject, IInteractable
     {
         // CONTAINED ITEM
         Item item;
@@ -21,10 +21,10 @@ namespace Skalm.GameObjects.Items
         }
 
         // INTERACT WITH ITEM
-        public Item Interact()
+        public void Interact(Player player)
         {
+            player.equipmentManager.AddItemToInventory(item);
             onItemPickup?.Invoke(this);
-            return item;
         }
     }
 }

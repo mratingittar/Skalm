@@ -19,7 +19,7 @@ namespace Skalm.GameObjects.Stats
         // CONSTRUCTOR I
         public EquipmentManager()
         {
-            equipArr = new ItemEquippable[Enum.GetValues(typeof(EquipSlots)).Length];
+            equipArr = new ItemEquippable[Enum.GetValues(typeof(EEqSlots)).Length];
             inventory = new Inventory();
         }
 
@@ -43,7 +43,8 @@ namespace Skalm.GameObjects.Stats
                     foreach (var itemStat in oldItem.stats.statsArr)
                         playerStats.statsArr[(int)itemStat.statName].RemoveModifier(itemStat.GetValue());
 
-                    inventory.AddItem(oldItem);
+                    if (!item.isDefault)
+                        inventory.AddItem(oldItem);
                 }
 
                 // ADD NEW ITEM STATS TO PLAYER STATS OBJECT
@@ -57,7 +58,7 @@ namespace Skalm.GameObjects.Stats
     }
 
     // ENUM EQUIPMENT SLOTS
-    public enum EquipSlots
+    public enum EEqSlots
     {
         Head,
         Torso,

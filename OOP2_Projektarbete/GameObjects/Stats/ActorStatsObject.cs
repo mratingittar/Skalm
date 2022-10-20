@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Stats
 {
-    internal class ActorStatsObject : IDamageable
+    internal class ActorStatsObject
     {
         // HARD STATS
         public StatsObject stats;
