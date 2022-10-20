@@ -51,7 +51,7 @@ namespace Skalm.Map
             {
                 objects.Push(tileOldOcc.ObjectsOnTile.Pop());
             }
-            tileOldOcc.ObjectsOnTile.Pop();
+            tileOldOcc.ObjectsOnTile.TryPop(out GameObject? obj);
 
             while (objects.Count > 0)
             {

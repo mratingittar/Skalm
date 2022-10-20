@@ -12,21 +12,21 @@ namespace Skalm.States
 {
     internal abstract class GameStateBase : IState
     {
-        protected GameManager gameManager;
-        protected DisplayManager displayManager;
-        protected MenuManager menuManager;
-        protected SoundManager soundManager;
-        protected InputManager inputManager;
-        protected SceneManager sceneManager;
+        protected GameManager _gameManager;
+        protected DisplayManager _displayManager;
+        protected MenuManager _menuManager;
+        protected SoundManager _soundManager;
+        protected InputManager _inputManager;
+        protected SceneManager _sceneManager;
 
         public GameStateBase(GameManager gameManager)
         {
-            this.gameManager = gameManager;
-            this.displayManager = gameManager.DisplayManager;
-            this.menuManager = gameManager.MenuManager;
-            this.soundManager = gameManager.SoundManager;
-            this.inputManager = gameManager.InputManager;
-            sceneManager = gameManager.SceneManager;
+            _gameManager = gameManager;
+            _displayManager = gameManager.DisplayManager;
+            _menuManager = gameManager.MenuManager;
+            _soundManager = gameManager.SoundManager;
+            _inputManager = gameManager.InputManager;
+            _sceneManager = gameManager.SceneManager;
         }
 
         public abstract void Enter();

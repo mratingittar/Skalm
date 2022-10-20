@@ -28,13 +28,13 @@ namespace Skalm.States
         public override void Enter()
         {
             // INPUT EVENT SUBSCRIBE
-            inputManager.OnInputMove += MoveInput;
-            inputManager.OnInputCommand += CommandInput;
+            _inputManager.OnInputMove += MoveInput;
+            _inputManager.OnInputCommand += CommandInput;
             
 
-            if (gameManager.NewGame)
+            if (_gameManager.NewGame)
             {
-                displayManager.Printer.PrintCenteredInWindow("ENTERING SKÄLM", displayManager.WindowInfo.WindowHeight / 2);
+                _displayManager.Printer.PrintCenteredInWindow("ENTERING SKÄLM", _displayManager.WindowInfo.WindowHeight / 2);
                 Thread.Sleep(500);
                 
 
@@ -45,28 +45,28 @@ namespace Skalm.States
             }
 
             // DRAWING HUD & MAP
-            displayManager.Eraser.EraseAll();
-            displayManager.DisplayHUD();
+            _displayManager.Eraser.EraseAll();
+            _displayManager.DisplayHUD();
             mapManager.mapPrinter.DrawMap();
            
             _sceneManager.Player.SendStatsToDisplay();
             _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
-            soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Thunder Dreams"));
+            _soundManager.PlayMusic(_soundManager.Tracks.Find(song => song.soundName == "Thunder Dreams"));
         }
 
         // EXIT GAME PLAYING STATE
         public override void Exit()
         {
             // SAVING STATE
-            gameManager.NewGame = false;
+            _gameManager.NewGame = false;
             _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateIdle);
-            displayManager.Eraser.EraseAll();
+            _displayManager.Eraser.EraseAll();
 
             // INPUT EVENT UNSUBSCRIBE
-            inputManager.OnInputMove -= MoveInput;
-            inputManager.OnInputCommand -= CommandInput;
+            _inputManager.OnInputMove -= MoveInput;
+            _inputManager.OnInputCommand -= CommandInput;
 
-            gameManager.PlayerName = "";
+            _gameManager.PlayerName = "";
         }
 
         // UPDATE STATE LOGIC
@@ -82,7 +82,7 @@ namespace Skalm.States
         public override void UpdateDisplay()
         {
             mapPrinter.RedrawCachedTiles();
-            if (displayManager.MessagesInQueue > 0 && _sceneManager.Player.playerStateMachine.CurrentState is not PlayerStateMessage)
+            if (_displayManager.MessagesInQueue > 0 && _sceneManager.Player.playerStateMachine.CurrentState is not PlayerStateMessage)
                 _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMessage);
         }
 
@@ -93,14 +93,14 @@ namespace Skalm.States
         //METHOD MOVE INPUT
         private void MoveInput(Vector2Int direction)
         {
-            soundManager.player.Play(SoundManager.SoundType.Low);
+            _soundManager.player.Play(SoundManager.SoundType.Low);
             _sceneManager.Player.playerStateMachine.CurrentState.MoveInput(direction);
         }
 
         // METHOD COMMAND INPUT
         private void CommandInput(InputCommands command)
         {
-            soundManager.player.Play(SoundManager.SoundType.Mid);
+            _soundManager.player.Play(SoundManager.SoundType.Mid);
             _sceneManager.Player.playerStateMachine.CurrentState.CommandInput(command);
         }
 

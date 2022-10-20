@@ -15,14 +15,14 @@ namespace Skalm.States
 
         public override void Enter()
         {
-            inputManager.OnInputCommand += CommandInput;
-            displayManager.Printer.PrintCenteredInWindow("YOU DIED.", displayManager.WindowInfo.WindowHeight/2);
+            _inputManager.OnInputCommand += CommandInput;
+            _displayManager.Printer.PrintCenteredInWindow("YOU DIED.", _displayManager.WindowInfo.WindowHeight/2);
         }
 
         public override void Exit()
         {
-            sceneManager.ResetScene();
-            inputManager.OnInputCommand -= CommandInput;
+            _sceneManager.ResetScene();
+            _inputManager.OnInputCommand -= CommandInput;
         }
 
         private void CommandInput(InputCommands command)
@@ -32,7 +32,7 @@ namespace Skalm.States
                 case InputCommands.Default:
                     break;
                 case InputCommands.Confirm:
-                    gameManager.stateMachine.ChangeState(GameStates.GameStateMainMenu);
+                    _gameManager.stateMachine.ChangeState(GameStates.GameStateMainMenu);
                     break;
                 case InputCommands.Cancel:
                     break;

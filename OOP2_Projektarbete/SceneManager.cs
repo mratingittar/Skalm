@@ -36,6 +36,8 @@ namespace Skalm
 
             _enemySpawner = new EnemySpawner(mapManager, this);
             _itemSpawner = new ItemSpawner();
+
+            ItemPickup.onItemPickup += RemoveGameObject;
         }
 
         // INITIALIZE SCENE
@@ -77,8 +79,7 @@ namespace Skalm
 
             GameObjectsInScene.Add(_itemSpawner.Spawn(itemXY, 'o', ConsoleColor.Yellow, item1));
 
-            ItemPickup.onItemPickup += RemoveGameObject;
-
+ 
             // ADD OBJECTS TO MAP
             AddObjectsToMap();
         }
@@ -110,17 +111,20 @@ namespace Skalm
             }
 
             // CLEAR ACTORS LIST
-            foreach (Actor actor in ActorsInScene)
+            int actors = ActorsInScene.Count;
+            for (int i = 0; i < actors; i++)
             {
-                if (_mapManager.TileGrid.TryGetGridObject(actor.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
+                if (_mapManager.TileGrid.TryGetGridObject(ActorsInScene[i].GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
                     tileOcc.ActorPresent = false;
+                if (ActorsInScene[i] is Enemy enemy)
+                    enemy.Remove();
             }
 
             ActorsInScene.Clear();
             GameObjectsInScene.Clear();
             _displayManager.ClearMessageQueue();
             _displayManager.ClearMessageSection();
-            _mapManager.mapGenerator.ClearTileGrid();
+            _mapManager.mapGenerator.ResetMap();
         }
 
         // ENEMY FACTORY
@@ -130,10 +134,18 @@ namespace Skalm
         // REMOVE OBJECT FROM GAME VIEW
         public void RemoveGameObject(GameObject obj)
         {
-            // REMOVE OBJECT FROM OBJECT LIST
+            // REMOVE FROM OBJECT LIST
             GameObjectsInScene.Remove(obj);
 
-            // REMOVE OBJECT FROM TILE OBJECT LIST
+            // REMOVE FROM ACTOR LIST IF ACTOR
+            if (obj is Actor actor)
+            {
+                ActorsInScene.Remove(actor);
+                if (actor is Enemy enemy)
+                    enemy.Remove();
+            }
+
+            // REMOVE FROM TILE OBJECT LIST
             _mapManager.TileGrid.TryGetGridObject(obj.GridPosition, out BaseTile tile);
             if (tile is IOccupiable occ)
             {
@@ -146,7 +158,7 @@ namespace Skalm
                 {
                     objects.Push(occ.ObjectsOnTile.Pop());
                 }
-                occ.ObjectsOnTile.Pop();
+                occ.ObjectsOnTile.TryPop(out GameObject? _);
 
                 while (objects.Count > 0)
                 {

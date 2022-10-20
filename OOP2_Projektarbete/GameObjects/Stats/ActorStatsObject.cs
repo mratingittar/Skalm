@@ -26,8 +26,11 @@ namespace Skalm.GameObjects.Stats
         {
             this.stats = stats;
             this.name = name;
-            HPcurr = stats.statsArr[(int)EStats.HP].GetValue();
+            ResetHP();
         }
+
+        // RESET HP
+        public void ResetHP() => HPcurr = stats.statsArr[(int)EStats.HP].GetValue();
 
         // GET CURRENT HP
         public int GetCurrentHP() => HPcurr;

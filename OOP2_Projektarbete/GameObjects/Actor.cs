@@ -87,5 +87,7 @@ namespace Skalm.GameObjects
         {
             statsObject.TakeDamage(damage);
         }
+
+      
     }
 }

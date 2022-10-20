@@ -18,8 +18,6 @@ namespace Skalm.GameObjects
         public readonly MapManager mapManager;
         public EquipmentManager equipmentManager;
 
-        // MOVEMENT
-        //private Vector2Int previousPosition;
 
         // EVENTS
         public static event Action? OnPlayerTurn;
@@ -36,9 +34,6 @@ namespace Skalm.GameObjects
             // INVENTORY
             equipmentManager = new EquipmentManager();
 
-            // MOVEMENT      
-            //previousPosition = GridPosition;
-
             equipmentManager.inventory.onInventoryChanged += UpdateInventoryDisplay;
             statsObject.OnStatsChanged += UpdateStatDisplay;
         }
@@ -47,12 +42,12 @@ namespace Skalm.GameObjects
         public void InitializePlayer(Vector2Int gridPosition, string playerName, char sprite, ConsoleColor color)
         {
             GridPosition = gridPosition;            
-            //previousPosition = gridPosition;
-            
             _sprite = sprite;
             _color = color;
-            
-            statsObject.name = playerName;            
+
+            statsObject.ResetHP();
+            this.statsObject.name = playerName;
+            equipmentManager.ResetInventory();
         }
 
         // SEND STATS TO DISPLAY

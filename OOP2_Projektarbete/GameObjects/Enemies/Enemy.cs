@@ -3,10 +3,11 @@ using Skalm.GameObjects.Stats;
 using Skalm.Map;
 using Skalm.States;
 using Skalm.Structs;
+using System.Security.Cryptography.X509Certificates;
 
 namespace Skalm.GameObjects.Enemies
 {
-    internal class Enemy : Actor
+    internal class Enemy : Actor, IDisposable
     {
         // MANAGERS
         private SceneManager _sceneManager;
@@ -15,6 +16,8 @@ namespace Skalm.GameObjects.Enemies
 
         // COMPONENTS
         private IMoveBehaviour moveBehaviour;
+
+        private bool _disposed;
 
         // CONSTRUCTOR I
         public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, IAttackComponent attackBehaviour, ActorStatsObject statsObject, 
@@ -31,11 +34,17 @@ namespace Skalm.GameObjects.Enemies
             _stateMachine.ChangeState(EnemyStates.EnemyStateSearching);
         }
 
-        private void Die()
+        public void Die()
         {
             _isAlive = false;
             _sceneManager.RemoveGameObject(this);
-            _mapManager.mapPrinter.CacheUpdatedTile(GridPosition);
+        }
+
+        public void Remove()
+        {
+            Player.OnPlayerTurn -= MoveEnemy;
+            statsObject.OnDeath -= Die;
+            Dispose();
         }
 
         // MOVEMENT
@@ -60,6 +69,26 @@ namespace Skalm.GameObjects.Enemies
                     moveBehaviour = new MovePathfinding(_mapManager, _sceneManager);
                     break;
             }
+        }
+
+        public void Dispose() => Dispose(true);
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (_disposed)
+            {
+                return;
+            }
+
+            if (disposing)
+            {
+                // TODO: dispose managed state (managed objects).
+            }
+
+            // TODO: free unmanaged resources (unmanaged objects) and override a finalizer below.
+            // TODO: set large fields to null.
+
+            _disposed = true;
         }
     }
 

@@ -32,7 +32,12 @@ namespace Skalm.States
 
         public override void MoveInput(Vector2Int direction)
         {
-            
+            switch (direction)
+            {
+                default:
+                    ReadMessage();
+                    break;
+            }
         }
         public override void CommandInput(InputCommands command)
         {

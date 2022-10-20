@@ -14,7 +14,7 @@ namespace Skalm.GameObjects.Stats
         public Inventory inventory;
 
         // EVENT
-        public event Action? onEquippmentChanged;
+        public event Action? onEquipmentChanged;
 
         // CONSTRUCTOR I
         public EquipmentManager()
@@ -27,6 +27,15 @@ namespace Skalm.GameObjects.Stats
                 equipArr[i] = new ItemEquippable("Empty slot", i, true);
             }
 
+        }
+
+        public void ResetInventory()
+        {
+            inventory.itemList.Clear();
+            for (int i = 0; i < equipArr.Length; i++)
+            {
+                equipArr[i] = new ItemEquippable("Empty slot", i, true);
+            }
         }
 
         // ADD & REMOVE ITEM TO/FROM INVENTORY
@@ -58,7 +67,7 @@ namespace Skalm.GameObjects.Stats
                     playerStats.statsArr[(int)itemStat.statName].AddModifier(itemStat.GetValue());
 
                 // FIRE EVENTS
-                onEquippmentChanged?.Invoke();
+                onEquipmentChanged?.Invoke();
             }
         }
     }

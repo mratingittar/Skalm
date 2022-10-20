@@ -57,17 +57,24 @@ namespace Skalm.Map
             SetBorderFloorsAsWalls();
         }
 
-        public void ClearTileGrid()
+        public void ResetMap()
         {
-            //for (int x = 0; x < _tileGrid.gridWidth; x++)
-            //{
-            //    for (int y = 0; y < _tileGrid.gridHeight; y++)
-            //    {
-            //        _tileGrid.SetGridObject(x, y, new VoidTile(new Vector2Int(x, y)));
-            //    }
-            //}
-            _tileGrid = new Grid2D<BaseTile>(_settings.MapWidth, _settings.MapHeight, _settings.CellWidth, _settings.CellHeight,
-                _displayManager.GetMapOrigin(), (x, y) => new VoidTile(new Vector2Int(x, y)));
+            _doors.Clear();
+            FloorTiles.Clear();
+            EnemySpawnPositions.Clear();
+            ItemSpawnPositions.Clear();
+            PlayerFixedSpawnPosition = Vector2Int.Zero;
+
+            for (int x = 0; x < _tileGrid.gridWidth; x++)
+            {
+                for (int y = 0; y < _tileGrid.gridHeight; y++)
+                {
+                    _tileGrid.SetGridObject(x,y, new VoidTile(new Vector2Int(x,y)));
+                }
+            }
+
+            //_tileGrid = new Grid2D<BaseTile>(_settings.MapWidth, _settings.MapHeight, _settings.CellWidth, _settings.CellHeight,
+            //    _displayManager.GetMapOrigin(), (x, y) => new VoidTile(new Vector2Int(x, y)));
         }
 
         private void LoadMapIntoGrid(Map map)

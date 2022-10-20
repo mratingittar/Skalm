@@ -41,11 +41,9 @@ namespace Skalm.Map
         // METHOD REDRAW CACHED TILES
         public void RedrawCachedTiles()
         {
-            Vector2Int tempPos;
             while (positionsToUpdate.Count > 0)
             {
-                tempPos = positionsToUpdate.Dequeue();
-                DrawSingleTile(tempPos);
+                DrawSingleTile(positionsToUpdate.Dequeue());
             }
         }
 

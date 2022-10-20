@@ -23,28 +23,29 @@ namespace Skalm.States
         // ENTER STATE
         public override void Enter()
         {
-            menuManager.LoadMenu(menuManager.mainMenu);
-            soundManager.PlayMusic(soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
+            _menuManager.LoadMenu(_menuManager.mainMenu);
+            _soundManager.PlayMusic(_soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
+            _sceneManager.playerName = "";
 
             // INPUT EVENT SUBSCRIBE
-            inputManager.OnInputMove += MoveInput;
-            inputManager.OnInputCommand += CommandInput;
+            _inputManager.OnInputMove += MoveInput;
+            _inputManager.OnInputCommand += CommandInput;
 
             // MENU EVENT SUBSCRIBE
-            menuManager.mainMenu.onMenuExecution += MenuExecution;
+            _menuManager.mainMenu.onMenuExecution += MenuExecution;
         }
 
         // EXIT STATE
         public override void Exit()
         {
-            menuManager.UnloadMenu();
+            _menuManager.UnloadMenu();
 
             // INPUT EVENT UNSUBSCRIBE
-            inputManager.OnInputMove -= MoveInput;
-            inputManager.OnInputCommand -= CommandInput;
+            _inputManager.OnInputMove -= MoveInput;
+            _inputManager.OnInputCommand -= CommandInput;
 
             // MENU EVENT UNSUBSCRIBE
-            menuManager.mainMenu.onMenuExecution -= MenuExecution;
+            _menuManager.mainMenu.onMenuExecution -= MenuExecution;
         }
 
         // UPDATE LOGIC
@@ -72,13 +73,13 @@ namespace Skalm.States
         // METHOD MOVE INPUT
         private void MoveInput(Vector2Int direction)
         {
-            menuManager.TraverseMenu(direction);
+            _menuManager.TraverseMenu(direction);
         }
 
         // METHOD COMMAND INPUT
         private void CommandInput(InputCommands command)
         {
-            menuManager.ExecuteMenu(command);
+            _menuManager.ExecuteMenu(command);
         }
 
         // METHOD EXECUTE MENU INDEX
@@ -94,34 +95,34 @@ namespace Skalm.States
                 case Page.NewGame:
                     if (item == "Enter Name")
                     {
-                        EraseRow(menuManager.ActiveMenu.PageStartRow + _menuPageHeight);
-                        (bool nameOK, string nameReturned) = EnterName(menuManager.ActiveMenu.PageStartRow + _menuPageHeight);
+                        EraseRow(_menuManager.ActiveMenu.PageStartRow + _menuPageHeight);
+                        (bool nameOK, string nameReturned) = EnterName(_menuManager.ActiveMenu.PageStartRow + _menuPageHeight);
                         Console.CursorVisible = false;
                         if (nameOK)
-                            gameManager.SceneManager.playerName = nameReturned;
+                            _gameManager.SceneManager.playerName = nameReturned;
                         else
                             EraseRow(Console.CursorTop);
                     }
 
                     if (item == "Start New Game")
                     {
-                        gameManager.NewGame = true;
-                        gameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
+                        _gameManager.NewGame = true;
+                        _gameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
                     }
                     break;
 
                 case Page.Options:
                     if (item == "Toggle Beep")
-                        soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
+                        _soundManager.player.SFXEnabled = !_soundManager.player.SFXEnabled;
                     break;
 
                 case Page.Music:
-                    soundManager.PlayMusic(soundManager.Tracks.Find(sound => sound.soundName == item));
-                    menuManager.ActiveMenu.ReloadPage();
+                    _soundManager.PlayMusic(_soundManager.Tracks.Find(sound => sound.soundName == item));
+                    _menuManager.ActiveMenu.ReloadPage();
                     break;
 
                 case Page.InputMethod:
-                    inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
+                    _inputManager.SetInputMethod(_inputManager.Inputs.Find(input => input.GetType().Name == item)!);
                     break;
             }
         }
@@ -129,7 +130,7 @@ namespace Skalm.States
         // METHOD NAME ENTERING
         private (bool, string) EnterName(int height)
         {
-            Console.SetCursorPosition(displayManager.WindowInfo.WindowWidth / 2, height);
+            Console.SetCursorPosition(_displayManager.WindowInfo.WindowWidth / 2, height);
             Console.CursorVisible = true;
             ConsoleKeyInfo cki;
             string name = "";
@@ -152,7 +153,7 @@ namespace Skalm.States
                 else
                     name += cki.KeyChar;
 
-                displayManager.Printer.PrintCenteredInWindow(name, height);
+                _displayManager.Printer.PrintCenteredInWindow(name, height);
             }
 
             if (name.Length == 0)
@@ -163,7 +164,7 @@ namespace Skalm.States
 
         private void EraseRow(int row)
         {
-            displayManager.Eraser.EraseLinesFromTo(row, row);
+            _displayManager.Eraser.EraseLinesFromTo(row, row);
         }
         #endregion
     }

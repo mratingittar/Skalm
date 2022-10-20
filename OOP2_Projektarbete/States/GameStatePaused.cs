@@ -1,12 +1,6 @@
 ﻿using Skalm.Input;
 using Skalm.Menu;
-using Skalm.Sounds;
 using Skalm.Structs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Skalm.States
 {
@@ -21,39 +15,39 @@ namespace Skalm.States
         // STATE ENTER
         public override void Enter()
         {
-            menuManager.LoadMenu(menuManager.pauseMenu);
+            _menuManager.LoadMenu(_menuManager.pauseMenu);
 
             // INPUT EVENT SUBSCRIBE
-            inputManager.OnInputMove += MoveInput;
-            inputManager.OnInputCommand += CommandInput;
+            _inputManager.OnInputMove += MoveInput;
+            _inputManager.OnInputCommand += CommandInput;
 
             // MENU EVENT SUBSCRIBE
-            menuManager.pauseMenu.onMenuExecution += MenuExecution;
+            _menuManager.pauseMenu.onMenuExecution += MenuExecution;
         }
 
         // STATE EXIT
         public override void Exit()
         {
-            menuManager.UnloadMenu();
+            _menuManager.UnloadMenu();
 
             // INPUT EVENT UNSUBSCRIBE
-            inputManager.OnInputMove -= MoveInput;
-            inputManager.OnInputCommand -= CommandInput;
+            _inputManager.OnInputMove -= MoveInput;
+            _inputManager.OnInputCommand -= CommandInput;
 
             // MENU EVENT UNSUBSCRIBE
-            menuManager.pauseMenu.onMenuExecution -= MenuExecution;
+            _menuManager.pauseMenu.onMenuExecution -= MenuExecution;
         }
 
         // STATE UPDATE LOGIC
         public override void UpdateLogic()
         {
-            
+
         }
 
         // STATE UPDATE DISPLAY
         public override void UpdateDisplay()
         {
-            
+
         }
 
         #endregion
@@ -63,13 +57,13 @@ namespace Skalm.States
         // METHOD MOVE INPUT
         private void MoveInput(Vector2Int direction)
         {
-            menuManager.TraverseMenu(direction);
+            _menuManager.TraverseMenu(direction);
         }
 
         // METHOD COMMAND INPUT
         private void CommandInput(InputCommands command)
         {
-            menuManager.ExecuteMenu(command);
+            _menuManager.ExecuteMenu(command);
         }
 
         private void MenuExecution(Page menuPage, string item)
@@ -78,23 +72,26 @@ namespace Skalm.States
             {
                 case Page.PauseMenu:
                     if (item == "Resume")
-                        gameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
+                        _gameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
                     else if (item == "Exit")
-                        gameManager.stateMachine.ChangeState(GameStates.GameStateMainMenu);
+                    {
+                        _sceneManager.ResetScene();
+                        _gameManager.stateMachine.ChangeState(GameStates.GameStateMainMenu);
+                    }
                     break;
 
                 case Page.Options:
                     if (item == "Toggle Beep")
-                        soundManager.player.SFXEnabled = !soundManager.player.SFXEnabled;
+                        _soundManager.player.SFXEnabled = !_soundManager.player.SFXEnabled;
                     break;
 
                 case Page.Music:
-                    soundManager.PlayMusic(soundManager.Tracks.Find(sound => sound.soundName == item));
-                    menuManager.ActiveMenu.ReloadPage();
+                    _soundManager.PlayMusic(_soundManager.Tracks.Find(sound => sound.soundName == item));
+                    _menuManager.ActiveMenu.ReloadPage();
                     break;
 
                 case Page.InputMethod:
-                    inputManager.SetInputMethod(inputManager.Inputs.Find(input => input.GetType().Name == item)!);
+                    _inputManager.SetInputMethod(_inputManager.Inputs.Find(input => input.GetType().Name == item)!);
                     break;
             }
         }
