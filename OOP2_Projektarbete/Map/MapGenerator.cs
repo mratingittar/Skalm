@@ -33,8 +33,8 @@ namespace Skalm.Map
         {
             if (FileHandler.TryReadFile("map.txt", out string[] map))
             {
-                
-                CreateMapFromStringArray(FlipMapVertical(FlipMapHorizontal(map)));
+
+                CreateMapFromStringArray(map);
             }
             FindWalls();
             SetBorderFloorsAsWalls();
@@ -150,25 +150,111 @@ namespace Skalm.Map
             string[] mapOutput = new string[mapInput.Length];
             for (int i = 0; i < mapInput.Length; i++)
             {
-                mapOutput[^(i+1)] = mapInput[i];
+                mapOutput[^(i + 1)] = mapInput[i];
             }
 
             return mapOutput;
         }
 
-        static int[,] RotateMatrix(int[,] matrix, int n)
+        private string[] RotateMap(string[] mapInput, bool clockwise)
         {
-            int[,] ret = new int[n, n];
+            mapInput = PadStringsInArrayToEqualLength(mapInput);
+
+            if (mapInput.First().Length != mapInput.Length)
+                mapInput = SquareStringArray(mapInput, _settings.MapHeight);
+
+            int size = mapInput.Length;
+
+            char[,] charMatrix = new char[size, size];
+
+            for (int i = 0; i < size; i++)
+            {
+                for (int j = 0; j < size; j++)
+                {
+                    charMatrix[i, j] = mapInput[i][j];
+                }
+            }
+            char[,] rotated = new char[size, size];
+
+            if (clockwise)
+                rotated = RotateCharMatrixClockwise(charMatrix, size);
+            else
+                rotated = RotateCharMatrixCounterClockwise(charMatrix, size);
+
+            string[] mapOutput = new string[size];
+
+            for (int k = 0; k < size; k++)
+            {
+                for (int l = 0; l < size; l++)
+                {
+                    mapOutput[k] += rotated[k, l];
+                }
+            }
+
+            return mapOutput;
+        }
+
+        private string[] SquareStringArray(string[] input, int limit)
+        {
+            int height = input.Length;
+            int width = input.First().Length;
+
+            // Pad width to match height
+            if (height > width)
+            {
+                for (int i = 0; i < input.Length; i++)
+                {
+                    input[i].PadRight(limit, ' ');
+                }
+            }
+            // Pad height to match width
+            else if (width > height)
+            {
+                for (int i = 0; i < width - height; i++)
+                {
+                    input.Append("");
+                }
+            }
+
+            // Trim width to match limit
+            if (input.First().Length > limit)
+                input = input.Select(s => s.Remove(limit)).ToArray();
+
+            // Trim height to match limit
+            if (input.Length > limit)
+                input = input.Take(limit).ToArray();
+
+            return input;
+        }
+
+        private char[,] RotateCharMatrixClockwise(char[,] matrix, int n)
+        {
+            char[,] result = new char[n, n];
 
             for (int i = 0; i < n; ++i)
             {
                 for (int j = 0; j < n; ++j)
                 {
-                    ret[i, j] = matrix[n - j - 1, i];
+                    result[i, j] = matrix[n - j - 1, i];
                 }
             }
 
-            return ret;
+            return result;
+        }
+
+        private char[,] RotateCharMatrixCounterClockwise(char[,] matrix, int n)
+        {
+            char[,] result = new char[n, n];
+
+            for (int i = 0; i < n; ++i)
+            {
+                for (int j = 0; j < n; ++j)
+                {
+                    result[i, j] = matrix[j, n - i - 1];
+                }
+            }
+
+            return result;
         }
 
         private string[] PadStringsInArrayToEqualLength(string[] input)

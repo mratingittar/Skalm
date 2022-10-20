@@ -89,8 +89,6 @@ namespace Skalm.Grid
             int column = subStatsConsole.StartXY.X;
             int row = subStatsConsole.StartXY.Y;
 
-
-
             printer.PrintFromPosition("Equipment", row, column);
             row++;
             printer.PrintFromPosition("─────────", row, column);
@@ -109,6 +107,7 @@ namespace Skalm.Grid
             row++;
             printer.PrintFromPosition($"Feet:       {im.equipArr[(int)EquipSlots.Feet].itemName}", row, column);
             row += 3;
+
             printer.PrintFromPosition("Inventory", row, column);
             row++;
             printer.PrintFromPosition("─────────", row, column);
