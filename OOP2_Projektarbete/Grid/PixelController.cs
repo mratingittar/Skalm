@@ -31,8 +31,8 @@ namespace Skalm.Grid
             pixelsInSections = new Dictionary<string, HashSet<Pixel>>();
             borderCells = new HashSet<Pixel>();
 
-            Player.playerStats += DisplayStats;
-            Player.playerInventory += DisplayInventory;
+            Player.OnPlayerStatsUpdated += DisplayStats;
+            Player.OnPlayerInventoryUpdated += DisplayInventory;
 
             DefineGridSections(sectionBounds["mapBounds"], new MapSection());
             DefineGridSections(sectionBounds["messageBounds"], new MessageSection());
@@ -60,6 +60,8 @@ namespace Skalm.Grid
 
         public void DisplayStats(ActorStatsObject playerStats)
         {
+            ClearSection("MainStatsSection");
+
             string name = playerStats.name;
             if (name.Length > mainStatsConsole.Size.Width)
                 name = name.Remove(mainStatsConsole.Size.Width);
@@ -86,6 +88,8 @@ namespace Skalm.Grid
 
         public void DisplayInventory(EquipmentManager im)
         {
+            ClearSection("SubStatsSection");
+
             int column = subStatsConsole.StartXY.X;
             int row = subStatsConsole.StartXY.Y;
 

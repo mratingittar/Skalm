@@ -27,8 +27,8 @@ namespace Skalm.GameObjects
         private Vector2Int previousPosition;
         private Queue<Vector2Int> moveQueue;
         public static event Action? playerTurn;
-        public static event Action<ActorStatsObject>? playerStats;
-        public static event Action<EquipmentManager>? playerInventory;
+        public static event Action<ActorStatsObject>? OnPlayerStatsUpdated;
+        public static event Action<EquipmentManager>? OnPlayerInventoryUpdated;
 
         // CONSTRUCTOR I
         public Player(MapManager mapManager, Vector2Int posXY, IAttackComponent attack, string name, char sprite = '@', ConsoleColor color = ConsoleColor.White) 
@@ -48,7 +48,11 @@ namespace Skalm.GameObjects
             // MOVEMENT
             moveQueue = new Queue<Vector2Int>();            
             previousPosition = GridPosition;
+
+            equipmentManager.inventory.onInventoryChanged += UpdateInventoryDisplay;
+            statsObject.OnStatsChanged += UpdateStatDisplay;
         }
+
 
         // INITIALIZE PLAYER
         public void InitializePlayer(Vector2Int gridPosition, string playerName, char sprite, ConsoleColor color)
@@ -60,13 +64,24 @@ namespace Skalm.GameObjects
             _color = color;
             
             statsObject.name = playerName;
+            
         }
 
         // SEND STATS TO DISPLAY
         public void SendStatsToDisplay()
         {
-            playerStats?.Invoke(statsObject);
-            playerInventory?.Invoke(equipmentManager);
+            UpdateStatDisplay();
+            UpdateInventoryDisplay();
+        }
+
+        private void UpdateStatDisplay()
+        {
+            OnPlayerStatsUpdated?.Invoke(statsObject);
+        }
+
+        private void UpdateInventoryDisplay()
+        {
+            OnPlayerInventoryUpdated?.Invoke(equipmentManager);
         }
 
         // MOVE METHOD

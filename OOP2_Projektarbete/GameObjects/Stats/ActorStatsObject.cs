@@ -18,6 +18,8 @@ namespace Skalm.GameObjects.Stats
         public string name;
         int HPcurr;
 
+        public event Action? OnStatsChanged;
+
         // CONSTRUCTOR I
         public ActorStatsObject(StatsObject stats, string name)
         {
@@ -34,6 +36,7 @@ namespace Skalm.GameObjects.Stats
         public void TakeDamage(DoDamage damage)
         {
             HPcurr -= (int)Math.Round(damage.damage);
+            OnStatsChanged?.Invoke();
             if (HPcurr <= 0)
                 HandleDeath();
         }
@@ -44,6 +47,7 @@ namespace Skalm.GameObjects.Stats
             HPcurr += healAmount;
             if (HPcurr > stats.statsArr[(int)EStats.HP].GetValue())
                 HPcurr = stats.statsArr[(int)EStats.HP].GetValue();
+            OnStatsChanged?.Invoke();
         }
 
         // HANDLE DEATH
