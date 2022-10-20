@@ -1,4 +1,5 @@
 ﻿using Skalm.GameObjects.Interfaces;
+using Skalm.GameObjects.Stats;
 using Skalm.Structs;
 using System;
 using System.Collections.Generic;
@@ -13,6 +14,11 @@ namespace Skalm.GameObjects.Enemies
         public DoDamage Attack()
         {
             return new DoDamage();
+        }
+
+        public void Attack(ActorStatsObject statsAtk, ActorStatsObject statsDfn)
+        {
+            throw new NotImplementedException();
         }
     }
 }

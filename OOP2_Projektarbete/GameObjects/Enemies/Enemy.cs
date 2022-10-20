@@ -26,8 +26,8 @@ namespace Skalm.GameObjects.Enemies
         private IAttackComponent attackBehaviour;
         public Enemy(MapManager mapManager, SceneManager sceneManager, IMoveBehaviour moveBehaviour, IAttackComponent attackBehaviour, Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
         {
-            this.mapManager = mapManager;
-            this.sceneManager = sceneManager;
+            _mapManager = mapManager;
+            _sceneManager = sceneManager;
             this.moveBehaviour = moveBehaviour;
             this.attackBehaviour = attackBehaviour;
             stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
@@ -51,7 +51,7 @@ namespace Skalm.GameObjects.Enemies
             if (newPosition.Equals(GridPosition))
                 return;
 
-            if (!mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
+            if (!_mapManager.TileGrid.TryGetGridObject(newPosition, out var tile))
                 return;
 
             if (tile is ICollider collider && collider.ColliderIsActive)
@@ -63,7 +63,7 @@ namespace Skalm.GameObjects.Enemies
             if (tile is IOccupiable occupiable && occupiable.ActorPresent)
             {
                 var obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
-                obj?.ReceiveDamage(attackBehaviour.Attack());
+                //obj?.TakeDamage(attackBehaviour.Attack());
 
                 return;
             }
@@ -84,12 +84,12 @@ namespace Skalm.GameObjects.Enemies
                     moveBehaviour = new MoveRandom();
                     break;
                 case EnemyMoveBehaviours.Pathfinding:
-                    moveBehaviour = new MovePathfinding(mapManager, sceneManager);
+                    moveBehaviour = new MovePathfinding(_mapManager, _sceneManager);
                     break;
             }
         }
 
-        public void ReceiveDamage(DoDamage damage)
+        public void TakeDamage(DoDamage damage)
         {
 
         }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.Map.Tile
 {
-    internal class DoorTile : BaseTile, ICollider, IInteractable, IOccupiable
+    internal class DoorTile : BaseTile, ICollider, IInteractable<DoorTile>, IOccupiable
     {
         private char openSprite;
         private char closedSprite;
@@ -31,9 +31,10 @@ namespace Skalm.Map.Tile
         }
 
 
-        public void Interact()
+        public DoorTile Interact()
         {
             ColliderIsActive = !ColliderIsActive;
+            return this;
         }
 
         public void OnCollision()

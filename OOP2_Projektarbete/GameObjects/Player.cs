@@ -27,8 +27,8 @@ namespace Skalm.GameObjects
         private Vector2Int previousPosition;
         private Queue<Vector2Int> moveQueue;
         public static event Action? playerTurn;
-        public static event Action<StatsObjectHard, StatsObjectSoft>? playerStats;
-        public static event Action? playerInventory;
+        public static event Action<ActorStatsObject>? playerStats;
+        public static event Action<EquipmentManager>? playerInventory;
 
         // CONSTRUCTOR I
         public Player(MapManager mapManager, Vector2Int posXY, IAttackComponent attack, string name, char sprite = '@', ConsoleColor color = ConsoleColor.White) : base(posXY, sprite, color)
@@ -62,8 +62,8 @@ namespace Skalm.GameObjects
 
         public void SendStatsToDisplay()
         {
-            playerStats?.Invoke(statsHard, statsSoft);
-            playerInventory?.Invoke();
+            playerStats?.Invoke(statsObject);
+            playerInventory?.Invoke(equipmentManager);
         }
 
         // MOVE METHOD
@@ -83,7 +83,7 @@ namespace Skalm.GameObjects
             if (tile is IOccupiable occupiable && occupiable.ActorPresent)
             {
                 var obj = occupiable.ObjectsOnTile.Where(o => o is IDamageable).FirstOrDefault() as IDamageable;
-                obj?.ReceiveDamage(_attack.Attack());
+                //obj?.ReceiveDamage(_attack.Attack());
                 playerTurn?.Invoke();
                 return;
             }
@@ -94,9 +94,14 @@ namespace Skalm.GameObjects
 
         public void InteractWithNeighbor(BaseTile neighbor)
         {
-            if (neighbor is IInteractable interactable)
+            if (neighbor is IInteractable<DoorTile> door)
             {
-                interactable.Interact();
+                door.Interact();
+                mapManager.mapPrinter.DrawSingleTile(neighbor.GridPosition);
+            }
+            else if (neighbor is IInteractable<Item> item)
+            {
+                equipmentManager.AddItemToInventory(item.Interact());
                 mapManager.mapPrinter.DrawSingleTile(neighbor.GridPosition);
             }
         }
@@ -115,7 +120,7 @@ namespace Skalm.GameObjects
         }
 
         // METHOD RECEIVE DAMAGE
-        public void ReceiveDamage(DoDamage damage)
+        public void TakeDamage(DoDamage damage)
         {
 
         }

@@ -1,5 +1,6 @@
 ﻿using Skalm.Display;
 using Skalm.GameObjects;
+using Skalm.GameObjects.Items;
 using Skalm.GameObjects.Stats;
 using Skalm.Map.Tile;
 using Skalm.States;
@@ -57,11 +58,13 @@ namespace Skalm.Grid
             PrintWithinBounds(msg, messageConsole);
         }
 
-        public void DisplayStats(StatsObject hardStats, StatsObjectSoft softStats)
+        public void DisplayStats(ActorStatsObject playerStats)
         {
-            string name = hardStats.Name;
+            string name = playerStats.name;
             if (name.Length > mainStatsConsole.Size.Width)
                 name = name.Remove(mainStatsConsole.Size.Width);
+
+            StatsObject statsObject = playerStats.stats;
 
             int column = mainStatsConsole.StartXY.X;
             int row = mainStatsConsole.StartXY.Y;
@@ -70,15 +73,18 @@ namespace Skalm.Grid
             row++;
             printer.PrintFromPosition(TextTools.RepeatChar('─', name.Length), row, column);
             row++;
-            printer.PrintFromPosition($"Lives: {softStats.HpCurrent} / {softStats.HpMax}", row, column);
+            printer.PrintFromPosition($"Lives: {playerStats.GetCurrentHP()} / {statsObject.statsArr[(int)EStats.HP].GetValue()}", row, column);
             row++;
-            printer.PrintFromPosition($"Base damage: {softStats.BaseDamage}", row, column);
+            printer.PrintFromPosition($"Base damage: {statsObject.statsArr[(int)EStats.BaseDamage].GetValue()}", row, column);
             row += 2;
-            printer.PrintFromPosition($"Str {hardStats.Strength.GetValue()} | Dex {hardStats.Dexterity.GetValue()} " +
-                $"| Con {hardStats.Constitution.GetValue()} | Int {hardStats.Strength.GetValue()} | Lck {hardStats.Strength.GetValue()}", row, column);
+            printer.PrintFromPosition($"Str {statsObject.statsArr[(int)EStats.Strength].GetValue()} " +
+                $"| Dex {statsObject.statsArr[(int)EStats.Dexterity].GetValue()} " +
+                $"| Con {statsObject.statsArr[(int)EStats.Constitution].GetValue()} " +
+                $"| Int {statsObject.statsArr[(int)EStats.Intelligence].GetValue()} " +
+                $"| Lck {statsObject.statsArr[(int)EStats.Luck].GetValue()}", row, column);
         }
 
-        public void DisplayInventory()
+        public void DisplayInventory(EquipmentManager im)
         {
             int column = subStatsConsole.StartXY.X;
             int row = subStatsConsole.StartXY.Y;
