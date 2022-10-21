@@ -10,16 +10,15 @@ namespace Skalm.States
 {
     internal class GameStatePlaying : GameStateBase
     {
-        private SceneManager _sceneManager;
-        private MapManager mapManager;
+        private MapManager _mapManager;
         private MapPrinter mapPrinter;
 
         // CONSTRUCTOR I
         public GameStatePlaying(GameManager gameManager) : base(gameManager)
         {
             _sceneManager = gameManager.SceneManager;
-            mapManager = gameManager.MapManager;
-            mapPrinter = mapManager.mapPrinter;
+            _mapManager = gameManager.MapManager;
+            mapPrinter = _mapManager.mapPrinter;
         }
 
         #region State Machine Basics
@@ -36,18 +35,19 @@ namespace Skalm.States
             {
                 _displayManager.Printer.PrintCenteredInWindow("ENTERING SKÄLM", _displayManager.WindowInfo.WindowHeight / 2);
                 Thread.Sleep(500);
+
+                _mapManager.mapGenerator.ResetMapIndex();
                 
-
-
                 // CREATE MAP
-                mapManager.mapGenerator.CreateMap();
+                _mapManager.mapGenerator.CreateMap();
+                _sceneManager.InitializePlayer();
                 _sceneManager.InitializeScene();
             }
 
             // DRAWING HUD & MAP
             _displayManager.Eraser.EraseAll();
             _displayManager.DisplayHUD();
-            mapManager.mapPrinter.DrawMap();
+            _mapManager.mapPrinter.DrawMap();
            
             _sceneManager.Player.SendStatsToDisplay();
             _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
@@ -76,6 +76,9 @@ namespace Skalm.States
             {
                 actor.UpdateMain();
             }
+
+            if (_sceneManager.Player.GridPosition.Equals(_mapManager.mapGenerator.GoalPosition))
+                _sceneManager.LevelComplete();
         }
 
         // UPDATE STATE DISPLAY

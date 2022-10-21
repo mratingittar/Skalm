@@ -1,5 +1,6 @@
 ﻿using Skalm.GameObjects;
 using Skalm.GameObjects.Interfaces;
+using Skalm.GameObjects.Items;
 using Skalm.Structs;
 
 namespace Skalm.Map.Tile
@@ -32,7 +33,7 @@ namespace Skalm.Map.Tile
                 l += "door.";
 
                 if (IsLocked)
-                    l += " Unlock it?";
+                    l += " Use a key to unlock it.";
                 else if (ColliderIsActive)
                     l += " Open it?";
                 return l;
@@ -53,8 +54,12 @@ namespace Skalm.Map.Tile
 
         public void Interact(Player player)
         {
-            if (IsLocked) // WILL REQUIRE KEY
-            { 
+            if (IsLocked)
+            {
+                if (player.equipmentManager.inventory.Keys == 0)
+                    return;
+
+                player.equipmentManager.inventory.itemList.Find(item => item is Key key)?.Use(player);
                 IsLocked = false;
                 ColliderIsActive = false;
             }

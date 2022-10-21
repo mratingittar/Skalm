@@ -18,11 +18,12 @@ namespace Skalm.GameObjects
         public readonly MapManager mapManager;
         public EquipmentManager equipmentManager;
 
-
         // EVENTS
         public static event Action? OnPlayerTurn;
-        public static event Action<ActorStatsObject>? OnPlayerStatsUpdated;
+        public static event Action<ActorStatsObject, int>? OnPlayerStatsUpdated;
         public static event Action<EquipmentManager>? OnPlayerInventoryUpdated;
+
+        private int _currentFloor;
 
         // CONSTRUCTOR I
         public Player(MapManager mapManager, DisplayManager displayManager, IAttackComponent attack, ActorStatsObject statsObject, string name, Vector2Int gridPosition, char sprite = '@', ConsoleColor color = ConsoleColor.White) 
@@ -41,14 +42,19 @@ namespace Skalm.GameObjects
         // INITIALIZE PLAYER
         public void InitializePlayer(Vector2Int gridPosition, string playerName, char sprite, ConsoleColor color)
         {
-            GridPosition = gridPosition;            
+            SetPlayerPosition(gridPosition);
             _sprite = sprite;
             _color = color;
 
             statsObject.ResetHP();
             this.statsObject.name = playerName;
             equipmentManager.ResetInventory();
+
+            _currentFloor = 1;
         }
+
+        public void SetPlayerPosition(Vector2Int gridPosition) => GridPosition = gridPosition;
+        public void NextFloor() => _currentFloor++;
 
         // SEND STATS TO DISPLAY
         public void SendStatsToDisplay()
@@ -60,7 +66,7 @@ namespace Skalm.GameObjects
         // UPDATE STATS DISPLAY
         private void UpdateStatDisplay()
         {
-            OnPlayerStatsUpdated?.Invoke(statsObject);
+            OnPlayerStatsUpdated?.Invoke(statsObject, _currentFloor);
         }
 
         // UPDATE INVENTORY DISPLAY

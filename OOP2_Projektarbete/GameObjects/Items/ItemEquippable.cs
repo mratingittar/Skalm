@@ -31,10 +31,10 @@ namespace Skalm.GameObjects.Items
         }
 
         // USE ITEM
-        public override void Use(ref Player player)
+        public override void Use(Player player)
         {
             // EQUIP ITEM
-            player.equipmentManager.EquipItem(ref player.statsObject.stats, this);
+            player.equipmentManager.EquipItem(player.statsObject.stats, this);
         }
     }
 }

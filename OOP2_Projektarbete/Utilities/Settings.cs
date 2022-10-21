@@ -39,7 +39,7 @@
         private void CheckForMinValues()
         {
             StatsWidth = Math.Max(StatsWidth, 23);
-            MainStatsHeight = Math.Max(MainStatsHeight, 8);
+            MainStatsHeight = Math.Max(MainStatsHeight, 10);
             MessageBoxHeight = Math.Max(MessageBoxHeight, 3);
         }
 

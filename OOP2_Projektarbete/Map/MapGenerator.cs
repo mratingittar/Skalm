@@ -9,15 +9,20 @@ namespace Skalm.Map
     internal class MapGenerator
     {
         public HashSet<Vector2Int> FloorTiles { get; private set; }
+        internal HashSet<Vector2Int> Doors { get => _doors; }
+        
         public List<Vector2Int> EnemySpawnPositions { get; private set; }
         public List<Vector2Int> ItemSpawnPositions { get; private set; }
+        public List<Vector2Int> KeySpawnPositions { get; private set; }
         public Vector2Int PlayerFixedSpawnPosition { get; private set; }
+        public Vector2Int GoalPosition { get; private set; }
 
         private MapManager _mapManager;
         private DisplayManager _displayManager;
         private HashSet<Vector2Int> _doors;
         private Grid2D<BaseTile> _tileGrid;
         private Dictionary<int, Map> _maps;
+        private int _mapIndex;
         private readonly ISettings _settings;
 
         public MapGenerator(MapManager mapManager, DisplayManager displayManager, Grid2D<BaseTile> tileGrid, ISettings settings)
@@ -28,15 +33,18 @@ namespace Skalm.Map
             _settings = settings;
             _doors = new HashSet<Vector2Int>();
             _maps = new Dictionary<int, Map>();
+            _mapIndex = 0;
             FloorTiles = new HashSet<Vector2Int>();
             EnemySpawnPositions = new List<Vector2Int>();
             ItemSpawnPositions = new List<Vector2Int>();
+            KeySpawnPositions = new List<Vector2Int>();
             PlayerFixedSpawnPosition = Vector2Int.Zero;
+            GoalPosition = Vector2Int.Zero;
 
-            LoadMaps();
+            LoadMapsFromFolder();
         }
 
-        private void LoadMaps()
+        private void LoadMapsFromFolder()
         {
             if (FileHandler.TryReadFolder("maps", out List<string[]> mapList))
             {
@@ -49,12 +57,16 @@ namespace Skalm.Map
             }
         }
 
+        public void ResetMapIndex() => _mapIndex = 0;
+
         public void CreateMap()
         {
-            Random random = new Random();
-            LoadMapIntoGrid(_maps[random.Next(_maps.Count)]); //Create failsafe if map folder is empty
+            LoadMapIntoGrid(LoadNextMap()); //Create failsafe if map folder is empty
             FindWalls();
             SetBorderFloorsAsWalls();
+
+            GoalPosition = GoalPosition.Equals(Vector2Int.Zero)
+                ? _mapManager.GetRandomPosition() : GoalPosition;
         }
 
         public void ResetMap()
@@ -63,7 +75,9 @@ namespace Skalm.Map
             FloorTiles.Clear();
             EnemySpawnPositions.Clear();
             ItemSpawnPositions.Clear();
+            KeySpawnPositions.Clear();
             PlayerFixedSpawnPosition = Vector2Int.Zero;
+            GoalPosition = Vector2Int.Zero;
 
             for (int x = 0; x < _tileGrid.gridWidth; x++)
             {
@@ -72,9 +86,15 @@ namespace Skalm.Map
                     _tileGrid.SetGridObject(x,y, new VoidTile(new Vector2Int(x,y)));
                 }
             }
+        }
+        private Map LoadNextMap()
+        {
+            if (_mapIndex >= _maps.Count)
+                _mapIndex = 0;
 
-            //_tileGrid = new Grid2D<BaseTile>(_settings.MapWidth, _settings.MapHeight, _settings.CellWidth, _settings.CellHeight,
-            //    _displayManager.GetMapOrigin(), (x, y) => new VoidTile(new Vector2Int(x, y)));
+            Map nextMap = _maps[_mapIndex];
+            _mapIndex++;
+            return nextMap;
         }
 
         private void LoadMapIntoGrid(Map map)
@@ -116,9 +136,18 @@ namespace Skalm.Map
                             CreateFloorTile(x + startX, y + startY);
                             ItemSpawnPositions.Add(new Vector2Int(x + startX, y + startY));
                             break;
+                        case 'k':
+                            CreateFloorTile(x + startX, y + startY);
+                            KeySpawnPositions.Add(new Vector2Int(x + startX, y + startY));
+                            break;
                         case 'p':
                             CreateFloorTile(x + startX, y + startY);
                             PlayerFixedSpawnPosition = new Vector2Int(x + startX, y + startY);
+                            break;
+                        case 'g':
+                            _tileGrid.SetGridObject(x + startX, y + startY, new FloorTile(new Vector2Int(x + startX, y + startY), 'G', ConsoleColor.Magenta));
+                            FloorTiles.Add(new Vector2Int(x + startX, y + startY));
+                            GoalPosition = new Vector2Int(x + startX, y + startY);
                             break;
                     }
                 }

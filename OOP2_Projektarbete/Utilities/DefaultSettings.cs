@@ -15,7 +15,7 @@
         public int MapHeight { get; private set; } = 32;
         public int MessageBoxHeight { get; private set; } = 5; // MINIMUM 3!
         public int StatsWidth { get; private set; } = 23; // MINIMUM 23!
-        public int MainStatsHeight { get; private set; } = 8; // MINIMUM 8!
+        public int MainStatsHeight { get; private set; } = 10; // MINIMUM 10!
         public int HudPadding { get; private set; } = 1;
 
         public char SpriteBorder { get; private set; } = '░';

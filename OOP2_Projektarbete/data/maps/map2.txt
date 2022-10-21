@@ -1,15 +1,9 @@
  fffffffff   fffffffffff       fief
  fffpfffff   fffffffffff       ffff
- fffffffff   fffffffffff        ff  
+ fffffffff   fffffgfffff        ff  
  fffffffff   fffffffffff        ff
     ff             f             f 
     ff             f             d       
     fffffffffffffffffffffffffffffffffff
                 f                 fffif
           fffffffffffffffffffffffffffff
-          d                           f
-  fffffffffffffffff         ffffff    f
-  fefffffffffffffff         f   ff    f
-  ffff fff fff ffff         f  ifffffff
-  ffff fff fff ffff         f       fff
-  ffff fff fff ffffffffffffff       e

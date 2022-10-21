@@ -12,11 +12,13 @@ namespace Skalm.GameObjects.Items
 
         // INVENTORY ITEM LIST
         public List<Item> itemList;
+        public int Keys;
 
         // CONSTRUCTOR I
         public Inventory()
         {
             this.itemList = new List<Item>();
+            Keys = 0;
         }
 
         // ADD ITEM TO INVENTORY
@@ -26,6 +28,9 @@ namespace Skalm.GameObjects.Items
             {
                 itemList.Add(item);
                 onInventoryChanged?.Invoke();
+
+                if (item is Key)
+                    Keys++;
             }
         }
 
@@ -36,6 +41,9 @@ namespace Skalm.GameObjects.Items
             {
                 itemList.Remove(item);
                 onInventoryChanged?.Invoke();
+
+                if (item is Key)
+                    Keys--;
             }
         }
     }

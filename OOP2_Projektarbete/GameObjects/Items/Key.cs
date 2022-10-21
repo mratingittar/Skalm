@@ -10,14 +10,14 @@ namespace Skalm.GameObjects.Items
     internal class Key : Item
     {
         // CONSTRUCTOR I
-        public Key(string itemName) : base(itemName)
+        public Key() : base("Small key")
         {
         }
 
         // USE ITEM
-        public override void Use(ref Player player)
+        public override void Use(Player player)
         {
-            throw new NotImplementedException();
+            player.equipmentManager.RemoveItemFromInventory(this);
         }
 
         //public Key(Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)

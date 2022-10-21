@@ -8,7 +8,6 @@ using Skalm.Map;
 using Skalm.Map.Tile;
 using Skalm.Structs;
 using Skalm.Utilities;
-using System.Xml.Linq;
 
 namespace Skalm
 {
@@ -40,19 +39,47 @@ namespace Skalm
             ItemPickup.onItemPickup += RemoveGameObject;
         }
 
-        // INITIALIZE SCENE
-        public void InitializeScene()
+        public void LevelComplete()
         {
-            Vector2Int spawnPos = _mapManager.mapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero) 
-                ?  _mapManager.GetRandomSpawnPosition() : _mapManager.mapGenerator.PlayerFixedSpawnPosition;
+            _displayManager.Eraser.EraseAll();
+            ResetScene();
+
+            _mapManager.mapGenerator.CreateMap();
+            ResetPlayer();
+            InitializeScene();
+            Player.NextFloor();
+
+            _displayManager.DisplayHUD();
+            _mapManager.mapPrinter.DrawMap();
+
+            Player.SendStatsToDisplay();
+        }
+
+        public void ResetPlayer()
+        {
+            Vector2Int spawnPos = _mapManager.mapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero)
+                ? _mapManager.GetRandomPosition() : _mapManager.mapGenerator.PlayerFixedSpawnPosition;
+
+            Player.SetPlayerPosition(spawnPos);
+            GameObjectsInScene.Add(Player);
+            ActorsInScene.Add(Player);
+        }
+
+        public void InitializePlayer()
+        {
+            Vector2Int spawnPos = _mapManager.mapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero)
+                ? _mapManager.GetRandomPosition() : _mapManager.mapGenerator.PlayerFixedSpawnPosition;
             if (playerName.Length == 0)
                 playerName = "Nameless";
 
             Player.InitializePlayer(spawnPos, playerName, 'P', ConsoleColor.Blue);
-
             GameObjectsInScene.Add(Player);
             ActorsInScene.Add(Player);
+        }
 
+        // INITIALIZE SCENE
+        public void InitializeScene()
+        {
             // ADD ENEMIES
             if (_mapManager.mapGenerator.EnemySpawnPositions.Count > 0)
             {
@@ -65,7 +92,7 @@ namespace Skalm
             }
             else
             {
-                Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomSpawnPosition(), 'E', ConsoleColor.Yellow);
+                Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomPosition(), 'E', ConsoleColor.Yellow);
                 GameObjectsInScene.Add(enemy);
                 ActorsInScene.Add(enemy);
             }
@@ -79,7 +106,27 @@ namespace Skalm
 
             GameObjectsInScene.Add(_itemSpawner.Spawn(itemXY, 'o', ConsoleColor.Yellow, item1));
 
- 
+            // ADD KEYS
+            if (_mapManager.mapGenerator.KeySpawnPositions.Count > 0)
+            {
+                foreach (Vector2Int position in _mapManager.mapGenerator.KeySpawnPositions)
+                {
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, 'ⱡ', ConsoleColor.Green, new Key()));
+                }
+            }
+            else
+            {
+                foreach(var door in _mapManager.mapGenerator.Doors)
+                {
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), 'ⱡ', ConsoleColor.Green, new Key()));
+                }
+            } 
+                
+
+            // ADD LEVEL GOAL
+            //Vector2Int goalPos = _mapManager.mapGenerator.GoalPosition.Equals(Vector2Int.Zero)
+            //    ? _mapManager.GetRandomPosition() : _mapManager.mapGenerator.GoalPosition;
+
             // ADD OBJECTS TO MAP
             AddObjectsToMap();
         }

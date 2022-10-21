@@ -76,7 +76,7 @@ namespace Skalm.Map
             return neighbors;
         }
 
-        public Vector2Int GetRandomSpawnPosition()
+        public Vector2Int GetRandomPosition()
         {
             if (mapGenerator.FloorTiles.Count == 0)
                 throw new Exception("No free tiles to spawn in found");

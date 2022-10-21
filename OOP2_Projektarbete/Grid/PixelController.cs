@@ -20,6 +20,7 @@ namespace Skalm.Grid
         private readonly Bounds mainStatsConsole;
         private readonly Bounds subStatsConsole;
 
+        // CONSTRUCTOR I
         public PixelController(Grid2D<Pixel> pixelGrid, Dictionary<string, Bounds> sectionBounds, IPrinter printer, IEraser eraser)
         {
             this.pixelGrid = pixelGrid;
@@ -60,9 +61,11 @@ namespace Skalm.Grid
         }
 
         // DISPLAY STATS MAIN SECTION
-        public void DisplayStats(ActorStatsObject playerStats)
+        public void DisplayStats(ActorStatsObject playerStats, int currentFloor)
         {
             ClearSection("MainStatsSection");
+
+            string floor = $"Floor {currentFloor}";
 
             string name = playerStats.name;
             if (name.Length > mainStatsConsole.Size.Width)
@@ -77,7 +80,11 @@ namespace Skalm.Grid
             row++;
             printer.PrintFromPosition(TextTools.RepeatChar('─', name.Length), row, column);
             row++;
-            printer.PrintFromPosition($"Lives: {playerStats.GetCurrentHP()} / {statsObject.statsArr[(int)EStats.HP].GetValue()}", row, column);
+            printer.PrintFromPosition($"Level {playerStats.Level}", row, column);
+            row++;
+            printer.PrintFromPosition($"Experience:  {playerStats.XP}", row, column);
+            row++;
+            printer.PrintFromPosition($"Hit points:  {playerStats.GetCurrentHP()} / {statsObject.statsArr[(int)EStats.HP].GetValue()}", row, column);
             row++;
             printer.PrintFromPosition($"Base damage: {statsObject.statsArr[(int)EStats.BaseDamage].GetValue()}", row, column);
             row += 2;
@@ -86,6 +93,8 @@ namespace Skalm.Grid
                 $"| Con {statsObject.statsArr[(int)EStats.Constitution].GetValue()} " +
                 $"| Int {statsObject.statsArr[(int)EStats.Intelligence].GetValue()} " +
                 $"| Lck {statsObject.statsArr[(int)EStats.Luck].GetValue()}", row, column);
+
+            printer.PrintFromPosition(floor, mainStatsConsole.StartXY.Y, mainStatsConsole.EndXY.X - floor.Length);
         }
 
         // DISPLAY INVENTORY SECTION

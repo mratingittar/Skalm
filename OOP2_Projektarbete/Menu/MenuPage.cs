@@ -30,6 +30,7 @@ namespace Skalm.Menu
         Options,
         InputMethod,
         Music,
-        Credits
+        Credits,
+        HowToPlay
     }
 }

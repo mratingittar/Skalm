@@ -17,6 +17,8 @@ namespace Skalm.GameObjects.Stats
         // SOFT STATS
         public string name;
         int HPcurr;
+        public int XP;
+        public int Level;
 
         public event Action? OnStatsChanged;
         public event Action? OnDeath;
@@ -27,6 +29,8 @@ namespace Skalm.GameObjects.Stats
             this.stats = stats;
             this.name = name;
             ResetHP();
+            XP = 0;
+            Level = 1;
         }
 
         // RESET HP

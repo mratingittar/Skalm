@@ -43,7 +43,7 @@ namespace Skalm.GameObjects.Stats
         public void RemoveItemFromInventory(Item item) => inventory.RemoveItem(item);
 
         // EQUIP ITEM
-        public void EquipItem(ref StatsObject playerStats, ItemEquippable item)
+        public void EquipItem(StatsObject playerStats, ItemEquippable item)
         {
             if (item != null)
             {

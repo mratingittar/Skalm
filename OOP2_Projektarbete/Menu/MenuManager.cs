@@ -28,9 +28,9 @@ namespace Skalm.Menu
                 title = new string[0];
 
             Dictionary<string, MenuPage> menuPagesToLoad = CreateMenuPages();
-            mainMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["MAIN MENU"], menuPagesToLoad["NEW GAME"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["CREDITS"]), displayManager, soundManager, inputManager);
+            mainMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["MAIN MENU"], menuPagesToLoad["NEW GAME"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["HOW TO PLAY"], menuPagesToLoad["CREDITS"]), displayManager, soundManager, inputManager);
             mainMenu.pages.FindNode(node => node.Value.pageName == "OPTIONS").AddChildren(menuPagesToLoad["INPUT METHOD"], menuPagesToLoad["MUSIC"]);
-            pauseMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["PAUSE MENU"], menuPagesToLoad["OPTIONS"]), displayManager, soundManager, inputManager);
+            pauseMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["PAUSE MENU"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["HOW TO PLAY"]), displayManager, soundManager, inputManager);
             pauseMenu.pages.FindNode(node => node.Value.pageName == "OPTIONS").AddChildren(menuPagesToLoad["INPUT METHOD"], menuPagesToLoad["MUSIC"]);
             ActiveMenu = mainMenu;
         }
@@ -43,15 +43,27 @@ namespace Skalm.Menu
             List<string> music = soundManager.Tracks.Select(sound => sound.soundName).ToList();
             music.Add("Back");
 
+            string[] helpText = new string[]
+            {
+                "You are a SKÄLM.",
+                "A rogue, seeking to loot riches and slay monsters,",
+                "as you venture ever deeper into the dungeon.",
+                "Interact with 'E'",
+                "Confirm with 'Enter'",
+                "Cancel with 'Escape'",
+                "Back"
+            };
+
             return new Dictionary<string, MenuPage>
             {
-                {"MAIN MENU", new MenuPage(Page.MainMenu, "MAIN MENU", "New Game", "Options", "Credits", "Exit")},
+                {"MAIN MENU", new MenuPage(Page.MainMenu, "MAIN MENU", "New Game", "Options", "How To Play", "Credits", "Exit")},
                 {"NEW GAME", new MenuPage(Page.NewGame, "NEW GAME", "Start New Game", "Enter Name", "Back")},
                 {"OPTIONS", new MenuPage(Page.Options, "OPTIONS", "Input Method", "Music", "Toggle Beep", "Back")},
                 {"CREDITS", new MenuPage(Page.Credits, "CREDITS", "Josef Schönbäck", "Martin Lindvik", "Music by Kevin MacLeod(incompetech.com)", "Licensed under Creative Commons: By Attribution 4.0 License", "Back")},
                 {"INPUT METHOD", new MenuPage(Page.InputMethod, "INPUT METHOD", inputs.ToArray())},
                 {"MUSIC", new MenuPage(Page.Music, "MUSIC", music.ToArray())},
-                {"PAUSE MENU", new MenuPage(Page.PauseMenu, "PAUSE MENU", "Resume", "Options", "Exit")}
+                {"HOW TO PLAY", new MenuPage(Page.HowToPlay, "HOW TO PLAY", helpText)},
+                {"PAUSE MENU", new MenuPage(Page.PauseMenu, "PAUSE MENU", "Resume", "Options", "How To Play", "Exit")}
             };
         }
 

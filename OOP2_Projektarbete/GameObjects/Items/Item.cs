@@ -21,7 +21,7 @@ namespace Skalm.GameObjects.Items
         }
 
         // USE ITEM
-        public virtual void Use(ref Player player)
+        public virtual void Use(Player player)
         {
             
         }
