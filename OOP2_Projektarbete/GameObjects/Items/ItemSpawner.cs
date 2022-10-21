@@ -18,10 +18,10 @@ namespace Skalm.GameObjects.Items
         }
 
         // SPAWN ITEM PICKUP
-        public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color, Item item)
+        public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color, Item item, bool singleSprite = false)
         {
             // TO DO: SPAWN ACTUAL ITEM
-            return new ItemPickup(position, sprite, color, item);
+            return new ItemPickup(position, sprite, color, item, singleSprite);
         }
     }
 }

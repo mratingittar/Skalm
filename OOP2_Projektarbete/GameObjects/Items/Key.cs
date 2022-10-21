@@ -9,6 +9,7 @@ namespace Skalm.GameObjects.Items
 {
     internal class Key : Item
     {
+
         // CONSTRUCTOR I
         public Key() : base("Small key")
         {

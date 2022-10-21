@@ -12,14 +12,16 @@ namespace Skalm.GameObjects.Items
     {
         // CONTAINED ITEM
         Item item;
+        public override bool ShowSingleSprite { get; protected set; }
 
         // STATIC EVENT - ON ANY ITEM PICKED UP
         public static event Action<ItemPickup>? onItemPickup;
 
         // CONSTRUCTOR I
-        public ItemPickup(Vector2Int gridPosition, char sprite, ConsoleColor color, Item item) : base(gridPosition, sprite, color)
+        public ItemPickup(Vector2Int gridPosition, char sprite, ConsoleColor color, Item item, bool showSingleSprite = false) : base(gridPosition, sprite, color)
         {
             this.item = item;
+            ShowSingleSprite = showSingleSprite;
         }
 
         // INTERACT WITH ITEM

@@ -7,6 +7,7 @@ namespace Skalm.Map.Tile
     internal class FloorTile : BaseTile, IOccupiable
     {
         public override char Sprite { get => ObjectsOnTile.Count == 0 ? _sprite : ObjectsOnTile.First().Sprite; }
+        public override bool ShowSingleSprite { get => ObjectsOnTile.Count == 0 ? false : ObjectsOnTile.First().ShowSingleSprite; }
         public override ConsoleColor Color { get => ObjectsOnTile.Count == 0 ? _color : ObjectsOnTile.First().Color; }
         public Stack<GameObject> ObjectsOnTile { get; private set; }
         public bool ActorPresent { get; set; }

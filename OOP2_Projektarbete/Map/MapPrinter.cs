@@ -1,8 +1,6 @@
 ﻿using Skalm.Display;
-using Skalm.GameObjects;
 using Skalm.Grid;
 using Skalm.Map.Tile;
-using Skalm.States;
 using Skalm.Structs;
 
 namespace Skalm.Map
@@ -54,7 +52,7 @@ namespace Skalm.Map
             {
                 for (int y = 0; y < tileGrid.gridHeight; y++)
                 {
-                        DrawSingleTile(x, y);
+                    DrawSingleTile(x, y);
                 }
             }
         }
@@ -82,10 +80,14 @@ namespace Skalm.Map
 
 
                 Console.ForegroundColor = tile.Color;
-                foreach (var position in tileGrid.GetPlanePositions(x, y))
-                {
-                    printer.PrintAtPosition(tile.Sprite, position.Y, position.X);
-                }
+
+                if (tile.ShowSingleSprite) // TRIED IMPLEMENTING SINGLE SPRITES, CURRENTLY BROKEN
+                    printer.PrintAtPosition(tile.Sprite, tileGrid.GetPlanePosition(x, y).Y, tileGrid.GetPlanePosition(x, y).X);
+                else
+                    foreach (var position in tileGrid.GetPlanePositions(x, y))
+                    {
+                        printer.PrintAtPosition(tile.Sprite, position.Y, position.X);
+                    }
                 Console.ForegroundColor = foregroundColor;
             }
         }

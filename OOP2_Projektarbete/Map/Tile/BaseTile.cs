@@ -16,6 +16,7 @@ namespace Skalm.Map.Tile
 
         public Vector2Int GridPosition { get; protected set; }
         public virtual char Sprite { get => _sprite; }
+        public virtual bool ShowSingleSprite { get; protected set; }
         public virtual ConsoleColor Color { get => _color; }
         public virtual string Label { get; protected set; }
 

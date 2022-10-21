@@ -111,14 +111,14 @@ namespace Skalm
             {
                 foreach (Vector2Int position in _mapManager.mapGenerator.KeySpawnPositions)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, 'ⱡ', ConsoleColor.Green, new Key()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, 'ⱡ', ConsoleColor.Green, new Key(), true));
                 }
             }
             else
             {
                 foreach(var door in _mapManager.mapGenerator.Doors)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), 'ⱡ', ConsoleColor.Green, new Key()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), 'ⱡ', ConsoleColor.Green, new Key(), true));
                 }
             } 
                 
