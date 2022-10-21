@@ -132,7 +132,10 @@ namespace Skalm.Menu
                     pageItem = TextTools.AddPointersToString(pageItem, 3);
 
                 if (ActivePage.page is Page.InputMethod && pageItem == _inputManager.moveInput.GetType().Name)
-                    pageItem = TextTools.AddPointersToString(pageItem, 3);                
+                    pageItem = TextTools.AddPointersToString(pageItem, 3);
+
+                if (ActivePage.page is Page.HowToPlay && pageItem == "CONTROLS:")
+                    count++;
 
                 if (item.Key == ActivePage.items.Last().Key)
                 {

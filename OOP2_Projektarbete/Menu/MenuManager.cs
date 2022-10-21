@@ -48,9 +48,11 @@ namespace Skalm.Menu
                 "You are a SKÄLM.",
                 "A rogue, seeking to loot riches and slay monsters,",
                 "as you venture ever deeper into the dungeon.",
-                "Interact with 'E'",
-                "Confirm with 'Enter'",
-                "Cancel with 'Escape'",
+                "CONTROLS:",
+                "Interact........E",
+                "Inventory.......I",
+                "Confirm.....Enter",
+                "Cancel.....Escape",
                 "Back"
             };
 

@@ -2,8 +2,6 @@
 using Skalm.GameObjects;
 using Skalm.GameObjects.Items;
 using Skalm.GameObjects.Stats;
-using Skalm.Map.Tile;
-using Skalm.States;
 using Skalm.Structs;
 using Skalm.Utilities;
 
@@ -11,23 +9,28 @@ namespace Skalm.Grid
 {
     internal class PixelController
     {
-        private HashSet<Pixel> borderCells;
-        private Dictionary<string, HashSet<Pixel>> pixelsInSections;
-        private readonly Grid2D<Pixel> pixelGrid;
-        private readonly IPrinter printer;
-        private readonly IEraser eraser;
-        private readonly Bounds messageConsole;
-        private readonly Bounds mainStatsConsole;
-        private readonly Bounds subStatsConsole;
+        public int InventoryIndex { get; set; }
+        public int InventoryRowsAvailable { get; private set; }
+
+        private HashSet<Pixel> _borderCells;
+        private Dictionary<string, HashSet<Pixel>> _pixelsInSections;
+        private readonly Grid2D<Pixel> _pixelGrid;
+        private readonly IPrinter _printer;
+        private readonly IEraser _eraser;
+        private readonly Bounds _messageConsole;
+        private readonly Bounds _mainStatsConsole;
+        private readonly Bounds _subStatsConsole;
+        private int _inventoryStartRow;
 
         // CONSTRUCTOR I
         public PixelController(Grid2D<Pixel> pixelGrid, Dictionary<string, Bounds> sectionBounds, IPrinter printer, IEraser eraser)
         {
-            this.pixelGrid = pixelGrid;
-            this.printer = printer;
-            this.eraser = eraser;
-            pixelsInSections = new Dictionary<string, HashSet<Pixel>>();
-            borderCells = new HashSet<Pixel>();
+            this._pixelGrid = pixelGrid;
+            this._printer = printer;
+            this._eraser = eraser;
+            _pixelsInSections = new Dictionary<string, HashSet<Pixel>>();
+            _borderCells = new HashSet<Pixel>();
+            InventoryIndex = -1;
 
             Player.OnPlayerStatsUpdated += DisplayStats;
             Player.OnPlayerInventoryUpdated += DisplayInventory;
@@ -40,22 +43,22 @@ namespace Skalm.Grid
             FindBorderPixels();
 
             Bounds message = FindConsoleBoundsOfSection("MessageSection");
-            messageConsole = new Bounds(new Vector2Int(message.StartXY.X + 2, message.StartXY.Y + 1), new Vector2Int(message.EndXY.X - 2, message.EndXY.Y - 1));
+            _messageConsole = new Bounds(new Vector2Int(message.StartXY.X + 2, message.StartXY.Y + 1), new Vector2Int(message.EndXY.X - 2, message.EndXY.Y - 1));
 
             Bounds mainStats = FindConsoleBoundsOfSection("MainStatsSection");
-            mainStatsConsole = new Bounds(new Vector2Int(mainStats.StartXY.X + 2, mainStats.StartXY.Y + 1), new Vector2Int(mainStats.EndXY.X - 2, mainStats.EndXY.Y - 1));
+            _mainStatsConsole = new Bounds(new Vector2Int(mainStats.StartXY.X + 2, mainStats.StartXY.Y + 1), new Vector2Int(mainStats.EndXY.X - 2, mainStats.EndXY.Y - 1));
 
             Bounds subStats = FindConsoleBoundsOfSection("SubStatsSection");
-            subStatsConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, subStats.StartXY.Y + 1), new Vector2Int(subStats.EndXY.X - 2, subStats.EndXY.Y - 1));
+            _subStatsConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, subStats.StartXY.Y + 1), new Vector2Int(subStats.EndXY.X - 2, subStats.EndXY.Y - 1));
         }
 
-        
+
 
         // DISPLAY MESSAGE BOTTOM SECTION
         public void DisplayMessage(string msg, bool showMarker = false)
         {
             ClearSection("MessageSection");
-            PrintWithinBounds(msg, messageConsole);
+            PrintWithinBounds(msg, _messageConsole);
             if (showMarker)
                 Console.CursorVisible = true;
         }
@@ -68,33 +71,33 @@ namespace Skalm.Grid
             string floor = $"Floor {currentFloor}";
 
             string name = playerStats.name;
-            if (name.Length > mainStatsConsole.Size.Width)
-                name = name.Remove(mainStatsConsole.Size.Width);
+            if (name.Length > _mainStatsConsole.Size.Width)
+                name = name.Remove(_mainStatsConsole.Size.Width);
 
             StatsObject statsObject = playerStats.stats;
 
-            int column = mainStatsConsole.StartXY.X;
-            int row = mainStatsConsole.StartXY.Y;
+            int column = _mainStatsConsole.StartXY.X;
+            int row = _mainStatsConsole.StartXY.Y;
 
-            printer.PrintFromPosition(name, row, column);
+            _printer.PrintFromPosition(name, row, column);
             row++;
-            printer.PrintFromPosition(TextTools.RepeatChar('─', name.Length), row, column);
+            _printer.PrintFromPosition(TextTools.RepeatChar('─', name.Length), row, column);
             row++;
-            printer.PrintFromPosition($"Level {playerStats.Level}", row, column);
+            _printer.PrintFromPosition($"Level {playerStats.Level}", row, column);
             row++;
-            printer.PrintFromPosition($"Experience:  {playerStats.XP}", row, column);
+            _printer.PrintFromPosition($"Experience:  {playerStats.XP}", row, column);
             row++;
-            printer.PrintFromPosition($"Hit points:  {playerStats.GetCurrentHP()} / {statsObject.statsArr[(int)EStats.HP].GetValue()}", row, column);
+            _printer.PrintFromPosition($"Hit points:  {playerStats.GetCurrentHP()} / {statsObject.statsArr[(int)EStats.HP].GetValue()}", row, column);
             row++;
-            printer.PrintFromPosition($"Base damage: {statsObject.statsArr[(int)EStats.BaseDamage].GetValue()}", row, column);
+            _printer.PrintFromPosition($"Base damage: {statsObject.statsArr[(int)EStats.BaseDamage].GetValue()}", row, column);
             row += 2;
-            printer.PrintFromPosition($"Str {statsObject.statsArr[(int)EStats.Strength].GetValue()} " +
+            _printer.PrintFromPosition($"Str {statsObject.statsArr[(int)EStats.Strength].GetValue()} " +
                 $"| Dex {statsObject.statsArr[(int)EStats.Dexterity].GetValue()} " +
                 $"| Con {statsObject.statsArr[(int)EStats.Constitution].GetValue()} " +
                 $"| Int {statsObject.statsArr[(int)EStats.Intelligence].GetValue()} " +
                 $"| Lck {statsObject.statsArr[(int)EStats.Luck].GetValue()}", row, column);
 
-            printer.PrintFromPosition(floor, mainStatsConsole.StartXY.Y, mainStatsConsole.EndXY.X - floor.Length);
+            _printer.PrintFromPosition(floor, _mainStatsConsole.StartXY.Y, _mainStatsConsole.EndXY.X - floor.Length);
         }
 
         // DISPLAY INVENTORY SECTION
@@ -102,37 +105,64 @@ namespace Skalm.Grid
         {
             ClearSection("SubStatsSection");
 
-            int column = subStatsConsole.StartXY.X;
-            int row = subStatsConsole.StartXY.Y;
+            int column = _subStatsConsole.StartXY.X;
+            int row = _subStatsConsole.StartXY.Y;
 
-            printer.PrintFromPosition("Equipment", row, column);
+            _printer.PrintFromPosition("Equipment", row, column);
             row++;
-            printer.PrintFromPosition("─────────", row, column);
-            row += 2;
-            printer.PrintFromPosition($"Head:       {im.equipArr[(int)EEqSlots.Head].itemName}", row, column);
+            _printer.PrintFromPosition("─────────", row, column);
             row++;
-            printer.PrintFromPosition($"Torso:      {im.equipArr[(int)EEqSlots.Torso].itemName}", row, column);
+            _printer.PrintFromPosition($"Head:       {im.equipArr[(int)EEqSlots.Head].Name}", row, column);
             row++;
-            printer.PrintFromPosition($"Left hand:  {im.equipArr[(int)EEqSlots.LHand].itemName}", row, column);
+            _printer.PrintFromPosition($"Torso:      {im.equipArr[(int)EEqSlots.Torso].Name}", row, column);
             row++;
-            printer.PrintFromPosition($"Left ring:  {im.equipArr[(int)EEqSlots.LFinger].itemName}", row, column);
+            _printer.PrintFromPosition($"Left hand:  {im.equipArr[(int)EEqSlots.LHand].Name}", row, column);
             row++;
-            printer.PrintFromPosition($"Right hand: {im.equipArr[(int)EEqSlots.RHand].itemName}", row, column);
+            _printer.PrintFromPosition($"Left ring:  {im.equipArr[(int)EEqSlots.LFinger].Name}", row, column);
             row++;
-            printer.PrintFromPosition($"Right ring: {im.equipArr[(int)EEqSlots.RFinger].itemName}", row, column);
+            _printer.PrintFromPosition($"Right hand: {im.equipArr[(int)EEqSlots.RHand].Name}", row, column);
             row++;
-            printer.PrintFromPosition($"Feet:       {im.equipArr[(int)EEqSlots.Feet].itemName}", row, column);
-            row += 3;
+            _printer.PrintFromPosition($"Right ring: {im.equipArr[(int)EEqSlots.RFinger].Name}", row, column);
+            row++;
+            _printer.PrintFromPosition($"Feet:       {im.equipArr[(int)EEqSlots.Feet].Name}", row, column);
+            row += 4;
 
-            printer.PrintFromPosition("Inventory", row, column);
+            _printer.PrintFromPosition("Inventory", row, column);
             row++;
-            printer.PrintFromPosition("─────────", row, column);
-            row += 2;
-            foreach (var item in im.inventory.itemList)
+            _printer.PrintFromPosition("─────────", row, column);
+            row++;
+
+            _inventoryStartRow = row;
+            InventoryRowsAvailable = _subStatsConsole.EndXY.Y - _inventoryStartRow;
+
+            PrintInventory(im.inventory.itemList, row, column, InventoryIndex);
+        }
+
+        private void PrintInventory(List<Item> items, int row, int column, int selectionIndex)
+        {
+            int inventoryPage = Math.Max((selectionIndex + InventoryRowsAvailable) / InventoryRowsAvailable, 1) - 1;
+            int offset = selectionIndex >= InventoryRowsAvailable ? InventoryRowsAvailable * inventoryPage : 0;
+
+            for (int i = 0; i < Math.Min(InventoryRowsAvailable, items.Count() - offset); i++)
             {
-                printer.PrintFromPosition(item.itemName, row, column);
+                if (i + offset == selectionIndex)
+                    _printer.PrintFromPosition(items[i + offset].Name, row, column, true);
+                else
+                    _printer.PrintFromPosition(items[i + offset].Name, row, column);
                 row++;
             }
+
+            if (inventoryPage == 0 && items.Count() > InventoryRowsAvailable)
+                _printer.PrintFromPosition("  ... ►", row, column);
+            else if (inventoryPage > 0 && items.Count() > InventoryRowsAvailable * (inventoryPage + 1))
+                _printer.PrintFromPosition("◄ ... ►", row, column);
+            else if (inventoryPage > 0 && items.Count() < InventoryRowsAvailable * (inventoryPage + 1))
+            {
+                _printer.PrintFromPosition("◄ ... ", row, column);
+                _eraser.EraseArea(new Bounds(new Vector2Int(column, row + 1), _subStatsConsole.EndXY));
+            }
+            else
+                _eraser.EraseArea(new Bounds(new Vector2Int(column, row), _subStatsConsole.EndXY));
         }
 
         // PRINT WITHIN BOUNDS
@@ -146,7 +176,7 @@ namespace Skalm.Grid
                     if (counter == msg.Length)
                         return;
 
-                    printer.PrintAtPosition(msg[counter], y, x);
+                    _printer.PrintAtPosition(msg[counter], y, x);
                     counter++;
                 }
             }
@@ -155,11 +185,11 @@ namespace Skalm.Grid
         // PRINT BORDERS
         public void PrintBorders()
         {
-            foreach (Pixel cell in borderCells)
+            foreach (Pixel cell in _borderCells)
             {
-                foreach (var position in pixelGrid.GetPlanePositions(cell.gridPosition.X, cell.gridPosition.Y))
+                foreach (var position in _pixelGrid.GetPlanePositions(cell.gridPosition.X, cell.gridPosition.Y))
                 {
-                    printer.PrintAtPosition((cell.PartOfHUD as HUDBorder)!.borderCharacter, position.Y, position.X);
+                    _printer.PrintAtPosition((cell.PartOfHUD as HUDBorder)!.borderCharacter, position.Y, position.X);
                 }
             }
         }
@@ -167,42 +197,42 @@ namespace Skalm.Grid
         // CLEAR SECTION
         public void ClearSection(string section)
         {
-            foreach (Pixel pixel in pixelsInSections[section])
+            foreach (Pixel pixel in _pixelsInSections[section])
             {
-                foreach (var position in pixelGrid.GetPlanePositions(pixel.gridPosition))
+                foreach (var position in _pixelGrid.GetPlanePositions(pixel.gridPosition))
                 {
-                    printer.PrintAtPosition(' ', position.Y, position.X);
+                    _printer.PrintAtPosition(' ', position.Y, position.X);
                 }
             }
         }
 
         public Vector2Int GetMapOrigin()
         {
-            return pixelGrid.GetPlanePosition(pixelsInSections["MapSection"].First().gridPosition);
+            return _pixelGrid.GetPlanePosition(_pixelsInSections["MapSection"].First().gridPosition);
         }
 
         #region INITIALIZATION
         // FIND CONSOLE BOUNDS OF SECTION
         private Bounds FindConsoleBoundsOfSection(string sectionName)
         {
-            return new Bounds(pixelGrid.GetPlanePosition(pixelsInSections[sectionName].First().gridPosition),
-                pixelGrid.GetPlanePosition(pixelsInSections[sectionName].Last().gridPosition));
+            return new Bounds(_pixelGrid.GetPlanePosition(_pixelsInSections[sectionName].First().gridPosition),
+                _pixelGrid.GetPlanePosition(_pixelsInSections[sectionName].Last().gridPosition));
         }
 
         // DEFINE GRID SECTIONS
         private void DefineGridSections(Bounds area, Section section)
         {
-            if (!pixelsInSections.ContainsKey(section.GetType().Name))
-                pixelsInSections.Add(section.GetType().Name, new HashSet<Pixel>());
+            if (!_pixelsInSections.ContainsKey(section.GetType().Name))
+                _pixelsInSections.Add(section.GetType().Name, new HashSet<Pixel>());
 
             for (int x = area.StartXY.X; x < area.EndXY.X; x++)
             {
                 for (int y = area.StartXY.Y; y < area.EndXY.Y; y++)
                 {
-                    if (pixelGrid.TryGetGridObject(x,y, out Pixel pixel))
+                    if (_pixelGrid.TryGetGridObject(x, y, out Pixel pixel))
                     {
                         pixel.PartOfHUD = section;
-                        pixelsInSections[section.GetType().Name].Add(pixel);
+                        _pixelsInSections[section.GetType().Name].Add(pixel);
                     }
                 }
             }
@@ -211,12 +241,12 @@ namespace Skalm.Grid
         // FIND BORDER PIXELS
         private void FindBorderPixels()
         {
-            for (int x = 0; x < pixelGrid.gridWidth; x++)
+            for (int x = 0; x < _pixelGrid.gridWidth; x++)
             {
-                for (int y = 0; y < pixelGrid.gridHeight; y++)
+                for (int y = 0; y < _pixelGrid.gridHeight; y++)
                 {
-                    if (pixelGrid.TryGetGridObject(x, y, out Pixel pixel) && pixel.PartOfHUD is HUDBorder)
-                        borderCells.Add(pixel);
+                    if (_pixelGrid.TryGetGridObject(x, y, out Pixel pixel) && pixel.PartOfHUD is HUDBorder)
+                        _borderCells.Add(pixel);
                 }
             }
         }

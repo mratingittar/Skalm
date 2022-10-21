@@ -12,6 +12,7 @@ namespace Skalm.GameObjects.Items
     {
         // CONTAINED ITEM
         Item item;
+        public override string Label { get => item.Name; }
 
         // STATIC EVENT - ON ANY ITEM PICKED UP
         public static event Action<ItemPickup>? onItemPickup;

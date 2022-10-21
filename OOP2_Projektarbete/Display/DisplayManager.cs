@@ -14,9 +14,9 @@ namespace Skalm.Display
         public IEraser Eraser { get; }
         public IWindowInfo WindowInfo { get; }
         public int MessagesInQueue { get => _messageQueue.Count; }
+        public readonly PixelController pixelGridController;
 
         private SceneManager? _sceneManager;
-        private PixelController _pixelGridController;
         private Queue<string> _messageQueue;
         //private readonly Dictionary<string, char> CharSet;
         #endregion
@@ -27,7 +27,7 @@ namespace Skalm.Display
             Printer = printer;
             Eraser = eraser;
             WindowInfo = windowInfo;
-            _pixelGridController = gridController;
+            pixelGridController = gridController;
             _messageQueue = new Queue<string>();
             Console.OutputEncoding = System.Text.Encoding.UTF8;
             //CharSet = CreateCharSet();
@@ -38,17 +38,17 @@ namespace Skalm.Display
 
         public void SetSceneManager(SceneManager sm) => _sceneManager = sm;
 
-        public void DisplayInstantMessage(string msg) => _pixelGridController.DisplayMessage(msg);
+        public void DisplayInstantMessage(string msg) => pixelGridController.DisplayMessage(msg);
 
         public void DisplayNextMessage()
         {
             if (_messageQueue.Count == 0)
                 return;
 
-            _pixelGridController.DisplayMessage(_messageQueue.Dequeue(), true);
+            pixelGridController.DisplayMessage(_messageQueue.Dequeue(), true);
         }
 
-        public void ClearMessageSection() => _pixelGridController.ClearSection("MessageSection");
+        public void ClearMessageSection() => pixelGridController.ClearSection("MessageSection");
 
         public void ClearMessageQueue() => _messageQueue.Clear();
 
@@ -62,9 +62,9 @@ namespace Skalm.Display
         }
 
         // DISPLAY HUD
-        public void DisplayHUD() => _pixelGridController.PrintBorders();
+        public void DisplayHUD() => pixelGridController.PrintBorders();
 
-        public Vector2Int GetMapOrigin() => _pixelGridController.GetMapOrigin();
+        public Vector2Int GetMapOrigin() => pixelGridController.GetMapOrigin();
 
         private Dictionary<string, char> CreateCharSet()
         {

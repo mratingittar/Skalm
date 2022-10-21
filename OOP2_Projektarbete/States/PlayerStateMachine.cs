@@ -53,7 +53,7 @@ namespace Skalm.States
                     state = new PlayerStateInteract(_player, _displayManager);
                     break;
                 case "PlayerStateMenu":
-                    state = new PlayerStateMenu(_player);
+                    state = new PlayerStateMenu(_player, _displayManager);
                     break;
                 case "PlayerStateMessage":
                     state = new PlayerStateMessage(_player, _displayManager);

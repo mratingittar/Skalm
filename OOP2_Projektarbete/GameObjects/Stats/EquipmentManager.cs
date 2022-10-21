@@ -14,7 +14,7 @@ namespace Skalm.GameObjects.Stats
         public Inventory inventory;
 
         // EVENT
-        public event Action? onEquipmentChanged;
+        //public event Action? onEquipmentChanged;
 
         // CONSTRUCTOR I
         public EquipmentManager()
@@ -51,23 +51,21 @@ namespace Skalm.GameObjects.Stats
                 ItemEquippable oldItem = equipArr[item.equipSlot];
                 equipArr[item.equipSlot] = item;
 
-                // IF OLD ITEM NOT NULL, REMOVE STAT BONUSES & ADD TO INVENTORY
-                if (oldItem != null)
+                // IF OLD ITEM NOT NULL OR DEFAULT, REMOVE STAT BONUSES & ADD TO INVENTORY
+                if (oldItem != null && oldItem.isDefault is false)
                 {
-                    //oldItem.stats.statsArr.ForEach(x => playerStats.statsArr[(int)x.statName].RemoveModifier(x.GetValue()));
                     foreach (var itemStat in oldItem.stats.statsArr)
                         playerStats.statsArr[(int)itemStat.statName].RemoveModifier(itemStat.GetValue());
-
-                    if (!item.isDefault)
                         inventory.AddItem(oldItem);
                 }
 
                 // ADD NEW ITEM STATS TO PLAYER STATS OBJECT
                 foreach (var itemStat in item.stats.statsArr)
                     playerStats.statsArr[(int)itemStat.statName].AddModifier(itemStat.GetValue());
+                inventory.RemoveItem(item);
 
                 // FIRE EVENTS
-                onEquipmentChanged?.Invoke();
+                //onEquipmentChanged?.Invoke();
             }
         }
     }

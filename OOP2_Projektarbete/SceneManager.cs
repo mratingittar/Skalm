@@ -19,6 +19,7 @@ namespace Skalm
         private DisplayManager _displayManager;
         private EnemySpawner _enemySpawner;
         private ItemSpawner _itemSpawner;
+        private List<Item> _items;
 
         public List<GameObject> GameObjectsInScene { get; }
         public List<Actor> ActorsInScene { get; }
@@ -32,7 +33,7 @@ namespace Skalm
             Player = new Player(mapManager, displayManager, new PlayerAttackComponent(), new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Nameless"), "Nameless", Vector2Int.Zero);
             ActorsInScene = new List<Actor>();
             GameObjectsInScene = new List<GameObject>();
-
+            _items = new List<Item>();
             _enemySpawner = new EnemySpawner(mapManager, this);
             _itemSpawner = new ItemSpawner();
 

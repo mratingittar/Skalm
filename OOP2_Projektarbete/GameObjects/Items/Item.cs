@@ -12,12 +12,17 @@ namespace Skalm.GameObjects.Items
 {
     internal class Item
     {
-        public string itemName;
+        public string Name { get => _itemName; }
+        public string Description { get => _itemDescription == "" ? _itemName : _itemDescription; }
+
+        private string _itemName;
+        public string _itemDescription;
 
         // CONSTRUCTOR I
-        public Item(string itemName)
+        public Item(string itemName, string itemDescription = "")
         {
-            this.itemName = itemName;
+            _itemName = itemName;
+            _itemDescription = itemDescription;
         }
 
         // USE ITEM
