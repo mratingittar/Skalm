@@ -42,6 +42,30 @@ namespace Skalm.GameObjects.Items
             return inList[0].Item2;
         }
 
+        // GENERATE RANDOM POTION
+        public static Potion GetRandomPotion(float bonusMod = 0.65f)
+        {
+            int healAmount = 5;
+            int bonusCounter = 0;
+            float addHealChance = 0.75f;
+            string potionName = "Potion of Healing";
+
+            // RANDOMIZE HEAL AMOUNT
+            do
+            {
+                bonusCounter++;
+                healAmount += rng.Next(1, 4);
+                addHealChance *= bonusMod;
+            } while (rng.NextDouble() < addHealChance);
+
+            // UPDATE ITEM NAME
+            if ((bonusCounter - 2) > 0)
+                potionName += $" +{bonusCounter - 2}";
+
+            // CREATE & RETURN POTION
+            return new Potion(potionName, healAmount);
+        }
+
         // GENERATE RANDOM EQUIPMENT
         public static ItemEquippable GetRandomEquippable(float bonusMod = 0.65f, int eqSlot = -1)
         {
