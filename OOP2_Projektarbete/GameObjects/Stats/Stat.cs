@@ -31,6 +31,12 @@ namespace Skalm.GameObjects.Stats
             return Convert.ToInt32(output);
         }
 
+        // SET STAT VALUE
+        public void SetValue(int value)
+        {
+            baseValue = value;
+        }
+
         // ADD MODIFIER
         public void AddModifier(float value)
         {
