@@ -43,36 +43,55 @@ namespace Skalm.GameObjects.Items
         }
 
         // GENERATE RANDOM EQUIPMENT
-        public static ItemEquippable GetRandomEquippable(float bonusMod = 0.5f, int eqSlot = -1)
+        public static ItemEquippable GetRandomEquippable(float bonusMod = 0.65f, int eqSlot = -1)
         {
             string itemName = "";
             int bonusCounter = 0;
             double addBonusChance = 1;
 
-            // BASE BONUS ITEMS
-            StatsObject itemStats = new StatsObject();
-            List<(float, EStats)> bonusList = new List<(float, EStats)>();
-
-            var strBonus = (0.1f, EStats.Strength);
-            var dexBonus = (0.1f, EStats.Dexterity);
-            var conBonus = (0.1f, EStats.Constitution);
-            var intBonus = (0.1f, EStats.Intelligence);
-            var lucBonus = (0.1f, EStats.Luck);
-            var hpBonus = (0.1f, EStats.HP);
-            var dmgBonus = (0.1f, EStats.BaseDamage);
-            var armBonus = (0.1f, EStats.Armor);
-
             // RANDOMIZE EQUIP SLOT?
             if (eqSlot == -1)
                 eqSlot = rng.Next(0, Enum.GetValues(typeof(EEqSlots)).Length);
+
+            // BASE BONUS ITEMS
+            StatsObject itemStats = new StatsObject();
+
+            // STATS BONUSES
+            List<(float, (EStats, int))> statBonusList = new List<(float, (EStats, int))>();
+
+            var strBonus = (0.1f, (EStats.Strength, 1));
+            var dexBonus = (0.1f, (EStats.Dexterity, 1));
+            var conBonus = (0.1f, (EStats.Constitution, 1));
+            var intBonus = (0.1f, (EStats.Intelligence, 1));
+            var lucBonus = (0.1f, (EStats.Luck, 1));
+            var hpBonus = (0.1f, (EStats.HP, 2));
+            var dmgBonus = (0.1f, (EStats.BaseDamage, 1));
+            var armBonus = (0.1f, (EStats.Armor, 1));
+
+            // MATERIAL BONUSES
+            List<(float, (string, float))> materialBonusList = new List<(float, (string, float))>();
+
+            materialBonusList.Add((0.5f, ("Rusty", 0.75f)));
+            materialBonusList.Add((1f, ("Bone", 0.9f)));
+            materialBonusList.Add((1f, ("Wood", 1f)));
+            materialBonusList.Add((1f, ("Stone", 1.1f)));
+            materialBonusList.Add((0.8f, ("Leather", 1.25f)));
+            materialBonusList.Add((0.6f, ("Bronze", 2.65f)));
+            materialBonusList.Add((0.4f, ("Iron", 3.25f)));
+            materialBonusList.Add((0.2f, ("Steel", 6.5f)));
+            materialBonusList.Add((0.1f, ("Etherium", 11.5f)));
+
+            // RANDOMIZE MATERIAL
+            var itemMaterial = WeightedRandomFromList(materialBonusList);
 
             // BASE ITEM TYPE ATTRIBUTES
             switch(eqSlot)
             {
                 // HEAD
                 case (int)EEqSlots.Head:
-                    itemName = "Helmet";
-                    itemStats.statsArr[(int)EStats.Armor].SetValue(1);
+                    itemName = itemMaterial.Item1 + " Helmet";
+                    itemStats.statsArr[(int)EStats.Armor].SetValue(1 * itemMaterial.Item2);
+                    itemStats.statsArr[(int)EStats.HP].SetValue(2 * itemMaterial.Item2);
                     armBonus.Item1 *= 10f;
                     hpBonus.Item1 *= 5f;
                     conBonus.Item1 *= 3f;
@@ -80,17 +99,17 @@ namespace Skalm.GameObjects.Items
 
                 // WEAPON
                 case (int)EEqSlots.RHand:
-                    itemName = "Sword";
-                    itemStats.statsArr[(int)EStats.BaseDamage].SetValue(1);
+                    itemName = itemMaterial.Item1 + " Sword";
+                    itemStats.statsArr[(int)EStats.BaseDamage].SetValue(1 * itemMaterial.Item2);
                     strBonus.Item1 *= 15f;
                     dexBonus.Item1 *= 15f;
-                    dmgBonus.Item1 *= 25f;
+                    dmgBonus.Item1 *= 30f;
                     break;
 
                 // SHIELD
                 case (int)EEqSlots.LHand:
-                    itemName = "Shield";
-                    itemStats.statsArr[(int)EStats.Armor].SetValue(1);
+                    itemName = itemMaterial.Item1 + " Shield";
+                    itemStats.statsArr[(int)EStats.Armor].SetValue(1 * itemMaterial.Item2);
                     armBonus.Item1 *= 25f;
                     strBonus.Item1 *= 5f;
                     dexBonus.Item1 *= 5f;
@@ -98,8 +117,9 @@ namespace Skalm.GameObjects.Items
 
                 // BODY
                 case (int)EEqSlots.Torso:
-                    itemName = "Armor";
-                    itemStats.statsArr[(int)EStats.Armor].SetValue(2);
+                    itemName = itemMaterial.Item1 + " Armor";
+                    itemStats.statsArr[(int)EStats.Armor].SetValue(2 * itemMaterial.Item2);
+                    itemStats.statsArr[(int)EStats.HP].SetValue(5 * itemMaterial.Item2);
                     armBonus.Item1 *= 50f;
                     hpBonus.Item1 *= 25f;
                     conBonus.Item1 *= 25f;
@@ -107,8 +127,9 @@ namespace Skalm.GameObjects.Items
 
                 // FEET
                 case (int)EEqSlots.Feet:
-                    itemName = "Boots";
-                    itemStats.statsArr[(int)EStats.Armor].SetValue(1);
+                    itemName = itemMaterial.Item1 + " Boots";
+                    itemStats.statsArr[(int)EStats.Armor].SetValue(1 * itemMaterial.Item2);
+                    itemStats.statsArr[(int)EStats.HP].SetValue(2 * itemMaterial.Item2);
                     armBonus.Item1 *= 15f;
                     dexBonus.Item1 *= 5f;
                     lucBonus.Item1 *= 3f;
@@ -116,35 +137,35 @@ namespace Skalm.GameObjects.Items
 
                 // RIGHT FINGER
                 case (int)EEqSlots.RFinger:
-                    itemStats.statsArr[rng.Next(0, Enum.GetValues(typeof(EStats)).Length)].SetValue(1);
-                    itemName = "Ring";
+                    itemStats.statsArr[rng.Next(0, Enum.GetValues(typeof(EStats)).Length)].SetValue(1 * itemMaterial.Item2);
+                    itemName = itemMaterial.Item1 + " Ring";
                     break;
 
                 // LEFT FINGER
                 case (int)EEqSlots.LFinger:
-                    itemStats.statsArr[rng.Next(0, Enum.GetValues(typeof(EStats)).Length)].SetValue(1);
-                    itemName = "Ring";
+                    itemStats.statsArr[rng.Next(0, Enum.GetValues(typeof(EStats)).Length)].SetValue(1 * itemMaterial.Item2);
+                    itemName = itemMaterial.Item1 + " Ring";
                     break;
 
                 // DEFAULT TO RING
                 default:
                     eqSlot = (int)EEqSlots.RFinger;
-                    itemStats.statsArr[rng.Next(0, Enum.GetValues(typeof(EStats)).Length)].SetValue(1);
-                    itemName = "Ring";
+                    itemStats.statsArr[rng.Next(0, Enum.GetValues(typeof(EStats)).Length)].SetValue(1 * itemMaterial.Item2);
+                    itemName = itemMaterial.Item1 + " Ring";
                     break;
             }
 
-            // ADD BONUS ITEMS TO LIST
-            bonusList.Add(strBonus);
-            bonusList.Add(dexBonus);
-            bonusList.Add(conBonus);
-            bonusList.Add(intBonus);
-            bonusList.Add(lucBonus);
-            bonusList.Add(hpBonus);
-            bonusList.Add(dmgBonus);
-            bonusList.Add(armBonus);
+            // ADD BONUS OBJECTS TO LIST
+            statBonusList.Add(strBonus);
+            statBonusList.Add(dexBonus);
+            statBonusList.Add(conBonus);
+            statBonusList.Add(intBonus);
+            statBonusList.Add(lucBonus);
+            statBonusList.Add(hpBonus);
+            statBonusList.Add(dmgBonus);
+            statBonusList.Add(armBonus);
 
-            // RANDOMIZE BONUS COUNT
+            // RANDOMIZE STAT BONUS COUNT
             do
             {
                 bonusCounter++;
@@ -154,12 +175,13 @@ namespace Skalm.GameObjects.Items
             // ADD BONUS STATS TO ITEM STATS OBJECT
             for (int i = 0; i < bonusCounter; i++)
             {
-                EStats bonus = WeightedRandomFromList(bonusList);
-                itemStats.statsArr[(int)bonus].AddModifier(1);
+                var bonus = WeightedRandomFromList(statBonusList);
+                itemStats.statsArr[(int)bonus.Item1].AddValue(bonus.Item2 * (float)(1 + (rng.NextDouble() * itemMaterial.Item2 * 0.5)));
             }
 
             // UPDATE ITEM NAME
-            itemName += $" +{bonusCounter}";
+            if ((bonusCounter - 2) > 0)
+                itemName += $" +{bonusCounter - 2}";
 
             // CREATE & RETURN ITEM
             return new ItemEquippable(itemName, eqSlot, itemStats);
