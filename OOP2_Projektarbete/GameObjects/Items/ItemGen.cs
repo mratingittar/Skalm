@@ -33,7 +33,8 @@ namespace Skalm.GameObjects.Items
                 sumRng += inList[i].Item1;
 
                 // PICK ITEM IF RNG VALUE EXCEEDED
-                if (choice > sumRng - inList[i].Item1)
+                if ((choice > (sumRng - inList[i].Item1))
+                && (choice < sumRng))
                     return inList[i].Item2;
             }
 
@@ -148,7 +149,7 @@ namespace Skalm.GameObjects.Items
             {
                 bonusCounter++;
                 addBonusChance *= bonusMod;
-            } while (rng.NextDouble() > addBonusChance);
+            } while (rng.NextDouble() < addBonusChance);
 
             // ADD BONUS STATS TO ITEM STATS OBJECT
             for (int i = 0; i < bonusCounter; i++)
