@@ -132,6 +132,16 @@ namespace Skalm.GameObjects.Items
                     conBonus.Item1 *= 3f;
                     break;
 
+                // BODY
+                case (int)EEqSlots.Torso:
+                    itemName = itemMaterial.Item1 + " Armor";
+                    itemStats.statsArr[(int)EStats.Armor].SetValue(2 * itemMaterial.Item2);
+                    itemStats.statsArr[(int)EStats.HP].SetValue(5 * itemMaterial.Item2);
+                    armBonus.Item1 *= 50f;
+                    hpBonus.Item1 *= 25f;
+                    conBonus.Item1 *= 25f;
+                    break;
+
                 // WEAPON
                 case (int)EEqSlots.RHand:
                     itemName = itemMaterial.Item1 + " Sword";
@@ -150,14 +160,14 @@ namespace Skalm.GameObjects.Items
                     dexBonus.Item1 *= 5f;
                     break;
 
-                // BODY
-                case (int)EEqSlots.Torso:
-                    itemName = itemMaterial.Item1 + " Armor";
+                // LEGS
+                case (int)EEqSlots.Legs:
+                    itemName = itemMaterial.Item1 + " Leggings";
                     itemStats.statsArr[(int)EStats.Armor].SetValue(2 * itemMaterial.Item2);
-                    itemStats.statsArr[(int)EStats.HP].SetValue(5 * itemMaterial.Item2);
-                    armBonus.Item1 *= 50f;
-                    hpBonus.Item1 *= 25f;
-                    conBonus.Item1 *= 25f;
+                    itemStats.statsArr[(int)EStats.HP].SetValue(2 * itemMaterial.Item2);
+                    armBonus.Item1 *= 25f;
+                    hpBonus.Item1 *= 10f;
+                    conBonus.Item1 *= 3f;
                     break;
 
                 // FEET
@@ -170,21 +180,15 @@ namespace Skalm.GameObjects.Items
                     lucBonus.Item1 *= 3f;
                     break;
 
-                // RIGHT FINGER
-                case (int)EEqSlots.RFinger:
-                    itemStats.statsArr[rng.Next(0, Enum.GetValues(typeof(EStats)).Length)].SetValue(1 * itemMaterial.Item2);
-                    itemName = itemMaterial.Item1 + " Ring";
-                    break;
-
-                // LEFT FINGER
-                case (int)EEqSlots.LFinger:
+                // FINGER
+                case (int)EEqSlots.Finger:
                     itemStats.statsArr[rng.Next(0, Enum.GetValues(typeof(EStats)).Length)].SetValue(1 * itemMaterial.Item2);
                     itemName = itemMaterial.Item1 + " Ring";
                     break;
 
                 // DEFAULT TO RING
                 default:
-                    eqSlot = (int)EEqSlots.RFinger;
+                    eqSlot = (int)EEqSlots.Finger;
                     itemStats.statsArr[rng.Next(0, Enum.GetValues(typeof(EStats)).Length)].SetValue(1 * itemMaterial.Item2);
                     itemName = itemMaterial.Item1 + " Ring";
                     break;
