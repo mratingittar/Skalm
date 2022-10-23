@@ -8,18 +8,18 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class EnemyStateMachine : IStateMachine<EnemyStateBase, EnemyStates>
+    internal class EnemyStateMachine : IStateMachine<IEnemyState, EnemyStates>
     {
 
         private Enemy enemy;
-        private List<EnemyStateBase> availableStates;
+        private List<IEnemyState> availableStates;
         
-        public EnemyStateBase CurrentState { get; private set; }
+        public IEnemyState CurrentState { get; private set; }
 
         public EnemyStateMachine(Enemy enemy, EnemyStates startingState)
         {
             this.enemy = enemy;
-            availableStates = new List<EnemyStateBase>();
+            availableStates = new List<IEnemyState>();
             CurrentState = GetStateFromList(startingState);
         }
 
@@ -40,14 +40,14 @@ namespace Skalm.States
         }
 
         // STATE MACHINE METHODS
-        private EnemyStateBase GetStateFromList(EnemyStates newState)
+        private IEnemyState GetStateFromList(EnemyStates newState)
         {
             return availableStates.Find(state => state.GetType().Name == newState.ToString()) ?? CreateState(newState.ToString());
         }
 
-        private EnemyStateBase CreateState(string stateName)
+        private IEnemyState CreateState(string stateName)
         {
-            EnemyStateBase state;
+            IEnemyState state;
 
             switch (stateName)
             {

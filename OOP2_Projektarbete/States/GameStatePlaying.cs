@@ -8,23 +8,33 @@ using Skalm.Structs;
 
 namespace Skalm.States
 {
-    internal class GameStatePlaying : GameStateBase
+    internal class GameStatePlaying : IGameState
     {
+        private GameManager _gameManager;
         private MapManager _mapManager;
-        private MapPrinter mapPrinter;
+        private MapPrinter _mapPrinter;
+        private DisplayManager _displayManager;
+        private SoundManager _soundManager;
+        private InputManager _inputManager;
+        private SceneManager _sceneManager;
 
         // CONSTRUCTOR I
-        public GameStatePlaying(GameManager gameManager) : base(gameManager)
+        public GameStatePlaying(GameManager gameManager)
         {
+            _gameManager = gameManager;
             _sceneManager = gameManager.SceneManager;
             _mapManager = gameManager.MapManager;
-            mapPrinter = _mapManager.mapPrinter;
+            _mapPrinter = _mapManager.mapPrinter;
+            _displayManager = gameManager.DisplayManager;
+            _soundManager = gameManager.SoundManager;
+            _inputManager = gameManager.InputManager;
+            _sceneManager = gameManager.SceneManager;
         }
 
         #region State Machine Basics
 
         // ENTER GAME PLAYING STATE
-        public override void Enter()
+        public void Enter()
         {
             // INPUT EVENT SUBSCRIBE
             _inputManager.OnInputMove += MoveInput;
@@ -55,7 +65,7 @@ namespace Skalm.States
         }
 
         // EXIT GAME PLAYING STATE
-        public override void Exit()
+        public void Exit()
         {
             // SAVING STATE
             _gameManager.NewGame = false;
@@ -70,7 +80,7 @@ namespace Skalm.States
         }
 
         // UPDATE STATE LOGIC
-        public override void UpdateLogic()
+        public void UpdateLogic()
         {
             foreach (Actor actor in _sceneManager.ActorsInScene)
             {
@@ -82,9 +92,9 @@ namespace Skalm.States
         }
 
         // UPDATE STATE DISPLAY
-        public override void UpdateDisplay()
+        public void UpdateDisplay()
         {
-            mapPrinter.RedrawCachedTiles();
+            _mapPrinter.RedrawCachedTiles();
             if (_displayManager.MessagesInQueue > 0 && _sceneManager.Player.playerStateMachine.CurrentState is not PlayerStateMessage)
                 _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMessage);
         }

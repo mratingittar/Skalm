@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class EnemyStateAttacking : EnemyStateBase
+    internal class EnemyStateAttacking : IEnemyState
     {
         private Enemy enemy;
 
@@ -15,12 +15,12 @@ namespace Skalm.States
         {
             this.enemy = enemy;
         }
-        public override void Enter()
+        public void Enter()
         {
             throw new NotImplementedException();
         }
 
-        public override void Exit()
+        public void Exit()
         {
             throw new NotImplementedException();
         }

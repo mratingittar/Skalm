@@ -10,27 +10,30 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class PlayerStateMessage : PlayerStateBase
+    internal class PlayerStateMessage : IPlayerState
     {
+        private Player _player;
         private DisplayManager _displayManager;
-        public PlayerStateMessage(Player player, DisplayManager displayManager) : base(player) 
+
+        public PlayerStateMessage(Player player, DisplayManager displayManager)
         { 
+            _player = player;
             _displayManager = displayManager;
         }
 
 
-        public override void Enter()
+        public void Enter()
         {
             ReadMessage();
         }
 
-        public override void Exit()
+        public void Exit()
         {
             _displayManager.ClearMessageSection();
             Console.CursorVisible = false;
         }
 
-        public override void MoveInput(Vector2Int direction)
+        public void MoveInput(Vector2Int direction)
         {
             switch (direction)
             {
@@ -39,7 +42,7 @@ namespace Skalm.States
                     break;
             }
         }
-        public override void CommandInput(InputCommands command)
+        public void CommandInput(InputCommands command)
         {
             switch (command)
             {
@@ -56,21 +59,13 @@ namespace Skalm.States
                     break;
                 case InputCommands.Inventory:
                     break;
-                case InputCommands.Next:
-                    break;
-                case InputCommands.Previous:
-                    break;
-                case InputCommands.Help:
-                    break;
-                default:
-                    break;
             }
         }
 
         private void ReadMessage()
         {
             if (_displayManager.MessagesInQueue == 0)
-                player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
             else
             _displayManager.DisplayNextMessage();
         }

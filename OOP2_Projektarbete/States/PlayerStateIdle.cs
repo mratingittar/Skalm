@@ -9,22 +9,20 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class PlayerStateIdle : PlayerStateBase
+    internal class PlayerStateIdle : IPlayerState
     {
-        public PlayerStateIdle(Player player) : base(player) { }
-
-        public override void Enter()
+        public void Enter()
         {
         }
 
-        public override void Exit()
+        public void Exit()
         {
         }
 
-        public override void MoveInput(Vector2Int direction)
+        public void MoveInput(Vector2Int direction)
         {
         }
-        public override void CommandInput(InputCommands command)
+        public void CommandInput(InputCommands command)
         {
         }
 

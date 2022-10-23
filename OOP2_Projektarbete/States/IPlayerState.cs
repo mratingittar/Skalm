@@ -9,21 +9,8 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal abstract class PlayerStateBase : IState
+    internal interface IPlayerState : IState
     {
-        protected Player player;
-
-        public PlayerStateBase( Player player)
-        {
-            this.player = player;
-        }
-
-        // ENTER STATE
-        public abstract void Enter();
-
-        // EXIT STATE
-        public abstract void Exit();
-
         //METHOD MOVE INPUT
         public abstract void MoveInput(Vector2Int direction);
 

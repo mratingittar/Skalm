@@ -1,4 +1,7 @@
 ﻿using Skalm.Display;
+using Skalm.Input;
+using Skalm.Menu;
+using Skalm.Sounds;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,20 +10,24 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class GameStateInitializing : GameStateBase
+    internal class GameStateInitializing : IGameState
     {
+        private DisplayManager _displayManager;
 
         // CONSTRUCTOR I
-        public GameStateInitializing(GameManager gameManager) : base(gameManager) { }
+        public GameStateInitializing(GameManager gameManager)
+        {
+            _displayManager = gameManager.DisplayManager;
+        }
 
         // ENTER STATE
-        public override void Enter()
+        public void Enter()
         {
             _displayManager.Printer.PrintCenteredInWindow("Loading SKÄLM", _displayManager.WindowInfo.WindowHeight / 2);
         }
 
         // EXIT STATE
-        public override void Exit()
+        public void Exit()
         {
             _displayManager.Eraser.EraseAll(); 
             _displayManager.Printer.PrintCenteredInWindow("Loaded", _displayManager.WindowInfo.WindowHeight / 2);
@@ -29,9 +36,9 @@ namespace Skalm.States
         }
 
         // UPDATE LOGIC
-        public override void UpdateDisplay() {}
+        public void UpdateDisplay() {}
 
         // UPDATE DISPLAY
-        public override void UpdateLogic() {}
+        public void UpdateLogic() {}
     }
 }

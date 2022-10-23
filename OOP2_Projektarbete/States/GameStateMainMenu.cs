@@ -1,27 +1,42 @@
 ﻿using Skalm.Animation;
+using Skalm.Display;
 using Skalm.Input;
 using Skalm.Menu;
+using Skalm.Sounds;
 using Skalm.Structs;
 
 namespace Skalm.States
 {
-    internal class GameStateMainMenu : GameStateBase
+    internal class GameStateMainMenu : IGameState
     {
         public string playerName = "";
-        private Animator _fireAnimator;
         private bool _everyOtherFrame = true;
         private const int _menuPageHeight = 6;
+        private Animator _fireAnimator;
+
+        private GameManager _gameManager;
+        private DisplayManager _displayManager;
+        private MenuManager _menuManager;
+        private SoundManager _soundManager;
+        private InputManager _inputManager;
+        private SceneManager _sceneManager;
 
         // CONSTRUCTOR I
-        public GameStateMainMenu(GameManager gameManager) : base(gameManager)
+        public GameStateMainMenu(GameManager gameManager)
         {
+            _gameManager = gameManager;
+            _displayManager = gameManager.DisplayManager;
+            _menuManager = gameManager.MenuManager;
+            _soundManager = gameManager.SoundManager;
+            _inputManager = gameManager.InputManager;
+            _sceneManager = gameManager.SceneManager;
             _fireAnimator = gameManager.FireAnimator;
         }
 
         #region StateBasics
 
         // ENTER STATE
-        public override void Enter()
+        public void Enter()
         {
             _displayManager.Eraser.EraseAll();
             _menuManager.LoadMenu(_menuManager.mainMenu);
@@ -37,7 +52,7 @@ namespace Skalm.States
         }
 
         // EXIT STATE
-        public override void Exit()
+        public void Exit()
         {
             _menuManager.UnloadMenu();
 
@@ -50,13 +65,13 @@ namespace Skalm.States
         }
 
         // UPDATE LOGIC
-        public override void UpdateLogic()
+        public void UpdateLogic()
         {
 
         }
 
         // UPDATE DISPLAY
-        public override void UpdateDisplay()
+        public void UpdateDisplay()
         {
             if (_everyOtherFrame)
             {
@@ -147,7 +162,7 @@ namespace Skalm.States
 
                 else if (cki.Key == ConsoleKey.Backspace && name.Length > 0)
                 {
-                    name = name.Substring(0, name.Length - 1);
+                    name = Backspace(name);
                     EraseRow(height);
                 }
 
@@ -161,6 +176,12 @@ namespace Skalm.States
                 return (false, name);
             else
                 return (true, name);
+        }
+
+        private static string Backspace(string name)
+        {
+            name = name.Substring(0, name.Length - 1);
+            return name;
         }
 
         private void EraseRow(int row)

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class EnemyStateSearching : EnemyStateBase
+    internal class EnemyStateSearching : IEnemyState
     {
         private Enemy enemy;
 
@@ -15,12 +15,12 @@ namespace Skalm.States
         {
             this.enemy = enemy;
         }
-        public override void Enter()
+        public void Enter()
         {
             enemy.SetMoveBehaviour(EnemyMoveBehaviours.Pathfinding);
         }
 
-        public override void Exit()
+        public void Exit()
         {
             
         }

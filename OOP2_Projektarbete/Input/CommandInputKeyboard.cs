@@ -23,18 +23,6 @@
                     command = InputCommands.Inventory;
                     input = true;
                     break;
-                case ConsoleKey.N:
-                    command = InputCommands.Next;
-                    input = true;
-                    break;
-                case ConsoleKey.B:
-                    command = InputCommands.Previous;
-                    input = true;
-                    break;
-                case ConsoleKey.H:
-                    command = InputCommands.Help;
-                    input = true;
-                    break;
                 default:
                     command = InputCommands.Default;
                     input = false;

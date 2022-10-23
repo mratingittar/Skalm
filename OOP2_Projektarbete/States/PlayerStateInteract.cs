@@ -8,38 +8,40 @@ using Skalm.Utilities;
 
 namespace Skalm.States
 {
-    internal class PlayerStateInteract : PlayerStateBase
+    internal class PlayerStateInteract : IPlayerState
     {
+        private Player _player;
         private List<BaseTile> _playerNeighbors;
         private BaseTile? _selectedTile;
         private Direction _selectedDirection;
         private DisplayManager _displayManager;
 
-        public PlayerStateInteract(Player player, DisplayManager displayManager) : base(player)
+        public PlayerStateInteract(Player player, DisplayManager displayManager)
         {
+            _player = player;
             _playerNeighbors = new List<BaseTile>();
             _displayManager = displayManager;
         }
-        public override void Enter()
+        public void Enter()
         {
             ExamineSameTile();
-            _playerNeighbors = player.mapManager.GetNeighbours(player.GridPosition);
+            _playerNeighbors = _player.mapManager.GetNeighbours(_player.GridPosition);
         }
 
-        public override void Exit()
+        public void Exit()
         {
             _playerNeighbors.Clear();
             _selectedTile = null;
             _displayManager.ClearMessageSection();
         }
 
-        public override void MoveInput(Vector2Int direction)
+        public void MoveInput(Vector2Int direction)
         {
             ExamineNeighbor(direction);
         }
 
 
-        public override void CommandInput(InputCommands command)
+        public void CommandInput(InputCommands command)
         {
             switch (command)
             {
@@ -48,31 +50,24 @@ namespace Skalm.States
                 case InputCommands.Confirm:
                     if (_selectedTile != null)
                     {
-                        player.InteractWithNeighbor(_selectedTile);
-                        player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                        _player.InteractWithNeighbor(_selectedTile);
+                        _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     }
                     break;
                 case InputCommands.Cancel:
-                    player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                    _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     break;
                 case InputCommands.Interact:
                     ExamineSameTile();
                     break;
                 case InputCommands.Inventory:
                     break;
-                case InputCommands.Next:
-                    break;
-                case InputCommands.Previous:
-                    break;
-                case InputCommands.Help:
-                    break;
-                default:
-                    break;
             }
         }
+
         private void ExamineSameTile()
         {
-            player.mapManager.TileGrid.TryGetGridObject(player.GridPosition, out _selectedTile);
+            _player.mapManager.TileGrid.TryGetGridObject(_player.GridPosition, out _selectedTile);
             PrintSelectedTile($"You are standing on {_selectedTile.Label}.");
         }
 
@@ -87,7 +82,7 @@ namespace Skalm.States
             else if (direction.Equals(Vector2Int.Left))
                 _selectedDirection = Direction.West;
 
-            _selectedTile = _playerNeighbors.Find(n => n.GridPosition.Equals(player.GridPosition.Add(direction)));
+            _selectedTile = _playerNeighbors.Find(n => n.GridPosition.Equals(_player.GridPosition.Add(direction)));
             if (_selectedTile != null)
             {
                 PrintSelectedTile($"Looking {_selectedDirection.ToString().ToLower()} at {_selectedTile.Label}.");

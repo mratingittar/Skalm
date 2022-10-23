@@ -9,26 +9,31 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class PlayerStateMove : PlayerStateBase
+    internal class PlayerStateMove : IPlayerState
     {
         public static event Action? OnPauseMenuRequested;
-        public PlayerStateMove(Player player) : base(player) { }
+        private Player _player;
 
-        public override void Enter()
+        public PlayerStateMove(Player player)
+        {
+            _player = player;
+        }
+
+        public void Enter()
         {
             
         }
 
-        public override void Exit()
+        public void Exit()
         {
             
         }
 
-        public override void MoveInput(Vector2Int direction)
+        public void MoveInput(Vector2Int direction)
         {
-            player.Move(direction);
+            _player.Move(direction);
         }
-        public override void CommandInput(InputCommands command)
+        public void CommandInput(InputCommands command)
         {
             switch (command)
             {
@@ -40,18 +45,10 @@ namespace Skalm.States
                     OnPauseMenuRequested?.Invoke();
                     break;
                 case InputCommands.Interact:
-                    player.playerStateMachine.ChangeState(PlayerStates.PlayerStateInteract);
+                    _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateInteract);
                     break;
                 case InputCommands.Inventory:
-                    player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMenu);
-                    break;
-                case InputCommands.Next:
-                    break;
-                case InputCommands.Previous:
-                    break;
-                case InputCommands.Help:
-                    break;
-                default:
+                    _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMenu);
                     break;
             }
         }

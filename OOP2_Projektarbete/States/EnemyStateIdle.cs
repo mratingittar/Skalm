@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class EnemyStateIdle : EnemyStateBase
+    internal class EnemyStateIdle : IEnemyState
     {
         private Enemy enemy;
 
@@ -16,12 +16,12 @@ namespace Skalm.States
             this.enemy = enemy;
         }
 
-        public override void Enter()
+        public void Enter()
         {
             enemy.SetMoveBehaviour(EnemyMoveBehaviours.Idle);
         }
 
-        public override void Exit()
+        public void Exit()
         {
             
         }

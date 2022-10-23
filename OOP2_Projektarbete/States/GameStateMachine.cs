@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class GameStateMachine : IStateMachine<GameStateBase, GameStates>
+    internal class GameStateMachine : IStateMachine<IGameState, GameStates>
     {
-        public GameStateBase CurrentState { get; private set; }
-        private List<GameStateBase> availableStates;
+        public IGameState CurrentState { get; private set; }
+        private List<IGameState> availableStates;
         private GameManager gameManager;
 
         // CONSTRUCTOR I
         public GameStateMachine(GameManager gameManager, GameStates startingState)
         {
             this.gameManager = gameManager;
-            availableStates = new List<GameStateBase>();
+            availableStates = new List<IGameState>();
             CurrentState = GetStateFromList(startingState);
             PlayerStateMove.OnPauseMenuRequested += PauseGame;
         }
@@ -42,14 +42,14 @@ namespace Skalm.States
         }
 
         // STATE MACHINE METHODS
-        private GameStateBase GetStateFromList(GameStates newState)
+        private IGameState GetStateFromList(GameStates newState)
         {
             return availableStates.Find(state => state.GetType().Name == newState.ToString()) ?? CreateState(newState.ToString());
         }
 
-        private GameStateBase CreateState(string stateName)
+        private IGameState CreateState(string stateName)
         {
-            GameStateBase state;
+            IGameState state;
             switch (stateName)
             {
                 case "GameStateInitializing":

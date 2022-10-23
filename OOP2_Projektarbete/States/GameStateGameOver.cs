@@ -1,4 +1,7 @@
-﻿using Skalm.Input;
+﻿using Skalm.Display;
+using Skalm.Input;
+using Skalm.Menu;
+using Skalm.Sounds;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,19 +10,28 @@ using System.Threading.Tasks;
 
 namespace Skalm.States
 {
-    internal class GameStateGameOver : GameStateBase
+    internal class GameStateGameOver : IGameState
     {
-        public GameStateGameOver(GameManager gameManager) : base(gameManager)
+        private GameManager _gameManager;
+        private DisplayManager _displayManager;
+        private InputManager _inputManager;
+        private SceneManager _sceneManager;
+
+        public GameStateGameOver(GameManager gameManager)
         {
+            _gameManager = gameManager;
+            _displayManager = gameManager.DisplayManager;
+            _inputManager = gameManager.InputManager;
+            _sceneManager = gameManager.SceneManager;
         }
 
-        public override void Enter()
+        public void Enter()
         {
             _inputManager.OnInputCommand += CommandInput;
             _displayManager.Printer.PrintCenteredInWindow("YOU DIED.", _displayManager.WindowInfo.WindowHeight/2);
         }
 
-        public override void Exit()
+        public void Exit()
         {
             _sceneManager.ResetScene();
             _inputManager.OnInputCommand -= CommandInput;
@@ -40,23 +52,17 @@ namespace Skalm.States
                     break;
                 case InputCommands.Inventory:
                     break;
-                case InputCommands.Next:
-                    break;
-                case InputCommands.Previous:
-                    break;
-                case InputCommands.Help:
-                    break;
                 default:
                     break;
             }
         }
 
-        public override void UpdateDisplay()
+        public void UpdateDisplay()
         {
             
         }
 
-        public override void UpdateLogic()
+        public void UpdateLogic()
         {
             
         }

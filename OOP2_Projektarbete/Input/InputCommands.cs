@@ -6,9 +6,6 @@
         Confirm,
         Cancel,
         Interact,
-        Inventory,
-        Next,
-        Previous,
-        Help
+        Inventory
     }
 }

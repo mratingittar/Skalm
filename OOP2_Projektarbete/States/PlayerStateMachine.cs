@@ -3,17 +3,17 @@ using Skalm.GameObjects;
 
 namespace Skalm.States
 {
-    internal class PlayerStateMachine : IStateMachine<PlayerStateBase, PlayerStates>
+    internal class PlayerStateMachine : IStateMachine<IPlayerState, PlayerStates>
     {
-        public PlayerStateBase CurrentState { get; private set; }
-        private List<PlayerStateBase> _availableStates;
+        public IPlayerState CurrentState { get; private set; }
+        private List<IPlayerState> _availableStates;
         private Player _player;
         private DisplayManager _displayManager;
 
         // CONSTRUCTOR I
         public PlayerStateMachine(Player player, DisplayManager displayManager, PlayerStates startingState)
         {
-            _availableStates = new List<PlayerStateBase>();
+            _availableStates = new List<IPlayerState>();
             _player = player;
             _displayManager = displayManager;
             CurrentState = GetStateFromList(startingState);
@@ -35,19 +35,19 @@ namespace Skalm.States
         }
 
         // STATE MACHINE METHODS
-        private PlayerStateBase GetStateFromList(PlayerStates newState)
+        private IPlayerState GetStateFromList(PlayerStates newState)
         {
             return _availableStates.Find(state => state.GetType().Name == newState.ToString()) ?? CreateState(newState.ToString());
         }
 
-        private PlayerStateBase CreateState(string stateName)
+        private IPlayerState CreateState(string stateName)
         {
-            PlayerStateBase state;
+            IPlayerState state;
 
             switch (stateName)
             {
                 case "PlayerStateIdle":
-                    state = new PlayerStateIdle(_player);
+                    state = new PlayerStateIdle();
                     break;
                 case "PlayerStateInteract":
                     state = new PlayerStateInteract(_player, _displayManager);
@@ -62,7 +62,7 @@ namespace Skalm.States
                     state = new PlayerStateMove(_player);
                     break;
                 default:
-                    state = new PlayerStateIdle(_player);
+                    state = new PlayerStateIdle();
                     break;
             }
 

@@ -6,28 +6,31 @@ using Skalm.Structs;
 
 namespace Skalm.States
 {
-    internal class PlayerStateMenu : PlayerStateBase
+    internal class PlayerStateMenu : IPlayerState
     {
+        private Player _player;
         private DisplayManager _displayManager;
-        public PlayerStateMenu(Player player, DisplayManager displayManager) : base(player)
+
+        public PlayerStateMenu(Player player, DisplayManager displayManager)
         {
+            _player = player;
             _displayManager = displayManager;
         }
 
-        public override void Enter()
+        public void Enter()
         {
             _displayManager.pixelGridController.InventoryIndex = 0;
-            player.UpdateInventoryDisplay();
+            _player.UpdateInventoryDisplay();
             DescriptionAsMessage();
         }
 
-        public override void Exit()
+        public void Exit()
         {
             _displayManager.pixelGridController.InventoryIndex = -1;
-            player.UpdateInventoryDisplay();
+            _player.UpdateInventoryDisplay();
             _displayManager.ClearMessageSection();
         }
-        public override void MoveInput(Vector2Int direction)
+        public void MoveInput(Vector2Int direction)
         {
             switch (direction.Y)
             {
@@ -36,7 +39,7 @@ namespace Skalm.States
                         _displayManager.pixelGridController.InventoryIndex--;
                     break;
                 case > 0:
-                    if (_displayManager.pixelGridController.InventoryIndex < player.equipmentManager.inventory.itemList.Count() - 1)
+                    if (_displayManager.pixelGridController.InventoryIndex < _player.equipmentManager.inventory.itemList.Count() - 1)
                         _displayManager.pixelGridController.InventoryIndex++;
                     break;
             }
@@ -49,45 +52,37 @@ namespace Skalm.States
                     JumpMenu(true);
                     break;
             }
-            player.UpdateInventoryDisplay();
+            _player.UpdateInventoryDisplay();
             DescriptionAsMessage();
         }
 
         private void DescriptionAsMessage()
         {
-            if (player.equipmentManager.inventory.itemList.Count > 0)
-                _displayManager.DisplayInstantMessage(player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex].Name + ". " +
-                    player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex].Description + ".");
+            if (_player.equipmentManager.inventory.itemList.Count > 0)
+                _displayManager.DisplayInstantMessage(_player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex].Name + ". " +
+                    _player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex].Description + ".");
             else
                 _displayManager.DisplayInstantMessage("Your inventory is empty.");
         }
 
-        public override void CommandInput(InputCommands command)
+        public void CommandInput(InputCommands command)
         {
             switch (command)
             {
                 case InputCommands.Default:
                     break;
                 case InputCommands.Confirm:
-                    UseSelectedItem(player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex]);
+                    UseSelectedItem(_player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex]);
                     break;
                 case InputCommands.Cancel:
-                    player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                    _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     break;
                 case InputCommands.Interact:
-                    player.equipmentManager.inventory.RemoveItem(player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex]);
-                    player.UpdateInventoryDisplay();
+                    _player.equipmentManager.inventory.RemoveItem(_player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex]);
+                    _player.UpdateInventoryDisplay();
                     break;
                 case InputCommands.Inventory:
-                    player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
-                    break;
-                case InputCommands.Next:
-                    break;
-                case InputCommands.Previous:
-                    break;
-                case InputCommands.Help:
-                    break;
-                default:
+                    _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     break;
             }
         }
@@ -97,7 +92,7 @@ namespace Skalm.States
             if (forwards)
                 _displayManager.pixelGridController.InventoryIndex = 
                     Math.Min(_displayManager.pixelGridController.InventoryIndex + _displayManager.pixelGridController.InventoryRowsAvailable, 
-                    player.equipmentManager.inventory.itemList.Count() - 1);
+                    _player.equipmentManager.inventory.itemList.Count() - 1);
             else
                 _displayManager.pixelGridController.InventoryIndex = 
                     Math.Max(0, 
@@ -110,9 +105,9 @@ namespace Skalm.States
                 _displayManager.DisplayInstantMessage("Interact with a locked door to use.");
             else
             {
-                item.Use(player);
-                player.UpdateStatDisplay();
-                player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                item.Use(_player);
+                _player.UpdateStatDisplay();
+                _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
             }
         }
     }

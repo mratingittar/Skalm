@@ -1,19 +1,32 @@
-﻿using Skalm.Input;
+﻿using Skalm.Display;
+using Skalm.Input;
 using Skalm.Menu;
+using Skalm.Sounds;
 using Skalm.Structs;
 
 namespace Skalm.States
 {
-    internal class GameStatePaused : GameStateBase
+    internal class GameStatePaused : IGameState
     {
-
-        #region StateMachine Basics
+        private GameManager _gameManager;
+        private MenuManager _menuManager;
+        private SoundManager _soundManager;
+        private InputManager _inputManager;
+        private SceneManager _sceneManager;
 
         // CONSTRUCTOR I
-        public GameStatePaused(GameManager gameManager) : base(gameManager) { }
+        public GameStatePaused(GameManager gameManager)
+        {
+            _gameManager = gameManager;
+            _menuManager = gameManager.MenuManager;
+            _soundManager = gameManager.SoundManager;
+            _inputManager = gameManager.InputManager;
+            _sceneManager = gameManager.SceneManager;
+        }
 
+        #region StateMachine Basics
         // STATE ENTER
-        public override void Enter()
+        public void Enter()
         {
             _menuManager.LoadMenu(_menuManager.pauseMenu);
 
@@ -26,7 +39,7 @@ namespace Skalm.States
         }
 
         // STATE EXIT
-        public override void Exit()
+        public void Exit()
         {
             _menuManager.UnloadMenu();
 
@@ -39,13 +52,13 @@ namespace Skalm.States
         }
 
         // STATE UPDATE LOGIC
-        public override void UpdateLogic()
+        public void UpdateLogic()
         {
 
         }
 
         // STATE UPDATE DISPLAY
-        public override void UpdateDisplay()
+        public void UpdateDisplay()
         {
 
         }
