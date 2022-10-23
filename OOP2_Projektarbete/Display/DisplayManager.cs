@@ -18,7 +18,6 @@ namespace Skalm.Display
 
         private SceneManager? _sceneManager;
         private Queue<string> _messageQueue;
-        //private readonly Dictionary<string, char> CharSet;
         #endregion
 
         // CONSTRUCTOR I
@@ -30,7 +29,6 @@ namespace Skalm.Display
             pixelGridController = gridController;
             _messageQueue = new Queue<string>();
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-            //CharSet = CreateCharSet();
 
             windowInfo.SetWindowSize(windowSize.Width, windowSize.Height);
             Actor.OnCombatEvent += QueueMessage;
@@ -65,24 +63,5 @@ namespace Skalm.Display
         public void DisplayHUD() => pixelGridController.PrintBorders();
 
         public Vector2Int GetMapOrigin() => pixelGridController.GetMapOrigin();
-
-        private Dictionary<string, char> CreateCharSet()
-        {
-            return new Dictionary<string, char>
-            {
-                {"shadeLight", '░'},
-                {"shadeMedium", '▒'},
-                {"shadeDark", '▓'},
-                {"blockFull", '█'},
-                {"boxDownRight", '╔'},
-                {"boxHorizontal", '═'},
-                {"boxDownLeft", '╗'},
-                {"boxVertical", '║'},
-                {"boxUpRight", '╚'},
-                {"boxUpLeft", '╝'},
-                {"pointerRight", '►'},
-                {"pointerLeft", '◄'}
-            };
-        }
     }
 }

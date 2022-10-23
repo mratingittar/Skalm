@@ -73,7 +73,7 @@ namespace Skalm.States
         private void ExamineSameTile()
         {
             player.mapManager.TileGrid.TryGetGridObject(player.GridPosition, out _selectedTile);
-            PrintSelectedTile($"You are standing on {_selectedTile.Label}");
+            PrintSelectedTile($"You are standing on {_selectedTile.Label}.");
         }
 
         private void ExamineNeighbor(Vector2Int direction)
@@ -90,7 +90,7 @@ namespace Skalm.States
             _selectedTile = _playerNeighbors.Find(n => n.GridPosition.Equals(player.GridPosition.Add(direction)));
             if (_selectedTile != null)
             {
-                PrintSelectedTile($"Looking {_selectedDirection.ToString().ToLower()} at {_selectedTile.Label}");
+                PrintSelectedTile($"Looking {_selectedDirection.ToString().ToLower()} at {_selectedTile.Label}.");
             }
         }
 
@@ -99,13 +99,14 @@ namespace Skalm.States
             if (_selectedTile is IOccupiable occupiable && occupiable.ObjectsOnTile.Count > 0)
             {
                 if (occupiable.ObjectsOnTile.Count == 1 && occupiable.ObjectsOnTile.Peek() is Player)
-                    baseText += ". You are alone here.";
+                    baseText += " You are alone here.";
                 else
                 {
-                    baseText += ". Objects on tile:";
+                    baseText += " Objects on tile:";
                     foreach (var obj in occupiable.ObjectsOnTile)
                     {
-                        baseText += $" {obj.Label},";
+                        if (obj is not Player)                        
+                            baseText += $" {obj.Label},";
                     }
                     baseText = baseText.Remove(baseText.Length - 1);
                     baseText += ".";

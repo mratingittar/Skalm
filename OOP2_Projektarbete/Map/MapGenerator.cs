@@ -25,6 +25,9 @@ namespace Skalm.Map
         private int _mapIndex;
         private readonly ISettings _settings;
 
+        private const char goalChar = '✶';
+        private const ConsoleColor goalColor = ConsoleColor.DarkGreen;
+
         public MapGenerator(MapManager mapManager, DisplayManager displayManager, Grid2D<BaseTile> tileGrid, ISettings settings)
         {
             _mapManager = mapManager;
@@ -145,7 +148,7 @@ namespace Skalm.Map
                             PlayerFixedSpawnPosition = new Vector2Int(x + startX, y + startY);
                             break;
                         case 'g':
-                            _tileGrid.SetGridObject(x + startX, y + startY, new FloorTile(new Vector2Int(x + startX, y + startY), 'G', ConsoleColor.Magenta));
+                            _tileGrid.SetGridObject(x + startX, y + startY, new FloorTile(new Vector2Int(x + startX, y + startY), goalChar, goalColor));
                             FloorTiles.Add(new Vector2Int(x + startX, y + startY));
                             GoalPosition = new Vector2Int(x + startX, y + startY);
                             break;

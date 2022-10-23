@@ -12,6 +12,7 @@ namespace Skalm.Grid
         public int InventoryIndex { get; set; }
         public int InventoryRowsAvailable { get; private set; }
 
+        private int _inventoryStartRow;
         private HashSet<Pixel> _borderCells;
         private Dictionary<string, HashSet<Pixel>> _pixelsInSections;
         private readonly Grid2D<Pixel> _pixelGrid;
@@ -20,7 +21,6 @@ namespace Skalm.Grid
         private readonly Bounds _messageConsole;
         private readonly Bounds _mainStatsConsole;
         private readonly Bounds _subStatsConsole;
-        private int _inventoryStartRow;
 
         // CONSTRUCTOR I
         public PixelController(Grid2D<Pixel> pixelGrid, Dictionary<string, Bounds> sectionBounds, IPrinter printer, IEraser eraser)

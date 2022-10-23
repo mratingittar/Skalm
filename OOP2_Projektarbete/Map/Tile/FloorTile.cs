@@ -8,6 +8,7 @@ namespace Skalm.Map.Tile
     {
         public override char Sprite { get => ObjectsOnTile.Count == 0 ? _sprite : ObjectsOnTile.First().Sprite; }
         public override ConsoleColor Color { get => ObjectsOnTile.Count == 0 ? _color : ObjectsOnTile.First().Color; }
+        public override string Label { get => "floor"; }
         public Stack<GameObject> ObjectsOnTile { get; private set; }
         public bool ActorPresent { get; set; }
 

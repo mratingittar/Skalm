@@ -1,7 +1,7 @@
- fffffffff   fffffffffff       fief
- fffpfffff   fffffffffff       ffff
- fffffffff   fffffgfffff        ff  
- fffffffff   fffffffffff        ff
+ fffffffff   fffffffffff       fiek
+ fkfpfffif   fffffffffff       ffff
+ fkfffffif   fffffkfffff        ff  
+ fifffffif   fffffffffff        ff
     ff             f             f 
     ff             f             d       
     fffffffffffffffffffffffffffffffffff
@@ -13,9 +13,9 @@
   ffff fff fff ffff         f  ifffffff
   ffff fff fff ffff         f       fff
   ffff fff fff ffffffffffffff       d
-  ffff fff fff ffff                 f
+  ffff fff fff ffkf                 f
   ffff fff fff    f                 f
  iff   fff ffffffff                 f
         d                           f 
-  ffffffffffffffffffffffffffffffffffff
+  gfffffffffffffffffffffffffffffffffff
                                     fe

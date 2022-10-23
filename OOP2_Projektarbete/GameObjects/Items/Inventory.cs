@@ -27,6 +27,7 @@ namespace Skalm.GameObjects.Items
             if (item != null)
             {
                 itemList.Add(item);
+                SortInventory();
                 onInventoryChanged?.Invoke();
 
                 if (item is Key)
@@ -45,6 +46,11 @@ namespace Skalm.GameObjects.Items
                 if (item is Key)
                     Keys--;
             }
+        }
+
+        private void SortInventory()
+        {
+            itemList.Sort();
         }
     }
 }

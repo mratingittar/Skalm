@@ -56,7 +56,8 @@ namespace Skalm.States
         private void DescriptionAsMessage()
         {
             if (player.equipmentManager.inventory.itemList.Count > 0)
-                _displayManager.DisplayInstantMessage(player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex].Description);
+                _displayManager.DisplayInstantMessage(player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex].Name + ". " +
+                    player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex].Description + ".");
             else
                 _displayManager.DisplayInstantMessage("Your inventory is empty.");
         }
@@ -74,6 +75,8 @@ namespace Skalm.States
                     player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     break;
                 case InputCommands.Interact:
+                    player.equipmentManager.inventory.RemoveItem(player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex]);
+                    player.UpdateInventoryDisplay();
                     break;
                 case InputCommands.Inventory:
                     player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);

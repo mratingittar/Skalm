@@ -25,6 +25,19 @@ namespace Skalm
         public List<Actor> ActorsInScene { get; }
         public Player Player { get; }
 
+
+        // MOVE TO SETTINGS.TXT
+        private const char _playerChar = '©';
+        private const char _enemyChar = 'ⱺ';
+        private const char _keyChar = 'Ⱡ';
+        private const char _potionChar = '♥';
+        private const char _itemChar = '☼';
+        private const ConsoleColor _playerColor = ConsoleColor.Blue;
+        private const ConsoleColor _enemyColor = ConsoleColor.DarkRed;
+        private const ConsoleColor _itemColor = ConsoleColor.Yellow;
+        private const ConsoleColor _potionColor = ConsoleColor.Red;
+        private const ConsoleColor _keyColor = ConsoleColor.White;
+
         // CONSTRUCTOR I
         public SceneManager(MapManager mapManager, DisplayManager displayManager)
         {
@@ -47,7 +60,7 @@ namespace Skalm
 
             _mapManager.mapGenerator.CreateMap();
             ResetPlayer();
-            InitializeScene();
+            InitializeScene(); // SCALE ENEMIES OVER TIME
             Player.NextFloor();
 
             _displayManager.DisplayHUD();
@@ -73,7 +86,7 @@ namespace Skalm
             if (playerName.Length == 0)
                 playerName = "Nameless";
 
-            Player.InitializePlayer(spawnPos, playerName, 'P', ConsoleColor.Blue);
+            Player.InitializePlayer(spawnPos, playerName, _playerChar, _playerColor);
             GameObjectsInScene.Add(Player);
             ActorsInScene.Add(Player);
         }
@@ -86,47 +99,65 @@ namespace Skalm
             {
                 foreach (Vector2Int position in _mapManager.mapGenerator.EnemySpawnPositions)
                 {
-                    Enemy enemy = _enemySpawner.Spawn(position, 'E', ConsoleColor.Red);
+                    Enemy enemy = _enemySpawner.Spawn(position, _enemyChar, _enemyColor);
                     GameObjectsInScene.Add(enemy);
                     ActorsInScene.Add(enemy);
                 }
             }
             else
             {
-                Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomPosition(), 'E', ConsoleColor.Yellow);
+                Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomPosition(), _enemyChar, _enemyColor);
                 GameObjectsInScene.Add(enemy);
                 ActorsInScene.Add(enemy);
             }
 
             // ADD ITEMS
-            var FloorTiles = _mapManager.mapGenerator.FloorTiles;
-            var itemXY = FloorTiles.ElementAt(Dice.rng.Next(0, FloorTiles.Count));
+            if (_mapManager.mapGenerator.ItemSpawnPositions.Count > 0)
+            {
+                foreach (Vector2Int position in _mapManager.mapGenerator.ItemSpawnPositions)
+                {
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, _itemChar, _itemColor, ItemGen.GetRandomEquippable()));
+                }
+            }
+            else
+            {
+                int items = Dice.Roll(3);
+                for (int i = 0; i < items; i++)
+                {
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _itemChar, _itemColor, ItemGen.GetRandomEquippable()));
+                }
+            }
 
-            // CREATING TEST ITEM
-            ItemEquippable item1 = new ItemEquippable("Helmet of misfortune", (int)EEqSlots.Head, new StatsObject(0, 0, 2, 0, 1, 5, 0, 2));
+            //// CREATING TEST ITEM
+            //var FloorTiles = _mapManager.mapGenerator.FloorTiles;
+            //var itemXY = FloorTiles.ElementAt(Dice.rng.Next(0, FloorTiles.Count));
+            //ItemEquippable item1 = new ItemEquippable("Helmet of misfortune", (int)EEqSlots.Head, new StatsObject(0, 0, 2, 0, 1, 5, 0, 2));
+            //GameObjectsInScene.Add(_itemSpawner.Spawn(itemXY, 'o', ConsoleColor.Yellow, item1));
 
-            GameObjectsInScene.Add(_itemSpawner.Spawn(itemXY, 'o', ConsoleColor.Yellow, item1));
+            // ADD POTIONS
+            int potions = Dice.Roll(2);
+            for (int i = 0; i < potions; i++)
+            {
+                GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _potionChar, _potionColor, ItemGen.GetRandomPotion()));
+            }
+
 
             // ADD KEYS
             if (_mapManager.mapGenerator.KeySpawnPositions.Count > 0)
             {
                 foreach (Vector2Int position in _mapManager.mapGenerator.KeySpawnPositions)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, 'ⱡ', ConsoleColor.Green, new Key()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, _keyChar, _keyColor, new Key()));
                 }
             }
             else
             {
                 foreach(var door in _mapManager.mapGenerator.Doors)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), 'ⱡ', ConsoleColor.Green, new Key()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _keyChar, _keyColor, new Key()));
                 }
             } 
                 
-
-            // ADD LEVEL GOAL
-            //Vector2Int goalPos = _mapManager.mapGenerator.GoalPosition.Equals(Vector2Int.Zero)
-            //    ? _mapManager.GetRandomPosition() : _mapManager.mapGenerator.GoalPosition;
 
             // ADD OBJECTS TO MAP
             AddObjectsToMap();

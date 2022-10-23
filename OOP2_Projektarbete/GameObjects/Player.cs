@@ -34,12 +34,6 @@ namespace Skalm.GameObjects
 
             // INVENTORY
             equipmentManager = new EquipmentManager();
-            for (int i = 0; i < 22; i++)
-            {
-                equipmentManager.AddItemToInventory(new Key());
-
-            }
-
             equipmentManager.inventory.onInventoryChanged += UpdateInventoryDisplay;
             statsObject.OnStatsChanged += UpdateStatDisplay;
         }
@@ -53,9 +47,9 @@ namespace Skalm.GameObjects
 
             statsObject.ResetHP();
             this.statsObject.name = playerName;
-            //equipmentManager.ResetInventory();
+            equipmentManager.ResetInventory();
 
-            
+
             _currentFloor = 1;
         }
 

@@ -10,10 +10,10 @@ using Skalm.Structs;
 
 namespace Skalm.GameObjects.Items
 {
-    internal class Item
+    internal class Item : IComparable<Item>
     {
         public string Name { get => _itemName; }
-        public string Description { get => _itemDescription == "" ? _itemName : _itemDescription; }
+        public virtual string Description { get => _itemDescription == "" ? _itemName : _itemDescription; }
 
         private string _itemName;
         public string _itemDescription;
@@ -28,7 +28,15 @@ namespace Skalm.GameObjects.Items
         // USE ITEM
         public virtual void Use(Player player)
         {
-            
+            throw new NotImplementedException();
+        }
+
+        public virtual int CompareTo(Item? other)
+        {
+            if (other == null)
+                return 1;
+            else
+                return 0;
         }
     }
 }

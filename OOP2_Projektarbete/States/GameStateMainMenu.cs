@@ -23,6 +23,7 @@ namespace Skalm.States
         // ENTER STATE
         public override void Enter()
         {
+            _displayManager.Eraser.EraseAll();
             _menuManager.LoadMenu(_menuManager.mainMenu);
             _soundManager.PlayMusic(_soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
             _sceneManager.playerName = "";

@@ -10,7 +10,7 @@ namespace Skalm.GameObjects.Items
     internal class Key : Item
     {
         // CONSTRUCTOR I
-        public Key() : base("Small key")
+        public Key() : base("Small key", "Use to open locked doors")
         {
         }
 
@@ -20,13 +20,12 @@ namespace Skalm.GameObjects.Items
             player.equipmentManager.RemoveItemFromInventory(this);
         }
 
-        //public Key(Vector2Int gridPosition, char sprite, ConsoleColor color) : base(gridPosition, sprite, color)
-        //{
-        //}
-
-        //public void UseKey()
-        //{
-
-        //}
+        public override int CompareTo(Item? other)
+        {
+            if (other == null)
+                return -1;
+            else
+            return -1;
+        }
     }
 }

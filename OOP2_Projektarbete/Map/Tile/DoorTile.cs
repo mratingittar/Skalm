@@ -26,16 +26,18 @@ namespace Skalm.Map.Tile
                 if (ColliderIsActive)
                     l = "closed ";
                 else
-                    l = "Open ";
+                    l = "open ";
 
                 if (IsLocked)
                     l += "and locked ";
                 l += "door.";
 
                 if (IsLocked)
-                    l += " Use a key to unlock it.";
+                    l += " Use a key to unlock it";
                 else if (ColliderIsActive)
-                    l += " Open it?";
+                    l += " Interact to open it";
+                else
+                    l += " Interact to close it";
                 return l;
             }
         }
