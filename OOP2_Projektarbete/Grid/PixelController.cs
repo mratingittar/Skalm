@@ -89,6 +89,8 @@ namespace Skalm.Grid
             row++;
             _printer.PrintFromPosition($"Hit points:  {playerStats.GetCurrentHP()} / {statsObject.statsArr[(int)EStats.HP].GetValue()}", row, column);
             row++;
+            _printer.PrintFromPosition($"Armor: {statsObject.statsArr[(int)EStats.Armor].GetValue()}", row, column);
+            row++;
             _printer.PrintFromPosition($"Base damage: {statsObject.statsArr[(int)EStats.BaseDamage].GetValue()}", row, column);
             row += 2;
             _printer.PrintFromPosition($"Str {statsObject.statsArr[(int)EStats.Strength].GetValue()} " +

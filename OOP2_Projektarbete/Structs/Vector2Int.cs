@@ -63,6 +63,5 @@ namespace Skalm.Structs
         {
             return (a.X == b.X) && (a.Y == b.Y);
         }
-        // HASHCODE
     }
 }
