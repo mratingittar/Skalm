@@ -95,15 +95,26 @@ namespace Skalm.GameObjects.Items
             // MATERIAL BONUSES
             List<(float, (string, float))> materialBonusList = new List<(float, (string, float))>();
 
-            materialBonusList.Add((0.5f, ("Rusty", 0.75f)));
+            materialBonusList.Add((0.65f, ("Rusty", 0.75f)));
+            materialBonusList.Add((0.65f, ("Tattered", 0.75f)));
+            materialBonusList.Add((0.65f, ("Bent", 0.85f)));
             materialBonusList.Add((1f, ("Bone", 0.9f)));
+            materialBonusList.Add((1f, ("Worn", 0.9f)));
             materialBonusList.Add((1f, ("Wood", 1f)));
+            materialBonusList.Add((1f, ("Average", 1f)));
+            materialBonusList.Add((1f, ("Common", 1f)));
+            materialBonusList.Add((1f, ("Rough", 1f)));
             materialBonusList.Add((1f, ("Stone", 1.1f)));
             materialBonusList.Add((0.8f, ("Leather", 1.25f)));
-            materialBonusList.Add((0.6f, ("Bronze", 2.65f)));
-            materialBonusList.Add((0.4f, ("Iron", 3.25f)));
-            materialBonusList.Add((0.2f, ("Steel", 6.5f)));
-            materialBonusList.Add((0.1f, ("Etherium", 11.5f)));
+            materialBonusList.Add((0.8f, ("Studded", 1.45f)));
+            materialBonusList.Add((0.8f, ("Fine", 1.45f)));
+            materialBonusList.Add((0.8f, ("Polished", 1.75f)));
+            materialBonusList.Add((0.7f, ("Bronze", 2.65f)));
+            materialBonusList.Add((0.7f, ("Exceptional", 3.0f)));
+            materialBonusList.Add((0.6f, ("Copper", 3.0f)));
+            materialBonusList.Add((0.5f, ("Iron", 4.25f)));
+            materialBonusList.Add((0.4f, ("Steel", 6.5f)));
+            materialBonusList.Add((0.3f, ("Etherium", 11.5f)));
 
             // RANDOMIZE MATERIAL
             var itemMaterial = WeightedRandomFromList(materialBonusList);
