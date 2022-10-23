@@ -28,6 +28,7 @@ namespace Skalm.GameObjects.Items
         {
             this.equipSlot = equipSlot;
             this.stats = stats;
+            isDefault = false;
         }
 
         // USE ITEM
