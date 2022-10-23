@@ -75,10 +75,10 @@ namespace Skalm.GameObjects.Stats
     {
         Head,
         Torso,
-        LHand,
         RHand,
-        LFinger,
-        RFinger,
-        Feet
+        LHand,
+        Legs,
+        Feet,
+        Finger,
     }
 }

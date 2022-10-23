@@ -118,13 +118,13 @@ namespace Skalm.Grid
             row++;
             _printer.PrintFromPosition($"Left hand:  {im.equipArr[(int)EEqSlots.LHand].Name}", row, column);
             row++;
-            _printer.PrintFromPosition($"Left ring:  {im.equipArr[(int)EEqSlots.LFinger].Name}", row, column);
-            row++;
             _printer.PrintFromPosition($"Right hand: {im.equipArr[(int)EEqSlots.RHand].Name}", row, column);
             row++;
-            _printer.PrintFromPosition($"Right ring: {im.equipArr[(int)EEqSlots.RFinger].Name}", row, column);
+            _printer.PrintFromPosition($"Legs:       {im.equipArr[(int)EEqSlots.Legs].Name}", row, column);
             row++;
             _printer.PrintFromPosition($"Feet:       {im.equipArr[(int)EEqSlots.Feet].Name}", row, column);
+            row++;
+            _printer.PrintFromPosition($"Finger:     {im.equipArr[(int)EEqSlots.Finger].Name}", row, column);
             row += 4;
 
             _printer.PrintFromPosition("Inventory", row, column);
