@@ -1,0 +1,39 @@
+# Settings file for Skälm
+# Edit at your own risk!
+
+# This is a comment.
+# Write properties like this:
+# Type Property = Value
+
+String GameTitle = Skälm
+Int32 UpdateFrequency = 20
+Int32 WindowPadding = 1
+Int32 BorderThickness = 1
+Int32 CellWidth = 2
+Int32 CellHeight = 1
+Int32 MapWidth = 42
+Int32 MapHeight = 42
+Int32 MessageBoxHeight = 5
+Int32 StatsWidth = 23
+Int32 MainStatsHeight = 11
+Int32 HudPadding = 1
+Char BorderSprite = ░
+Char WallSprite = #
+Char FloorSprite = ∙
+Char DoorSpriteOpen = □
+Char DoorSpriteClosed = ■
+Char GoalSprite = ✶
+Char PlayerSprite = ©
+Char EnemySprite = ⱺ
+Char KeySprite = Ⱡ
+Char PotionSprite = ♥
+Char ItemSprite = ☼
+ConsoleColor GoalColor = Green
+ConsoleColor PlayerColor = Blue
+ConsoleColor EnemyColor = Magenta
+ConsoleColor ItemColor = Yellow
+ConsoleColor PotionColor = Red
+ConsoleColor KeyColor = White
+ConsoleColor HUDColor = Gray
+ConsoleColor TextColor = White
+ConsoleColor BackgroundColor = Black

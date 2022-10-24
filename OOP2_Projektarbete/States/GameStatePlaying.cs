@@ -43,7 +43,7 @@ namespace Skalm.States
 
             if (_gameManager.NewGame)
             {
-                _displayManager.Printer.PrintCenteredInWindow("ENTERING SKÄLM", _displayManager.WindowInfo.WindowHeight / 2);
+                _displayManager.Printer.PrintCenteredInWindow("ENTERING SKÄLM", _displayManager.WindowInfo.WindowHeight / 2, _gameManager.Settings.TextColor);
                 Thread.Sleep(500);
 
                 _mapManager.mapGenerator.ResetMapIndex();

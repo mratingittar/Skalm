@@ -35,7 +35,7 @@ namespace Skalm.States
             _inputManager.OnInputCommand += CommandInput;
 
             // MENU EVENT SUBSCRIBE
-            _menuManager.pauseMenu.onMenuExecution += MenuExecution;
+            _menuManager.pauseMenu.OnMenuExecution += MenuExecution;
         }
 
         // STATE EXIT
@@ -48,7 +48,7 @@ namespace Skalm.States
             _inputManager.OnInputCommand -= CommandInput;
 
             // MENU EVENT UNSUBSCRIBE
-            _menuManager.pauseMenu.onMenuExecution -= MenuExecution;
+            _menuManager.pauseMenu.OnMenuExecution -= MenuExecution;
         }
 
         // STATE UPDATE LOGIC

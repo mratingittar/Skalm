@@ -62,10 +62,10 @@ IEraser eraser = new ConsoleWindowEraser();
 DisplayManager displayManager = new DisplayManager(settings, printer, eraser, new ConsoleWindowInfo(), consoleRect,
     new PixelController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, settings.CellWidth, settings.CellHeight,
                 new Vector2Int(settings.WindowPadding * settings.CellWidth, settings.WindowPadding * settings.CellHeight),
-                (x, y) => new Pixel(new Vector2Int(x, y), new HUDBorder(settings.BorderSprite))), sectionBounds, printer, eraser));
+                (x, y) => new Pixel(new Vector2Int(x, y), new HUDBorder(settings.BorderSprite))), sectionBounds, printer, eraser, settings));
 SoundManager soundManager = new SoundManager(new ConsoleSoundPlayer());
 InputManager inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
-MenuManager menuManager = new MenuManager(inputManager, displayManager, soundManager);
+MenuManager menuManager = new MenuManager(inputManager, displayManager, soundManager, settings);
 MapManager mapManager = new MapManager(settings, displayManager, new Grid2D<BaseTile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, 
     displayManager.GetMapOrigin(), (x, y) => new VoidTile(new Vector2Int(x, y))));
 SceneManager sceneManager = new SceneManager(mapManager, displayManager, settings);

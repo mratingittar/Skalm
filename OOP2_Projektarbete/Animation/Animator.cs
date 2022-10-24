@@ -1,4 +1,5 @@
 ﻿using Skalm.Display;
+using Skalm.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,34 +10,36 @@ namespace Skalm.Animation
 {
     internal class Animator
     {
-        private DisplayManager displayManager;
-        private List<char> animationTest;
-
-        private int animationFrameRate;
         public Animation fireAnim1;
         public Animation fireAnim2;
 
-        public Animator(DisplayManager displayManager)
+        private ISettings _settings;
+        private DisplayManager _displayManager;
+        private List<char> _animationTest;
+        private int _animationFrameRate;
+
+        public Animator(DisplayManager displayManager, ISettings settings)
         {
-            this.displayManager = displayManager;
-            animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
+            _settings = settings;
+            _displayManager = displayManager;
+            _animationTest = new List<char> { ' ', '░', '▒', '▓', '█', '▓', '▒', '░' };
 
             fireAnim1 = CreateFireAnimation(0);
             fireAnim2 = CreateFireAnimation(1);
 
-            animationFrameRate = 0;
+            _animationFrameRate = 0;
         }
         public void AnimatedBraziers()
         {
-            if (animationFrameRate == 2)
+            if (_animationFrameRate == 2)
             {
-                animationFrameRate = 0;
+                _animationFrameRate = 0;
 
-                displayManager.Printer.PrintFromPosition(fireAnim1.NextFrame().Lines, 4, Console.WindowWidth / 2 - Console.WindowWidth / 4 - 4);
-                displayManager.Printer.PrintFromPosition(fireAnim2.NextFrame().Lines, 4, Console.WindowWidth / 2 + Console.WindowWidth / 4);
+                _displayManager.Printer.PrintFromPosition(fireAnim1.NextFrame().Lines, 4, Console.WindowWidth / 2 - Console.WindowWidth / 4 - 4, _settings.TextColor);
+                _displayManager.Printer.PrintFromPosition(fireAnim2.NextFrame().Lines, 4, Console.WindowWidth / 2 + Console.WindowWidth / 4, _settings.TextColor);
 
             }
-            animationFrameRate++;
+            _animationFrameRate++;
         }
 
         private Animation CreateFireAnimation(int offset)

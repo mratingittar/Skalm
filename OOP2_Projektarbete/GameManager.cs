@@ -58,7 +58,7 @@ namespace Skalm
             displayManager.SetSceneManager(sceneManager);
 
             // ANIMATION
-            FireAnimator = new Animator(displayManager);
+            FireAnimator = new Animator(displayManager, settings);
 
             // UPDATE FREQUENCY
             updateFrequency = Settings.UpdateFrequency;

@@ -81,12 +81,12 @@ namespace Skalm.Map
                     return;
 
 
-                Console.ForegroundColor = tile.Color;
+                //Console.ForegroundColor = tile.Color;
                 foreach (var position in tileGrid.GetPlanePositions(x, y))
                 {
-                    printer.PrintAtPosition(tile.Sprite, position.Y, position.X);
+                    printer.PrintAtPosition(tile.Sprite, position.Y, position.X, tile.Color);
                 }
-                Console.ForegroundColor = foregroundColor;
+                //Console.ForegroundColor = foregroundColor;
             }
         }
     }

@@ -12,6 +12,8 @@ namespace Skalm.Grid
         public int InventoryIndex { get; set; }
         public int InventoryRowsAvailable { get; private set; }
 
+        private ConsoleColor _textColor;
+        private ConsoleColor _hudColor;
         private int _inventoryStartRow;
         private HashSet<Pixel> _borderCells;
         private Dictionary<string, HashSet<Pixel>> _pixelsInSections;
@@ -23,11 +25,13 @@ namespace Skalm.Grid
         private readonly Bounds _subStatsConsole;
 
         // CONSTRUCTOR I
-        public PixelController(Grid2D<Pixel> pixelGrid, Dictionary<string, Bounds> sectionBounds, IPrinter printer, IEraser eraser)
+        public PixelController(Grid2D<Pixel> pixelGrid, Dictionary<string, Bounds> sectionBounds, IPrinter printer, IEraser eraser, ISettings settings)
         {
-            this._pixelGrid = pixelGrid;
-            this._printer = printer;
-            this._eraser = eraser;
+            _textColor = settings.TextColor;
+            _hudColor = settings.HUDColor;
+            _pixelGrid = pixelGrid;
+            _printer = printer;
+            _eraser = eraser;
             _pixelsInSections = new Dictionary<string, HashSet<Pixel>>();
             _borderCells = new HashSet<Pixel>();
             InventoryIndex = -1;
@@ -79,25 +83,25 @@ namespace Skalm.Grid
             int column = _mainStatsConsole.StartXY.X;
             int row = _mainStatsConsole.StartXY.Y;
 
-            _printer.PrintFromPosition(name, row, column);
+            _printer.PrintFromPosition(name, row, column, _textColor);
             row++;
-            _printer.PrintFromPosition(TextTools.RepeatChar('─', name.Length), row, column);
+            _printer.PrintFromPosition(TextTools.RepeatChar('─', name.Length), row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Level {playerStats.Level}", row, column);
+            _printer.PrintFromPosition($"Level {playerStats.Level}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Experience:  {playerStats.XP}", row, column);
+            _printer.PrintFromPosition($"Experience:  {playerStats.XP}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Hit points:  {playerStats.GetCurrentHP()} / {statsObject.statsArr[(int)EStats.HP].GetValue()}", row, column);
+            _printer.PrintFromPosition($"Hit points:  {playerStats.GetCurrentHP()} / {statsObject.statsArr[(int)EStats.HP].GetValue()}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Armor: {statsObject.statsArr[(int)EStats.Armor].GetValue()}", row, column);
+            _printer.PrintFromPosition($"Armor: {statsObject.statsArr[(int)EStats.Armor].GetValue()}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Base damage: {statsObject.statsArr[(int)EStats.BaseDamage].GetValue()}", row, column);
+            _printer.PrintFromPosition($"Base damage: {statsObject.statsArr[(int)EStats.BaseDamage].GetValue()}", row, column, _textColor);
             row += 2;
             _printer.PrintFromPosition($"Str {statsObject.statsArr[(int)EStats.Strength].GetValue()} " +
                 $"| Dex {statsObject.statsArr[(int)EStats.Dexterity].GetValue()} " +
                 $"| Con {statsObject.statsArr[(int)EStats.Constitution].GetValue()} " +
                 $"| Int {statsObject.statsArr[(int)EStats.Intelligence].GetValue()} " +
-                $"| Lck {statsObject.statsArr[(int)EStats.Luck].GetValue()}", row, column);
+                $"| Lck {statsObject.statsArr[(int)EStats.Luck].GetValue()}", row, column, _textColor);
 
             _printer.PrintFromPosition(floor, _mainStatsConsole.StartXY.Y, _mainStatsConsole.EndXY.X - floor.Length);
         }
@@ -110,28 +114,28 @@ namespace Skalm.Grid
             int column = _subStatsConsole.StartXY.X;
             int row = _subStatsConsole.StartXY.Y;
 
-            _printer.PrintFromPosition("Equipment", row, column);
+            _printer.PrintFromPosition("Equipment", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition("─────────", row, column);
+            _printer.PrintFromPosition("─────────", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Head:       {im.equipArr[(int)EEqSlots.Head].Name}", row, column);
+            _printer.PrintFromPosition($"Head:       {im.equipArr[(int)EEqSlots.Head].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Torso:      {im.equipArr[(int)EEqSlots.Torso].Name}", row, column);
+            _printer.PrintFromPosition($"Torso:      {im.equipArr[(int)EEqSlots.Torso].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Left hand:  {im.equipArr[(int)EEqSlots.LHand].Name}", row, column);
+            _printer.PrintFromPosition($"Left hand:  {im.equipArr[(int)EEqSlots.LHand].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Right hand: {im.equipArr[(int)EEqSlots.RHand].Name}", row, column);
+            _printer.PrintFromPosition($"Right hand: {im.equipArr[(int)EEqSlots.RHand].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Legs:       {im.equipArr[(int)EEqSlots.Legs].Name}", row, column);
+            _printer.PrintFromPosition($"Legs:       {im.equipArr[(int)EEqSlots.Legs].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Feet:       {im.equipArr[(int)EEqSlots.Feet].Name}", row, column);
+            _printer.PrintFromPosition($"Feet:       {im.equipArr[(int)EEqSlots.Feet].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Finger:     {im.equipArr[(int)EEqSlots.Finger].Name}", row, column);
+            _printer.PrintFromPosition($"Finger:     {im.equipArr[(int)EEqSlots.Finger].Name}", row, column, _textColor);
             row += 4;
 
-            _printer.PrintFromPosition("Inventory", row, column);
+            _printer.PrintFromPosition("Inventory", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition("─────────", row, column);
+            _printer.PrintFromPosition("─────────", row, column, _textColor);
             row++;
 
             _inventoryStartRow = row;
@@ -148,19 +152,19 @@ namespace Skalm.Grid
             for (int i = 0; i < Math.Min(InventoryRowsAvailable, items.Count() - offset); i++)
             {
                 if (i + offset == selectionIndex)
-                    _printer.PrintFromPosition(items[i + offset].Name, row, column, true);
+                    _printer.PrintFromPosition(items[i + offset].Name, row, column, _textColor, true);
                 else
-                    _printer.PrintFromPosition(items[i + offset].Name, row, column);
+                    _printer.PrintFromPosition(items[i + offset].Name, row, column, _textColor);
                 row++;
             }
 
             if (inventoryPage == 0 && items.Count() > InventoryRowsAvailable)
-                _printer.PrintFromPosition("  ... ►", row, column);
+                _printer.PrintFromPosition("  ... ►", row, column, _textColor);
             else if (inventoryPage > 0 && items.Count() > InventoryRowsAvailable * (inventoryPage + 1))
-                _printer.PrintFromPosition("◄ ... ►", row, column);
+                _printer.PrintFromPosition("◄ ... ►", row, column, _textColor);
             else if (inventoryPage > 0 && items.Count() < InventoryRowsAvailable * (inventoryPage + 1))
             {
-                _printer.PrintFromPosition("◄ ... ", row, column);
+                _printer.PrintFromPosition("◄ ... ", row, column, _textColor);
                 _eraser.EraseArea(new Bounds(new Vector2Int(column, row + 1), _subStatsConsole.EndXY));
             }
             else
@@ -178,7 +182,7 @@ namespace Skalm.Grid
                     if (counter == msg.Length)
                         return;
 
-                    _printer.PrintAtPosition(msg[counter], y, x);
+                    _printer.PrintAtPosition(msg[counter], y, x, _textColor);
                     counter++;
                 }
             }
@@ -191,7 +195,7 @@ namespace Skalm.Grid
             {
                 foreach (var position in _pixelGrid.GetPlanePositions(cell.gridPosition.X, cell.gridPosition.Y))
                 {
-                    _printer.PrintAtPosition((cell.PartOfHUD as HUDBorder)!.borderCharacter, position.Y, position.X);
+                    _printer.PrintAtPosition((cell.PartOfHUD as HUDBorder)!.borderCharacter, position.Y, position.X, _hudColor);
                 }
             }
         }

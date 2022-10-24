@@ -28,7 +28,7 @@ namespace Skalm.States
         public void Enter()
         {
             _inputManager.OnInputCommand += CommandInput;
-            _displayManager.Printer.PrintCenteredInWindow("YOU DIED.", _displayManager.WindowInfo.WindowHeight/2);
+            _displayManager.Printer.PrintCenteredInWindow("YOU DIED.", _displayManager.WindowInfo.WindowHeight/2, _gameManager.Settings.TextColor);
         }
 
         public void Exit()

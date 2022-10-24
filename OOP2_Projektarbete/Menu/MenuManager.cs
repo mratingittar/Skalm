@@ -8,39 +8,39 @@ namespace Skalm.Menu
 {
     internal class MenuManager
     {
-        private readonly InputManager inputManager;
-        private readonly DisplayManager displayManager;
-        private readonly SoundManager soundManager;
-        private readonly ISoundPlayer soundPlayer;
-
+        public Menu ActiveMenu { get; private set; }
         public readonly Menu mainMenu;
         public readonly Menu pauseMenu;
-        public Menu ActiveMenu { get; private set; }
 
-        public MenuManager(InputManager inputManager, DisplayManager displayManager, SoundManager soundManager)
+        private readonly InputManager _inputManager;
+        private readonly DisplayManager _displayManager;
+        private readonly SoundManager _soundManager;
+        private readonly ISoundPlayer _soundPlayer;
+
+        public MenuManager(InputManager inputManager, DisplayManager displayManager, SoundManager soundManager, ISettings settings)
         {
-            this.inputManager = inputManager;
-            this.displayManager = displayManager;
-            this.soundManager = soundManager;
-            soundPlayer = soundManager.player;
+            _inputManager = inputManager;
+            _displayManager = displayManager;
+            _soundManager = soundManager;
+            _soundPlayer = soundManager.player;
 
             if (!FileHandler.TryReadFile("skalm_title.txt", out string[] title))
                 title = new string[0];
 
             Dictionary<string, MenuPage> menuPagesToLoad = CreateMenuPages();
-            mainMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["MAIN MENU"], menuPagesToLoad["NEW GAME"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["HOW TO PLAY"], menuPagesToLoad["CREDITS"]), displayManager, soundManager, inputManager);
+            mainMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["MAIN MENU"], menuPagesToLoad["NEW GAME"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["HOW TO PLAY"], menuPagesToLoad["CREDITS"]), displayManager, soundManager, inputManager, settings.TextColor);
             mainMenu.pages.FindNode(node => node.Value.pageName == "OPTIONS").AddChildren(menuPagesToLoad["INPUT METHOD"], menuPagesToLoad["MUSIC"]);
-            pauseMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["PAUSE MENU"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["HOW TO PLAY"]), displayManager, soundManager, inputManager);
+            pauseMenu = new Menu(title, new TreeNode<MenuPage>(menuPagesToLoad["PAUSE MENU"], menuPagesToLoad["OPTIONS"], menuPagesToLoad["HOW TO PLAY"]), displayManager, soundManager, inputManager, settings.TextColor);
             pauseMenu.pages.FindNode(node => node.Value.pageName == "OPTIONS").AddChildren(menuPagesToLoad["INPUT METHOD"], menuPagesToLoad["MUSIC"]);
             ActiveMenu = mainMenu;
         }
 
         private Dictionary<string, MenuPage> CreateMenuPages()
         {
-            List<string> inputs = inputManager.Inputs.Select(input => input.GetType().Name).ToList();
+            List<string> inputs = _inputManager.Inputs.Select(input => input.GetType().Name).ToList();
             inputs.Add("Back");
 
-            List<string> music = soundManager.Tracks.Select(sound => sound.soundName).ToList();
+            List<string> music = _soundManager.Tracks.Select(sound => sound.soundName).ToList();
             music.Add("Back");
 
             string[] helpText = new string[]
@@ -78,7 +78,7 @@ namespace Skalm.Menu
         public void UnloadMenu()
         {
             ActiveMenu.IsEnabled = false;
-            displayManager.Eraser.EraseAll();
+            _displayManager.Eraser.EraseAll();
         }
 
         public void TraverseMenu(Vector2Int direction)
@@ -90,11 +90,11 @@ namespace Skalm.Menu
             {
                 case < 0:
                     if (ActiveMenu.MoveMenuUp())
-                        soundPlayer.Play(SoundManager.SoundType.Low);
+                        _soundPlayer.Play(SoundManager.SoundType.Low);
                     break;
                 case > 0:
                     if (ActiveMenu.MoveMenuDown())
-                        soundPlayer.Play(SoundManager.SoundType.Low);
+                        _soundPlayer.Play(SoundManager.SoundType.Low);
                     break;
             }
         }
@@ -104,7 +104,7 @@ namespace Skalm.Menu
             if (ActiveMenu.IsEnabled is false)
                 return;
 
-            soundPlayer.Play(SoundManager.SoundType.Mid);
+            _soundPlayer.Play(SoundManager.SoundType.Mid);
 
             switch (command)
             {

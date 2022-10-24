@@ -13,7 +13,6 @@ namespace Skalm.States
         private bool _everyOtherFrame = true;
         private const int _menuPageHeight = 6;
         private Animator _fireAnimator;
-
         private GameManager _gameManager;
         private DisplayManager _displayManager;
         private MenuManager _menuManager;
@@ -48,7 +47,7 @@ namespace Skalm.States
             _inputManager.OnInputCommand += CommandInput;
 
             // MENU EVENT SUBSCRIBE
-            _menuManager.mainMenu.onMenuExecution += MenuExecution;
+            _menuManager.mainMenu.OnMenuExecution += MenuExecution;
         }
 
         // EXIT STATE
@@ -61,7 +60,7 @@ namespace Skalm.States
             _inputManager.OnInputCommand -= CommandInput;
 
             // MENU EVENT UNSUBSCRIBE
-            _menuManager.mainMenu.onMenuExecution -= MenuExecution;
+            _menuManager.mainMenu.OnMenuExecution -= MenuExecution;
         }
 
         // UPDATE LOGIC
@@ -169,7 +168,7 @@ namespace Skalm.States
                 else
                     name += cki.KeyChar;
 
-                _displayManager.Printer.PrintCenteredInWindow(name, height);
+                _displayManager.Printer.PrintCenteredInWindow(name, height, _gameManager.Settings.TextColor);
             }
 
             if (name.Length == 0)

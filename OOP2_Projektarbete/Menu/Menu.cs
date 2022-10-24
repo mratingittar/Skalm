@@ -10,24 +10,26 @@ namespace Skalm.Menu
         #region FIELDS
         public readonly string[] title;
         public readonly TreeNode<MenuPage> pages;
-        public event Action<Page, string>? onMenuExecution;
+        public event Action<Page, string>? OnMenuExecution;
 
-        private int _pageStartRow;
         private DisplayManager _displayManager;
         private SoundManager _soundManager;
         private InputManager _inputManager;
+        private ConsoleColor _textColor;
+        private int _pageStartRow;
         private const int _eraseBuffer = 5;
         private const int _pageTitleHeight = 4;
         #endregion
 
         #region CONSTRUCTOR
-        public Menu(string[] title, TreeNode<MenuPage> pages, DisplayManager displayManager, SoundManager soundManager, InputManager inputManager)
+        public Menu(string[] title, TreeNode<MenuPage> pages, DisplayManager displayManager, SoundManager soundManager, InputManager inputManager, ConsoleColor textColor)
         {
             this.title = title;
             this.pages = pages;
-            this._displayManager = displayManager;
-            this._soundManager = soundManager;
-            this._inputManager = inputManager;
+            _displayManager = displayManager;
+            _soundManager = soundManager;
+            _inputManager = inputManager;
+            _textColor = textColor;
             IsEnabled = false;
             ActivePage = pages.First().Value;
         }
@@ -45,7 +47,7 @@ namespace Skalm.Menu
         {
             IsEnabled = true;
             MenuItemIndex = 0;
-            _displayManager.Printer.PrintCenteredInWindow(title, titlePadding);
+            _displayManager.Printer.PrintCenteredInWindow(title, titlePadding, _textColor);
             _pageStartRow = _displayManager.WindowInfo.CursorPosition.Item2 + titlePadding;
             LoadPage(pages.Value);
         }
@@ -80,7 +82,7 @@ namespace Skalm.Menu
 
         private void SendMenuEvent(string executedItem)
         {
-            onMenuExecution?.Invoke(ActivePage.page, executedItem);
+            OnMenuExecution?.Invoke(ActivePage.page, executedItem);
         }
 
         public void Cancel()
@@ -117,7 +119,7 @@ namespace Skalm.Menu
 
         private void PrintMenu()
         {
-            _displayManager.Printer.PrintCenteredInWindow(TextTools.AddLightBordersToText(ActivePage.pageName), _pageStartRow);
+            _displayManager.Printer.PrintCenteredInWindow(TextTools.AddLightBordersToText(ActivePage.pageName), _pageStartRow, _textColor);
             HighlightSelectedItem(_pageStartRow + _pageTitleHeight);
         }
 
@@ -139,14 +141,14 @@ namespace Skalm.Menu
 
                 if (item.Key == ActivePage.items.Last().Key)
                 {
-                    _displayManager.Printer.PrintCenteredInWindow("", startRow + count);
+                    _displayManager.Printer.PrintCenteredInWindow("", startRow + count, _textColor);
                     count++;
                 }
 
                 if (item.Key == MenuItemIndex)
-                    _displayManager.Printer.PrintCenteredInWindow(pageItem, startRow + count, true);
+                    _displayManager.Printer.PrintCenteredInWindow(pageItem, startRow + count, _textColor, true);
                 else
-                    _displayManager.Printer.PrintCenteredInWindow(pageItem, startRow + count);
+                    _displayManager.Printer.PrintCenteredInWindow(pageItem, startRow + count, _textColor);
                 count++;
             }
         }
