@@ -1,73 +1,26 @@
 ﻿using Skalm.GameObjects.Stats;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Skalm.GameObjects.Items
 {
-    internal static class ItemGen
+    internal class ItemGen : IWeightedGenerator<ItemEquippable>
     {
-        static readonly Random rng = new Random();
+        private readonly Random rng = new Random();
+        private float _modifier;
 
-        // GET RANDOM ITEM FROM WEIGHTED LIST
-        public static T WeightedRandomFromList<T>(List<(float, T)> inList)
+        public ItemGen( float modifier = 0.65f)
         {
-            float sumTotal = 0;
-            float sumRng = 0;
-            float choice;
-
-            // GET SUM OF ALL ITEM WEIGHTS
-            foreach (var item in inList)
-            {
-                sumTotal += (item.Item1);
-            }
-
-            // RANDOMIZE CHOICE
-            choice = (float)rng.NextDouble() * sumTotal;
-
-            // ITERATE LIST & PICK RANDOM ITEM
-            for (int i = 0; i < inList.Count; i++)
-            {
-                sumRng += inList[i].Item1;
-
-                // PICK ITEM IF RNG VALUE EXCEEDED
-                if ((choice > (sumRng - inList[i].Item1))
-                && (choice < sumRng))
-                    return inList[i].Item2;
-            }
-
-            // UGLY DEFAULT
-            return inList[0].Item2;
+            _modifier = modifier;
         }
 
-        // GENERATE RANDOM POTION
-        public static Potion GetRandomPotion(float bonusMod = 0.65f)
+        public ItemEquippable GetWeightedRandom()
         {
-            int healAmount = 5;
-            int bonusCounter = 0;
-            float addHealChance = 0.75f;
-            string potionName = "Potion of Healing";
-
-            // RANDOMIZE HEAL AMOUNT
-            do
-            {
-                bonusCounter++;
-                healAmount += rng.Next(1, 4);
-                addHealChance *= bonusMod;
-            } while (rng.NextDouble() < addHealChance);
-
-            // UPDATE ITEM NAME
-            if ((bonusCounter - 2) > 0)
-                potionName += $" +{bonusCounter - 2}";
-
-            // CREATE & RETURN POTION
-            return new Potion(potionName, healAmount);
+            return GetRandomEquippable(_modifier);
         }
+
 
         // GENERATE RANDOM EQUIPMENT
-        public static ItemEquippable GetRandomEquippable(float bonusMod = 0.65f, int eqSlot = -1)
+        public  ItemEquippable GetRandomEquippable(float bonusMod = 0.65f, int eqSlot = -1)
         {
             string itemName = "";
             int bonusCounter = 0;
@@ -117,7 +70,7 @@ namespace Skalm.GameObjects.Items
             materialBonusList.Add((0.3f, ("Etherium", 11.5f)));
 
             // RANDOMIZE MATERIAL
-            var itemMaterial = WeightedRandomFromList(materialBonusList);
+            var itemMaterial = WeightedRandom.WeightedRandomFromList(materialBonusList);
 
             // BASE ITEM TYPE ATTRIBUTES
             switch(eqSlot)
@@ -214,7 +167,7 @@ namespace Skalm.GameObjects.Items
             // ADD BONUS STATS TO ITEM STATS OBJECT
             for (int i = 0; i < bonusCounter; i++)
             {
-                var bonus = WeightedRandomFromList(statBonusList);
+                var bonus = WeightedRandom.WeightedRandomFromList(statBonusList);
                 itemStats.statsArr[(int)bonus.Item1].AddValue(bonus.Item2 * (float)(1 + (rng.NextDouble() * itemMaterial.Item2 * 0.5)));
             }
 

@@ -8,20 +8,22 @@ using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Items
 {
-    internal class ItemSpawner : ISpawner<ItemPickup>
+    internal class ItemSpawner : ISpawner<ItemPickup>, IScalable
     {
-        // SPAWN ITEM PICKUP
-        public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color)
+        public float ScalingMultiplier { get; set; }
+        private ItemGen _itemGen;
+
+        public ItemSpawner(ItemGen itemGenerator)
         {
-            // TO DO: SPAWN ACTUAL ITEM
-            return new ItemPickup(position, sprite, color, new Item("New Item"));
+            ScalingMultiplier = 1;
+            _itemGen = itemGenerator;
         }
 
-        // SPAWN ITEM PICKUP
-        public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color, Item item)
+        public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color)
         {
-            // TO DO: SPAWN ACTUAL ITEM
-            return new ItemPickup(position, sprite, color, item);
+            return new ItemPickup(position, sprite, color, _itemGen.GetWeightedRandom());
         }
+
+
     }
 }

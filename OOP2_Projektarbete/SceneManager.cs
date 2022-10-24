@@ -23,6 +23,8 @@ namespace Skalm
         private DisplayManager _displayManager;
         private EnemySpawner _enemySpawner;
         private ItemSpawner _itemSpawner;
+        private PotionSpawner _potionSpawner;
+        private KeySpawner _keySpawner;
         private ISettings _settings;
 
         // CONSTRUCTOR I
@@ -35,7 +37,9 @@ namespace Skalm
             ActorsInScene = new List<Actor>();
             GameObjectsInScene = new List<GameObject>();
             _enemySpawner = new EnemySpawner(mapManager, this);
-            _itemSpawner = new ItemSpawner();
+            _itemSpawner = new ItemSpawner(new ItemGen());
+            _potionSpawner = new PotionSpawner(0.65f);
+            _keySpawner = new KeySpawner();
 
             ItemPickup.onItemPickup += RemoveGameObject;
         }
@@ -103,7 +107,7 @@ namespace Skalm
             {
                 foreach (Vector2Int position in _mapManager.MapGenerator.ItemSpawnPositions)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, _settings.ItemSprite, _settings.ItemColor, ItemGen.GetRandomEquippable()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, _settings.ItemSprite, _settings.ItemColor));
                 }
             }
             else
@@ -111,7 +115,7 @@ namespace Skalm
                 int items = Dice.Roll(3);
                 for (int i = 0; i < items; i++)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.ItemSprite, _settings.ItemColor, ItemGen.GetRandomEquippable()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.ItemSprite, _settings.ItemColor));
                 }
             }
 
@@ -119,7 +123,7 @@ namespace Skalm
             int potions = Dice.Roll(2);
             for (int i = 0; i < potions; i++)
             {
-                GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.PotionSprite, _settings.PotionColor, ItemGen.GetRandomPotion()));
+                GameObjectsInScene.Add(_potionSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.PotionSprite, _settings.PotionColor));
             }
 
 
@@ -128,14 +132,14 @@ namespace Skalm
             {
                 foreach (Vector2Int position in _mapManager.MapGenerator.KeySpawnPositions)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, _settings.KeySprite, _settings.KeyColor, new Key()));
+                    GameObjectsInScene.Add(_keySpawner.Spawn(position, _settings.KeySprite, _settings.KeyColor));
                 }
             }
             else
             {
                 foreach(var door in _mapManager.MapGenerator.Doors)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.KeySprite, _settings.KeyColor, new Key()));
+                    GameObjectsInScene.Add(_keySpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.KeySprite, _settings.KeyColor));
                 }
             } 
                 
