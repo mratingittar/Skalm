@@ -36,8 +36,8 @@ namespace Skalm
             Player = new Player(mapManager, displayManager, new PlayerAttackComponent(), new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Nameless"), "Nameless", Vector2Int.Zero);
             ActorsInScene = new List<Actor>();
             GameObjectsInScene = new List<GameObject>();
-            _enemySpawner = new EnemySpawner(mapManager, this);
-            _itemSpawner = new ItemSpawner(new ItemGen());
+            _enemySpawner = new EnemySpawner(0.65f, mapManager, this, new MonsterGen());
+            _itemSpawner = new ItemSpawner(0.65f, new ItemGen());
             _potionSpawner = new PotionSpawner(0.65f);
             _keySpawner = new KeySpawner();
 
@@ -51,13 +51,21 @@ namespace Skalm
 
             _mapManager.MapGenerator.CreateMap();
             ResetPlayer();
-            InitializeScene(); // SCALE ENEMIES OVER TIME
+            IncrementScaling();
+            InitializeScene();
             Player.NextFloor();
 
             _displayManager.DisplayHUD();
             _mapManager.MapPrinter.DrawMap();
 
             Player.SendStatsToDisplay();
+        }
+
+        private void IncrementScaling()
+        {
+            _itemSpawner.ScalingMultiplier++;
+            _enemySpawner.ScalingMultiplier++;
+            _potionSpawner.ScalingMultiplier++;
         }
 
         public void ResetPlayer()

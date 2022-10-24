@@ -8,6 +8,6 @@ namespace Skalm.GameObjects
 {
     internal interface IWeightedGenerator<out T>
     {
-        T GetWeightedRandom();
+        T GetWeightedRandom(float modifier);
     }
 }

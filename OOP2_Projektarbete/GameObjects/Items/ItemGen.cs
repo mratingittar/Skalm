@@ -6,21 +6,43 @@ namespace Skalm.GameObjects.Items
     internal class ItemGen : IWeightedGenerator<ItemEquippable>
     {
         private readonly Random rng = new Random();
-        private float _modifier;
+        private List<(float, (string, float))> _materialBonusList;
 
-        public ItemGen( float modifier = 0.65f)
+        public ItemGen()
         {
-            _modifier = modifier;
+            _materialBonusList = new List<(float, (string, float))>
+            {
+                (0.65f, ("Rusty", 0.75f)),
+                (0.65f, ("Tattered", 0.75f)),
+                (0.65f, ("Bent", 0.85f)),
+                (1f, ("Bone", 0.9f)),
+                (1f, ("Worn", 0.9f)),
+                (1f, ("Wood", 1f)),
+                (1f, ("Average", 1f)),
+                (1f, ("Common", 1f)),
+                (1f, ("Rough", 1f)),
+                (1f, ("Stone", 1.1f)),
+                (0.8f, ("Leather", 1.25f)),
+                (0.8f, ("Studded", 1.45f)),
+                (0.8f, ("Fine", 1.45f)),
+                (0.8f, ("Polished", 1.75f)),
+                (0.7f, ("Bronze", 2.65f)),
+                (0.7f, ("Exceptional", 3.0f)),
+                (0.6f, ("Copper", 3.0f)),
+                (0.5f, ("Iron", 4.25f)),
+                (0.4f, ("Steel", 6.5f)),
+                (0.3f, ("Etherium", 11.5f))
+            };
         }
 
-        public ItemEquippable GetWeightedRandom()
+        public ItemEquippable GetWeightedRandom(float modifier)
         {
-            return GetRandomEquippable(_modifier);
+            return GetRandomEquippable(modifier);
         }
 
 
         // GENERATE RANDOM EQUIPMENT
-        public  ItemEquippable GetRandomEquippable(float bonusMod = 0.65f, int eqSlot = -1)
+        private ItemEquippable GetRandomEquippable(float bonusMod = 0.65f, int eqSlot = -1)
         {
             string itemName = "";
             int bonusCounter = 0;
@@ -45,32 +67,9 @@ namespace Skalm.GameObjects.Items
             var dmgBonus = (0.1f, (EStats.BaseDamage, 1));
             var armBonus = (0.1f, (EStats.Armor, 1));
 
-            // MATERIAL BONUSES
-            List<(float, (string, float))> materialBonusList = new List<(float, (string, float))>();
-
-            materialBonusList.Add((0.65f, ("Rusty", 0.75f)));
-            materialBonusList.Add((0.65f, ("Tattered", 0.75f)));
-            materialBonusList.Add((0.65f, ("Bent", 0.85f)));
-            materialBonusList.Add((1f, ("Bone", 0.9f)));
-            materialBonusList.Add((1f, ("Worn", 0.9f)));
-            materialBonusList.Add((1f, ("Wood", 1f)));
-            materialBonusList.Add((1f, ("Average", 1f)));
-            materialBonusList.Add((1f, ("Common", 1f)));
-            materialBonusList.Add((1f, ("Rough", 1f)));
-            materialBonusList.Add((1f, ("Stone", 1.1f)));
-            materialBonusList.Add((0.8f, ("Leather", 1.25f)));
-            materialBonusList.Add((0.8f, ("Studded", 1.45f)));
-            materialBonusList.Add((0.8f, ("Fine", 1.45f)));
-            materialBonusList.Add((0.8f, ("Polished", 1.75f)));
-            materialBonusList.Add((0.7f, ("Bronze", 2.65f)));
-            materialBonusList.Add((0.7f, ("Exceptional", 3.0f)));
-            materialBonusList.Add((0.6f, ("Copper", 3.0f)));
-            materialBonusList.Add((0.5f, ("Iron", 4.25f)));
-            materialBonusList.Add((0.4f, ("Steel", 6.5f)));
-            materialBonusList.Add((0.3f, ("Etherium", 11.5f)));
 
             // RANDOMIZE MATERIAL
-            var itemMaterial = WeightedRandom.WeightedRandomFromList(materialBonusList);
+            var itemMaterial = WeightedRandom.WeightedRandomFromList(_materialBonusList);
 
             // BASE ITEM TYPE ATTRIBUTES
             switch(eqSlot)

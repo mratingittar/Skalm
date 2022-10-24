@@ -10,7 +10,7 @@ namespace Skalm.GameObjects.Enemies
     {
         private readonly Random rng = new Random();
 
-        public Enemy GetWeightedRandom()
+        public Enemy GetWeightedRandom(float modifier)
         {
             throw new NotImplementedException();
         }

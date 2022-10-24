@@ -1,22 +1,17 @@
 ﻿using Skalm.GameObjects.Interfaces;
 using Skalm.Structs;
-using System;
-using System.Collections.Generic;
-using System.Drawing.Text;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Skalm.GameObjects.Items
 {
     internal class PotionSpawner : ISpawner<ItemPickup>, IScalable
     {
         public float ScalingMultiplier { get; set; }
-        private float _bonusModifier;
-        public PotionSpawner(float bonusModifier = 0.65f)
+        private float _scaledModifier => Math.Min(_baseModifier * (1 + 0.01f * ScalingMultiplier), 0.99f);
+        private float _baseModifier;
+        public PotionSpawner(float baseModifier)
         {
             ScalingMultiplier = 1;
-            _bonusModifier = bonusModifier;
+            _baseModifier = baseModifier;
         }
         public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color)
         {
@@ -36,7 +31,7 @@ namespace Skalm.GameObjects.Items
             {
                 bonusCounter++;
                 healAmount += rng.Next(1, 4);
-                addHealChance *= _bonusModifier * ScalingMultiplier;
+                addHealChance *= _scaledModifier;
             } while (rng.NextDouble() < addHealChance);
 
             // UPDATE ITEM NAME
