@@ -1,5 +1,4 @@
 ﻿using Skalm.GameObjects.Interfaces;
-using Skalm.GameObjects.Items;
 using Skalm.Map;
 using Skalm.Structs;
 

@@ -33,14 +33,13 @@ namespace Skalm
             _settings = settings;
             _mapManager = mapManager;
             _displayManager = displayManager;
-            Player = new Player(mapManager, displayManager, new PlayerAttackComponent(), new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Nameless"), "Nameless", Vector2Int.Zero);
+            Player = new Player(mapManager, displayManager, new PlayerAttackComponent(), new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Nameless", 0), "Nameless", Vector2Int.Zero);
             ActorsInScene = new List<Actor>();
             GameObjectsInScene = new List<GameObject>();
             _enemySpawner = new EnemySpawner(0.65f, mapManager, this, new MonsterGen());
             _itemSpawner = new ItemSpawner(0.65f, new ItemGen());
             _potionSpawner = new PotionSpawner(0.65f);
             _keySpawner = new KeySpawner();
-
             ItemPickup.onItemPickup += RemoveGameObject;
         }
 

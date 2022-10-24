@@ -91,7 +91,7 @@ namespace Skalm.Grid
             row++;
             _printer.PrintFromPosition($"Level {playerStats.Level}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Experience:  {playerStats.XP}", row, column, _textColor);
+            _printer.PrintFromPosition($"Experience:  {playerStats.Experience} / {playerStats.XpTarget}", row, column, _textColor);
             row++;
             _printer.PrintFromPosition($"Hit points:  {playerStats.GetCurrentHP()} / {statsObject.statsArr[(int)EStats.HP].GetValue()}", row, column, _textColor);
             row++;
@@ -123,15 +123,15 @@ namespace Skalm.Grid
             row++;
             _printer.PrintFromPosition($"Torso:      {equipment.equipArr[(int)EEqSlots.Torso].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Left hand:  {equipment.equipArr[(int)EEqSlots.LHand].Name}", row, column, _textColor);
+            _printer.PrintFromPosition($"Finger:     {equipment.equipArr[(int)EEqSlots.Finger].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Right hand: {equipment.equipArr[(int)EEqSlots.RHand].Name}", row, column, _textColor);
+            _printer.PrintFromPosition($"Main hand: {equipment.equipArr[(int)EEqSlots.RHand].Name}", row, column, _textColor);
+            row++;
+            _printer.PrintFromPosition($"Off hand:  {equipment.equipArr[(int)EEqSlots.LHand].Name}", row, column, _textColor);
             row++;
             _printer.PrintFromPosition($"Legs:       {equipment.equipArr[(int)EEqSlots.Legs].Name}", row, column, _textColor);
             row++;
             _printer.PrintFromPosition($"Feet:       {equipment.equipArr[(int)EEqSlots.Feet].Name}", row, column, _textColor);
-            row++;
-            _printer.PrintFromPosition($"Finger:     {equipment.equipArr[(int)EEqSlots.Finger].Name}", row, column, _textColor);
         }
 
         public void DisplayInventory(EquipmentManager equipment)

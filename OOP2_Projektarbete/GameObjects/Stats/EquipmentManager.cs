@@ -13,9 +13,6 @@ namespace Skalm.GameObjects.Stats
         public ItemEquippable[] equipArr;
         public Inventory inventory;
 
-        // EVENT
-        //public event Action? onEquipmentChanged;
-
         // CONSTRUCTOR I
         public EquipmentManager()
         {

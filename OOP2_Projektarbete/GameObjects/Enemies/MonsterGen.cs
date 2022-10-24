@@ -1,4 +1,5 @@
-﻿using Skalm.GameObjects.Stats;
+﻿using Skalm.GameObjects.Interfaces;
+using Skalm.GameObjects.Stats;
 
 namespace Skalm.GameObjects.Enemies
 {
@@ -82,7 +83,7 @@ namespace Skalm.GameObjects.Enemies
                 monsterStats.statsArr[(int)bonus.Item1].AddValue(bonus.Item2 * (float)(1 + (rng.NextDouble() * monsterPrefix.Item2 * 0.5)));
             }
 
-            return new ActorStatsObject(monsterStats, monsterName);
+            return new ActorStatsObject(monsterStats, monsterName, (int)Math.Ceiling(monsterPrefix.Item2));
         }
 
     }

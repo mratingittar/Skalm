@@ -1,4 +1,5 @@
-﻿using Skalm.GameObjects.Stats;
+﻿using Skalm.GameObjects.Interfaces;
+using Skalm.GameObjects.Stats;
 
 
 namespace Skalm.GameObjects.Items

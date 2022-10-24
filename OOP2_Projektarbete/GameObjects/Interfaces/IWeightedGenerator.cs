@@ -4,10 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Skalm.GameObjects.Items
+namespace Skalm.GameObjects.Interfaces
 {
-    internal interface IScalable
+    internal interface IWeightedGenerator<out T>
     {
-        float ScalingMultiplier { get; set; }
+        T GetWeightedRandom(float modifier);
     }
 }

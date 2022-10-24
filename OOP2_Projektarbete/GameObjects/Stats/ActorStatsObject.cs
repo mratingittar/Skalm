@@ -1,5 +1,6 @@
 ﻿using Skalm.GameObjects.Interfaces;
 using Skalm.Structs;
+using Skalm.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,54 +14,76 @@ namespace Skalm.GameObjects.Stats
     {
         // HARD STATS
         public StatsObject stats;
+        public int XpTarget { get => _xpTarget; }
         
         // SOFT STATS
         public string name;
-        public int XP;
+        public int Experience;
         public int Level;
 
-        private int HPcurr;
+        private int _xpTarget;
+        private int _hpCurrent;
+
 
         public event Action? OnStatsChanged;
         public event Action? OnDeath;
 
         // CONSTRUCTOR I
-        public ActorStatsObject(StatsObject stats, string name)
+        public ActorStatsObject(StatsObject stats, string name, int experience)
         {
             this.stats = stats;
             this.name = name;
             ResetHP();
-            XP = 0;
+            Experience = experience;
             Level = 1;
+            _xpTarget = 5;
         }
 
         // RESET HP
-        public void ResetHP() => HPcurr = stats.statsArr[(int)EStats.HP].GetValue();
+        public void ResetHP() => _hpCurrent = stats.statsArr[(int)EStats.HP].GetValue();
 
         // GET CURRENT HP
-        public int GetCurrentHP() => HPcurr;
+        public int GetCurrentHP() => _hpCurrent;
 
         // TAKE DAMAGE
         public void TakeDamage(DoDamage damage)
         {
-            HPcurr -= (int)Math.Round(damage.damage);
+            _hpCurrent -= (int)Math.Round(damage.damage);
             OnStatsChanged?.Invoke();
-            if (HPcurr <= 0)
+            if (_hpCurrent <= 0)
                 HandleDeath();
         }
 
         // HEAL DAMAGE
         public void HealDamage(int healAmount)
         {
-            HPcurr += healAmount;
-            if (HPcurr > stats.statsArr[(int)EStats.HP].GetValue())
-                HPcurr = stats.statsArr[(int)EStats.HP].GetValue();
+            _hpCurrent += healAmount;
+            if (_hpCurrent > stats.statsArr[(int)EStats.HP].GetValue())
+                _hpCurrent = stats.statsArr[(int)EStats.HP].GetValue();
             OnStatsChanged?.Invoke();
         }
 
         public void IncreaseExperience(int gain)
         {
-            XP += gain;
+            Experience += gain;
+            if (Experience >= _xpTarget)
+                LevelUp();
+            OnStatsChanged?.Invoke();
+        }
+
+        private void LevelUp() 
+        {
+            Level++;
+            Experience = Experience - _xpTarget;
+            _xpTarget += (int)(_xpTarget * 1.1f);
+            IncreaseRandomStat();
+        }
+
+        private void IncreaseRandomStat()
+        {
+            int stat = Dice.Roll(8) - 1;
+            stats.statsArr[stat].SetValue(stats.statsArr[stat].GetValue() + 2);
+
         }
 
         // HANDLE DEATH

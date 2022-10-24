@@ -195,47 +195,5 @@ namespace Skalm.Map
                     _tileGrid.SetGridObject(position, new WallTile(position, _settings.WallSprite));
             }
         }
-
-        private void CreateRoomFromBounds(Bounds roomSpace)
-        {
-            // CREATE WALLS
-            CreateRoomWalls(roomSpace);
-
-            // CREATE FLOOR
-            for (int j = roomSpace.StartXY.Y + 1; j <= roomSpace.EndXY.Y - 1; j++)
-            {
-                for (int i = roomSpace.StartXY.X + 1; i <= roomSpace.EndXY.X - 1; i++)
-                {
-                    FloorTiles.Add(new Vector2Int(i, j));
-                    _tileGrid.SetGridObject(i, j, new FloorTile(new Vector2Int(i, j)));
-                }
-            }
-        }
-
-        // METHOD CREATE ROOM WALLS
-        private void CreateRoomWalls(Bounds roomSpace)
-        {
-            int posX1, posX2, posY1, posY2;
-
-            // HORIZONTAL AXIS
-            for (int i = roomSpace.StartXY.X; i <= roomSpace.EndXY.X; i++)
-            {
-                posY1 = roomSpace.StartXY.Y;
-                posY2 = roomSpace.EndXY.Y;
-
-                _tileGrid.SetGridObject(i, posY1, new WallTile(new Vector2Int(i, posY1)));
-                _tileGrid.SetGridObject(i, posY2, new WallTile(new Vector2Int(i, posY2)));
-            }
-
-            // VERTICAL AXIS
-            for (int j = roomSpace.StartXY.Y; j <= roomSpace.EndXY.Y; j++)
-            {
-                posX1 = roomSpace.StartXY.X;
-                posX2 = roomSpace.EndXY.X;
-
-                _tileGrid.SetGridObject(posX1, j, new WallTile(new Vector2Int(posX1, j)));
-                _tileGrid.SetGridObject(posX2, j, new WallTile(new Vector2Int(posX1, j)));
-            }
-        }
     }
 }
