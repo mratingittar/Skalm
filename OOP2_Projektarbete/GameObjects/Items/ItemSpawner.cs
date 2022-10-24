@@ -14,7 +14,6 @@ namespace Skalm.GameObjects.Items
         {
             _baseModifier = baseModifier;
             _itemGen = itemGenerator;
-            ScalingMultiplier = 1;
         }
 
         public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color)

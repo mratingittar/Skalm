@@ -100,7 +100,7 @@ namespace Skalm.States
                     baseText += " You are alone here.";
                 else
                 {
-                    baseText += " Objects on tile:";
+                    baseText += " Tile contains:";
                     foreach (var obj in occupiable.ObjectsOnTile)
                     {
                         if (obj is not Player)                        

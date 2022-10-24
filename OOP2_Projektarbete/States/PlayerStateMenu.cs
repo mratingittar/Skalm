@@ -72,14 +72,18 @@ namespace Skalm.States
                 case InputCommands.Default:
                     break;
                 case InputCommands.Confirm:
-                    UseSelectedItem(_player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex]);
+                    if (_player.EquipmentManager.inventory.itemList.Count() > 0)
+                        UseSelectedItem(_player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex]);
                     break;
                 case InputCommands.Cancel:
                     _player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     break;
                 case InputCommands.Interact:
-                    _player.EquipmentManager.inventory.RemoveItem(_player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex]);
-                    _player.UpdateInventoryDisplay();
+                    if (_player.EquipmentManager.inventory.itemList.Count() > 0)
+                    {
+                        _player.EquipmentManager.inventory.RemoveItem(_player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex]);
+                        _player.UpdateInventoryDisplay();
+                    }
                     break;
                 case InputCommands.Inventory:
                     _player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
@@ -90,12 +94,12 @@ namespace Skalm.States
         private void JumpMenu(bool forwards)
         {
             if (forwards)
-                _displayManager.PixelGridController.InventoryIndex = 
-                    Math.Min(_displayManager.PixelGridController.InventoryIndex + _displayManager.PixelGridController.InventoryRowsAvailable, 
+                _displayManager.PixelGridController.InventoryIndex =
+                    Math.Min(_displayManager.PixelGridController.InventoryIndex + _displayManager.PixelGridController.InventoryRowsAvailable,
                     _player.EquipmentManager.inventory.itemList.Count() - 1);
             else
-                _displayManager.PixelGridController.InventoryIndex = 
-                    Math.Max(0, 
+                _displayManager.PixelGridController.InventoryIndex =
+                    Math.Max(0,
                     _displayManager.PixelGridController.InventoryIndex - _displayManager.PixelGridController.InventoryRowsAvailable);
         }
 
@@ -106,7 +110,7 @@ namespace Skalm.States
             else
             {
                 item.Use(_player);
-                _player.UpdateStatDisplay();
+                _player.UpdateAllDisplays();
                 _player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
             }
         }

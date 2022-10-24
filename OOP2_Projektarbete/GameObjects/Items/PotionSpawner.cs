@@ -10,7 +10,6 @@ namespace Skalm.GameObjects.Items
         private float _baseModifier;
         public PotionSpawner(float baseModifier)
         {
-            ScalingMultiplier = 1;
             _baseModifier = baseModifier;
         }
         public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color)

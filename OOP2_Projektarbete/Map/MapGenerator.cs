@@ -12,6 +12,7 @@ namespace Skalm.Map
         public HashSet<Vector2Int> Doors { get => _doors; }
         public List<Vector2Int> EnemySpawnPositions { get; private set; }
         public List<Vector2Int> ItemSpawnPositions { get; private set; }
+        public List<Vector2Int> PotionSpawnPositions { get; private set; }
         public List<Vector2Int> KeySpawnPositions { get; private set; }
         public Vector2Int PlayerFixedSpawnPosition { get; private set; }
         public Vector2Int GoalPosition { get; private set; }
@@ -36,6 +37,7 @@ namespace Skalm.Map
             FloorTiles = new HashSet<Vector2Int>();
             EnemySpawnPositions = new List<Vector2Int>();
             ItemSpawnPositions = new List<Vector2Int>();
+            PotionSpawnPositions = new List<Vector2Int>();
             KeySpawnPositions = new List<Vector2Int>();
             PlayerFixedSpawnPosition = Vector2Int.Zero;
             GoalPosition = Vector2Int.Zero;
@@ -74,6 +76,7 @@ namespace Skalm.Map
             FloorTiles.Clear();
             EnemySpawnPositions.Clear();
             ItemSpawnPositions.Clear();
+            PotionSpawnPositions.Clear();
             KeySpawnPositions.Clear();
             PlayerFixedSpawnPosition = Vector2Int.Zero;
             GoalPosition = Vector2Int.Zero;
@@ -139,12 +142,16 @@ namespace Skalm.Map
                             CreateFloorTile(x + startX, y + startY);
                             KeySpawnPositions.Add(new Vector2Int(x + startX, y + startY));
                             break;
+                        case 'h':
+                            CreateFloorTile(x + startX, y + startY);
+                            PotionSpawnPositions.Add(new Vector2Int(x + startX, y + startY));
+                            break;
                         case 'p':
                             CreateFloorTile(x + startX, y + startY);
                             PlayerFixedSpawnPosition = new Vector2Int(x + startX, y + startY);
                             break;
                         case 'g':
-                            _tileGrid.SetGridObject(x + startX, y + startY, new FloorTile(new Vector2Int(x + startX, y + startY), _settings.GoalSprite, _settings.GoalColor));
+                            _tileGrid.SetGridObject(x + startX, y + startY, new FloorTile(new Vector2Int(x + startX, y + startY), _settings.GoalSprite, _settings.GoalColor, "stairs to the next floor"));
                             FloorTiles.Add(new Vector2Int(x + startX, y + startY));
                             GoalPosition = new Vector2Int(x + startX, y + startY);
                             break;

@@ -43,15 +43,14 @@ namespace Skalm.States
 
             if (_gameManager.NewGame)
             {
-                _displayManager.Printer.PrintCenteredInWindow("ENTERING SKÄLM", _displayManager.WindowInfo.WindowHeight / 2, _gameManager.Settings.TextColor);
+                _displayManager.Printer.PrintCenteredInWindow("ENTERING THE DUNGEON", _displayManager.WindowInfo.WindowHeight / 2, _gameManager.Settings.TextColor);
                 Thread.Sleep(500);
 
                 _mapManager.MapGenerator.ResetMapIndex();
                 
                 // CREATE MAP
                 _mapManager.MapGenerator.CreateMap();
-                _sceneManager.InitializePlayer();
-                _sceneManager.InitializeScene();
+                _sceneManager.NewGame();
             }
 
             // DRAWING HUD & MAP
@@ -59,7 +58,7 @@ namespace Skalm.States
             _displayManager.DisplayHUD();
             _mapManager.MapPrinter.DrawMap();
            
-            _sceneManager.Player.SendStatsToDisplay();
+            _sceneManager.Player.UpdateAllDisplays();
             _sceneManager.Player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
             _soundManager.PlayMusic(_soundManager.Tracks.Find(song => song.soundName == "Thunder Dreams"));
         }
@@ -88,7 +87,7 @@ namespace Skalm.States
             }
 
             if (_sceneManager.Player.GridPosition.Equals(_mapManager.MapGenerator.GoalPosition))
-                _sceneManager.LevelComplete();
+                _sceneManager.NextLevel();
         }
 
         // UPDATE STATE DISPLAY

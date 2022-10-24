@@ -25,8 +25,13 @@ namespace Skalm.GameObjects.Items
         {
             if (other == null)
                 return -1;
+
+            if (other is Potion)
+                return 1;
+            else if (other is Key)
+                return 0;
             else
-            return -1;
+                return -1;
         }
     }
 }

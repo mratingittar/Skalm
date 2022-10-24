@@ -44,7 +44,29 @@ namespace Skalm
             ItemPickup.onItemPickup += RemoveGameObject;
         }
 
-        public void LevelComplete()
+        public void NewGame()
+        {
+            _potionSpawner.ScalingMultiplier = 0;
+            _enemySpawner.ScalingMultiplier = 0;
+            _itemSpawner.ScalingMultiplier = 0;
+
+            InitializePlayer();
+            InitializeScene();
+        }
+
+        public void InitializePlayer()
+        {
+            Vector2Int spawnPos = _mapManager.MapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero)
+                ? _mapManager.GetRandomFloorPosition() : _mapManager.MapGenerator.PlayerFixedSpawnPosition;
+            if (playerName.Length == 0)
+                playerName = "Nameless";
+
+            Player.InitializePlayer(spawnPos, playerName, _settings.PlayerSprite, _settings.PlayerColor);
+            GameObjectsInScene.Add(Player);
+            ActorsInScene.Add(Player);
+        }
+
+        public void NextLevel()
         {
             _displayManager.Eraser.EraseAll();
             ResetScene();
@@ -58,7 +80,7 @@ namespace Skalm
             _displayManager.DisplayHUD();
             _mapManager.MapPrinter.DrawMap();
 
-            Player.SendStatsToDisplay();
+            Player.UpdateAllDisplays();
         }
 
         private void IncrementScaling()
@@ -78,17 +100,6 @@ namespace Skalm
             ActorsInScene.Add(Player);
         }
 
-        public void InitializePlayer()
-        {
-            Vector2Int spawnPos = _mapManager.MapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero)
-                ? _mapManager.GetRandomFloorPosition() : _mapManager.MapGenerator.PlayerFixedSpawnPosition;
-            if (playerName.Length == 0)
-                playerName = "Nameless";
-
-            Player.InitializePlayer(spawnPos, playerName, _settings.PlayerSprite, _settings.PlayerColor);
-            GameObjectsInScene.Add(Player);
-            ActorsInScene.Add(Player);
-        }
 
         // INITIALIZE SCENE
         public void InitializeScene()
@@ -128,10 +139,20 @@ namespace Skalm
             }
 
             // ADD POTIONS
-            int potions = Dice.Roll(2);
-            for (int i = 0; i < potions; i++)
+            if (_mapManager.MapGenerator.PotionSpawnPositions.Count() > 0)
             {
-                GameObjectsInScene.Add(_potionSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.PotionSprite, _settings.PotionColor));
+                foreach (Vector2Int position in _mapManager.MapGenerator.PotionSpawnPositions)
+                {
+                    GameObjectsInScene.Add(_potionSpawner.Spawn(position, _settings.PotionSprite, _settings.PotionColor));
+                }
+            }
+            else
+            {
+                int potions = Dice.Roll(2);
+                for (int i = 0; i < potions; i++)
+                {
+                    GameObjectsInScene.Add(_potionSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.PotionSprite, _settings.PotionColor));
+                }
             }
 
 
@@ -145,12 +166,12 @@ namespace Skalm
             }
             else
             {
-                foreach(var door in _mapManager.MapGenerator.Doors)
+                foreach (var door in _mapManager.MapGenerator.Doors)
                 {
                     GameObjectsInScene.Add(_keySpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.KeySprite, _settings.KeyColor));
                 }
-            } 
-                
+            }
+
 
             // ADD OBJECTS TO MAP
             AddObjectsToMap();

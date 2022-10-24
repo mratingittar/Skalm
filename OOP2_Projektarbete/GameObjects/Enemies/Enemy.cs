@@ -9,6 +9,8 @@ namespace Skalm.GameObjects.Enemies
 {
     internal class Enemy : Actor, IDisposable
     {
+        public override string Label { get => statsObject.name; }
+
         // MANAGERS
         private SceneManager _sceneManager;
         private bool _isAlive;

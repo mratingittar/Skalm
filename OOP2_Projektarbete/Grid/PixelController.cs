@@ -14,7 +14,6 @@ namespace Skalm.Grid
 
         private ConsoleColor _textColor;
         private ConsoleColor _hudColor;
-        private int _inventoryStartRow;
         private HashSet<Pixel> _borderCells;
         private Dictionary<string, HashSet<Pixel>> _pixelsInSections;
         private readonly Grid2D<Pixel> _pixelGrid;
@@ -22,7 +21,8 @@ namespace Skalm.Grid
         private readonly IEraser _eraser;
         private readonly Bounds _messageConsole;
         private readonly Bounds _mainStatsConsole;
-        private readonly Bounds _subStatsConsole;
+        private readonly Bounds _equipmentConsole;
+        private readonly Bounds _inventoryConsole;
 
         // CONSTRUCTOR I
         public PixelController(Grid2D<Pixel> pixelGrid, Dictionary<string, Bounds> sectionBounds, IPrinter printer, IEraser eraser, ISettings settings)
@@ -37,6 +37,7 @@ namespace Skalm.Grid
             InventoryIndex = -1;
 
             Player.OnPlayerStatsUpdated += DisplayStats;
+            Player.OnPlayerEquipmentUpdated += DisplayEquipment;
             Player.OnPlayerInventoryUpdated += DisplayInventory;
 
             DefineGridSections(sectionBounds["mapBounds"], new MapSection());
@@ -53,7 +54,8 @@ namespace Skalm.Grid
             _mainStatsConsole = new Bounds(new Vector2Int(mainStats.StartXY.X + 2, mainStats.StartXY.Y + 1), new Vector2Int(mainStats.EndXY.X - 2, mainStats.EndXY.Y - 1));
 
             Bounds subStats = FindConsoleBoundsOfSection("SubStatsSection");
-            _subStatsConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, subStats.StartXY.Y + 1), new Vector2Int(subStats.EndXY.X - 2, subStats.EndXY.Y - 1));
+            _equipmentConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, subStats.StartXY.Y + 1), new Vector2Int(subStats.EndXY.X - 2, subStats.StartXY.Y + 11));
+            _inventoryConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, _equipmentConsole.EndXY.Y + 2), new Vector2Int(subStats.EndXY.X - 2, subStats.EndXY.Y - 1));
         }
 
 
@@ -70,7 +72,7 @@ namespace Skalm.Grid
         // DISPLAY STATS MAIN SECTION
         public void DisplayStats(ActorStatsObject playerStats, int currentFloor)
         {
-            ClearSection("MainStatsSection");
+            ClearSection("MainStatsSection");            
 
             string floor = $"Floor {currentFloor}";
 
@@ -106,42 +108,48 @@ namespace Skalm.Grid
             _printer.PrintFromPosition(floor, _mainStatsConsole.StartXY.Y, _mainStatsConsole.EndXY.X - floor.Length);
         }
 
-        // DISPLAY INVENTORY SECTION
-        public void DisplayInventory(EquipmentManager im)
+        public void DisplayEquipment(EquipmentManager equipment)
         {
-            ClearSection("SubStatsSection");
+            _eraser.EraseArea(_equipmentConsole);
 
-            int column = _subStatsConsole.StartXY.X;
-            int row = _subStatsConsole.StartXY.Y;
+            int column = _equipmentConsole.StartXY.X;
+            int row = _equipmentConsole.StartXY.Y;
 
             _printer.PrintFromPosition("Equipment", row, column, _textColor);
             row++;
             _printer.PrintFromPosition("─────────", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Head:       {im.equipArr[(int)EEqSlots.Head].Name}", row, column, _textColor);
+            _printer.PrintFromPosition($"Head:       {equipment.equipArr[(int)EEqSlots.Head].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Torso:      {im.equipArr[(int)EEqSlots.Torso].Name}", row, column, _textColor);
+            _printer.PrintFromPosition($"Torso:      {equipment.equipArr[(int)EEqSlots.Torso].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Left hand:  {im.equipArr[(int)EEqSlots.LHand].Name}", row, column, _textColor);
+            _printer.PrintFromPosition($"Left hand:  {equipment.equipArr[(int)EEqSlots.LHand].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Right hand: {im.equipArr[(int)EEqSlots.RHand].Name}", row, column, _textColor);
+            _printer.PrintFromPosition($"Right hand: {equipment.equipArr[(int)EEqSlots.RHand].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Legs:       {im.equipArr[(int)EEqSlots.Legs].Name}", row, column, _textColor);
+            _printer.PrintFromPosition($"Legs:       {equipment.equipArr[(int)EEqSlots.Legs].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Feet:       {im.equipArr[(int)EEqSlots.Feet].Name}", row, column, _textColor);
+            _printer.PrintFromPosition($"Feet:       {equipment.equipArr[(int)EEqSlots.Feet].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Finger:     {im.equipArr[(int)EEqSlots.Finger].Name}", row, column, _textColor);
-            row += 4;
+            _printer.PrintFromPosition($"Finger:     {equipment.equipArr[(int)EEqSlots.Finger].Name}", row, column, _textColor);
+        }
+
+        public void DisplayInventory(EquipmentManager equipment)
+        {
+
+            _eraser.EraseArea(_inventoryConsole);
+
+            int column = _inventoryConsole.StartXY.X;
+            int row = _inventoryConsole.StartXY.Y;
 
             _printer.PrintFromPosition("Inventory", row, column, _textColor);
             row++;
             _printer.PrintFromPosition("─────────", row, column, _textColor);
             row++;
 
-            _inventoryStartRow = row;
-            InventoryRowsAvailable = _subStatsConsole.EndXY.Y - _inventoryStartRow;
+            InventoryRowsAvailable = _inventoryConsole.EndXY.Y - _inventoryConsole.StartXY.Y;
 
-            PrintInventory(im.inventory.itemList, row, column, InventoryIndex);
+            PrintInventory(equipment.inventory.itemList, row, column, InventoryIndex);
         }
 
         private void PrintInventory(List<Item> items, int row, int column, int selectionIndex)
@@ -165,10 +173,10 @@ namespace Skalm.Grid
             else if (inventoryPage > 0 && items.Count() < InventoryRowsAvailable * (inventoryPage + 1))
             {
                 _printer.PrintFromPosition("◄ ... ", row, column, _textColor);
-                _eraser.EraseArea(new Bounds(new Vector2Int(column, row + 1), _subStatsConsole.EndXY));
+                _eraser.EraseArea(new Bounds(new Vector2Int(column, row + 1), _inventoryConsole.EndXY));
             }
             else
-                _eraser.EraseArea(new Bounds(new Vector2Int(column, row), _subStatsConsole.EndXY));
+                _eraser.EraseArea(new Bounds(new Vector2Int(column, row), _inventoryConsole.EndXY));
         }
 
         // PRINT WITHIN BOUNDS

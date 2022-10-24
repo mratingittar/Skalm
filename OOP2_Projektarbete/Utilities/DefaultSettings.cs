@@ -23,12 +23,12 @@
         public char DoorSpriteOpen { get; } = '□';
         public char DoorSpriteClosed { get; } = '■';
 
-        public char GoalSprite { get; } = '✶';
-        public char PlayerSprite { get; } = '©';
+        public char GoalSprite { get; } = '▼';
+        public char PlayerSprite { get; } = '℗';
         public char EnemySprite { get; } = 'ⱺ';
         public char KeySprite { get; } = 'Ⱡ';
         public char PotionSprite { get; } = '♥';
-        public char ItemSprite { get; } = '☼';
+        public char ItemSprite { get; } = '$';
 
         public ConsoleColor GoalColor { get; } = ConsoleColor.Green;
         public ConsoleColor PlayerColor { get; } = ConsoleColor.Blue;

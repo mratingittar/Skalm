@@ -16,9 +16,10 @@ namespace Skalm.GameObjects.Stats
         
         // SOFT STATS
         public string name;
-        int HPcurr;
         public int XP;
         public int Level;
+
+        private int HPcurr;
 
         public event Action? OnStatsChanged;
         public event Action? OnDeath;
@@ -55,6 +56,11 @@ namespace Skalm.GameObjects.Stats
             if (HPcurr > stats.statsArr[(int)EStats.HP].GetValue())
                 HPcurr = stats.statsArr[(int)EStats.HP].GetValue();
             OnStatsChanged?.Invoke();
+        }
+
+        public void IncreaseExperience(int gain)
+        {
+            XP += gain;
         }
 
         // HANDLE DEATH

@@ -1,21 +1,14 @@
- fffffffff   fffffffffff       fiek
- fkfpfffif   fffffffffff       ffff
- fkfffffif   fffffkfffff        ff  
- fifffffif   fffffffffff        ff
-    ff             f             f 
-    ff             f             d       
-    fffffffffffffffffffffffffffffffffff
-                f                 fffif
-          fffffffffffffffffffffffffffff
-          d                           f
-  fffffffffffffffff         ffffff    f
-  fefffffffffffffff         f   ff    f
-  ffff fff fff ffff         f  ifffffff
-  ffff fff fff ffff         f       fff
-  ffff fff fff ffffffffffffff       d
-  ffff fff fff ffkf                 f
-  ffff fff fff    f                 f
- iff   fff ffffffff                 f
-        d                           f 
-  gfffffffffffffffffffffffffffffffffff
-                                    fe
+
+    fgf
+    fef
+    fff
+    fff
+    fff
+    fff
+    fff
+    fff
+    fff
+   fffff
+   fkihf
+   fffff
+   ffpff

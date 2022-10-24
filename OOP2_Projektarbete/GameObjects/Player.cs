@@ -13,11 +13,11 @@ namespace Skalm.GameObjects
     {
         internal PlayerStateMachine PlayerStateMachine { get => _playerStateMachine; }
         public EquipmentManager EquipmentManager { get => _equipmentManager; }
-        public int CurrentFloor { get => _currentFloor; set => _currentFloor = value; }
 
         // EVENTS
         public static event Action? OnPlayerTurn;
         public static event Action<ActorStatsObject, int>? OnPlayerStatsUpdated;
+        public static event Action<EquipmentManager>? OnPlayerEquipmentUpdated;
         public static event Action<EquipmentManager>? OnPlayerInventoryUpdated;
 
         private PlayerStateMachine _playerStateMachine;
@@ -48,16 +48,17 @@ namespace Skalm.GameObjects
             statsObject.name = playerName;
             _equipmentManager.ResetInventory();
 
-            _currentFloor = 1;
+            _currentFloor = 0;
         }
 
         public void SetPlayerPosition(Vector2Int gridPosition) => GridPosition = gridPosition;
         public void NextFloor() => _currentFloor++;
 
         // SEND STATS TO DISPLAY
-        public void SendStatsToDisplay()
+        public void UpdateAllDisplays()
         {
             UpdateStatDisplay();
+            UpdateEquipmentDisplay();
             UpdateInventoryDisplay();
         }
 
@@ -65,6 +66,12 @@ namespace Skalm.GameObjects
         public void UpdateStatDisplay()
         {
             OnPlayerStatsUpdated?.Invoke(statsObject, _currentFloor);
+        }
+
+        // UPDATE EQUIPMENT DISPLAY
+        public void UpdateEquipmentDisplay()
+        {
+            OnPlayerEquipmentUpdated?.Invoke(_equipmentManager);
         }
 
         // UPDATE INVENTORY DISPLAY
