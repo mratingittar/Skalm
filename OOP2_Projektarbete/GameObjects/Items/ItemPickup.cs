@@ -26,7 +26,7 @@ namespace Skalm.GameObjects.Items
         // INTERACT WITH ITEM
         public void Interact(Player player)
         {
-            player.equipmentManager.AddItemToInventory(item);
+            player.EquipmentManager.AddItemToInventory(item);
             onItemPickup?.Invoke(this);
         }
     }

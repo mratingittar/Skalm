@@ -33,7 +33,7 @@ namespace Skalm.GameObjects.Enemies
             {
                 mapManager.TileGrid.TryGetGridObject(currentPosition, out BaseTile startTile);
                 mapManager.TileGrid.TryGetGridObject(sceneManager.Player.GridPosition, out BaseTile targetTile);
-                path = mapManager.pathfinder.FindPath(startTile, targetTile);
+                path = mapManager.Pathfinder.FindPath(startTile, targetTile);
             }
     }
 }

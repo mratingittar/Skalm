@@ -23,21 +23,7 @@ namespace Skalm
         private DisplayManager _displayManager;
         private EnemySpawner _enemySpawner;
         private ItemSpawner _itemSpawner;
-        private List<Item> _items;
         private ISettings _settings;
-
-
-        // MOVE TO SETTINGS.TXT
-        //private const char _playerChar = '©';
-        //private const char _enemyChar = 'ⱺ';
-        //private const char _keyChar = 'Ⱡ';
-        //private const char _potionChar = '♥';
-        //private const char _itemChar = '☼';
-        //private const ConsoleColor _playerColor = ConsoleColor.Blue;
-        //private const ConsoleColor _enemyColor = ConsoleColor.DarkRed;
-        //private const ConsoleColor _itemColor = ConsoleColor.Yellow;
-        //private const ConsoleColor _potionColor = ConsoleColor.Red;
-        //private const ConsoleColor _keyColor = ConsoleColor.White;
 
         // CONSTRUCTOR I
         public SceneManager(MapManager mapManager, DisplayManager displayManager, ISettings settings)
@@ -48,7 +34,6 @@ namespace Skalm
             Player = new Player(mapManager, displayManager, new PlayerAttackComponent(), new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Nameless"), "Nameless", Vector2Int.Zero);
             ActorsInScene = new List<Actor>();
             GameObjectsInScene = new List<GameObject>();
-            _items = new List<Item>();
             _enemySpawner = new EnemySpawner(mapManager, this);
             _itemSpawner = new ItemSpawner();
 
@@ -60,21 +45,21 @@ namespace Skalm
             _displayManager.Eraser.EraseAll();
             ResetScene();
 
-            _mapManager.mapGenerator.CreateMap();
+            _mapManager.MapGenerator.CreateMap();
             ResetPlayer();
             InitializeScene(); // SCALE ENEMIES OVER TIME
             Player.NextFloor();
 
             _displayManager.DisplayHUD();
-            _mapManager.mapPrinter.DrawMap();
+            _mapManager.MapPrinter.DrawMap();
 
             Player.SendStatsToDisplay();
         }
 
         public void ResetPlayer()
         {
-            Vector2Int spawnPos = _mapManager.mapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero)
-                ? _mapManager.GetRandomPosition() : _mapManager.mapGenerator.PlayerFixedSpawnPosition;
+            Vector2Int spawnPos = _mapManager.MapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero)
+                ? _mapManager.GetRandomFloorPosition() : _mapManager.MapGenerator.PlayerFixedSpawnPosition;
 
             Player.SetPlayerPosition(spawnPos);
             GameObjectsInScene.Add(Player);
@@ -83,8 +68,8 @@ namespace Skalm
 
         public void InitializePlayer()
         {
-            Vector2Int spawnPos = _mapManager.mapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero)
-                ? _mapManager.GetRandomPosition() : _mapManager.mapGenerator.PlayerFixedSpawnPosition;
+            Vector2Int spawnPos = _mapManager.MapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero)
+                ? _mapManager.GetRandomFloorPosition() : _mapManager.MapGenerator.PlayerFixedSpawnPosition;
             if (playerName.Length == 0)
                 playerName = "Nameless";
 
@@ -97,9 +82,9 @@ namespace Skalm
         public void InitializeScene()
         {
             // ADD ENEMIES
-            if (_mapManager.mapGenerator.EnemySpawnPositions.Count > 0)
+            if (_mapManager.MapGenerator.EnemySpawnPositions.Count > 0)
             {
-                foreach (Vector2Int position in _mapManager.mapGenerator.EnemySpawnPositions)
+                foreach (Vector2Int position in _mapManager.MapGenerator.EnemySpawnPositions)
                 {
                     Enemy enemy = _enemySpawner.Spawn(position, _settings.EnemySprite, _settings.EnemyColor);
                     GameObjectsInScene.Add(enemy);
@@ -108,15 +93,15 @@ namespace Skalm
             }
             else
             {
-                Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomPosition(), _settings.EnemySprite, _settings.EnemyColor);
+                Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.EnemySprite, _settings.EnemyColor);
                 GameObjectsInScene.Add(enemy);
                 ActorsInScene.Add(enemy);
             }
 
             // ADD ITEMS
-            if (_mapManager.mapGenerator.ItemSpawnPositions.Count > 0)
+            if (_mapManager.MapGenerator.ItemSpawnPositions.Count > 0)
             {
-                foreach (Vector2Int position in _mapManager.mapGenerator.ItemSpawnPositions)
+                foreach (Vector2Int position in _mapManager.MapGenerator.ItemSpawnPositions)
                 {
                     GameObjectsInScene.Add(_itemSpawner.Spawn(position, _settings.ItemSprite, _settings.ItemColor, ItemGen.GetRandomEquippable()));
                 }
@@ -126,7 +111,7 @@ namespace Skalm
                 int items = Dice.Roll(3);
                 for (int i = 0; i < items; i++)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _settings.ItemSprite, _settings.ItemColor, ItemGen.GetRandomEquippable()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.ItemSprite, _settings.ItemColor, ItemGen.GetRandomEquippable()));
                 }
             }
 
@@ -134,23 +119,23 @@ namespace Skalm
             int potions = Dice.Roll(2);
             for (int i = 0; i < potions; i++)
             {
-                GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _settings.PotionSprite, _settings.PotionColor, ItemGen.GetRandomPotion()));
+                GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.PotionSprite, _settings.PotionColor, ItemGen.GetRandomPotion()));
             }
 
 
             // ADD KEYS
-            if (_mapManager.mapGenerator.KeySpawnPositions.Count > 0)
+            if (_mapManager.MapGenerator.KeySpawnPositions.Count > 0)
             {
-                foreach (Vector2Int position in _mapManager.mapGenerator.KeySpawnPositions)
+                foreach (Vector2Int position in _mapManager.MapGenerator.KeySpawnPositions)
                 {
                     GameObjectsInScene.Add(_itemSpawner.Spawn(position, _settings.KeySprite, _settings.KeyColor, new Key()));
                 }
             }
             else
             {
-                foreach(var door in _mapManager.mapGenerator.Doors)
+                foreach(var door in _mapManager.MapGenerator.Doors)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _settings.KeySprite, _settings.KeyColor, new Key()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.KeySprite, _settings.KeyColor, new Key()));
                 }
             } 
                 
@@ -199,7 +184,7 @@ namespace Skalm
             GameObjectsInScene.Clear();
             _displayManager.ClearMessageQueue();
             _displayManager.ClearMessageSection();
-            _mapManager.mapGenerator.ResetMap();
+            _mapManager.MapGenerator.ResetMap();
         }
 
         // ENEMY FACTORY
@@ -242,7 +227,7 @@ namespace Skalm
             }
 
             // CACHE TILE POSITION FOR REDRAW
-            _mapManager.mapPrinter.CacheUpdatedTile(obj.GridPosition);
+            _mapManager.MapPrinter.CacheUpdatedTile(obj.GridPosition);
         }
     }
 }

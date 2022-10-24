@@ -63,9 +63,6 @@ namespace Skalm.GameObjects.Stats
                 foreach (var itemStat in item.stats.statsArr)
                     playerStats.statsArr[(int)itemStat.statName].AddModifier(itemStat.GetValue());
                 inventory.RemoveItem(item);
-
-                // FIRE EVENTS
-                //onEquipmentChanged?.Invoke();
             }
         }
     }

@@ -10,6 +10,7 @@ namespace Skalm.States
     internal class GameStateMainMenu : IGameState
     {
         public string playerName = "";
+
         private bool _everyOtherFrame = true;
         private const int _menuPageHeight = 6;
         private Animator _fireAnimator;
@@ -122,7 +123,7 @@ namespace Skalm.States
                     if (item == "Start New Game")
                     {
                         _gameManager.NewGame = true;
-                        _gameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
+                        _gameManager.StateMachine.ChangeState(GameStates.GameStatePlaying);
                     }
                     break;
 

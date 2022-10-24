@@ -9,8 +9,7 @@ namespace Skalm.Map
     internal class MapGenerator
     {
         public HashSet<Vector2Int> FloorTiles { get; private set; }
-        internal HashSet<Vector2Int> Doors { get => _doors; }
-        
+        public HashSet<Vector2Int> Doors { get => _doors; }
         public List<Vector2Int> EnemySpawnPositions { get; private set; }
         public List<Vector2Int> ItemSpawnPositions { get; private set; }
         public List<Vector2Int> KeySpawnPositions { get; private set; }
@@ -66,7 +65,7 @@ namespace Skalm.Map
             SetBorderFloorsAsWalls();
 
             GoalPosition = GoalPosition.Equals(Vector2Int.Zero)
-                ? _mapManager.GetRandomPosition() : GoalPosition;
+                ? _mapManager.GetRandomFloorPosition() : GoalPosition;
         }
 
         public void ResetMap()

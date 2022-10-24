@@ -11,7 +11,7 @@ namespace Skalm.GameObjects.Items
         public int healAmount;
 
         // CONSTRUCTOR I
-        public Potion(string itemName, int healAmount, string itemDescription = "Heals damage") : base(itemName, $"Heals you for {healAmount} damage")
+        public Potion(string itemName, int healAmount) : base(itemName, $"Heals you for {healAmount} damage")
         {
             this.healAmount = healAmount;
         }
@@ -20,9 +20,10 @@ namespace Skalm.GameObjects.Items
         public override void Use(Player player)
         {
             player.statsObject.HealDamage(healAmount);
-            player.equipmentManager.RemoveItemFromInventory(this);
+            player.EquipmentManager.RemoveItemFromInventory(this);
         }
 
+        // SORT ITEM
         public override int CompareTo(Item? other)
         {
             if (other == null)

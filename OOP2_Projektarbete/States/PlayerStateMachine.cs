@@ -1,5 +1,6 @@
 ﻿using Skalm.Display;
 using Skalm.GameObjects;
+using Skalm.Map;
 
 namespace Skalm.States
 {
@@ -9,13 +10,15 @@ namespace Skalm.States
         private List<IPlayerState> _availableStates;
         private Player _player;
         private DisplayManager _displayManager;
+        private MapManager _mapManager;
 
         // CONSTRUCTOR I
-        public PlayerStateMachine(Player player, DisplayManager displayManager, PlayerStates startingState)
+        public PlayerStateMachine(Player player, DisplayManager displayManager, MapManager mapManager, PlayerStates startingState)
         {
             _availableStates = new List<IPlayerState>();
             _player = player;
             _displayManager = displayManager;
+            _mapManager = mapManager;
             CurrentState = GetStateFromList(startingState);
         }
 
@@ -50,7 +53,7 @@ namespace Skalm.States
                     state = new PlayerStateIdle();
                     break;
                 case "PlayerStateInteract":
-                    state = new PlayerStateInteract(_player, _displayManager);
+                    state = new PlayerStateInteract(_player, _displayManager, _mapManager);
                     break;
                 case "PlayerStateMenu":
                     state = new PlayerStateMenu(_player, _displayManager);

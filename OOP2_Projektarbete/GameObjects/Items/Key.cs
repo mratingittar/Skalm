@@ -17,9 +17,10 @@ namespace Skalm.GameObjects.Items
         // USE ITEM
         public override void Use(Player player)
         {
-            player.equipmentManager.RemoveItemFromInventory(this);
+            player.EquipmentManager.RemoveItemFromInventory(this);
         }
 
+        // SORT ITEMS
         public override int CompareTo(Item? other)
         {
             if (other == null)

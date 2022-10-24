@@ -32,9 +32,10 @@ namespace Skalm.GameObjects.Items
         public override void Use(Player player)
         {
             // EQUIP ITEM
-            player.equipmentManager.EquipItem(player.statsObject.stats, this);
+            player.EquipmentManager.EquipItem(player.statsObject.stats, this);
         }
 
+        // ITEM DESCRIPTION
         public string GetStatsInfo()
         {
             string info = "";
@@ -55,7 +56,7 @@ namespace Skalm.GameObjects.Items
             return info;
         }
 
-
+        // ITEM SORTING
         public override int CompareTo(Item? other)
         {
             if (other == null)

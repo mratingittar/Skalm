@@ -65,7 +65,7 @@ namespace Skalm.States
         private void ReadMessage()
         {
             if (_displayManager.MessagesInQueue == 0)
-                _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                _player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
             else
             _displayManager.DisplayNextMessage();
         }

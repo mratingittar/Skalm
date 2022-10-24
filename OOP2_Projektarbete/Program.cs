@@ -8,7 +8,6 @@ using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.Structs;
 using Skalm.Utilities;
-using System.Text;
 
 
 #region SETTINGS

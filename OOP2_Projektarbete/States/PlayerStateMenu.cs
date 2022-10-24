@@ -19,14 +19,14 @@ namespace Skalm.States
 
         public void Enter()
         {
-            _displayManager.pixelGridController.InventoryIndex = 0;
+            _displayManager.PixelGridController.InventoryIndex = 0;
             _player.UpdateInventoryDisplay();
             DescriptionAsMessage();
         }
 
         public void Exit()
         {
-            _displayManager.pixelGridController.InventoryIndex = -1;
+            _displayManager.PixelGridController.InventoryIndex = -1;
             _player.UpdateInventoryDisplay();
             _displayManager.ClearMessageSection();
         }
@@ -35,12 +35,12 @@ namespace Skalm.States
             switch (direction.Y)
             {
                 case < 0:
-                    if (_displayManager.pixelGridController.InventoryIndex > 0)
-                        _displayManager.pixelGridController.InventoryIndex--;
+                    if (_displayManager.PixelGridController.InventoryIndex > 0)
+                        _displayManager.PixelGridController.InventoryIndex--;
                     break;
                 case > 0:
-                    if (_displayManager.pixelGridController.InventoryIndex < _player.equipmentManager.inventory.itemList.Count() - 1)
-                        _displayManager.pixelGridController.InventoryIndex++;
+                    if (_displayManager.PixelGridController.InventoryIndex < _player.EquipmentManager.inventory.itemList.Count() - 1)
+                        _displayManager.PixelGridController.InventoryIndex++;
                     break;
             }
             switch (direction.X)
@@ -58,9 +58,9 @@ namespace Skalm.States
 
         private void DescriptionAsMessage()
         {
-            if (_player.equipmentManager.inventory.itemList.Count > 0)
-                _displayManager.DisplayInstantMessage(_player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex].Name + ". " +
-                    _player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex].Description + ".");
+            if (_player.EquipmentManager.inventory.itemList.Count > 0)
+                _displayManager.DisplayInstantMessage(_player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex].Name + ". " +
+                    _player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex].Description + ".");
             else
                 _displayManager.DisplayInstantMessage("Your inventory is empty.");
         }
@@ -72,17 +72,17 @@ namespace Skalm.States
                 case InputCommands.Default:
                     break;
                 case InputCommands.Confirm:
-                    UseSelectedItem(_player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex]);
+                    UseSelectedItem(_player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex]);
                     break;
                 case InputCommands.Cancel:
-                    _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                    _player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     break;
                 case InputCommands.Interact:
-                    _player.equipmentManager.inventory.RemoveItem(_player.equipmentManager.inventory.itemList[_displayManager.pixelGridController.InventoryIndex]);
+                    _player.EquipmentManager.inventory.RemoveItem(_player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex]);
                     _player.UpdateInventoryDisplay();
                     break;
                 case InputCommands.Inventory:
-                    _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                    _player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     break;
             }
         }
@@ -90,13 +90,13 @@ namespace Skalm.States
         private void JumpMenu(bool forwards)
         {
             if (forwards)
-                _displayManager.pixelGridController.InventoryIndex = 
-                    Math.Min(_displayManager.pixelGridController.InventoryIndex + _displayManager.pixelGridController.InventoryRowsAvailable, 
-                    _player.equipmentManager.inventory.itemList.Count() - 1);
+                _displayManager.PixelGridController.InventoryIndex = 
+                    Math.Min(_displayManager.PixelGridController.InventoryIndex + _displayManager.PixelGridController.InventoryRowsAvailable, 
+                    _player.EquipmentManager.inventory.itemList.Count() - 1);
             else
-                _displayManager.pixelGridController.InventoryIndex = 
+                _displayManager.PixelGridController.InventoryIndex = 
                     Math.Max(0, 
-                    _displayManager.pixelGridController.InventoryIndex - _displayManager.pixelGridController.InventoryRowsAvailable);
+                    _displayManager.PixelGridController.InventoryIndex - _displayManager.PixelGridController.InventoryRowsAvailable);
         }
 
         private void UseSelectedItem(Item item)
@@ -107,7 +107,7 @@ namespace Skalm.States
             {
                 item.Use(_player);
                 _player.UpdateStatDisplay();
-                _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                _player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
             }
         }
     }

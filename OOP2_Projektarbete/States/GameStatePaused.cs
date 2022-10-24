@@ -85,11 +85,11 @@ namespace Skalm.States
             {
                 case Page.PauseMenu:
                     if (item == "Resume")
-                        _gameManager.stateMachine.ChangeState(GameStates.GameStatePlaying);
+                        _gameManager.StateMachine.ChangeState(GameStates.GameStatePlaying);
                     else if (item == "Exit")
                     {
                         _sceneManager.ResetScene();
-                        _gameManager.stateMachine.ChangeState(GameStates.GameStateMainMenu);
+                        _gameManager.StateMachine.ChangeState(GameStates.GameStateMainMenu);
                     }
                     break;
 

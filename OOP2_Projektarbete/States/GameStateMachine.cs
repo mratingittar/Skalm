@@ -9,14 +9,15 @@ namespace Skalm.States
     internal class GameStateMachine : IStateMachine<IGameState, GameStates>
     {
         public IGameState CurrentState { get; private set; }
-        private List<IGameState> availableStates;
-        private GameManager gameManager;
+
+        private List<IGameState> _availableStates;
+        private GameManager _gameManager;
 
         // CONSTRUCTOR I
         public GameStateMachine(GameManager gameManager, GameStates startingState)
         {
-            this.gameManager = gameManager;
-            availableStates = new List<IGameState>();
+            this._gameManager = gameManager;
+            _availableStates = new List<IGameState>();
             CurrentState = GetStateFromList(startingState);
             PlayerStateMove.OnPauseMenuRequested += PauseGame;
         }
@@ -44,7 +45,7 @@ namespace Skalm.States
         // STATE MACHINE METHODS
         private IGameState GetStateFromList(GameStates newState)
         {
-            return availableStates.Find(state => state.GetType().Name == newState.ToString()) ?? CreateState(newState.ToString());
+            return _availableStates.Find(state => state.GetType().Name == newState.ToString()) ?? CreateState(newState.ToString());
         }
 
         private IGameState CreateState(string stateName)
@@ -53,25 +54,25 @@ namespace Skalm.States
             switch (stateName)
             {
                 case "GameStateInitializing":
-                    state = new GameStateInitializing(gameManager);
+                    state = new GameStateInitializing(_gameManager);
                     break;
                 case "GameStateMainMenu":
-                    state = new GameStateMainMenu(gameManager);
+                    state = new GameStateMainMenu(_gameManager);
                         break;
                 case "GameStatePaused":
-                    state = new GameStatePaused(gameManager);
+                    state = new GameStatePaused(_gameManager);
                     break;
                 case "GameStatePlaying":
-                    state = new GameStatePlaying(gameManager);
+                    state = new GameStatePlaying(_gameManager);
                     break;
                 case "GameStateGameOver":
-                    state = new GameStateGameOver(gameManager);
+                    state = new GameStateGameOver(_gameManager);
                     break;
                 default:
-                    state = new GameStateInitializing(gameManager);
+                    state = new GameStateInitializing(_gameManager);
                     break;
             }
-            availableStates.Add(state);
+            _availableStates.Add(state);
             return state;
         }
     }

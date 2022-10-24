@@ -6,35 +6,34 @@ using Skalm.Map;
 using Skalm.Map.Tile;
 using Skalm.States;
 using Skalm.Structs;
-using System.Reflection.Emit;
-
 
 namespace Skalm.GameObjects
 {
     internal class Player : Actor
     {
-        // STATE MACHINE
-        public readonly PlayerStateMachine playerStateMachine;
-        public readonly MapManager mapManager;
-        public EquipmentManager equipmentManager;
+        internal PlayerStateMachine PlayerStateMachine { get => _playerStateMachine; }
+        public EquipmentManager EquipmentManager { get => _equipmentManager; }
+        public int CurrentFloor { get => _currentFloor; set => _currentFloor = value; }
 
         // EVENTS
         public static event Action? OnPlayerTurn;
         public static event Action<ActorStatsObject, int>? OnPlayerStatsUpdated;
         public static event Action<EquipmentManager>? OnPlayerInventoryUpdated;
 
+        private PlayerStateMachine _playerStateMachine;
+        private EquipmentManager _equipmentManager;
         private int _currentFloor;
+
 
         // CONSTRUCTOR I
         public Player(MapManager mapManager, DisplayManager displayManager, IAttackComponent attack, ActorStatsObject statsObject, string name, Vector2Int gridPosition, char sprite = '@', ConsoleColor color = ConsoleColor.White) 
             : base(mapManager, attack, statsObject, gridPosition, sprite, color)
         {
-            this.mapManager = mapManager;
-            playerStateMachine = new PlayerStateMachine(this, displayManager, PlayerStates.PlayerStateIdle);
+            _playerStateMachine = new PlayerStateMachine(this, displayManager, mapManager, PlayerStates.PlayerStateIdle);
 
             // INVENTORY
-            equipmentManager = new EquipmentManager();
-            equipmentManager.inventory.onInventoryChanged += UpdateInventoryDisplay;
+            _equipmentManager = new EquipmentManager();
+            _equipmentManager.inventory.OnInventoryChanged += UpdateInventoryDisplay;
             statsObject.OnStatsChanged += UpdateStatDisplay;
         }
 
@@ -46,9 +45,8 @@ namespace Skalm.GameObjects
             _color = color;
 
             statsObject.ResetHP();
-            this.statsObject.name = playerName;
-            equipmentManager.ResetInventory();
-
+            statsObject.name = playerName;
+            _equipmentManager.ResetInventory();
 
             _currentFloor = 1;
         }
@@ -72,7 +70,7 @@ namespace Skalm.GameObjects
         // UPDATE INVENTORY DISPLAY
         public void UpdateInventoryDisplay()
         {
-            OnPlayerInventoryUpdated?.Invoke(equipmentManager);
+            OnPlayerInventoryUpdated?.Invoke(_equipmentManager);
         }
 
         // MOVE METHOD
@@ -106,7 +104,7 @@ namespace Skalm.GameObjects
             if (neighbor is IInteractable interactable)
             {
                 interactable.Interact(this);
-                mapManager.mapPrinter.DrawSingleTile(neighbor.GridPosition);
+                _mapManager.MapPrinter.DrawSingleTile(neighbor.GridPosition);
                 OnPlayerTurn?.Invoke();
             }
         }

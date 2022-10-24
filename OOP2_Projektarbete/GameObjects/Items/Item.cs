@@ -31,6 +31,7 @@ namespace Skalm.GameObjects.Items
             throw new NotImplementedException();
         }
 
+        // SORT ITEMS
         public virtual int CompareTo(Item? other)
         {
             if (other == null)

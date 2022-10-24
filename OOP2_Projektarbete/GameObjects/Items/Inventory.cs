@@ -8,7 +8,7 @@ namespace Skalm.GameObjects.Items
 {
     internal class Inventory
     {
-        public event Action? onInventoryChanged;
+        public event Action? OnInventoryChanged;
 
         // INVENTORY ITEM LIST
         public List<Item> itemList;
@@ -28,7 +28,7 @@ namespace Skalm.GameObjects.Items
             {
                 itemList.Add(item);
                 SortInventory();
-                onInventoryChanged?.Invoke();
+                OnInventoryChanged?.Invoke();
 
                 if (item is Key)
                     Keys++;
@@ -41,13 +41,14 @@ namespace Skalm.GameObjects.Items
             if (item != null)
             {
                 itemList.Remove(item);
-                onInventoryChanged?.Invoke();
+                OnInventoryChanged?.Invoke();
 
                 if (item is Key)
                     Keys--;
             }
         }
 
+        // SORT INVENTORY
         private void SortInventory()
         {
             itemList.Sort();

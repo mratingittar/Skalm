@@ -24,7 +24,7 @@ namespace Skalm.States
             _gameManager = gameManager;
             _sceneManager = gameManager.SceneManager;
             _mapManager = gameManager.MapManager;
-            _mapPrinter = _mapManager.mapPrinter;
+            _mapPrinter = _mapManager.MapPrinter;
             _displayManager = gameManager.DisplayManager;
             _soundManager = gameManager.SoundManager;
             _inputManager = gameManager.InputManager;
@@ -46,10 +46,10 @@ namespace Skalm.States
                 _displayManager.Printer.PrintCenteredInWindow("ENTERING SKÄLM", _displayManager.WindowInfo.WindowHeight / 2, _gameManager.Settings.TextColor);
                 Thread.Sleep(500);
 
-                _mapManager.mapGenerator.ResetMapIndex();
+                _mapManager.MapGenerator.ResetMapIndex();
                 
                 // CREATE MAP
-                _mapManager.mapGenerator.CreateMap();
+                _mapManager.MapGenerator.CreateMap();
                 _sceneManager.InitializePlayer();
                 _sceneManager.InitializeScene();
             }
@@ -57,10 +57,10 @@ namespace Skalm.States
             // DRAWING HUD & MAP
             _displayManager.Eraser.EraseAll();
             _displayManager.DisplayHUD();
-            _mapManager.mapPrinter.DrawMap();
+            _mapManager.MapPrinter.DrawMap();
            
             _sceneManager.Player.SendStatsToDisplay();
-            _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+            _sceneManager.Player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
             _soundManager.PlayMusic(_soundManager.Tracks.Find(song => song.soundName == "Thunder Dreams"));
         }
 
@@ -69,7 +69,7 @@ namespace Skalm.States
         {
             // SAVING STATE
             _gameManager.NewGame = false;
-            _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateIdle);
+            _sceneManager.Player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateIdle);
             _displayManager.Eraser.EraseAll();
 
             // INPUT EVENT UNSUBSCRIBE
@@ -87,7 +87,7 @@ namespace Skalm.States
                 actor.UpdateMain();
             }
 
-            if (_sceneManager.Player.GridPosition.Equals(_mapManager.mapGenerator.GoalPosition))
+            if (_sceneManager.Player.GridPosition.Equals(_mapManager.MapGenerator.GoalPosition))
                 _sceneManager.LevelComplete();
         }
 
@@ -95,8 +95,8 @@ namespace Skalm.States
         public void UpdateDisplay()
         {
             _mapPrinter.RedrawCachedTiles();
-            if (_displayManager.MessagesInQueue > 0 && _sceneManager.Player.playerStateMachine.CurrentState is not PlayerStateMessage)
-                _sceneManager.Player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMessage);
+            if (_displayManager.MessagesInQueue > 0 && _sceneManager.Player.PlayerStateMachine.CurrentState is not PlayerStateMessage)
+                _sceneManager.Player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMessage);
         }
 
         #endregion
@@ -107,14 +107,14 @@ namespace Skalm.States
         private void MoveInput(Vector2Int direction)
         {
             _soundManager.player.Play(SoundManager.SoundType.Low);
-            _sceneManager.Player.playerStateMachine.CurrentState.MoveInput(direction);
+            _sceneManager.Player.PlayerStateMachine.CurrentState.MoveInput(direction);
         }
 
         // METHOD COMMAND INPUT
         private void CommandInput(InputCommands command)
         {
             _soundManager.player.Play(SoundManager.SoundType.Mid);
-            _sceneManager.Player.playerStateMachine.CurrentState.CommandInput(command);
+            _sceneManager.Player.PlayerStateMachine.CurrentState.CommandInput(command);
         }
 
         #endregion

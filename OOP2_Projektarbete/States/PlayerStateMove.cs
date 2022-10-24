@@ -45,10 +45,10 @@ namespace Skalm.States
                     OnPauseMenuRequested?.Invoke();
                     break;
                 case InputCommands.Interact:
-                    _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateInteract);
+                    _player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateInteract);
                     break;
                 case InputCommands.Inventory:
-                    _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMenu);
+                    _player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMenu);
                     break;
             }
         }

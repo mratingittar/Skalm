@@ -11,20 +11,17 @@ namespace Skalm.Map
     internal class MapManager
     {
         public Grid2D<BaseTile> TileGrid { get; private set; }
-        public readonly MapGenerator mapGenerator;
-        public readonly MapPrinter mapPrinter;
-        public readonly AStar pathfinder;
-
-        private ISettings _settings;
+        public MapGenerator MapGenerator { get; private set; }
+        public MapPrinter MapPrinter { get; private set; }
+        public AStar Pathfinder { get; private set; }
 
         // CONSTRUCTOR I
         public MapManager(ISettings settings, DisplayManager displayManager, Grid2D<BaseTile> tileGrid)
         {
-            pathfinder = new AStar(this);
+            Pathfinder = new AStar(this);
             TileGrid = tileGrid;
-            _settings = settings;
-            mapGenerator = new MapGenerator(this, displayManager, tileGrid, settings);
-            mapPrinter = new MapPrinter(tileGrid, displayManager.Printer, settings.HUDColor);
+            MapGenerator = new MapGenerator(this, displayManager, tileGrid, settings);
+            MapPrinter = new MapPrinter(tileGrid, displayManager.Printer);
 
             Actor.OnPositionChanged += UpdateMoveablePosition;
         }
@@ -40,7 +37,7 @@ namespace Skalm.Map
                 tileNewOcc.ObjectsOnTile.Push(actor);
                 tileNewOcc.ActorPresent = true;
             }
-            mapPrinter.CacheUpdatedTile(oldPosition, newPosition);
+            MapPrinter.CacheUpdatedTile(oldPosition, newPosition);
         }
 
         private void RemoveActorFromTile(Actor actor, IOccupiable tileOldOcc)
@@ -76,13 +73,13 @@ namespace Skalm.Map
             return neighbors;
         }
 
-        public Vector2Int GetRandomPosition()
+        public Vector2Int GetRandomFloorPosition()
         {
-            if (mapGenerator.FloorTiles.Count == 0)
+            if (MapGenerator.FloorTiles.Count == 0)
                 throw new Exception("No free tiles to spawn in found");
 
             Random randomPos = new Random();
-            return mapGenerator.FloorTiles.ElementAt(randomPos.Next(mapGenerator.FloorTiles.Count()));
+            return MapGenerator.FloorTiles.ElementAt(randomPos.Next(MapGenerator.FloorTiles.Count()));
         }
 
     }

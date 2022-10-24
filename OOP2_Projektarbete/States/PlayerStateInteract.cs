@@ -2,6 +2,7 @@
 using Skalm.GameObjects;
 using Skalm.GameObjects.Interfaces;
 using Skalm.Input;
+using Skalm.Map;
 using Skalm.Map.Tile;
 using Skalm.Structs;
 using Skalm.Utilities;
@@ -11,21 +12,23 @@ namespace Skalm.States
     internal class PlayerStateInteract : IPlayerState
     {
         private Player _player;
+        private DisplayManager _displayManager;
+        private MapManager _mapManager;
         private List<BaseTile> _playerNeighbors;
         private BaseTile? _selectedTile;
         private Direction _selectedDirection;
-        private DisplayManager _displayManager;
 
-        public PlayerStateInteract(Player player, DisplayManager displayManager)
+        public PlayerStateInteract(Player player, DisplayManager displayManager, MapManager mapManager)
         {
             _player = player;
             _playerNeighbors = new List<BaseTile>();
             _displayManager = displayManager;
+            _mapManager = mapManager;
         }
         public void Enter()
         {
             ExamineSameTile();
-            _playerNeighbors = _player.mapManager.GetNeighbours(_player.GridPosition);
+            _playerNeighbors = _mapManager.GetNeighbours(_player.GridPosition);
         }
 
         public void Exit()
@@ -51,11 +54,11 @@ namespace Skalm.States
                     if (_selectedTile != null)
                     {
                         _player.InteractWithNeighbor(_selectedTile);
-                        _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                        _player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     }
                     break;
                 case InputCommands.Cancel:
-                    _player.playerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
+                    _player.PlayerStateMachine.ChangeState(PlayerStates.PlayerStateMove);
                     break;
                 case InputCommands.Interact:
                     ExamineSameTile();
@@ -67,7 +70,7 @@ namespace Skalm.States
 
         private void ExamineSameTile()
         {
-            _player.mapManager.TileGrid.TryGetGridObject(_player.GridPosition, out _selectedTile);
+            _mapManager.TileGrid.TryGetGridObject(_player.GridPosition, out _selectedTile);
             PrintSelectedTile($"You are standing on {_selectedTile.Label}.");
         }
 

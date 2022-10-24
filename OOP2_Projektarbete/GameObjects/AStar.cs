@@ -17,7 +17,7 @@ namespace Skalm.GameObjects
         public Queue<Vector2Int> FindPath(BaseTile startTile, BaseTile targetTile)
         {
             if (debug)
-                mapManager.mapPrinter.DrawMap();
+                mapManager.MapPrinter.DrawMap();
 
             HashSet<BaseTile> openSet = new HashSet<BaseTile>();
             HashSet<BaseTile> closedSet = new HashSet<BaseTile>();
@@ -34,7 +34,7 @@ namespace Skalm.GameObjects
 
                 if (debug)
                 {
-                    mapManager.mapPrinter.DebugPathfinder(currentTile.GridPosition);
+                    mapManager.MapPrinter.DebugPathfinder(currentTile.GridPosition);
                     Thread.Sleep(10);
                 }
 

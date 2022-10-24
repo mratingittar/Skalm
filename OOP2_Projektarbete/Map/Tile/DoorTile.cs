@@ -58,10 +58,10 @@ namespace Skalm.Map.Tile
         {
             if (IsLocked)
             {
-                if (player.equipmentManager.inventory.Keys == 0)
+                if (player.EquipmentManager.inventory.Keys == 0)
                     return;
 
-                player.equipmentManager.inventory.itemList.Find(item => item is Key key)?.Use(player);
+                player.EquipmentManager.inventory.itemList.Find(item => item is Key key)?.Use(player);
                 IsLocked = false;
                 ColliderIsActive = false;
             }

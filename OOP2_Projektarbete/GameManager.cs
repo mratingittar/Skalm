@@ -14,9 +14,9 @@ namespace Skalm
 {
     internal class GameManager
     {
-
         #region PROPERTIES
         public ISettings Settings { get; } 
+        public GameStateMachine StateMachine => _stateMachine;
 
         // MANAGERS
         public InputManager InputManager { get; }
@@ -26,21 +26,20 @@ namespace Skalm
         public MapManager MapManager { get; }
         public SceneManager SceneManager { get; }
 
+        // PLAYER
+        public string PlayerName { get; set; } = "";
+        public bool NewGame { get; set; }
+
 
         // ANIMATION
         public Animator FireAnimator { get; }
         #endregion
 
         #region FIELDS
-        private int updateFrequency;
+        private int _updateFrequency;
+        private readonly GameStateMachine _stateMachine;
         #endregion
 
-        // PLAYER
-        public string PlayerName { get; set; } = "";
-        public bool NewGame { get; set; }
-        
-        // STATE MACHINES
-        public readonly GameStateMachine stateMachine;
 
         // CONSTRUCTOR I
         public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager, SceneManager sceneManager)
@@ -55,31 +54,28 @@ namespace Skalm
             MapManager = mapManager;
             SceneManager = sceneManager;
 
-            displayManager.SetSceneManager(sceneManager);
-
             // ANIMATION
             FireAnimator = new Animator(displayManager, settings);
 
             // UPDATE FREQUENCY
-            updateFrequency = Settings.UpdateFrequency;
-
+            _updateFrequency = Settings.UpdateFrequency == 0 ? 1 : Settings.UpdateFrequency;
 
             // STATE MACHINE & GAME STATES
-            stateMachine = new GameStateMachine(this, GameStates.GameStateInitializing);
-            stateMachine.Initialize(GameStates.GameStateInitializing);
+            _stateMachine = new GameStateMachine(this, GameStates.GameStateInitializing);
+            _stateMachine.Initialize(GameStates.GameStateInitializing);
 
             sceneManager.Player.statsObject.OnDeath += GameOver;
         }
 
         private void GameOver()
         {
-            stateMachine.ChangeState(GameStates.GameStateGameOver);
+            _stateMachine.ChangeState(GameStates.GameStateGameOver);
         }
 
         // METHOD START STATE
         public void Start()
         {
-            stateMachine.ChangeState(GameStates.GameStateMainMenu);
+            _stateMachine.ChangeState(GameStates.GameStateMainMenu);
             Update();
         }
 
@@ -90,10 +86,10 @@ namespace Skalm
             {
                 InputManager.GetInput();
 
-                stateMachine.CurrentState.UpdateLogic();
-                stateMachine.CurrentState.UpdateDisplay();
+                _stateMachine.CurrentState.UpdateLogic();
+                _stateMachine.CurrentState.UpdateDisplay();
 
-                Thread.Sleep(1000 / updateFrequency);
+                Thread.Sleep(1000 / _updateFrequency);
             }
         }
     }

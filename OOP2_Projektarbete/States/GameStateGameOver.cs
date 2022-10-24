@@ -44,7 +44,7 @@ namespace Skalm.States
                 case InputCommands.Default:
                     break;
                 case InputCommands.Confirm:
-                    _gameManager.stateMachine.ChangeState(GameStates.GameStateMainMenu);
+                    _gameManager.StateMachine.ChangeState(GameStates.GameStateMainMenu);
                     break;
                 case InputCommands.Cancel:
                     break;

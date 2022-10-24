@@ -14,9 +14,9 @@ namespace Skalm.Display
         public IEraser Eraser { get; }
         public IWindowInfo WindowInfo { get; }
         public int MessagesInQueue { get => _messageQueue.Count; }
-        public readonly PixelController pixelGridController;
+        public PixelController PixelGridController => _pixelGridController;
 
-        private SceneManager? _sceneManager;
+        private readonly PixelController _pixelGridController;
         private Queue<string> _messageQueue;
         #endregion
 
@@ -26,27 +26,24 @@ namespace Skalm.Display
             Printer = printer;
             Eraser = eraser;
             WindowInfo = windowInfo;
-            pixelGridController = gridController;
+            _pixelGridController = gridController;
             _messageQueue = new Queue<string>();
             Console.OutputEncoding = System.Text.Encoding.UTF8;
-
             windowInfo.SetWindowSize(windowSize.Width, windowSize.Height);
             Actor.OnCombatEvent += QueueMessage;
         }
 
-        public void SetSceneManager(SceneManager sm) => _sceneManager = sm;
-
-        public void DisplayInstantMessage(string msg) => pixelGridController.DisplayMessage(msg);
+        public void DisplayInstantMessage(string msg) => _pixelGridController.DisplayMessage(msg);
 
         public void DisplayNextMessage()
         {
             if (_messageQueue.Count == 0)
                 return;
 
-            pixelGridController.DisplayMessage(_messageQueue.Dequeue(), true);
+            _pixelGridController.DisplayMessage(_messageQueue.Dequeue(), true);
         }
 
-        public void ClearMessageSection() => pixelGridController.ClearSection("MessageSection");
+        public void ClearMessageSection() => _pixelGridController.ClearSection("MessageSection");
 
         public void ClearMessageQueue() => _messageQueue.Clear();
 
@@ -60,8 +57,8 @@ namespace Skalm.Display
         }
 
         // DISPLAY HUD
-        public void DisplayHUD() => pixelGridController.PrintBorders();
+        public void DisplayHUD() => _pixelGridController.PrintBorders();
 
-        public Vector2Int GetMapOrigin() => pixelGridController.GetMapOrigin();
+        public Vector2Int GetMapOrigin() => _pixelGridController.GetMapOrigin();
     }
 }
