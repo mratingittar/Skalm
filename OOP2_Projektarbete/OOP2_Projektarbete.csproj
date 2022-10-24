@@ -24,9 +24,6 @@
     <None Update="data\map test.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-    <None Update="data\settings.txt">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
     <None Update="data\Skalm_Title.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

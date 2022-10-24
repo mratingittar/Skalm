@@ -3,30 +3,43 @@
     internal class DefaultSettings : ISettings
     {
         #region PROPERTIES
-        public string GameTitle { get; private set; } = "Skälm";
-        public bool DisplayCursor { get; private set; } = false;
-        public int UpdateFrequency { get; private set; } = 20;
+        public string GameTitle { get; } = "Skälm";
+        public int UpdateFrequency { get; } = 20;
 
-        public int WindowPadding { get; private set; } = 1;
-        public int BorderThickness { get; private set; } = 1;
-        public int CellWidth { get; private set; } = 2;
-        public int CellHeight { get; private set; } = 1;
-        public int MapWidth { get; private set; } = 42;
-        public int MapHeight { get; private set; } = 42;
-        public int MessageBoxHeight { get; private set; } = 5; // MINIMUM 3!
-        public int StatsWidth { get; private set; } = 23; // MINIMUM 23!
-        public int MainStatsHeight { get; private set; } = 11; // MINIMUM 11!
-        public int HudPadding { get; private set; } = 1;
+        public int WindowPadding { get; } = 1;
+        public int BorderThickness { get; } = 1;
+        public int CellWidth { get; } = 2;
+        public int CellHeight { get; } = 1;
+        public int MapWidth { get; } = 42;
+        public int MapHeight { get; } = 42;
+        public int MessageBoxHeight { get; } = 5; // MINIMUM 3!
+        public int StatsWidth { get; } = 23; // MINIMUM 23!
+        public int MainStatsHeight { get; } = 11; // MINIMUM 11!
+        public int HudPadding { get; } = 1;
 
-        public char SpriteBorder { get; private set; } = '░';
-        public char SpriteWall { get; private set; } = '#';
-        public char SpriteFloor { get; private set; } = '∙';
-        public char SpriteDoorClosed { get; private set; } = '■';
-        public char SpriteDoorOpen { get; private set; } = '□';
+        public char BorderSprite { get; } = '░';
+        public char WallSprite { get; } = '#';
+        public char FloorSprite { get; } = '∙';
+        public char DoorSpriteOpen { get; } = '□';
+        public char DoorSpriteClosed { get; } = '■';
 
-        public ConsoleColor ForegroundColor { get; private set; } = ConsoleColor.White;
+        public char GoalSprite { get; } = '✶';
+        public char PlayerSprite { get; } = '©';
+        public char EnemySprite { get; } = 'ⱺ';
+        public char KeySprite { get; } = 'Ⱡ';
+        public char PotionSprite { get; } = '♥';
+        public char ItemSprite { get; } = '☼';
 
-        public ConsoleColor BackgroundColor { get; private set; } = ConsoleColor.Black;
+        public ConsoleColor GoalColor { get; } = ConsoleColor.Green;
+        public ConsoleColor PlayerColor { get; } = ConsoleColor.Blue;
+        public ConsoleColor EnemyColor { get; } = ConsoleColor.Magenta;
+        public ConsoleColor ItemColor { get; } = ConsoleColor.Yellow;
+        public ConsoleColor PotionColor { get; } = ConsoleColor.Red;
+        public ConsoleColor KeyColor { get; } = ConsoleColor.White;
+        public ConsoleColor HUDColor { get; } = ConsoleColor.Gray;
+        public ConsoleColor TextColor { get; } = ConsoleColor.White;
+        public ConsoleColor BackgroundColor { get; } = ConsoleColor.Black;
+
         #endregion
 
         public bool LoadSettings(string[] file)

@@ -24,7 +24,7 @@ namespace Skalm.Map
             TileGrid = tileGrid;
             _settings = settings;
             mapGenerator = new MapGenerator(this, displayManager, tileGrid, settings);
-            mapPrinter = new MapPrinter(tileGrid, displayManager.Printer, settings.ForegroundColor);
+            mapPrinter = new MapPrinter(tileGrid, displayManager.Printer, settings.HUDColor);
 
             Actor.OnPositionChanged += UpdateMoveablePosition;
         }

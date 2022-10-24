@@ -25,9 +25,6 @@ namespace Skalm.Map
         private int _mapIndex;
         private readonly ISettings _settings;
 
-        private const char goalChar = '✶';
-        private const ConsoleColor goalColor = ConsoleColor.DarkGreen;
-
         public MapGenerator(MapManager mapManager, DisplayManager displayManager, Grid2D<BaseTile> tileGrid, ISettings settings)
         {
             _mapManager = mapManager;
@@ -148,7 +145,7 @@ namespace Skalm.Map
                             PlayerFixedSpawnPosition = new Vector2Int(x + startX, y + startY);
                             break;
                         case 'g':
-                            _tileGrid.SetGridObject(x + startX, y + startY, new FloorTile(new Vector2Int(x + startX, y + startY), goalChar, goalColor));
+                            _tileGrid.SetGridObject(x + startX, y + startY, new FloorTile(new Vector2Int(x + startX, y + startY), _settings.GoalSprite, _settings.GoalColor));
                             FloorTiles.Add(new Vector2Int(x + startX, y + startY));
                             GoalPosition = new Vector2Int(x + startX, y + startY);
                             break;
@@ -159,13 +156,13 @@ namespace Skalm.Map
 
         private void CreateDoorTile(int x, int y)
         {
-            _tileGrid.SetGridObject(x, y, new DoorTile(new Vector2Int(x, y), _settings.SpriteDoorOpen, _settings.SpriteDoorClosed));
+            _tileGrid.SetGridObject(x, y, new DoorTile(new Vector2Int(x, y), _settings.DoorSpriteOpen, _settings.DoorSpriteClosed));
             _doors.Add(new Vector2Int(x, y));
         }
 
         private void CreateFloorTile(int x, int y)
         {
-            _tileGrid.SetGridObject(x, y, new FloorTile(new Vector2Int(x, y), _settings.SpriteFloor));
+            _tileGrid.SetGridObject(x, y, new FloorTile(new Vector2Int(x, y), _settings.FloorSprite));
             FloorTiles.Add(new Vector2Int(x, y));
         }
 
@@ -177,7 +174,7 @@ namespace Skalm.Map
                 List<BaseTile> neighbors = _mapManager.GetNeighbours(tile);
                 foreach (var neighbor in neighbors)
                     if (neighbor is VoidTile)
-                        _tileGrid.SetGridObject(neighbor.GridPosition, new WallTile(neighbor.GridPosition, _settings.SpriteWall));
+                        _tileGrid.SetGridObject(neighbor.GridPosition, new WallTile(neighbor.GridPosition, _settings.WallSprite));
             }
         }
 
@@ -189,7 +186,7 @@ namespace Skalm.Map
                     || position.X == _tileGrid.gridWidth - 1
                     || position.Y == 0
                     || position.Y == _tileGrid.gridHeight - 1)
-                    _tileGrid.SetGridObject(position, new WallTile(position, _settings.SpriteWall));
+                    _tileGrid.SetGridObject(position, new WallTile(position, _settings.WallSprite));
             }
         }
 

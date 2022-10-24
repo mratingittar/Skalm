@@ -3,7 +3,6 @@
     internal class Settings : ISettings
     {
         public string GameTitle { get; private set; } = "";
-        public bool DisplayCursor { get; private set; }
         public int UpdateFrequency { get; private set; }
 
         public int WindowPadding { get; private set; }
@@ -17,16 +16,29 @@
         public int MainStatsHeight { get; private set; }
         public int HudPadding { get; private set; }
 
-        public char SpriteBorder { get; private set; }
-        public char SpriteWall { get; private set; }
-        public char SpriteFloor { get; private set; }
-        public char SpriteDoorClosed { get; private set; }
+        public char BorderSprite { get; private set; }
+        public char WallSprite { get; private set; }
+        public char FloorSprite { get; private set; }
+        public char DoorSpriteOpen { get; private set; }
+        public char DoorSpriteClosed { get; private set; }
 
-        public ConsoleColor ForegroundColor { get; private set; }
+        public char GoalSprite { get; private set; }
+        public char PlayerSprite { get; private set; }
+        public char EnemySprite { get; private set; }
+        public char KeySprite { get; private set; }
+        public char PotionSprite { get; private set; }
+        public char ItemSprite { get; private set; }
 
+        public ConsoleColor GoalColor { get; private set; }
+        public ConsoleColor PlayerColor { get; private set; }
+        public ConsoleColor EnemyColor { get; private set; }
+        public ConsoleColor ItemColor { get; private set; }
+        public ConsoleColor PotionColor { get; private set; }
+        public ConsoleColor KeyColor { get; private set; }
+        public ConsoleColor HUDColor { get; private set; }
+        public ConsoleColor TextColor { get; private set; }
         public ConsoleColor BackgroundColor { get; private set; }
 
-        public char SpriteDoorOpen { get; private set; }
 
         public virtual bool LoadSettings(string[] settingsFile)
         {
@@ -110,19 +122,12 @@
 
         private ConsoleColor ParseColor(string field)
         {
-            ConsoleColor color = ConsoleColor.Gray;
-            switch (field)
-            {
-                case "White":
-                    color = ConsoleColor.White;
-                    break;
-                case "Black":
-                    color = ConsoleColor.Black;
-                    break;
-                case "Red":
-                    color = ConsoleColor.Red;
-                    break;
-            }
+            ConsoleColor color;
+            if (Enum.TryParse(typeof(ConsoleColor), field, true, out var result) && result is not null)
+                color = (ConsoleColor)result;
+            else
+                color = ConsoleColor.White;
+
             return color;
         }
     }

@@ -25,10 +25,10 @@ if (!FileHandler.TryReadFile("settings.txt", out string[]? file) || !settings.Lo
 Console.WriteLine("Settings loaded");
 #endregion
 
+Console.CursorVisible = false;
 Console.Title = settings.GameTitle;
-Console.CursorVisible = settings.DisplayCursor;
 Console.BackgroundColor = settings.BackgroundColor;
-Console.ForegroundColor = settings.ForegroundColor;
+Console.ForegroundColor = settings.HUDColor;
 
 #region CALCULATING BOUNDS
 int verticalBorders = 3;
@@ -62,13 +62,13 @@ IEraser eraser = new ConsoleWindowEraser();
 DisplayManager displayManager = new DisplayManager(settings, printer, eraser, new ConsoleWindowInfo(), consoleRect,
     new PixelController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, settings.CellWidth, settings.CellHeight,
                 new Vector2Int(settings.WindowPadding * settings.CellWidth, settings.WindowPadding * settings.CellHeight),
-                (x, y) => new Pixel(new Vector2Int(x, y), new HUDBorder(settings.SpriteBorder))), sectionBounds, printer, eraser));
+                (x, y) => new Pixel(new Vector2Int(x, y), new HUDBorder(settings.BorderSprite))), sectionBounds, printer, eraser));
 SoundManager soundManager = new SoundManager(new ConsoleSoundPlayer());
 InputManager inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
 MenuManager menuManager = new MenuManager(inputManager, displayManager, soundManager);
 MapManager mapManager = new MapManager(settings, displayManager, new Grid2D<BaseTile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, 
     displayManager.GetMapOrigin(), (x, y) => new VoidTile(new Vector2Int(x, y))));
-SceneManager sceneManager = new SceneManager(mapManager, displayManager);
+SceneManager sceneManager = new SceneManager(mapManager, displayManager, settings);
 GameManager game = new GameManager(settings, displayManager, mapManager, soundManager, inputManager, menuManager, sceneManager);
 #endregion
 

@@ -15,32 +15,34 @@ namespace Skalm
     {
         public string playerName = "";
 
+        public List<GameObject> GameObjectsInScene { get; }
+        public List<Actor> ActorsInScene { get; }
+        public Player Player { get; }
+
         private MapManager _mapManager;
         private DisplayManager _displayManager;
         private EnemySpawner _enemySpawner;
         private ItemSpawner _itemSpawner;
         private List<Item> _items;
-
-        public List<GameObject> GameObjectsInScene { get; }
-        public List<Actor> ActorsInScene { get; }
-        public Player Player { get; }
+        private ISettings _settings;
 
 
         // MOVE TO SETTINGS.TXT
-        private const char _playerChar = '©';
-        private const char _enemyChar = 'ⱺ';
-        private const char _keyChar = 'Ⱡ';
-        private const char _potionChar = '♥';
-        private const char _itemChar = '☼';
-        private const ConsoleColor _playerColor = ConsoleColor.Blue;
-        private const ConsoleColor _enemyColor = ConsoleColor.DarkRed;
-        private const ConsoleColor _itemColor = ConsoleColor.Yellow;
-        private const ConsoleColor _potionColor = ConsoleColor.Red;
-        private const ConsoleColor _keyColor = ConsoleColor.White;
+        //private const char _playerChar = '©';
+        //private const char _enemyChar = 'ⱺ';
+        //private const char _keyChar = 'Ⱡ';
+        //private const char _potionChar = '♥';
+        //private const char _itemChar = '☼';
+        //private const ConsoleColor _playerColor = ConsoleColor.Blue;
+        //private const ConsoleColor _enemyColor = ConsoleColor.DarkRed;
+        //private const ConsoleColor _itemColor = ConsoleColor.Yellow;
+        //private const ConsoleColor _potionColor = ConsoleColor.Red;
+        //private const ConsoleColor _keyColor = ConsoleColor.White;
 
         // CONSTRUCTOR I
-        public SceneManager(MapManager mapManager, DisplayManager displayManager)
+        public SceneManager(MapManager mapManager, DisplayManager displayManager, ISettings settings)
         {
+            _settings = settings;
             _mapManager = mapManager;
             _displayManager = displayManager;
             Player = new Player(mapManager, displayManager, new PlayerAttackComponent(), new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Nameless"), "Nameless", Vector2Int.Zero);
@@ -86,7 +88,7 @@ namespace Skalm
             if (playerName.Length == 0)
                 playerName = "Nameless";
 
-            Player.InitializePlayer(spawnPos, playerName, _playerChar, _playerColor);
+            Player.InitializePlayer(spawnPos, playerName, _settings.PlayerSprite, _settings.PlayerColor);
             GameObjectsInScene.Add(Player);
             ActorsInScene.Add(Player);
         }
@@ -99,14 +101,14 @@ namespace Skalm
             {
                 foreach (Vector2Int position in _mapManager.mapGenerator.EnemySpawnPositions)
                 {
-                    Enemy enemy = _enemySpawner.Spawn(position, _enemyChar, _enemyColor);
+                    Enemy enemy = _enemySpawner.Spawn(position, _settings.EnemySprite, _settings.EnemyColor);
                     GameObjectsInScene.Add(enemy);
                     ActorsInScene.Add(enemy);
                 }
             }
             else
             {
-                Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomPosition(), _enemyChar, _enemyColor);
+                Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomPosition(), _settings.EnemySprite, _settings.EnemyColor);
                 GameObjectsInScene.Add(enemy);
                 ActorsInScene.Add(enemy);
             }
@@ -116,7 +118,7 @@ namespace Skalm
             {
                 foreach (Vector2Int position in _mapManager.mapGenerator.ItemSpawnPositions)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, _itemChar, _itemColor, ItemGen.GetRandomEquippable()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, _settings.ItemSprite, _settings.ItemColor, ItemGen.GetRandomEquippable()));
                 }
             }
             else
@@ -124,21 +126,15 @@ namespace Skalm
                 int items = Dice.Roll(3);
                 for (int i = 0; i < items; i++)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _itemChar, _itemColor, ItemGen.GetRandomEquippable()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _settings.ItemSprite, _settings.ItemColor, ItemGen.GetRandomEquippable()));
                 }
             }
-
-            //// CREATING TEST ITEM
-            //var FloorTiles = _mapManager.mapGenerator.FloorTiles;
-            //var itemXY = FloorTiles.ElementAt(Dice.rng.Next(0, FloorTiles.Count));
-            //ItemEquippable item1 = new ItemEquippable("Helmet of misfortune", (int)EEqSlots.Head, new StatsObject(0, 0, 2, 0, 1, 5, 0, 2));
-            //GameObjectsInScene.Add(_itemSpawner.Spawn(itemXY, 'o', ConsoleColor.Yellow, item1));
 
             // ADD POTIONS
             int potions = Dice.Roll(2);
             for (int i = 0; i < potions; i++)
             {
-                GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _potionChar, _potionColor, ItemGen.GetRandomPotion()));
+                GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _settings.PotionSprite, _settings.PotionColor, ItemGen.GetRandomPotion()));
             }
 
 
@@ -147,14 +143,14 @@ namespace Skalm
             {
                 foreach (Vector2Int position in _mapManager.mapGenerator.KeySpawnPositions)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, _keyChar, _keyColor, new Key()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, _settings.KeySprite, _settings.KeyColor, new Key()));
                 }
             }
             else
             {
                 foreach(var door in _mapManager.mapGenerator.Doors)
                 {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _keyChar, _keyColor, new Key()));
+                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomPosition(), _settings.KeySprite, _settings.KeyColor, new Key()));
                 }
             } 
                 
