@@ -4,31 +4,26 @@ namespace Skalm.Input
 {
     internal class InputManager
     {
-        public IMoveInput moveInput { get; private set; }
-        public ICommandInput commandInput { get; private set; }
+        public IMoveInput MoveInput { get; private set; }
+        public ICommandInput CommandInput { get; private set; }
         public readonly List<IMoveInput> Inputs;
         public event Action<Vector2Int>? OnInputMove;
         public event Action<InputCommands>? OnInputCommand;
 
-        public InputManager(IMoveInput moveInput, ICommandInput commandInput)
+        public InputManager(IMoveInput moveInput, ICommandInput commandInput, List<IMoveInput> inputs)
         {
-            this.moveInput = moveInput;
-            this.commandInput = commandInput;
-            Inputs = new List<IMoveInput>
-            {
-                new MoveInputArrowKeys(),
-                new MoveInputWASD(),
-                new MoveInputNumpad()
-            };
+            MoveInput = moveInput;
+            CommandInput = commandInput;
+            Inputs = inputs;
         }
 
         public void SetInputMethod(IMoveInput moveInput)
         {
-            this.moveInput = moveInput;
+            MoveInput = moveInput;
         }
         public void SetInputMethod(ICommandInput commandInput)
         {
-            this.commandInput = commandInput;
+            CommandInput = commandInput;
         }
 
         public void GetInput()
@@ -38,10 +33,10 @@ namespace Skalm.Input
 
             ConsoleKeyInfo key = Console.ReadKey(true);
 
-            if (moveInput.GetMoveInput(key, out Vector2Int direction))
+            if (MoveInput.GetMoveInput(key, out Vector2Int direction))
                 OnInputMove?.Invoke(direction);
 
-            if (commandInput.GetCommandInput(key, out InputCommands command))
+            if (CommandInput.GetCommandInput(key, out InputCommands command))
                 OnInputCommand?.Invoke(command);
 
             while (Console.KeyAvailable)

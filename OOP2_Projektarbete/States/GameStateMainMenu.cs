@@ -41,7 +41,7 @@ namespace Skalm.States
             _displayManager.Eraser.EraseAll();
             _menuManager.LoadMenu(_menuManager.mainMenu);
             _soundManager.PlayMusic(_soundManager.Tracks.Find(song => song.soundName == "Video Dungeon Crawl"));
-            _sceneManager.playerName = "";
+            _sceneManager.PlayerName = "";
 
             // INPUT EVENT SUBSCRIBE
             _inputManager.OnInputMove += MoveInput;
@@ -115,7 +115,7 @@ namespace Skalm.States
                         (bool nameOK, string nameReturned) = EnterName(_menuManager.ActiveMenu.PageStartRow + _menuPageHeight);
                         Console.CursorVisible = false;
                         if (nameOK)
-                            _gameManager.SceneManager.playerName = nameReturned;
+                            _gameManager.SceneManager.PlayerName = nameReturned;
                         else
                             EraseRow(Console.CursorTop);
                     }
@@ -139,6 +139,7 @@ namespace Skalm.States
 
                 case Page.InputMethod:
                     _inputManager.SetInputMethod(_inputManager.Inputs.Find(input => input.GetType().Name == item)!);
+                    _menuManager.ActiveMenu.ReloadPage();
                     break;
             }
         }

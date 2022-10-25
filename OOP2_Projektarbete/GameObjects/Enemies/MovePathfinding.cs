@@ -8,32 +8,32 @@ namespace Skalm.GameObjects.Enemies
 {
     internal class MovePathfinding : IMoveBehaviour
     {
-        private MapManager mapManager;
-        private SceneManager sceneManager;
-        private Queue<Vector2Int> path;
+        private MapManager _mapManager;
+        private Queue<Vector2Int> _path;
+        private Player _player;
 
-        public MovePathfinding(MapManager mapManager, SceneManager sceneManager)
+        public MovePathfinding(MapManager mapManager, Player player)
         {
-            this.mapManager = mapManager;
-            this.sceneManager = sceneManager;
-            path = new Queue<Vector2Int>();
+            _mapManager = mapManager;
+            _path = new Queue<Vector2Int>();
+            _player = player;
         }
 
         public Vector2Int MoveDirection(Vector2Int currentPosition)
         {
             FindPathToPlayer(currentPosition);
-            if (path.Count > 0)
+            if (_path.Count > 0)
             {
-                return Vector2Int.DirectionFromTo(currentPosition, path.Dequeue());
+                return Vector2Int.DirectionFromTo(currentPosition, _path.Dequeue());
             }
             else 
                 return Vector2Int.Zero;
         }
             private void FindPathToPlayer(Vector2Int currentPosition)
             {
-                mapManager.TileGrid.TryGetGridObject(currentPosition, out BaseTile startTile);
-                mapManager.TileGrid.TryGetGridObject(sceneManager.Player.GridPosition, out BaseTile targetTile);
-                path = mapManager.Pathfinder.FindPath(startTile, targetTile);
+                _mapManager.TileGrid.TryGetGridObject(currentPosition, out BaseTile startTile);
+                _mapManager.TileGrid.TryGetGridObject(_player.GridPosition, out BaseTile targetTile);
+                _path = _mapManager.Pathfinder.FindPath(startTile, targetTile);
             }
     }
 }

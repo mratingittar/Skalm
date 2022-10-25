@@ -13,11 +13,11 @@ namespace Skalm
 {
     internal class SceneManager
     {
-        public string playerName = "";
 
         public List<GameObject> GameObjectsInScene { get; }
         public List<Actor> ActorsInScene { get; }
         public Player Player { get; }
+        public string PlayerName { get; set; } = "";
 
         private MapManager _mapManager;
         private DisplayManager _displayManager;
@@ -28,19 +28,22 @@ namespace Skalm
         private ISettings _settings;
 
         // CONSTRUCTOR I
-        public SceneManager(MapManager mapManager, DisplayManager displayManager, ISettings settings)
+        public SceneManager(ISettings settings, MapManager mapManager, DisplayManager displayManager, Player player, EnemySpawner enemySpawner, ItemSpawner itemSpawner, PotionSpawner potionSpawner, KeySpawner keySpawner)
         {
+            ActorsInScene = new List<Actor>();
+            GameObjectsInScene = new List<GameObject>();
+
             _settings = settings;
             _mapManager = mapManager;
             _displayManager = displayManager;
-            Player = new Player(mapManager, displayManager, new PlayerAttackComponent(), new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 10, 1, 0), "Nameless", 0), "Nameless", Vector2Int.Zero);
-            ActorsInScene = new List<Actor>();
-            GameObjectsInScene = new List<GameObject>();
-            _enemySpawner = new EnemySpawner(0.65f, mapManager, this, new MonsterGen());
-            _itemSpawner = new ItemSpawner(0.65f, new ItemGen());
-            _potionSpawner = new PotionSpawner(0.65f);
-            _keySpawner = new KeySpawner();
+            Player = player;
+            _enemySpawner = enemySpawner;
+            _itemSpawner = itemSpawner;
+            _potionSpawner = potionSpawner;
+            _keySpawner = keySpawner;
+
             ItemPickup.onItemPickup += RemoveGameObject;
+            Enemy.OnEnemyDeath += RemoveGameObject;
         }
 
         public void NewGame()
@@ -57,10 +60,10 @@ namespace Skalm
         {
             Vector2Int spawnPos = _mapManager.MapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero)
                 ? _mapManager.GetRandomFloorPosition() : _mapManager.MapGenerator.PlayerFixedSpawnPosition;
-            if (playerName.Length == 0)
-                playerName = "Nameless";
+            if (PlayerName.Length == 0)
+                PlayerName = "Nameless";
 
-            Player.InitializePlayer(spawnPos, playerName, _settings.PlayerSprite, _settings.PlayerColor);
+            Player.InitializePlayer(spawnPos, PlayerName, _settings.PlayerSprite, _settings.PlayerColor);
             GameObjectsInScene.Add(Player);
             ActorsInScene.Add(Player);
         }

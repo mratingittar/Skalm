@@ -1,5 +1,7 @@
 ﻿using Skalm;
 using Skalm.Display;
+using Skalm.GameObjects.Stats;
+using Skalm.GameObjects;
 using Skalm.Grid;
 using Skalm.Input;
 using Skalm.Map;
@@ -8,6 +10,8 @@ using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.Structs;
 using Skalm.Utilities;
+using Skalm.GameObjects.Enemies;
+using Skalm.GameObjects.Items;
 
 
 #region SETTINGS
@@ -57,17 +61,21 @@ Dictionary<string, Bounds> sectionBounds = new Dictionary<string, Bounds>
 IPrinter printer = new ConsoleWindowPrinter();
 IEraser eraser = new ConsoleWindowEraser();
 
+
+
 #region CREATING MANAGERS
 DisplayManager displayManager = new DisplayManager(settings, printer, eraser, new ConsoleWindowInfo(), consoleRect,
     new PixelController(new Grid2D<Pixel>(gridRect.Width, gridRect.Height, settings.CellWidth, settings.CellHeight,
                 new Vector2Int(settings.WindowPadding * settings.CellWidth, settings.WindowPadding * settings.CellHeight),
                 (x, y) => new Pixel(new Vector2Int(x, y), new HUDBorder(settings.BorderSprite))), sectionBounds, printer, eraser, settings));
 SoundManager soundManager = new SoundManager(new ConsoleSoundPlayer());
-InputManager inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard());
+InputManager inputManager = new InputManager(new MoveInputArrowKeys(), new CommandInputKeyboard(), new List<IMoveInput>{ new MoveInputArrowKeys(), new MoveInputWASD(),new MoveInputNumpad() });
 MenuManager menuManager = new MenuManager(inputManager, displayManager, soundManager, settings);
 MapManager mapManager = new MapManager(settings, displayManager, new Grid2D<BaseTile>(settings.MapWidth, settings.MapHeight, settings.CellWidth, settings.CellHeight, 
     displayManager.GetMapOrigin(), (x, y) => new VoidTile(new Vector2Int(x, y))));
-SceneManager sceneManager = new SceneManager(mapManager, displayManager, settings);
+Player player = new Player(mapManager, displayManager, new PlayerAttackComponent(), new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 15, 1, 0), "Nameless", 0), "Nameless", Vector2Int.Zero);
+SceneManager sceneManager = new SceneManager(settings, mapManager, displayManager, player, 
+    new EnemySpawner(0.65f, mapManager, player, new MonsterGen()), new ItemSpawner(0.65f, new ItemGen()), new PotionSpawner(0.65f), new KeySpawner());
 GameManager game = new GameManager(settings, displayManager, mapManager, soundManager, inputManager, menuManager, sceneManager);
 #endregion
 

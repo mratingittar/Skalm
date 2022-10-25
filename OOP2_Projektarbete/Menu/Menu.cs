@@ -133,7 +133,7 @@ namespace Skalm.Menu
                 if (ActivePage.page is Page.Music && pageItem == _soundManager.CurrentlyPlaying.soundName)
                     pageItem = TextTools.AddPointersToString(pageItem, 3);
 
-                if (ActivePage.page is Page.InputMethod && pageItem == _inputManager.moveInput.GetType().Name)
+                if (ActivePage.page is Page.InputMethod && pageItem == _inputManager.MoveInput.GetType().Name)
                     pageItem = TextTools.AddPointersToString(pageItem, 3);
 
                 if (ActivePage.page is Page.HowToPlay && pageItem == "CONTROLS:")
