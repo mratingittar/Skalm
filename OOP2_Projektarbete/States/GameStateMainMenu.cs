@@ -11,7 +11,6 @@ namespace Skalm.States
     {
         public string playerName = "";
 
-        private bool _everyOtherFrame = true;
         private const int _menuPageHeight = 6;
         private Animator _fireAnimator;
         private GameManager _gameManager;
@@ -29,8 +28,8 @@ namespace Skalm.States
             _menuManager = gameManager.MenuManager;
             _soundManager = gameManager.SoundManager;
             _inputManager = gameManager.InputManager;
+            _fireAnimator = gameManager.Animator;
             _sceneManager = gameManager.SceneManager;
-            _fireAnimator = gameManager.FireAnimator;
         }
 
         #region StateBasics
@@ -73,13 +72,7 @@ namespace Skalm.States
         // UPDATE DISPLAY
         public void UpdateDisplay()
         {
-            if (_everyOtherFrame)
-            {
-                _fireAnimator.AnimatedBraziers();
-                _everyOtherFrame = false;
-            }
-            else
-                _everyOtherFrame = true;
+            _fireAnimator.AnimatedBraziers();
         }
 
         #endregion

@@ -32,7 +32,7 @@ namespace Skalm
 
 
         // ANIMATION
-        public Animator FireAnimator { get; }
+        public Animator Animator { get; }
         #endregion
 
         #region FIELDS
@@ -55,7 +55,7 @@ namespace Skalm
             SceneManager = sceneManager;
 
             // ANIMATION
-            FireAnimator = new Animator(displayManager, settings);
+            Animator = new Animator(displayManager, settings);
 
             // UPDATE FREQUENCY
             _updateFrequency = Settings.UpdateFrequency == 0 ? 1 : Settings.UpdateFrequency;

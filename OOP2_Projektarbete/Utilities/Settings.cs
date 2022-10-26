@@ -40,13 +40,11 @@
         public ConsoleColor TextColor { get; private set; }
         public ConsoleColor BackgroundColor { get; private set; }
 
-
         public virtual bool LoadSettings(string[] settingsFile)
         {
             bool success = ApplySettings(settingsFile);
             CheckForMinValues();
             return success;
-            // ADD REFERENCE TO DEFAULTSETTINGS, LOAD SINGLE MISSING SETTINGS FROM THAT
         }
 
         private void CheckForMinValues()
@@ -60,7 +58,7 @@
         {
             foreach (var line in settingsFile)
             {
-                if (line.Trim() == "")
+                if (line.Trim() == "" || line[0] == '#')
                     continue;
 
                 string type = line.Split(' ')[0];

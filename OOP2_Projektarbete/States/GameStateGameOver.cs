@@ -1,4 +1,5 @@
-﻿using Skalm.Display;
+﻿using Skalm.Animation;
+using Skalm.Display;
 using Skalm.Input;
 using Skalm.Maps;
 using Skalm.Menu;
@@ -18,6 +19,7 @@ namespace Skalm.States
         private InputManager _inputManager;
         private SceneManager _sceneManager;
         private MapManager _mapManager;
+        private Animator _animator;
 
         public GameStateGameOver(GameManager gameManager)
         {
@@ -26,12 +28,13 @@ namespace Skalm.States
             _inputManager = gameManager.InputManager;
             _sceneManager = gameManager.SceneManager;
             _mapManager = gameManager.MapManager;
+            _animator = gameManager.Animator;
         }
 
         public void Enter()
         {
             _inputManager.OnInputCommand += CommandInput;
-            _displayManager.Printer.PrintCenteredInWindow("YOU DIED.", _displayManager.WindowInfo.WindowHeight/2, _gameManager.Settings.TextColor);
+            _displayManager.Printer.PrintCenteredInWindow("YOU DIED.", _displayManager.WindowInfo.WindowHeight/2 + 8 , _gameManager.Settings.TextColor);
             _sceneManager.ResetScene();
             _mapManager.MapGenerator.ResetMapGenerator();
         }
@@ -64,7 +67,7 @@ namespace Skalm.States
 
         public void UpdateDisplay()
         {
-            
+            _animator.LaughingSkull();
         }
 
         public void UpdateLogic()
