@@ -4,6 +4,7 @@
     {
         string GameTitle { get; }
         int UpdateFrequency { get; }
+        float BaseSpawningModifier { get; }
 
         int WindowPadding { get; }
         int BorderThickness { get; }

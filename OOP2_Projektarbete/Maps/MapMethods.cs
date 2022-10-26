@@ -1,4 +1,4 @@
-﻿using Skalm.Map.Tile;
+﻿using Skalm.Maps.Tiles;
 using Skalm.Structs;
 using System;
 using System.Collections.Generic;
@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Skalm.Map
+namespace Skalm.Maps
 {
     internal static class MapMethods
     {
@@ -23,7 +23,7 @@ namespace Skalm.Map
         {
             int count = 0;
             foreach (var dir in cardinalDirs)
-                if (InsideArrBounds(inArr, x + dir.X, y + dir.Y) && (inArr[x + dir.X, y + dir.Y] == value)) count++;
+                if (InsideArrBounds(inArr, x + dir.X, y + dir.Y) && inArr[x + dir.X, y + dir.Y] == value) count++;
             return count;
         }
 

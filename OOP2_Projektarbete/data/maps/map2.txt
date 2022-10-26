@@ -1,9 +1,31 @@
- fffffffff   fffffffffff       fief
- fffpfffff   fffffffffff       ffff
- fffffffff   fffffgfffff        ff  
- fffffffff   fffffffffff        ff
-    ff             f             f 
-    ff             f             d       
-    fffffffffffffffffffffffffffffffffff
-                f                 fffif
-          fffffffffffffffffffffffffffff
+pfffkffffffffff fffffff fffffff
+        fffffkf fffffff fffffff
+fffffffdfffffff fffifff fffifff
+f       fffifff fffefff fffefff
+f fffff fffffff fffffff fffffff
+f f   f fffffkf fffffff fffffff
+f f   f fffffff fffffffdfffffff
+f f   f d             d     d
+f f   fff   fff fffffff fff f
+f f         fff fffkfff f f f
+f fffffffffdfiedfffffff f fff
+f           fff fffffff f
+f           fff fffffff fffffff
+d               fffkfff fffifff
+fffffffdfffffff fffffff fffffff
+ffekiff       d d       d
+fffffff fffffff fffffff fffffff
+        fffffff fffffff ffffkff
+        fffffff fffffff fffffff
+        fffefff fffifff fffefff
+        fffffff fffffff fffffff
+        fffffff fffffff ffffiff
+        fffffff fffffff fffffff
+              d d     d d
+              f f fffffff fffff
+              f f fkkfeff f   f
+              f f fffffff f g f
+              f f         f f f
+              f fffffffffffff f
+              f               f
+              fffffffffffffffff

@@ -1,11 +1,11 @@
 ﻿using Skalm.Display;
 using Skalm.GameObjects;
 using Skalm.Grid;
-using Skalm.Map.Tile;
+using Skalm.Maps.Tiles;
 using Skalm.States;
 using Skalm.Structs;
 
-namespace Skalm.Map
+namespace Skalm.Maps
 {
     internal class MapPrinter
     {
@@ -49,7 +49,7 @@ namespace Skalm.Map
             {
                 for (int y = 0; y < _tileGrid.gridHeight; y++)
                 {
-                        DrawSingleTile(x, y);
+                    DrawSingleTile(x, y);
                 }
             }
         }

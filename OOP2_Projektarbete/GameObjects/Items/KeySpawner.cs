@@ -10,9 +10,18 @@ namespace Skalm.GameObjects.Items
 {
     internal class KeySpawner : ISpawner<ItemPickup>
     {
-        public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color)
+        private char _keySprite;
+        private ConsoleColor _keyColor;
+
+        public KeySpawner(char keySprite, ConsoleColor keyColor)
         {
-            return new ItemPickup(position, sprite, color, new Key());
+            _keySprite = keySprite;
+            _keyColor = keyColor;
+        }
+
+        public ItemPickup Spawn(Vector2Int position)
+        {
+            return new ItemPickup(position, _keySprite, _keyColor, new Key());
         }
     }
 }

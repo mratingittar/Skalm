@@ -2,8 +2,8 @@
 using Skalm.GameObjects;
 using Skalm.GameObjects.Interfaces;
 using Skalm.Input;
-using Skalm.Map;
-using Skalm.Map.Tile;
+using Skalm.Maps;
+using Skalm.Maps.Tiles;
 using Skalm.Structs;
 using Skalm.Utilities;
 

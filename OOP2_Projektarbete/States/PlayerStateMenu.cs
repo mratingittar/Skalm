@@ -58,11 +58,11 @@ namespace Skalm.States
 
         private void DescriptionAsMessage()
         {
-            if (_player.EquipmentManager.inventory.itemList.Count > 0)
+            if (_player.EquipmentManager.inventory.itemList.Count > 0 && _player.EquipmentManager.inventory.itemList.Count > _displayManager.PixelGridController.InventoryIndex)
                 _displayManager.DisplayInstantMessage(_player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex].Name + ". " +
                     _player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex].Description + ".");
             else
-                _displayManager.DisplayInstantMessage("Your inventory is empty.");
+                _displayManager.DisplayInstantMessage("Nothing to see here.");
         }
 
         public void CommandInput(InputCommands command)

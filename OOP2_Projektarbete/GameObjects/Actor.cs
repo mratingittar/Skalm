@@ -1,6 +1,6 @@
 ﻿using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Stats;
-using Skalm.Map;
+using Skalm.Maps;
 using Skalm.Structs;
 using System;
 using System.Collections.Generic;

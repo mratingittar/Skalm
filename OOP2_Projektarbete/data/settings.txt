@@ -7,6 +7,7 @@
 
 String GameTitle = Skälm
 Int32 UpdateFrequency = 20
+Single BaseSpawningModifier = 0,65
 Int32 WindowPadding = 1
 Int32 BorderThickness = 1
 Int32 CellWidth = 2

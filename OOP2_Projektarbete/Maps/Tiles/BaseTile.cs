@@ -1,13 +1,7 @@
 ﻿using Skalm.GameObjects.Interfaces;
-using Skalm.Map;
 using Skalm.Structs;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Skalm.Map.Tile
+namespace Skalm.Maps.Tiles
 {
     internal abstract class BaseTile : IGridObject
     {

@@ -10,15 +10,20 @@ namespace Skalm.GameObjects.Items
         private float _baseModifier;
         private ItemGen _itemGen;
 
-        public ItemSpawner(float baseModifier, ItemGen itemGenerator)
+        private char _itemSprite;
+        private ConsoleColor _itemColor;
+
+        public ItemSpawner(float baseModifier, char itemSprite, ConsoleColor itemColor, ItemGen itemGenerator)
         {
+            _itemSprite = itemSprite;
+            _itemColor = itemColor;
             _baseModifier = baseModifier;
             _itemGen = itemGenerator;
         }
 
-        public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color)
+        public ItemPickup Spawn(Vector2Int position)
         {
-            return new ItemPickup(position, sprite, color, _itemGen.GetWeightedRandom(_scaledModifier));
+            return new ItemPickup(position, _itemSprite, _itemColor, _itemGen.GetWeightedRandom(_scaledModifier));
         }
 
 

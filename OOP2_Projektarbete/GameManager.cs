@@ -3,7 +3,7 @@ using Skalm.Display;
 using Skalm.GameObjects;
 using Skalm.GameObjects.Enemies;
 using Skalm.Input;
-using Skalm.Map;
+using Skalm.Maps;
 using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.States;

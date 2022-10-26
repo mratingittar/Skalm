@@ -4,6 +4,7 @@
     {
         public string GameTitle { get; private set; } = "";
         public int UpdateFrequency { get; private set; }
+        public float BaseSpawningModifier { get; private set; }
 
         public int WindowPadding { get; private set; }
         public int BorderThickness { get; private set; }
@@ -79,6 +80,9 @@
                         case "Int32":
                             GetType().GetProperty(name)!.SetValue(this, ParseInt(value));
                             break;
+                        case "Single":
+                            GetType().GetProperty(name)!.SetValue(this, ParseFloat(value));
+                            break;
                         case "Char":
                             GetType().GetProperty(name)!.SetValue(this, ParseChar(value));
                             break;
@@ -111,6 +115,12 @@
         private int ParseInt(string field)
         {
             int.TryParse(field, out int value);
+            return value;
+        }
+
+        private float ParseFloat(string field)
+        {
+            float.TryParse(field, out float value);
             return value;
         }
 

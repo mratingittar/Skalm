@@ -2,7 +2,7 @@
 using Skalm.GameObjects.Interfaces;
 using Skalm.Structs;
 
-namespace Skalm.Map.Tile
+namespace Skalm.Maps.Tiles
 {
     internal class FloorTile : BaseTile, IOccupiable
     {

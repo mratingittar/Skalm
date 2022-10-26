@@ -3,7 +3,7 @@ using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Items;
 using Skalm.Structs;
 
-namespace Skalm.Map.Tile
+namespace Skalm.Maps.Tiles
 {
     internal class DoorTile : BaseTile, ICollider, IInteractable, IOccupiable
     {
@@ -45,8 +45,8 @@ namespace Skalm.Map.Tile
         public DoorTile(Vector2Int gridPos, char openSprite = '□', char closedSprite = '■', ConsoleColor color = ConsoleColor.White) : base(gridPos, openSprite, color)
         {
             ObjectsOnTile = new Stack<GameObject>();
-            this._openSprite = openSprite;
-            this._closedSprite = closedSprite;
+            _openSprite = openSprite;
+            _closedSprite = closedSprite;
             ColliderIsActive = true;
             IsLocked = true;
             ActorPresent = false;
@@ -71,7 +71,7 @@ namespace Skalm.Map.Tile
 
         public void OnCollision()
         {
-            
+
         }
     }
 }

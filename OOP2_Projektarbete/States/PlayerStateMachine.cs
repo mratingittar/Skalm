@@ -1,6 +1,6 @@
 ﻿using Skalm.Display;
 using Skalm.GameObjects;
-using Skalm.Map;
+using Skalm.Maps;
 
 namespace Skalm.States
 {

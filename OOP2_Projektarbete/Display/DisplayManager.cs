@@ -1,7 +1,5 @@
 ﻿using Skalm.GameObjects;
 using Skalm.Grid;
-using Skalm.Map;
-using Skalm.States;
 using Skalm.Structs;
 using Skalm.Utilities;
 
@@ -9,7 +7,6 @@ namespace Skalm.Display
 {
     internal class DisplayManager
     {
-        #region FIELDS
         public IPrinter Printer { get; }
         public IEraser Eraser { get; }
         public IWindowInfo WindowInfo { get; }
@@ -18,7 +15,6 @@ namespace Skalm.Display
 
         private readonly PixelController _pixelGridController;
         private Queue<string> _messageQueue;
-        #endregion
 
         // CONSTRUCTOR I
         public DisplayManager(ISettings settings, IPrinter printer, IEraser eraser, IWindowInfo windowInfo, Rectangle windowSize, PixelController gridController)

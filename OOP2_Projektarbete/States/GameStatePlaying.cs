@@ -1,8 +1,7 @@
 ﻿using Skalm.Display;
 using Skalm.GameObjects;
 using Skalm.Input;
-using Skalm.Map;
-
+using Skalm.Maps;
 using Skalm.Sounds;
 using Skalm.Structs;
 
@@ -46,8 +45,6 @@ namespace Skalm.States
                 _displayManager.Printer.PrintCenteredInWindow("ENTERING THE DUNGEON", _displayManager.WindowInfo.WindowHeight / 2, _gameManager.Settings.TextColor);
                 Thread.Sleep(500);
 
-                _mapManager.MapGenerator.ResetMapIndex();
-                
                 // CREATE MAP
                 _mapManager.MapGenerator.CreateMap();
                 _sceneManager.NewGame();
@@ -88,7 +85,7 @@ namespace Skalm.States
             //    actor.UpdateMain();
             //}
 
-            if (_sceneManager.Player.GridPosition.Equals(_mapManager.MapGenerator.GoalPosition))
+            if (_sceneManager.Player.GridPosition.Equals(_mapManager.MapGenerator.CurrentMap.GoalPosition))
                 _sceneManager.NextLevel();
         }
 

@@ -8,13 +8,18 @@ namespace Skalm.GameObjects.Items
         public float ScalingMultiplier { get; set; }
         private float _scaledModifier => Math.Min(_baseModifier * (1 + 0.01f * ScalingMultiplier), 0.99f);
         private float _baseModifier;
-        public PotionSpawner(float baseModifier)
+        private char _potionSprite;
+        private ConsoleColor _potionColor;
+        public PotionSpawner(float baseModifier, char potionSprite, ConsoleColor potionColor)
         {
             _baseModifier = baseModifier;
+            _potionSprite = potionSprite;
+            _potionColor = potionColor;
         }
-        public ItemPickup Spawn(Vector2Int position, char sprite, ConsoleColor color)
+
+        public ItemPickup Spawn(Vector2Int position)
         {
-            return new ItemPickup(position, sprite, color, GetRandomPotion());
+            return new ItemPickup(position, _potionSprite, _potionColor, GetRandomPotion());
         }
 
         private Potion GetRandomPotion()

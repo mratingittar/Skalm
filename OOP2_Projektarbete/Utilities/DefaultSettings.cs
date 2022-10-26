@@ -5,6 +5,7 @@
         #region PROPERTIES
         public string GameTitle { get; } = "Skälm";
         public int UpdateFrequency { get; } = 20;
+        public float BaseSpawningModifier { get; } = 0.65f;
 
         public int WindowPadding { get; } = 1;
         public int BorderThickness { get; } = 1;

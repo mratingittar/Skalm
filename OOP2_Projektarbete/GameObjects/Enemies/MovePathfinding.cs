@@ -1,8 +1,7 @@
 ﻿using Skalm.GameObjects.Interfaces;
-using Skalm.Map.Tile;
-using Skalm.Map;
 using Skalm.Structs;
-
+using Skalm.Maps;
+using Skalm.Maps.Tiles;
 
 namespace Skalm.GameObjects.Enemies
 {

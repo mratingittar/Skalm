@@ -125,9 +125,9 @@ namespace Skalm.Grid
             row++;
             _printer.PrintFromPosition($"Finger:     {equipment.equipArr[(int)EEqSlots.Finger].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Main hand: {equipment.equipArr[(int)EEqSlots.RHand].Name}", row, column, _textColor);
+            _printer.PrintFromPosition($"Main hand:  {equipment.equipArr[(int)EEqSlots.RHand].Name}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Off hand:  {equipment.equipArr[(int)EEqSlots.LHand].Name}", row, column, _textColor);
+            _printer.PrintFromPosition($"Off hand:   {equipment.equipArr[(int)EEqSlots.LHand].Name}", row, column, _textColor);
             row++;
             _printer.PrintFromPosition($"Legs:       {equipment.equipArr[(int)EEqSlots.Legs].Name}", row, column, _textColor);
             row++;

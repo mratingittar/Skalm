@@ -1,6 +1,6 @@
 ﻿using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Stats;
-using Skalm.Map;
+using Skalm.Maps;
 using Skalm.States;
 using Skalm.Structs;
 using System.Security.Cryptography.X509Certificates;

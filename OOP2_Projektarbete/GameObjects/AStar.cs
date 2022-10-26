@@ -1,6 +1,6 @@
 ﻿using Skalm.GameObjects.Interfaces;
-using Skalm.Map;
-using Skalm.Map.Tile;
+using Skalm.Maps;
+using Skalm.Maps.Tiles;
 using Skalm.Structs;
 
 namespace Skalm.GameObjects

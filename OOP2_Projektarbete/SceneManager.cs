@@ -3,9 +3,8 @@ using Skalm.GameObjects;
 using Skalm.GameObjects.Enemies;
 using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Items;
-using Skalm.GameObjects.Stats;
-using Skalm.Map;
-using Skalm.Map.Tile;
+using Skalm.Maps;
+using Skalm.Maps.Tiles;
 using Skalm.Structs;
 using Skalm.Utilities;
 
@@ -28,7 +27,8 @@ namespace Skalm
         private ISettings _settings;
 
         // CONSTRUCTOR I
-        public SceneManager(ISettings settings, MapManager mapManager, DisplayManager displayManager, Player player, EnemySpawner enemySpawner, ItemSpawner itemSpawner, PotionSpawner potionSpawner, KeySpawner keySpawner)
+        public SceneManager(ISettings settings, MapManager mapManager, DisplayManager displayManager, Player player, 
+            EnemySpawner enemySpawner, ItemSpawner itemSpawner, PotionSpawner potionSpawner, KeySpawner keySpawner)
         {
             ActorsInScene = new List<Actor>();
             GameObjectsInScene = new List<GameObject>();
@@ -58,12 +58,10 @@ namespace Skalm
 
         public void InitializePlayer()
         {
-            Vector2Int spawnPos = _mapManager.MapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero)
-                ? _mapManager.GetRandomFloorPosition() : _mapManager.MapGenerator.PlayerFixedSpawnPosition;
             if (PlayerName.Length == 0)
                 PlayerName = "Nameless";
 
-            Player.InitializePlayer(spawnPos, PlayerName, _settings.PlayerSprite, _settings.PlayerColor);
+            Player.InitializePlayer(_mapManager.MapGenerator.CurrentMap.PlayerSpawnPosition, PlayerName, _settings.PlayerSprite, _settings.PlayerColor);
             GameObjectsInScene.Add(Player);
             ActorsInScene.Add(Player);
         }
@@ -73,16 +71,17 @@ namespace Skalm
             _displayManager.Eraser.EraseAll();
             ResetScene();
 
-            _mapManager.MapGenerator.CreateMap();
-            ResetPlayer();
             IncrementScaling();
-            InitializeScene();
+            _mapManager.MapGenerator.NextLevel();
+            ResetPlayer();
             Player.NextFloor();
+            InitializeScene();
 
             _displayManager.DisplayHUD();
             _mapManager.MapPrinter.DrawMap();
 
             Player.UpdateAllDisplays();
+            Player.PlayerStateMachine.ChangeState(States.PlayerStates.PlayerStateMove);
         }
 
         private void IncrementScaling()
@@ -94,89 +93,38 @@ namespace Skalm
 
         public void ResetPlayer()
         {
-            Vector2Int spawnPos = _mapManager.MapGenerator.PlayerFixedSpawnPosition.Equals(Vector2Int.Zero)
-                ? _mapManager.GetRandomFloorPosition() : _mapManager.MapGenerator.PlayerFixedSpawnPosition;
-
-            Player.SetPlayerPosition(spawnPos);
+            Player.SetPlayerPosition(_mapManager.MapGenerator.CurrentMap.PlayerSpawnPosition);
+            Player.PlayerStateMachine.ChangeState(States.PlayerStates.PlayerStateIdle);
             GameObjectsInScene.Add(Player);
             ActorsInScene.Add(Player);
         }
 
-
         // INITIALIZE SCENE
         public void InitializeScene()
         {
-            // ADD ENEMIES
-            if (_mapManager.MapGenerator.EnemySpawnPositions.Count > 0)
-            {
-                foreach (Vector2Int position in _mapManager.MapGenerator.EnemySpawnPositions)
-                {
-                    Enemy enemy = _enemySpawner.Spawn(position, _settings.EnemySprite, _settings.EnemyColor);
-                    GameObjectsInScene.Add(enemy);
-                    ActorsInScene.Add(enemy);
-                }
-            }
-            else
-            {
-                Enemy enemy = _enemySpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.EnemySprite, _settings.EnemyColor);
-                GameObjectsInScene.Add(enemy);
-                ActorsInScene.Add(enemy);
-            }
-
-            // ADD ITEMS
-            if (_mapManager.MapGenerator.ItemSpawnPositions.Count > 0)
-            {
-                foreach (Vector2Int position in _mapManager.MapGenerator.ItemSpawnPositions)
-                {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(position, _settings.ItemSprite, _settings.ItemColor));
-                }
-            }
-            else
-            {
-                int items = Dice.Roll(3);
-                for (int i = 0; i < items; i++)
-                {
-                    GameObjectsInScene.Add(_itemSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.ItemSprite, _settings.ItemColor));
-                }
-            }
-
-            // ADD POTIONS
-            if (_mapManager.MapGenerator.PotionSpawnPositions.Count() > 0)
-            {
-                foreach (Vector2Int position in _mapManager.MapGenerator.PotionSpawnPositions)
-                {
-                    GameObjectsInScene.Add(_potionSpawner.Spawn(position, _settings.PotionSprite, _settings.PotionColor));
-                }
-            }
-            else
-            {
-                int potions = Dice.Roll(2);
-                for (int i = 0; i < potions; i++)
-                {
-                    GameObjectsInScene.Add(_potionSpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.PotionSprite, _settings.PotionColor));
-                }
-            }
-
-
-            // ADD KEYS
-            if (_mapManager.MapGenerator.KeySpawnPositions.Count > 0)
-            {
-                foreach (Vector2Int position in _mapManager.MapGenerator.KeySpawnPositions)
-                {
-                    GameObjectsInScene.Add(_keySpawner.Spawn(position, _settings.KeySprite, _settings.KeyColor));
-                }
-            }
-            else
-            {
-                foreach (var door in _mapManager.MapGenerator.Doors)
-                {
-                    GameObjectsInScene.Add(_keySpawner.Spawn(_mapManager.GetRandomFloorPosition(), _settings.KeySprite, _settings.KeyColor));
-                }
-            }
-
-
-            // ADD OBJECTS TO MAP
+            SpawnObjects(_mapManager.MapGenerator.CurrentMap, EMapObjects.Enemies, _enemySpawner);
+            GameObjectsInScene.Where(obj => obj is Enemy).ToList().ForEach(e => ActorsInScene.Add((Enemy)e));
+            SpawnObjects(_mapManager.MapGenerator.CurrentMap, EMapObjects.Items, _itemSpawner);
+            SpawnObjects(_mapManager.MapGenerator.CurrentMap, EMapObjects.Potions, _potionSpawner);
+            SpawnObjects(_mapManager.MapGenerator.CurrentMap, EMapObjects.Keys, _keySpawner);
             AddObjectsToMap();
+        }
+
+        // SPAWN OBJECTS IN SCENE
+        private void SpawnObjects(Map map, EMapObjects objectType, ISpawner<GameObject> spawner)
+        {
+            int minimum = map.ObjectsInMap[objectType].Item1;
+            foreach (Vector2Int position in map.ObjectsInMap[objectType].Item2)
+            {
+                GameObjectsInScene.Add(spawner.Spawn(position));
+                minimum--;
+            }
+
+            while (minimum > 0)
+            {
+                GameObjectsInScene.Add(spawner.Spawn(_mapManager.GetRandomFloorPosition()));
+                minimum--;
+            }
         }
 
         // ADD OBJECTS TO MAP
@@ -198,14 +146,13 @@ namespace Skalm
         // RESET OBJECTS IN SCENE
         public void ResetScene()
         {
-            // CLEAR GAME OBJECTS LISTS
-            foreach (var go in GameObjectsInScene)
+            foreach (GameObject go in GameObjectsInScene)
             {
                 if (_mapManager.TileGrid.TryGetGridObject(go.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
                     tileOcc.ObjectsOnTile.Clear();
             }
+            GameObjectsInScene.Clear();
 
-            // CLEAR ACTORS LIST
             int actors = ActorsInScene.Count;
             for (int i = 0; i < actors; i++)
             {
@@ -214,17 +161,12 @@ namespace Skalm
                 if (ActorsInScene[i] is Enemy enemy)
                     enemy.Remove();
             }
-
             ActorsInScene.Clear();
-            GameObjectsInScene.Clear();
+
             _displayManager.ClearMessageQueue();
             _displayManager.ClearMessageSection();
-            _mapManager.MapGenerator.ResetMap();
+            _mapManager.MapGenerator.ResetGrid();
         }
-
-        // ENEMY FACTORY
-
-        // ITEM FACTORY
 
         // REMOVE OBJECT FROM GAME VIEW
         public void RemoveGameObject(GameObject obj)
