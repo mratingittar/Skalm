@@ -6,7 +6,7 @@ using Skalm.Input;
 using Skalm.Maps;
 using Skalm.Menu;
 using Skalm.Sounds;
-using Skalm.States;
+using Skalm.States.GameStates;
 using Skalm.Structs;
 using Skalm.Utilities;
 
@@ -36,7 +36,7 @@ namespace Skalm
         #endregion
 
         #region FIELDS
-        private int _updateFrequency;
+        private readonly int _updateFrequency;
         private readonly GameStateMachine _stateMachine;
         #endregion
 
@@ -58,24 +58,24 @@ namespace Skalm
             Animator = new Animator(displayManager, settings);
 
             // UPDATE FREQUENCY
-            _updateFrequency = Settings.UpdateFrequency == 0 ? 1 : Settings.UpdateFrequency;
+            _updateFrequency = Settings.UpdateFrequency == 0 ? 20 : Settings.UpdateFrequency;
 
             // STATE MACHINE & GAME STATES
-            _stateMachine = new GameStateMachine(this, GameStates.GameStateInitializing);
-            _stateMachine.Initialize(GameStates.GameStateInitializing);
+            _stateMachine = new GameStateMachine(this, EGameStates.GameStateInitializing);
+            _stateMachine.Initialize(EGameStates.GameStateInitializing);
 
             sceneManager.Player.statsObject.OnDeath += GameOver;
         }
 
         private void GameOver()
         {
-            _stateMachine.ChangeState(GameStates.GameStateGameOver);
+            _stateMachine.ChangeState(EGameStates.GameStateGameOver);
         }
 
         // METHOD START STATE
         public void Start()
         {
-            _stateMachine.ChangeState(GameStates.GameStateMainMenu);
+            _stateMachine.ChangeState(EGameStates.GameStateMainMenu);
             Update();
         }
 

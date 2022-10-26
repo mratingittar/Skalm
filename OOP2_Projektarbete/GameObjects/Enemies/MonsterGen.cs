@@ -1,5 +1,6 @@
 ﻿using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Stats;
+using Skalm.Utilities;
 
 namespace Skalm.GameObjects.Enemies
 {

@@ -113,6 +113,9 @@ namespace Skalm.Maps
             maps.RemoveAt(0);
 
             maps.ForEach(x => _mapList.Add(new Map(x, _settings.MapHeight, _enemies, _items, 0, _potions)));
+            
+            RandomizeMaps();
+
             return starterMap;
         }
 

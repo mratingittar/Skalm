@@ -4,13 +4,14 @@ using Skalm.GameObjects.Items;
 using Skalm.GameObjects.Stats;
 using Skalm.Maps;
 using Skalm.Maps.Tiles;
-using Skalm.States;
+using Skalm.States.PlayerStates;
 using Skalm.Structs;
 
 namespace Skalm.GameObjects
 {
     internal class Player : Actor
     {
+        // PROPERTIES
         internal PlayerStateMachine PlayerStateMachine { get => _playerStateMachine; }
         public EquipmentManager EquipmentManager { get => _equipmentManager; }
 
@@ -20,6 +21,7 @@ namespace Skalm.GameObjects
         public static event Action<EquipmentManager>? OnPlayerEquipmentUpdated;
         public static event Action<EquipmentManager>? OnPlayerInventoryUpdated;
 
+        // FIELDS
         private PlayerStateMachine _playerStateMachine;
         private EquipmentManager _equipmentManager;
         private int _currentFloor;
@@ -29,7 +31,7 @@ namespace Skalm.GameObjects
         public Player(MapManager mapManager, DisplayManager displayManager, IAttackComponent attack, ActorStatsObject statsObject, string name, Vector2Int gridPosition, char sprite = '@', ConsoleColor color = ConsoleColor.White) 
             : base(mapManager, attack, statsObject, gridPosition, sprite, color)
         {
-            _playerStateMachine = new PlayerStateMachine(this, displayManager, mapManager, PlayerStates.PlayerStateIdle);
+            _playerStateMachine = new PlayerStateMachine(this, displayManager, mapManager, EPlayerStates.PlayerStateIdle);
 
             // INVENTORY
             _equipmentManager = new EquipmentManager();

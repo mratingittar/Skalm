@@ -1,10 +1,5 @@
 ﻿using Skalm.Display;
 using Skalm.Utilities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Skalm.Animation
 {
@@ -33,7 +28,7 @@ namespace Skalm.Animation
         }
         public void AnimatedBraziers()
         {
-            if (_animationFrameRate == 4)
+            if (_animationFrameRate >= 4)
             {
                 _animationFrameRate = 0;
 
@@ -46,13 +41,13 @@ namespace Skalm.Animation
 
         public void LaughingSkull()
         {
-            if (_animationFrameRate == 2)
+            if (_animationFrameRate >= 4)
             {
                 _animationFrameRate = 0;
 
                 _displayManager.Printer.PrintCenteredInWindow(skullAnim.NextFrame().Lines, Console.WindowHeight / 2 - 7, _settings.TextColor);
             }
-            _animationFrameRate++;
+            _animationFrameRate += 2;
         }
 
         private Animation CreateFireAnimation(int offset)

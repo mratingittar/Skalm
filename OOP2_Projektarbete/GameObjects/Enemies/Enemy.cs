@@ -12,14 +12,9 @@ namespace Skalm.GameObjects.Enemies
         public override string Label { get => statsObject.name; }
         public static event Action<Enemy>? OnEnemyDeath; 
 
-        // MANAGERS
-        private bool _isAlive;
-        private EnemyStateMachine _stateMachine;
-
-        // COMPONENTS
         private IMoveBehaviour _moveBehaviour;
         private Player _player;
-
+        private bool _isAlive;
         private bool _disposed;
 
         // CONSTRUCTOR I
@@ -29,13 +24,10 @@ namespace Skalm.GameObjects.Enemies
             _player = player;
             _isAlive = true;
             _mapManager = mapManager;
-            
             _moveBehaviour = moveBehaviour;
-            _stateMachine = new EnemyStateMachine(this, EnemyStates.EnemyStateIdle);
 
             Player.OnPlayerTurn += MoveEnemy;
             statsObject.OnDeath += Die;
-            _stateMachine.ChangeState(EnemyStates.EnemyStateSearching);
         }
 
         public void Die()

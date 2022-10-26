@@ -11,14 +11,14 @@ f f f f      fffffff      fffff f f f
 f fff f      fffffffdf    fffffdf f f
 f   f f      fffffff f          f f f
 f fff f      fffffff ffffffffff f f f
-f d   f         d         d   f f f f
+f d   f         f         d   f f f f
 f fff fffffff fffffff fffffff f f f f
 f fff       f fffffff fffffff f f f f
 f fff       f fffffffdfffffff f f f f
 f fff       f fffffff fffffff f f f f
 f fff       f fffffff fffffff fff f f
 f           f fffffff fffffff     f f
-f           f fffffff fffffffdfffff f
+f           f fffffff fffffffffffff f
 f           f     d                 f
 fffffffffffff fffffff fffffffdfffffff
             f fffffff fffffff
@@ -27,11 +27,11 @@ fffff       f fffffff fffffff
 fffff       f fffffff fffffff
 fffff       f fffffff fffffff
 fffff       f fffffff fffffff
-d           f d             f
-f           f f             f
-f           f f             f
-fffffffffffff f             f
-f             f             f
-f     fdfffff f             f
-f     f fffff f             f
+f           f d             f
+f           f f    fffff    f
+f           f f    ffiff    f
+fffffffffffff f    fffff    f
+f             f      f      f
+f     fdfffff f      f      f
+f     f fffff f      f      f
 fffffff fffff fffffffffffffff

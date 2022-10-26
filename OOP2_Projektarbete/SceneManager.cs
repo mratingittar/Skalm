@@ -5,6 +5,7 @@ using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Items;
 using Skalm.Maps;
 using Skalm.Maps.Tiles;
+using Skalm.States.PlayerStates;
 using Skalm.Structs;
 using Skalm.Utilities;
 
@@ -81,7 +82,7 @@ namespace Skalm
             _mapManager.MapPrinter.DrawMap();
 
             Player.UpdateAllDisplays();
-            Player.PlayerStateMachine.ChangeState(States.PlayerStates.PlayerStateMove);
+            Player.PlayerStateMachine.ChangeState(EPlayerStates.PlayerStateMove);
         }
 
         private void IncrementScaling()
@@ -94,7 +95,7 @@ namespace Skalm
         public void ResetPlayer()
         {
             Player.SetPlayerPosition(_mapManager.MapGenerator.CurrentMap.PlayerSpawnPosition);
-            Player.PlayerStateMachine.ChangeState(States.PlayerStates.PlayerStateIdle);
+            Player.PlayerStateMachine.ChangeState(EPlayerStates.PlayerStateIdle);
             GameObjectsInScene.Add(Player);
             ActorsInScene.Add(Player);
         }
