@@ -108,7 +108,7 @@ namespace Skalm.States.GameStates
                         (bool nameOK, string nameReturned) = EnterName(_menuManager.ActiveMenu.PageStartRow + _menuPageHeight);
                         Console.CursorVisible = false;
                         if (nameOK)
-                            _gameManager.SceneManager.PlayerName = nameReturned;
+                            _gameManager.SceneManager.PlayerName = nameReturned.Trim();
                         else
                             EraseRow(Console.CursorTop);
                     }

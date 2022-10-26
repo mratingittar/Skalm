@@ -28,10 +28,8 @@ fffff       f fffffff fffffff
 fffff       f fffffff fffffff
 fffff       f fffffff fffffff
 f           f d             f
-f           f f    fffff    f
-f           f f    ffiff    f
 fffffffffffff f    fffff    f
-f             f      f      f
-f     fdfffff f      f      f
+f             f    ffiff    f
+f     fdfffff f    fffff    f
 f     f fffff f      f      f
 fffffff fffff fffffffffffffff
