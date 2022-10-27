@@ -51,6 +51,7 @@ namespace Skalm.GameObjects.Items
             string potionName = "Potion of Healing";
 
             // RANDOMIZE HEAL AMOUNT
+            bonusMod = Math.Min(0.95f, bonusMod);
             do
             {
                 bonusCounter++;
@@ -205,6 +206,7 @@ namespace Skalm.GameObjects.Items
             statBonusList.Add(armBonus);
 
             // RANDOMIZE STAT BONUS COUNT
+            bonusMod = Math.Min(bonusMod, 0.95f);
             do
             {
                 bonusCounter++;
