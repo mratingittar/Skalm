@@ -3,7 +3,6 @@ using Skalm.GameObjects.Stats;
 using Skalm.Maps;
 using Skalm.States;
 using Skalm.Structs;
-using System.Security.Cryptography.X509Certificates;
 
 namespace Skalm.GameObjects.Enemies
 {
@@ -26,7 +25,7 @@ namespace Skalm.GameObjects.Enemies
             _mapManager = mapManager;
             _moveBehaviour = moveBehaviour;
 
-            Player.OnPlayerTurn += MoveEnemy;
+            _player.OnPlayerTurn += MoveEnemy;
             statsObject.OnDeath += Die;
         }
 
@@ -38,7 +37,7 @@ namespace Skalm.GameObjects.Enemies
 
         public void Remove()
         {
-            Player.OnPlayerTurn -= MoveEnemy;
+            _player.OnPlayerTurn -= MoveEnemy;
             statsObject.OnDeath -= Die;
             Dispose();
         }

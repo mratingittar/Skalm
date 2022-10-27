@@ -16,7 +16,7 @@ namespace Skalm.GameObjects
         public EquipmentManager EquipmentManager { get => _equipmentManager; }
 
         // EVENTS
-        public static event Action? OnPlayerTurn;
+        public event Action? OnPlayerTurn;
         public static event Action<ActorStatsObject, int>? OnPlayerStatsUpdated;
         public static event Action<EquipmentManager>? OnPlayerEquipmentUpdated;
         public static event Action<EquipmentManager>? OnPlayerInventoryUpdated;
