@@ -14,7 +14,6 @@ namespace Skalm
 {
     internal class SceneManager
     {
-
         public List<GameObject> GameObjectsInScene { get; }
         public List<Actor> ActorsInScene { get; }
         public Player Player { get; }
@@ -26,6 +25,7 @@ namespace Skalm
         private ItemSpawner _itemSpawner;
         private PotionSpawner _potionSpawner;
         private KeySpawner _keySpawner;
+        private MonsterItemDropGen _monsterDropGen;
         private ISettings _settings;
 
         // CONSTRUCTOR I
@@ -43,8 +43,10 @@ namespace Skalm
             _itemSpawner = itemSpawner;
             _potionSpawner = potionSpawner;
             _keySpawner = keySpawner;
+            _monsterDropGen = new MonsterItemDropGen(_itemSpawner, _potionSpawner, _keySpawner);
 
             ItemPickup.onItemPickup += RemoveGameObject;
+            Enemy.OnEnemyDeath += HandleItemDrop;
             Enemy.OnEnemyDeath += RemoveGameObject;
         }
 
@@ -95,6 +97,13 @@ namespace Skalm
             _itemSpawner.ScalingMultiplier++;
             _enemySpawner.ScalingMultiplier++;
             _potionSpawner.ScalingMultiplier++;
+        }
+
+        // HANDLE ITEM DROP ON DEATH
+        private void HandleItemDrop(Enemy e)
+        {
+            if (_monsterDropGen.DetermineItemDrop(e.statsObject.Experience))
+                _monsterDropGen.GenerateItemPickup(e.GridPosition, e.statsObject.Experience);
         }
 
         // RESET PLAYER

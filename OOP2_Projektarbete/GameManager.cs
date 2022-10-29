@@ -30,7 +30,6 @@ namespace Skalm
         public string PlayerName { get; set; } = "";
         public bool NewGame { get; set; }
 
-
         // ANIMATION
         public Animator Animator { get; }
         #endregion
@@ -39,7 +38,6 @@ namespace Skalm
         private readonly int _updateFrequency;
         private readonly GameStateMachine _stateMachine;
         #endregion
-
 
         // CONSTRUCTOR I
         public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager, SceneManager sceneManager)
@@ -67,6 +65,7 @@ namespace Skalm
             sceneManager.Player.statsObject.OnDeath += GameOver;
         }
 
+        // HANDLE GAME OVER
         private void GameOver()
         {
             _stateMachine.ChangeState(EGameStates.GameStateGameOver);
