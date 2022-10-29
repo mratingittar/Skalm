@@ -13,6 +13,7 @@ namespace Skalm.GameObjects.Items
         private char _itemSprite;
         private ConsoleColor _itemColor;
 
+        // CONSTRUCTOR I
         public ItemSpawner(float baseModifier, char itemSprite, ConsoleColor itemColor, ItemGen itemGenerator)
         {
             _itemSprite = itemSprite;
@@ -21,11 +22,10 @@ namespace Skalm.GameObjects.Items
             _itemGen = itemGenerator;
         }
 
+        // SPAWN ITEM PICKUP
         public ItemPickup Spawn(Vector2Int position)
         {
             return new ItemPickup(position, _itemSprite, _itemColor, _itemGen.GetWeightedRandom(_scaledModifier));
         }
-
-
     }
 }
