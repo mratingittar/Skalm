@@ -3,6 +3,7 @@ using Skalm.GameObjects;
 using Skalm.GameObjects.Enemies;
 using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Items;
+using Skalm.GameObjects.Stats;
 using Skalm.Maps;
 using Skalm.Maps.Tiles;
 using Skalm.States.PlayerStates;
@@ -47,6 +48,7 @@ namespace Skalm
             Enemy.OnEnemyDeath += RemoveGameObject;
         }
 
+        // NEW GAME
         public void NewGame()
         {
             _potionSpawner.ScalingMultiplier = 0;
@@ -57,6 +59,7 @@ namespace Skalm
             InitializeScene();
         }
 
+        // INITIALIZE PLAYER
         public void InitializePlayer()
         {
             if (PlayerName.Length == 0)
@@ -67,6 +70,7 @@ namespace Skalm
             ActorsInScene.Add(Player);
         }
 
+        // NEXT LEVEL
         public void NextLevel()
         {
             _displayManager.Eraser.EraseAll();
@@ -85,6 +89,7 @@ namespace Skalm
             Player.PlayerStateMachine.ChangeState(EPlayerStates.PlayerStateMove);
         }
 
+        // INCREMENT SCALING
         private void IncrementScaling()
         {
             _itemSpawner.ScalingMultiplier++;
@@ -92,6 +97,7 @@ namespace Skalm
             _potionSpawner.ScalingMultiplier++;
         }
 
+        // RESET PLAYER
         public void ResetPlayer()
         {
             Player.SetPlayerPosition(_mapManager.MapGenerator.CurrentMap.PlayerSpawnPosition);

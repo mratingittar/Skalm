@@ -70,7 +70,7 @@ namespace Skalm.GameObjects.Stats
             double armorBase = statsDfn.statsArr[(int)EStats.Armor].GetValue();
 
             // LINEAR
-            int hardArmorRed = rng.Next(1, (int)Math.Ceiling(armorBase / 2));
+            int hardArmorRed = rng.Next(0, (int)Math.Ceiling(armorBase / 3));
             baseDamage -= hardArmorRed;
 
             // PERCENTAGES

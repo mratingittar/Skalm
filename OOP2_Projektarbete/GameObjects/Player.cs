@@ -1,4 +1,5 @@
 ﻿using Skalm.Display;
+using Skalm.GameObjects.Enemies;
 using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Items;
 using Skalm.GameObjects.Stats;
@@ -6,6 +7,7 @@ using Skalm.Maps;
 using Skalm.Maps.Tiles;
 using Skalm.States.PlayerStates;
 using Skalm.Structs;
+using Skalm.Utilities;
 
 namespace Skalm.GameObjects
 {
@@ -42,15 +44,38 @@ namespace Skalm.GameObjects
         // INITIALIZE PLAYER
         public void InitializePlayer(Vector2Int gridPosition, string playerName, char sprite, ConsoleColor color)
         {
+            // SET POSITION & MAP CHARACTERISTICS
             SetPlayerPosition(gridPosition);
             _sprite = sprite;
             _color = color;
 
+            // SET STATS OBJECT & INVENTORY
+            statsObject = GeneratePlayerStats(playerName, 15);
             statsObject.ResetHP();
             statsObject.name = playerName;
             _equipmentManager.ResetInventory();
 
+            // RESET PROGRESS
             _currentFloor = 0;
+        }
+
+        // GENERATE RANDOM PLAYER STATS OBJECT
+        private ActorStatsObject GeneratePlayerStats(string name, int startingHP, int statPoints = 40, int statMinimum = 3)
+        {
+            // PLAYER STATS OBJECT
+            StatsObject stats = new StatsObject(statMinimum, statMinimum, statMinimum, statMinimum, statMinimum, startingHP, 1, 1);
+
+            // RANDOMIZE STATS
+            int statTmp;
+            statPoints -= (statMinimum * 5);
+            for (int i = 0; i < statPoints; i++)
+            {
+                statTmp = Dice.rng.Next(0, 6);
+                stats.statsArr[statTmp].AddValue(1);
+            }
+
+            // CREATE & RETURN ACTOR STATS OBJECT
+            return new ActorStatsObject(stats, name, 0);
         }
 
         public void SetPlayerPosition(Vector2Int gridPosition) => GridPosition = gridPosition;
