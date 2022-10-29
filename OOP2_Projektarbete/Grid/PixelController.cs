@@ -47,18 +47,19 @@ namespace Skalm.Grid
 
             FindBorderPixels();
 
+            // MESSAGE SECTION
             Bounds message = FindConsoleBoundsOfSection("MessageSection");
             _messageConsole = new Bounds(new Vector2Int(message.StartXY.X + 2, message.StartXY.Y + 1), new Vector2Int(message.EndXY.X - 2, message.EndXY.Y - 1));
 
+            // STATS SECTION
             Bounds mainStats = FindConsoleBoundsOfSection("MainStatsSection");
             _mainStatsConsole = new Bounds(new Vector2Int(mainStats.StartXY.X + 2, mainStats.StartXY.Y + 1), new Vector2Int(mainStats.EndXY.X - 2, mainStats.EndXY.Y - 1));
 
+            // INVENTORY & OTHER STATS
             Bounds subStats = FindConsoleBoundsOfSection("SubStatsSection");
             _equipmentConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, subStats.StartXY.Y + 1), new Vector2Int(subStats.EndXY.X - 2, subStats.StartXY.Y + 11));
             _inventoryConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, _equipmentConsole.EndXY.Y + 2), new Vector2Int(subStats.EndXY.X - 2, subStats.EndXY.Y - 1));
         }
-
-
 
         // DISPLAY MESSAGE BOTTOM SECTION
         public void DisplayMessage(string msg, bool showMarker = false)
@@ -93,7 +94,7 @@ namespace Skalm.Grid
             row++;
             _printer.PrintFromPosition($"Experience:  {playerStats.Experience} / {playerStats.XpTarget}", row, column, _textColor);
             row++;
-            _printer.PrintFromPosition($"Hit points:  {playerStats.GetCurrentHP()} / {statsObject.statsArr[(int)EStats.HP].GetValue()}", row, column, _textColor);
+            _printer.PrintFromPosition($"Hit points:  {playerStats.GetCurrentHP()} / {playerStats.GetMaxHP()}", row, column, _textColor);
             row++;
             _printer.PrintFromPosition($"Armor: {statsObject.statsArr[(int)EStats.Armor].GetValue()}", row, column, _textColor);
             row++;
