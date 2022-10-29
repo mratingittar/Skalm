@@ -33,27 +33,27 @@ namespace Skalm.GameObjects.Stats
         // CALCULATE ATTACK DAMAGE METHOD
         public static DoDamage DamageCalc(StatsObject statsAtk, StatsObject statsDfn)
         {
-            float baseDamage = statsAtk.statsArr[(int)EStats.BaseDamage].GetValue();
+            double baseDamage = statsAtk.statsArr[(int)EStats.BaseDamage].GetValue();
             bool isCritical = false;
 
             // STRENGTH BONUS
-            float strBase = statsAtk.statsArr[(int)EStats.Strength].GetValue();
-            float dmgStrBonus = (int)Math.Round((float)strBase / 15);
+            double strBase = statsAtk.statsArr[(int)EStats.Strength].GetValue();
+            double dmgStrBonus = strBase / 15;
 
             // DEXTERITY BONUS
-            float dexBase = statsAtk.statsArr[(int)EStats.Dexterity].GetValue();
-            float dmgDexBonus = (int)Math.Round(dexBase / 20);
+            double dexBase = statsAtk.statsArr[(int)EStats.Dexterity].GetValue();
+            double dmgDexBonus = dexBase / 20;
 
             // LUCK BONUS
-            float lucBase = statsAtk.statsArr[(int)EStats.Luck].GetValue();
-            float dmgLucBonus = (int)Math.Round(lucBase / 10);
+            double lucBase = statsAtk.statsArr[(int)EStats.Luck].GetValue();
+            double dmgLucBonus = lucBase / 10;
 
             // ROLLS
-            int dmgRollsBonus = 1 + (int)Math.Max(dmgStrBonus, dmgDexBonus);
-            int dmgSidesBonus = 3 + (int)Math.Max(dmgStrBonus, dmgDexBonus);
+            int dmgRolls = 1 + (int)Math.Max(dmgStrBonus, dmgDexBonus);
+            int dmgSides = 4 + (int)Math.Max(dmgStrBonus, dmgDexBonus);
 
             // BASE DAMAGE ROLL
-            baseDamage += Dice.Rolls(dmgRollsBonus, dmgSidesBonus);
+            baseDamage += Dice.Rolls(dmgRolls, dmgSides);
 
             // CRITICAL HIT ROLL
             int critSides = 16 + (int)Math.Round(dmgLucBonus / 5);
@@ -62,12 +62,24 @@ namespace Skalm.GameObjects.Stats
             if (Dice.Chance(critMinRoll, critRolls, critSides))
             {
                 isCritical = true;
-                float critDmgMultiplier = 1 + (dexBase / 25) + (lucBase / 15);
-                baseDamage = (int)Math.Round(baseDamage * critDmgMultiplier);
+                double critDmgMultiplier = 1.5 + (dexBase / 25) + (lucBase / 15);
+                baseDamage = Math.Round(baseDamage * critDmgMultiplier);
             }
 
+            // ARMOR CALCULATIONS
+            double armorBase = statsDfn.statsArr[(int)EStats.Armor].GetValue();
+
+            // LINEAR
+            int hardArmorRed = rng.Next(1, (int)Math.Ceiling(armorBase / 2));
+            baseDamage -= hardArmorRed;
+
+            // PERCENTAGES
+            double baseArmorRed = 1 - (0.015625 * armorBase);
+            double extraArmorRed = 1 - (0.03125 * armorBase * (rng.NextDouble() + 0.00000001));
+            baseDamage *= (baseArmorRed * extraArmorRed);
+
             // CREATE DAMAGE OBJECT
-            return new DoDamage() { damage = baseDamage, originXY = Vector2Int.Zero, isCritical = isCritical };
+            return new DoDamage() { damage = Math.Max(1, (int)Math.Round(baseDamage)), originXY = Vector2Int.Zero, isCritical = isCritical };
         }
     }
 }
