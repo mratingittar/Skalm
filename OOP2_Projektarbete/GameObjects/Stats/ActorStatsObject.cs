@@ -24,7 +24,6 @@ namespace Skalm.GameObjects.Stats
         private int _xpTarget;
         private int _hpCurrent;
 
-
         public event Action? OnStatsChanged;
         public event Action? OnDeath;
 
@@ -36,7 +35,7 @@ namespace Skalm.GameObjects.Stats
             ResetHP();
             Experience = experience;
             Level = 1;
-            _xpTarget = 5;
+            _xpTarget = 15;
         }
 
         // RESET HP
@@ -50,7 +49,7 @@ namespace Skalm.GameObjects.Stats
         {
             float statsHP = stats.statsArr[(int)EStats.HP].GetValue();
             float statsCon = stats.statsArr[(int)EStats.Constitution].GetValue();
-            return (int)(statsHP + (statsCon * 2));
+            return (int)(statsHP + (statsCon * 1.33));
         }
 
         // GET CURRENT HP

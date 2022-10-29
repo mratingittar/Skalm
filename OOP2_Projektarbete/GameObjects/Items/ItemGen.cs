@@ -42,6 +42,12 @@ namespace Skalm.GameObjects.Items
             return GetRandomEquippable(modifier);
         }
 
+        // STATIC ITEM GENERATOR
+        public static ItemEquippable GetWeightedRandomEquippable(double bonusMod = 0.65, int eqSlot = -1)
+        {
+            return GetWeightedRandomEquippable(bonusMod, eqSlot);
+        }
+
         // GENERATE RANDOM EQUIPMENT
         private ItemEquippable GetRandomEquippable(float bonusMod = 0.65f, int eqSlot = -1)
         {

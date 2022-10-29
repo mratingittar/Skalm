@@ -53,14 +53,14 @@ namespace Skalm.GameObjects.Enemies
         {
             List<(float, (EStats, int))> statBonusList = new List<(float, (EStats, int))>
             {
-            (0.1f, (EStats.Strength, 1)),
-            (0.1f, (EStats.Dexterity, 1)),
-            (0.1f, (EStats.Constitution, 1)),
-            (0.1f, (EStats.Intelligence, 1)),
-            (0.1f, (EStats.Luck, 1)),
-            (0.1f, (EStats.HP, 2)),
-            (0.1f, (EStats.BaseDamage, 1)),
-            (0.1f, (EStats.Armor, 1))
+                (0.1f, (EStats.Strength, 1)),
+                (0.1f, (EStats.Dexterity, 1)),
+                (0.1f, (EStats.Constitution, 1)),
+                (0.1f, (EStats.Intelligence, 1)),
+                (0.1f, (EStats.Luck, 1)),
+                (0.1f, (EStats.HP, 2)),
+                (0.1f, (EStats.BaseDamage, 1)),
+                (0.1f, (EStats.Armor, 1))
             };
 
             // RANDOMIZE RPEFIX
@@ -84,7 +84,7 @@ namespace Skalm.GameObjects.Enemies
                 monsterStats.statsArr[(int)bonus.Item1].AddValue(bonus.Item2 * (float)(1 + (rng.NextDouble() * monsterPrefix.Item2 * 0.5)));
             }
 
-            return new ActorStatsObject(monsterStats, monsterName, (int)Math.Ceiling(monsterPrefix.Item2));
+            return new ActorStatsObject(monsterStats, monsterName, (int)Math.Ceiling(monsterPrefix.Item2 * 5));
         }
 
     }

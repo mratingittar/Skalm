@@ -55,6 +55,8 @@ namespace Skalm.GameObjects
             statsObject.name = playerName;
             _equipmentManager.ResetInventory();
 
+            statsObject.OnStatsChanged += UpdateStatDisplay;
+
             // RESET PROGRESS
             _currentFloor = 0;
         }

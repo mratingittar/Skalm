@@ -16,12 +16,12 @@ namespace Skalm.GameObjects.Stats
         public static bool ToHitCalc(StatsObject statsAtk, StatsObject statsDfn)
         {
             // DEXTERITY BONUS
-            float dexValue = statsAtk.statsArr[(int)EStats.Dexterity].GetValue();
-            float dexBonusToHit = dexValue / 10;
+            double dexValue = statsAtk.statsArr[(int)EStats.Dexterity].GetValue();
+            double dexBonusToHit = dexValue / 10;
 
             // LUCK BONUS
-            float lucValue = statsAtk.statsArr[(int)EStats.Luck].GetValue();
-            float lucBonusToHit = (int)Math.Round(lucValue / 15);
+            double lucValue = statsAtk.statsArr[(int)EStats.Luck].GetValue();
+            double lucBonusToHit = lucValue / 15;
 
             // TO HIT ROLLS
             int rollsTH = 1 + (int)Math.Round(dexBonusToHit + lucBonusToHit);
@@ -50,7 +50,7 @@ namespace Skalm.GameObjects.Stats
 
             // ROLLS
             int dmgRolls = 1 + (int)Math.Max(dmgStrBonus, dmgDexBonus);
-            int dmgSides = 4 + (int)Math.Max(dmgStrBonus, dmgDexBonus);
+            int dmgSides = 4 + (int)Math.Max(dmgStrBonus * 1.33, dmgDexBonus * 1.33);
 
             // BASE DAMAGE ROLL
             baseDamage += Dice.Rolls(dmgRolls, dmgSides);
@@ -69,11 +69,11 @@ namespace Skalm.GameObjects.Stats
             // ARMOR CALCULATIONS
             double armorBase = statsDfn.statsArr[(int)EStats.Armor].GetValue();
 
-            // LINEAR
-            int hardArmorRed = rng.Next(0, (int)Math.Ceiling(armorBase / 3));
+            // LINEAR DAMAGE REDUCTION
+            int hardArmorRed = rng.Next(0, (int)Math.Ceiling(armorBase / 3.5));
             baseDamage -= hardArmorRed;
 
-            // PERCENTAGES
+            // PERCENTILE DAMAGE REDUCTION
             double baseArmorRed = 1 - (0.015625 * armorBase);
             double extraArmorRed = 1 - (0.03125 * armorBase * (rng.NextDouble() + 0.00000001));
             baseDamage *= (baseArmorRed * extraArmorRed);

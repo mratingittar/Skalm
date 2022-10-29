@@ -109,6 +109,7 @@ namespace Skalm.Grid
             _printer.PrintFromPosition(floor, _mainStatsConsole.StartXY.Y, _mainStatsConsole.EndXY.X - floor.Length);
         }
 
+        // DISPLAY EQUIPMENT
         public void DisplayEquipment(EquipmentManager equipment)
         {
             _eraser.EraseArea(_equipmentConsole);
@@ -135,9 +136,9 @@ namespace Skalm.Grid
             _printer.PrintFromPosition($"Feet:       {equipment.equipArr[(int)EEqSlots.Feet].Name}", row, column, _textColor);
         }
 
+        // DISPLAY INVENTORY
         public void DisplayInventory(EquipmentManager equipment)
         {
-
             _eraser.EraseArea(_inventoryConsole);
 
             int column = _inventoryConsole.StartXY.X;
@@ -153,6 +154,7 @@ namespace Skalm.Grid
             PrintInventory(equipment.inventory.itemList, row, column, InventoryIndex);
         }
 
+        // PRINT INVENTORY
         private void PrintInventory(List<Item> items, int row, int column, int selectionIndex)
         {
             int inventoryPage = Math.Max((selectionIndex + InventoryRowsAvailable) / InventoryRowsAvailable, 1) - 1;
