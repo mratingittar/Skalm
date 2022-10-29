@@ -40,7 +40,18 @@ namespace Skalm.GameObjects.Stats
         }
 
         // RESET HP
-        public void ResetHP() => _hpCurrent = stats.statsArr[(int)EStats.HP].GetValue();
+        public void ResetHP()
+        {
+            _hpCurrent = GetMaxHP();
+        }
+
+        // GET MAX HP
+        public int GetMaxHP()
+        {
+            float statsHP = stats.statsArr[(int)EStats.HP].GetValue();
+            float statsCon = stats.statsArr[(int)EStats.Constitution].GetValue();
+            return (int)(statsHP + (statsCon * 2));
+        }
 
         // GET CURRENT HP
         public int GetCurrentHP() => _hpCurrent;
@@ -58,11 +69,12 @@ namespace Skalm.GameObjects.Stats
         public void HealDamage(int healAmount)
         {
             _hpCurrent += healAmount;
-            if (_hpCurrent > stats.statsArr[(int)EStats.HP].GetValue())
-                _hpCurrent = stats.statsArr[(int)EStats.HP].GetValue();
+            if (_hpCurrent > GetMaxHP())
+                _hpCurrent = GetMaxHP();
             OnStatsChanged?.Invoke();
         }
 
+        // INCREASE EXPERIENCE
         public void IncreaseExperience(int gain)
         {
             Experience += gain;
@@ -71,19 +83,20 @@ namespace Skalm.GameObjects.Stats
             OnStatsChanged?.Invoke();
         }
 
+        // HANDLE LEVEL UP
         private void LevelUp() 
         {
             Level++;
             Experience = Experience - _xpTarget;
-            _xpTarget += (int)(_xpTarget * 1.1f);
+            _xpTarget += (int)(_xpTarget * 1.75f);
             IncreaseRandomStat();
         }
 
+        // INCREASE RANDOM STAT
         private void IncreaseRandomStat()
         {
-            int stat = Dice.Roll(8) - 1;
+            int stat = Dice.Roll(5) - 1;
             stats.statsArr[stat].SetValue(stats.statsArr[stat].GetValue() + 2);
-
         }
 
         // HANDLE DEATH

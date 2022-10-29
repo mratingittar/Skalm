@@ -13,5 +13,6 @@ namespace Skalm.Structs
         public float damage;
         public Vector2Int originXY;
         public ActorStatsObject sender;
+        public bool isCritical;
     }
 }
