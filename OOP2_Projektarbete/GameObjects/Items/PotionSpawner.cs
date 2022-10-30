@@ -23,7 +23,7 @@ namespace Skalm.GameObjects.Items
         // SPAWN POTION
         public ItemPickup Spawn(Vector2Int position, float scalingMod = 1)
         {
-            return new ItemPickup(position, _potionSprite, _potionColor, GetRandomPotion(scalingMod));
+            return new ItemPickup(position, _potionSprite, _potionColor, GetRandomPotion(_scaledModifier * scalingMod));
         }
 
         // GET RANDOM POTION
