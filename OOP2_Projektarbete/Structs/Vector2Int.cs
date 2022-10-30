@@ -19,10 +19,8 @@ namespace Skalm.Structs
             this.Y = Math.Sign(this.Y);
         }
 
-        public Vector2Int Add(Vector2Int added)
-        {
-            return new Vector2Int(this.X + added.X, this.Y + added.Y);
-        }
+        public Vector2Int Add(Vector2Int added) => new Vector2Int(this.X + added.X, this.Y + added.Y);
+        public Vector2Int Remove(Vector2Int removed) => new Vector2Int(this.X - removed.X, this.Y - removed.Y);
 
         public static Vector2Int DirectionFromTo(Vector2Int start, Vector2Int end)
         {
