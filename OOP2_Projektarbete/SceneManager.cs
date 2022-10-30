@@ -3,6 +3,7 @@ using Skalm.GameObjects;
 using Skalm.GameObjects.Enemies;
 using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Items;
+using Skalm.GameObjects.Stats;
 using Skalm.Maps;
 using Skalm.Maps.Tiles;
 using Skalm.States.PlayerStates;
@@ -13,7 +14,6 @@ namespace Skalm
 {
     internal class SceneManager
     {
-
         public List<GameObject> GameObjectsInScene { get; }
         public List<Actor> ActorsInScene { get; }
         public Player Player { get; }
@@ -25,6 +25,7 @@ namespace Skalm
         private ItemSpawner _itemSpawner;
         private PotionSpawner _potionSpawner;
         private KeySpawner _keySpawner;
+        private MonsterItemDropGen _monsterDropGen;
         private ISettings _settings;
 
         // CONSTRUCTOR I
@@ -42,11 +43,14 @@ namespace Skalm
             _itemSpawner = itemSpawner;
             _potionSpawner = potionSpawner;
             _keySpawner = keySpawner;
+            _monsterDropGen = new MonsterItemDropGen(_itemSpawner, _potionSpawner, _keySpawner);
 
             ItemPickup.onItemPickup += RemoveGameObject;
+            Enemy.OnEnemyDeath += HandleItemDrop;
             Enemy.OnEnemyDeath += RemoveGameObject;
         }
 
+        // NEW GAME
         public void NewGame()
         {
             _potionSpawner.ScalingMultiplier = 0;
@@ -57,6 +61,7 @@ namespace Skalm
             InitializeScene();
         }
 
+        // INITIALIZE PLAYER
         public void InitializePlayer()
         {
             if (PlayerName.Length == 0)
@@ -67,6 +72,7 @@ namespace Skalm
             ActorsInScene.Add(Player);
         }
 
+        // NEXT LEVEL
         public void NextLevel()
         {
             _displayManager.Eraser.EraseAll();
@@ -85,6 +91,7 @@ namespace Skalm
             Player.PlayerStateMachine.ChangeState(EPlayerStates.PlayerStateMove);
         }
 
+        // INCREMENT SCALING
         private void IncrementScaling()
         {
             _itemSpawner.ScalingMultiplier++;
@@ -92,6 +99,14 @@ namespace Skalm
             _potionSpawner.ScalingMultiplier++;
         }
 
+        // HANDLE ITEM DROP ON DEATH
+        private void HandleItemDrop(Enemy e)
+        {
+            if (_monsterDropGen.DetermineItemDrop(e.statsObject.Experience))
+                _monsterDropGen.GenerateItemPickup(e.GridPosition, e.statsObject.Experience);
+        }
+
+        // RESET PLAYER
         public void ResetPlayer()
         {
             Player.SetPlayerPosition(_mapManager.MapGenerator.CurrentMap.PlayerSpawnPosition);

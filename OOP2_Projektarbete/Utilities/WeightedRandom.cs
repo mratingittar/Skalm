@@ -9,6 +9,8 @@ namespace Skalm.Utilities
     internal static class WeightedRandom
     {
         private static Random rng = new Random();
+
+        // GET WEIGHTED RANDOM ITEM FROM LIST
         public static T WeightedRandomFromList<T>(List<(float, T)> inList)
         {
             float sumTotal = 0;
@@ -37,6 +39,25 @@ namespace Skalm.Utilities
 
             // UGLY DEFAULT
             return inList[0].Item2;
+        }
+
+        // SCALE LIST WEIGHTS
+        public static List<(float, T)> ScaleListWeights<T>(List<(float, T)> inList, float scaleMod = 0.9f)
+        {
+            List<(float, T)> outList = new List<(float, T)>();
+            (float, T) tempItem;
+            float tempMod = scaleMod;
+
+            // SCALE WEIGHTS IN LIST
+            for (int i = 0; i < inList.Count; i++)
+            {
+                tempItem = inList[i];
+                tempItem.Item1 *= tempMod;
+                tempMod *= scaleMod;
+                outList.Add(tempItem);
+            }
+
+            return outList;
         }
     }
 }

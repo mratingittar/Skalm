@@ -10,6 +10,8 @@ namespace Skalm.GameObjects.Items
         private float _baseModifier;
         private char _potionSprite;
         private ConsoleColor _potionColor;
+
+        // CONSTRUCTOR I
         public PotionSpawner(float baseModifier, char potionSprite, ConsoleColor potionColor)
         {
             _baseModifier = baseModifier;
@@ -17,11 +19,13 @@ namespace Skalm.GameObjects.Items
             _potionColor = potionColor;
         }
 
+        // SPAWN POTION
         public ItemPickup Spawn(Vector2Int position)
         {
             return new ItemPickup(position, _potionSprite, _potionColor, GetRandomPotion());
         }
 
+        // GET RANDOM POTION
         private Potion GetRandomPotion()
         {
             Random rng = new Random();

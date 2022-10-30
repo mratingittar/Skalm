@@ -80,7 +80,7 @@ Grid2D<BaseTile> mapGrid = new Grid2D<BaseTile>(settings.MapWidth, settings.MapH
 MapManager mapManager = new MapManager(mapGrid, new MapGenerator(mapGrid, settings), new MapPrinter(mapGrid, displayManager.Printer));
 
 Player player = new Player(mapManager, displayManager, new AttackNormal(), 
-    new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 15, 1, 0), "Nameless", 0), "Nameless", Vector2Int.Zero);
+    new ActorStatsObject(new StatsObject(5, 5, 5, 5, 5, 15, 1, 1), "Nameless", 0), "Nameless", Vector2Int.Zero);
 SceneManager sceneManager = new SceneManager(settings, mapManager, displayManager, player, 
     new EnemySpawner(settings.BaseSpawningModifier, settings.EnemySprite, settings.EnemyColor, mapManager, player, new MonsterGen()), 
     new ItemSpawner(settings.BaseSpawningModifier, settings.ItemSprite, settings.ItemColor, new ItemGen()), 

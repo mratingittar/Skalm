@@ -9,6 +9,7 @@ namespace Skalm.GameObjects.Items
         private readonly Random rng = new Random();
         private List<(float, (string, float))> _materialBonusList;
 
+        // CONSTRUCTOR I
         public ItemGen()
         {
             _materialBonusList = new List<(float, (string, float))>
@@ -41,7 +42,6 @@ namespace Skalm.GameObjects.Items
             return GetRandomEquippable(modifier);
         }
 
-
         // GENERATE RANDOM EQUIPMENT
         private ItemEquippable GetRandomEquippable(float bonusMod = 0.65f, int eqSlot = -1)
         {
@@ -67,7 +67,6 @@ namespace Skalm.GameObjects.Items
             var hpBonus = (0.1f, (EStats.HP, 2));
             var dmgBonus = (0.1f, (EStats.BaseDamage, 1));
             var armBonus = (0.1f, (EStats.Armor, 1));
-
 
             // RANDOMIZE MATERIAL
             var itemMaterial = WeightedRandom.WeightedRandomFromList(_materialBonusList);

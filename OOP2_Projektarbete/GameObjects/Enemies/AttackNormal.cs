@@ -22,19 +22,28 @@ namespace Skalm.GameObjects.Enemies
                 damage.sender = statsAtk;
                 damage.originXY = Vector2Int.Zero;
 
+                // DEAL DAMAGE ON DEFENDER STATS OBJECT
                 statsDfn.TakeDamage(damage);
 
-                outputMsg = $"{statsAtk.name} hit {statsDfn.name}, dealing {damage.damage} damage! ";
+                // CREATE ATTACK MESSAGE
+                if (damage.isCritical)
+                    outputMsg += $"{statsAtk.name} deals a Critical Hit to {statsDfn.name}, dealing {damage.damage} damage!!! ";
+                else
+                    outputMsg += $"{statsAtk.name} hits {statsDfn.name}, dealing {damage.damage} damage! ";
+
+                // DISPLAY REMAINING HP
                 if (statsDfn.GetCurrentHP() > 0)
-                    outputMsg += $"{statsDfn.name} has {statsDfn.GetCurrentHP()}/{statsDfn.stats.statsArr[(int)EStats.HP].GetValue()} hp left...";
+                    outputMsg += $"{statsDfn.name} has {statsDfn.GetCurrentHP()}/{statsDfn.GetMaxHP()} hp left...";
                 else
                 {
+                    // CHECK FOR DEFENDER DEATH
                     outputMsg += $"{statsDfn.name} is dead.";
                     statsAtk.IncreaseExperience(statsDfn.Experience);
                 }
             }
             else
             {
+                // DISPLAY MISS MESSAGE
                 outputMsg = $"{statsAtk.name} missed {statsDfn.name}...";
             }
 
