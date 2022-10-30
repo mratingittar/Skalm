@@ -24,9 +24,9 @@ namespace Skalm.GameObjects.Items
         }
 
         // SPAWN ITEM PICKUP
-        public ItemPickup Spawn(Vector2Int position)
+        public ItemPickup Spawn(Vector2Int position, float scalingMod = 1)
         {
-            return new ItemPickup(position, _itemSprite, _itemColor, _itemGen.GetWeightedRandom(_scaledModifier));
+            return new ItemPickup(position, _itemSprite, _itemColor, _itemGen.GetWeightedRandom(_scaledModifier * scalingMod));
         }
 
         public ItemPickup Spawn(Vector2Int position, float experienceModifier)// <-- For monster drops, lacks implementation

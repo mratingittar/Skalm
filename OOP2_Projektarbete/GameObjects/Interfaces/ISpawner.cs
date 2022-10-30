@@ -4,6 +4,6 @@ namespace Skalm.GameObjects.Interfaces
 {
     internal interface ISpawner<out T>
     {
-        T Spawn(Vector2Int position);
+        T Spawn(Vector2Int position, float scalingMod = 1);
     }
 }
