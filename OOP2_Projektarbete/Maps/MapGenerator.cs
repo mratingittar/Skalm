@@ -2,6 +2,8 @@
 using Skalm.Maps.Tiles;
 using Skalm.Structs;
 using Skalm.Utilities;
+using Skalm.Utilities.MapGeneration;
+using System.Drawing;
 
 namespace Skalm.Maps
 {
@@ -243,6 +245,17 @@ namespace Skalm.Maps
                     || position.Y == _tileGrid.gridHeight - 1)
                     _tileGrid.SetGridObject(position, new WallTile(position, _settings.WallSprite));
             }
+        }
+
+        private void GenerateRandomMap(int size = 42, int roomSize = 8, int maxRooms = 8)
+        {
+            Bounds map = new Bounds(new Vector2Int(1, 1), new Vector2Int(size - 1, size - 1));
+            var BSPmap = BSPgen.BSPgeneration(map, roomSize, roomSize);
+            var roomPos = BSPgen.FindRoomCenters(BSPmap);
+            var maxMap = RoomGen.MaximumRoomsList(BSPmap);
+            var padMap = BSPgen.AddPaddingToBoundsList(maxMap, 2);
+            var rwMap = RoomGen.CreateRandomRoomsFromList(padMap, 0.65);
+            var connMap = BSPgen.ConnectAllRooms(rwMap, roomPos);
         }
     }
 }

@@ -17,9 +17,7 @@ namespace Skalm.Utilities.MapGeneration
             HashSet<Vector2Int> roomTiles = new HashSet<Vector2Int>();
 
             foreach (var bound in boundList)
-            {
                 roomTiles.UnionWith(CreateRandomRoom(bound, rwChance, fillRate));
-            }
 
             return roomTiles;
         }
