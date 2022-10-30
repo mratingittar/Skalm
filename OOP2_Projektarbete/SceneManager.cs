@@ -51,7 +51,7 @@ namespace Skalm
         }
 
         // NEW GAME
-        public void NewGame()
+        public void NewGame(GameManager gameManager)
         {
             _potionSpawner.ScalingMultiplier = 0;
             _enemySpawner.ScalingMultiplier = 0;
@@ -59,6 +59,8 @@ namespace Skalm
 
             InitializePlayer();
             InitializeScene();
+
+            Player.statsObject.OnDeath += gameManager.GameOver;
         }
 
         // INITIALIZE PLAYER
@@ -103,7 +105,7 @@ namespace Skalm
         private void HandleItemDrop(Enemy e)
         {
             if (_monsterDropGen.DetermineItemDrop(e.statsObject.Experience))
-                _monsterDropGen.GenerateItemPickup(e.GridPosition, e.statsObject.Experience);
+                GameObjectsInScene.Add(_monsterDropGen.GenerateItemPickup(e.GridPosition, e.statsObject.Experience));
         }
 
         // RESET PLAYER

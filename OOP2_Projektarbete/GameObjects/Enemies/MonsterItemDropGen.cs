@@ -28,13 +28,12 @@ namespace Skalm.GameObjects.Enemies
         // DETERMINE ITEM DROP TYPE
         public bool DetermineItemDrop(int monsterXP)
         {
-            return (rng.NextDouble() < 0.4);
+            return (rng.NextDouble() < 1);
         }
 
         // GENERATE ITEM PICKUP
-        public void GenerateItemPickup(Vector2Int posXY, int monsterXP, float difficultyMod = 1)
+        public ItemPickup GenerateItemPickup(Vector2Int posXY, int monsterXP, float difficultyMod = 1)
         {
-            Item item;
             // BASE ITEM DROP TYPE LIST
             List<(float, string)> itemTypeList = new List<(float, string)>
             {
@@ -52,21 +51,21 @@ namespace Skalm.GameObjects.Enemies
             // DROP ITEM OF DETERMINED TYPE
             switch (itemType)
             {
+                // POTION
                 case "potion":
-                    _potionSpawner.Spawn(posXY);
-                    break;
+                    return _potionSpawner.Spawn(posXY);
 
+                // KEY
                 case "key":
-                    _keySpawner.Spawn(posXY);
-                    break;
+                    return _keySpawner.Spawn(posXY);
 
+                // EQUIPMENT
                 case "equipment":
-                    _itemSpawner.Spawn(posXY);
-                    break;
+                    return _itemSpawner.Spawn(posXY);
 
+                // DEFAULT: POTION
                 default:
-                    _potionSpawner.Spawn(posXY);
-                    break;
+                    return _potionSpawner.Spawn(posXY);
             }
         }
     }
