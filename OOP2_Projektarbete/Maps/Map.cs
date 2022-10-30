@@ -26,7 +26,13 @@ namespace Skalm.Maps
             };
         }
 
-        public void SetMinKeyAmount(int keys) => ObjectsInMap[EMapObjects.Keys] = (keys, ObjectsInMap[EMapObjects.Keys].Item2);
+        public void SetMininumObjectCount(int enemies, int items, int keys, int potions)
+        {
+            ObjectsInMap[EMapObjects.Enemies] = (enemies, ObjectsInMap[EMapObjects.Enemies].Item2);
+            ObjectsInMap[EMapObjects.Items] = (items, ObjectsInMap[EMapObjects.Items].Item2);
+            ObjectsInMap[EMapObjects.Keys] = (keys, ObjectsInMap[EMapObjects.Keys].Item2);
+            ObjectsInMap[EMapObjects.Potions] = (potions, ObjectsInMap[EMapObjects.Potions].Item2);
+        }
 
         public void ResetMap()
         {

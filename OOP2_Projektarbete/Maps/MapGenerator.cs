@@ -18,9 +18,9 @@ namespace Skalm.Maps
         private int _mapIndex;
         private readonly ISettings _settings;
 
-        private const int _enemies = 5;
-        private const int _items = 5;
-        private const int _potions = 5;
+        private const int _tilesPerEnemy = 100;
+        private const int _tilesPerItem = 200;
+        private const int _tilesPerPotion = 150;
 
         public MapGenerator(Grid2D<BaseTile> tileGrid, ISettings settings)
         {
@@ -112,7 +112,7 @@ namespace Skalm.Maps
             Map starterMap = new Map(maps.First(), _settings.MapHeight, 1, 1, 1, 1);
             maps.RemoveAt(0);
 
-            maps.ForEach(x => _mapList.Add(new Map(x, _settings.MapHeight, _enemies, _items, 0, _potions)));
+            maps.ForEach(x => _mapList.Add(new Map(x, _settings.MapHeight, 5, 2, 0, 3)));
             
             RandomizeMaps();
 
@@ -204,7 +204,7 @@ namespace Skalm.Maps
             if (randomPlayerGoal)
                 map.GoalPosition = GetRandomFloorPosition();
 
-            map.SetMinKeyAmount(_doors.Count);
+            map.SetMininumObjectCount(_floorTiles.Count / _tilesPerEnemy, _floorTiles.Count / _tilesPerItem, _doors.Count, _floorTiles.Count / _tilesPerPotion);
 
             return map;
         }

@@ -3,19 +3,19 @@
   f fffffff                 fffffff f
   f f     f                 f     f f
   f f     f                 f fff f f
-  f f     f                 f fkf f f
-  f f   fff                 f fif f f
-  f f   d                   f fef f f
+  f f     f                 f fff f f
+  f f   fff                 f fff f f
+  f f   d                   f fff f f
   f f fffff fffff           f fff f f
   f f fffff fffff           f   f f f
-  fff ffiffdffeffdf         f fff f f
+  fff fffffdfffffdf         f fff f f
       fffff fffff f         f f   f f
       fffff fffff fff       f f   f f
           f   d     f       f f   f f
   fffffffff fffff   f       f f   f f
   f   fffff fffff   f       f f   f d
-  f g ffeff ffiff   f       f f   fkf
-  f f fffff fffff   f       f f   fef
+  f g fffff fffff   f       f f   fff
+  f f fffff fffff   f       f f   fff
   f f fffff fffff   f       f f   fff
   f f               f       f f
   f fffffffffffffffff       f fffffff
@@ -25,13 +25,13 @@
   f f           fffff       f fffffff
   f f           f           f f     f
   f fffffffdfff fdfff       f f fff f
-  f         fef   fkf       f f f f f
-  fffffffffdfkf   fff       f f f f f
+  f         fff   fff       f f f f f
+  fffffffffdfff   fff       f f f f f
                             f f f f f
                           fff f f f f
                           fff f f f f
 fffffffffffffffffffff fff fff f f fff
-ffiff           ffeff fff fff f d
+fffff           fffff fff fff f d
 fffff           fffffdfffffffdf fffff
-                ffiff           ffeif
+                fffff           fffff
                 fffff           fffff

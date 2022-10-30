@@ -1,29 +1,29 @@
 pffffffffffffff fffffff fffffff
-        fffffkf fffffff fffffff
-fffffffdfffffff fffifff fffifff
-f       fffifff fffefff fffefff
+        fffffff fffffff fffffff
+fffffffdfffffff fffffff fffffff
+f       fffffff fffffff fffffff
 f fffff fffffff fffffff fffffff
-f f   f fffffkf fffffff fffffff
+f f   f fffffff fffffff fffffff
 f f   f fffffff fffffffffffffff
 f f   f f             d     d
 f f   fff   fff fffffff fff f
-f f         fff fffkfff f f f
-f fffffffffdfiedfffffff f fff
+f f         fff fffffff f f f
+f fffffffffdfffdfffffff f fff
 f           fff fffffff f
 f           fff fffffff fffffff
-f               fffkfff fffifff
+f               fffffff fffffff
 fffffffdfffffff fffffff fffffff
-ffekiff       d d       d
+fffffff       d d       d
 fffffff fffffff fffffff fffffff
-        fffffff fffffff ffffkff
         fffffff fffffff fffffff
-        fffefff fffifff fffefff
         fffffff fffffff fffffff
-        fffffff fffffff ffffiff
+        fffffff fffffff fffffff
+        fffffff fffffff fffffff
+        fffffff fffffff fffffff
         fffffff fffffff fffffff
               d f     d f
               f f fffffff fffff
-              f f fkffeff f   f
+              f f fffffff f   f
               f f fffffff f g f
               f f         f f f
               f fffffffffffff f
