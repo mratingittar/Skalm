@@ -247,7 +247,7 @@ namespace Skalm.Maps
             }
         }
 
-        private void GenerateRandomMap(int size = 42, int roomSize = 8, int maxRooms = 8)
+        private void GenerateRandomMap(int size = 42, int roomSize = 9, int maxRooms = 8)
         {
             Bounds map = new Bounds(new Vector2Int(1, 1), new Vector2Int(size - 1, size - 1));
             var BSPmap = BSPgen.BSPgeneration(map, roomSize, roomSize);
@@ -256,6 +256,9 @@ namespace Skalm.Maps
             var padMap = BSPgen.AddPaddingToBoundsList(maxMap, 2);
             var rwMap = RoomGen.CreateRandomRoomsFromList(padMap, 0.65);
             var connMap = BSPgen.ConnectAllRooms(rwMap, roomPos);
+
+            var floorTiles = connMap.Item1;
+            var doorList2 = BSPgen.FindDoorsFromBoundsList(maxMap, floorTiles);
         }
     }
 }

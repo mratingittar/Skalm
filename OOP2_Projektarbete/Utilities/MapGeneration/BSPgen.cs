@@ -129,6 +129,65 @@ namespace Skalm.Utilities.MapGeneration
             return roomCenters;
         }
 
+        // CHECK NEIGHBORS 4-WAY
+        public static int CheckNeighbors4Way(Vector2Int pos, HashSet<Vector2Int> floorTiles)
+        {
+            int counter = 0;
+            if (floorTiles.Contains(pos.Add(Vector2Int.Up))) counter++;
+            if (floorTiles.Contains(pos.Add(Vector2Int.Down))) counter++;
+            if (floorTiles.Contains(pos.Add(Vector2Int.Right))) counter++;
+            if (floorTiles.Contains(pos.Add(Vector2Int.Left))) counter++;
+
+            return counter;
+        }
+
+        // FIND DOORS FROM BOUDNS LIST
+        public static HashSet<Vector2Int> FindDoorsFromBoundsList(List<Bounds> roomList, HashSet<Vector2Int> floorTiles)
+        {
+            HashSet<Vector2Int> result = new HashSet<Vector2Int>();
+            Vector2Int tempPos = Vector2Int.Zero;
+            int doorCounter = 0;
+
+            // LOOP THROUGH ALL BOUNDS
+            foreach (var bounds in roomList)
+            {
+                // HORIZONTAL EDGES
+                for (int i = bounds.StartXY.X; i < bounds.EndXY.X; i++)
+                {
+                    tempPos = new Vector2Int(i, bounds.StartXY.Y);
+                    if (floorTiles.Contains(tempPos)
+                    && (CheckNeighbors4Way(tempPos, floorTiles) <= 2)
+                    && (CheckNeighbors4Way(tempPos, result) <= 0))
+                        result.Add(tempPos);
+
+                    tempPos = new Vector2Int(i, bounds.EndXY.Y);
+                    if (floorTiles.Contains(tempPos)
+                    && (CheckNeighbors4Way(tempPos, floorTiles) <= 2)
+                    && (CheckNeighbors4Way(tempPos, result) <= 0))
+                        result.Add(tempPos);
+                }
+
+                // VERTICAL EDGES
+                for (int j = bounds.StartXY.Y; j < bounds.EndXY.Y; j++)
+                {
+                    tempPos = new Vector2Int(bounds.StartXY.X, j);
+                    if (floorTiles.Contains(tempPos)
+                    && (CheckNeighbors4Way(tempPos, floorTiles) <= 2)
+                    && (CheckNeighbors4Way(tempPos, result) <= 0))
+                        result.Add(tempPos);
+
+                    tempPos = new Vector2Int(bounds.EndXY.X, j);
+                    if (floorTiles.Contains(tempPos)
+                    && (CheckNeighbors4Way(tempPos, floorTiles) <= 2)
+                    && (CheckNeighbors4Way(tempPos, result) <= 0))
+                        result.Add(tempPos);
+                }
+            }
+
+            // RETURN DOOR POSITIONS
+            return result;
+        }
+
         // FIND BIGGEST ROOM
         public static int FindBiggestRoom(List<Bounds> boundsList)
         {
