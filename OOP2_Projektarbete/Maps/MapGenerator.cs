@@ -71,7 +71,9 @@ namespace Skalm.Maps
 
         public void CreateMap()
         {
-            CurrentMap = LoadMapIntoGrid(CurrentMap);
+            //CurrentMap = LoadMapIntoGrid(CurrentMap);
+            var randomMap = GenerateRandomMap();
+            LoadRandomMapIntoGrid(randomMap.Item1, randomMap.Item2);
             FindWalls();
             SetBorderFloorsAsWalls();
         }
@@ -247,7 +249,7 @@ namespace Skalm.Maps
             }
         }
 
-        private void GenerateRandomMap(int size = 42, int roomSize = 8, int maxRooms = 8)
+        private (HashSet<Vector2Int>,HashSet<Vector2Int>) GenerateRandomMap(int size = 42, int roomSize = 8, int maxRooms = 8)
         {
             Bounds map = new Bounds(new Vector2Int(1, 1), new Vector2Int(size - 1, size - 1));
             var BSPmap = BSPgen.BSPgeneration(map, roomSize, roomSize);
@@ -256,6 +258,20 @@ namespace Skalm.Maps
             var padMap = BSPgen.AddPaddingToBoundsList(maxMap, 2);
             var rwMap = RoomGen.CreateRandomRoomsFromList(padMap, 0.65);
             var connMap = BSPgen.ConnectAllRooms(rwMap, roomPos);
+            return connMap;
+        }
+
+        private void LoadRandomMapIntoGrid(HashSet<Vector2Int> floors, HashSet<Vector2Int> doors)
+        {
+            foreach (var floor in floors)
+            {
+                CreateFloorTile(floor.X, floor.Y);
+                FreeFloorTiles.Add(floor);
+            }
+            foreach (var door in doors)
+            {
+                CreateDoorTile(door.X, door.Y);
+            }
         }
     }
 }
