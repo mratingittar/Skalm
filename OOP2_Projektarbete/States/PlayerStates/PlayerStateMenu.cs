@@ -10,15 +10,18 @@ namespace Skalm.States.PlayerStates
     {
         private Player _player;
         private DisplayManager _displayManager;
+        private List<Item> _items;
 
         public PlayerStateMenu(Player player, DisplayManager displayManager)
         {
             _player = player;
             _displayManager = displayManager;
+            _items = new List<Item>();
         }
 
         public void Enter()
         {
+            _items = _player.EquipmentManager.inventory.itemList.Where(i => i is not Key).ToList();
             _displayManager.PixelGridController.InventoryIndex = 0;
             _player.UpdateInventoryDisplay();
             DescriptionAsMessage();
@@ -39,7 +42,7 @@ namespace Skalm.States.PlayerStates
                         _displayManager.PixelGridController.InventoryIndex--;
                     break;
                 case > 0:
-                    if (_displayManager.PixelGridController.InventoryIndex < _player.EquipmentManager.inventory.itemList.Count() - 1)
+                    if (_displayManager.PixelGridController.InventoryIndex < _items.Count() - 1)
                         _displayManager.PixelGridController.InventoryIndex++;
                     break;
             }
@@ -58,9 +61,9 @@ namespace Skalm.States.PlayerStates
 
         private void DescriptionAsMessage()
         {
-            if (_player.EquipmentManager.inventory.itemList.Count > 0 && _player.EquipmentManager.inventory.itemList.Count > _displayManager.PixelGridController.InventoryIndex)
-                _displayManager.DisplayInstantMessage(_player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex].Name + ". " +
-                    _player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex].Description + ".");
+            if (_items.Count > 0 && _items.Count > _displayManager.PixelGridController.InventoryIndex)
+                _displayManager.DisplayInstantMessage(_items[_displayManager.PixelGridController.InventoryIndex].Name + ". " +
+                    _items[_displayManager.PixelGridController.InventoryIndex].Description + ".");
             else
                 _displayManager.DisplayInstantMessage("Nothing to see here.");
         }
@@ -72,16 +75,16 @@ namespace Skalm.States.PlayerStates
                 case InputCommands.Default:
                     break;
                 case InputCommands.Confirm:
-                    if (_player.EquipmentManager.inventory.itemList.Count() > 0)
-                        UseSelectedItem(_player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex]);
+                    if (_items.Count() > 0)
+                        UseSelectedItem(_items[_displayManager.PixelGridController.InventoryIndex]);
                     break;
                 case InputCommands.Cancel:
                     _player.PlayerStateMachine.ChangeState(EPlayerStates.PlayerStateMove);
                     break;
                 case InputCommands.Interact:
-                    if (_player.EquipmentManager.inventory.itemList.Count() > 0)
+                    if (_items.Count() > 0)
                     {
-                        _player.EquipmentManager.inventory.RemoveItem(_player.EquipmentManager.inventory.itemList[_displayManager.PixelGridController.InventoryIndex]);
+                        _player.EquipmentManager.inventory.RemoveItem(_items[_displayManager.PixelGridController.InventoryIndex]);
                         _displayManager.PixelGridController.InventoryIndex = 0;
                         _player.UpdateInventoryDisplay();
                     }
@@ -97,7 +100,7 @@ namespace Skalm.States.PlayerStates
             if (forwards)
                 _displayManager.PixelGridController.InventoryIndex =
                     Math.Min(_displayManager.PixelGridController.InventoryIndex + _displayManager.PixelGridController.InventoryRowsAvailable,
-                    _player.EquipmentManager.inventory.itemList.Count() - 1);
+                    _items.Count() - 1);
             else
                 _displayManager.PixelGridController.InventoryIndex =
                     Math.Max(0,

@@ -77,7 +77,8 @@ namespace Skalm
             // INITIALIZE PLAYER STATS
             Player.InitializePlayer(_mapManager.MapGenerator.CurrentMap.PlayerSpawnPosition, PlayerName, _settings.PlayerSprite, _settings.PlayerColor);
 
-            // ADD POTIONS
+            // ADD STARTING EQUIPMENT
+            Player.AddItemToInventory(new Key());
             for (int i = 0; i < 3; i++)
                 Player.AddItemToInventory(_potionSpawner.GetItemPotion());
 
