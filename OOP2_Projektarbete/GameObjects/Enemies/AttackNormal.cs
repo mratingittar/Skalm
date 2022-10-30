@@ -37,7 +37,7 @@ namespace Skalm.GameObjects.Enemies
                 else
                 {
                     // CHECK FOR DEFENDER DEATH
-                    outputMsg += $"{statsDfn.name} is dead.";
+                    outputMsg += $"{statsDfn.name} is dead. +{statsDfn.Experience} xp";
                     statsAtk.IncreaseExperience(statsDfn.Experience);
                 }
             }

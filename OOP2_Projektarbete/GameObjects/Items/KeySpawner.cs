@@ -19,7 +19,7 @@ namespace Skalm.GameObjects.Items
             _keyColor = keyColor;
         }
 
-        public ItemPickup Spawn(Vector2Int position)
+        public ItemPickup Spawn(Vector2Int position, float scalingMod = 1)
         {
             return new ItemPickup(position, _keySprite, _keyColor, new Key());
         }

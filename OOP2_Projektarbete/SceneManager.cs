@@ -46,30 +46,42 @@ namespace Skalm
             _monsterDropGen = new MonsterItemDropGen(_itemSpawner, _potionSpawner, _keySpawner);
 
             ItemPickup.onItemPickup += RemoveGameObject;
-            Enemy.OnEnemyDeath += HandleItemDrop;
-            Enemy.OnEnemyDeath += RemoveGameObject;
+            Enemy.OnEnemyDeath += HandleEnemyDeath;
+            //Enemy.OnEnemyDeath += RemoveGameObject;
+            //Enemy.OnEnemyDeath += HandleItemDrop;
         }
 
         // NEW GAME
         public void NewGame(GameManager gameManager)
         {
+            // RESET DIFFICULTY SCALING
             _potionSpawner.ScalingMultiplier = 0;
             _enemySpawner.ScalingMultiplier = 0;
             _itemSpawner.ScalingMultiplier = 0;
 
+            // INITIALIZE PLAYER & GAME SCENE
             InitializePlayer();
             InitializeScene();
 
+            // SUBSCRIBE TO EVENTS
             Player.statsObject.OnDeath += gameManager.GameOver;
         }
 
         // INITIALIZE PLAYER
         public void InitializePlayer()
         {
+            // DETERMINE NAME
             if (PlayerName.Length == 0)
                 PlayerName = "Nameless";
 
+            // INITIALIZE PLAYER STATS
             Player.InitializePlayer(_mapManager.MapGenerator.CurrentMap.PlayerSpawnPosition, PlayerName, _settings.PlayerSprite, _settings.PlayerColor);
+
+            // ADD POTIONS
+            for (int i = 0; i < 3; i++)
+                Player.AddItemToInventory(_potionSpawner.GetItemPotion());
+
+            // ADD PLAYER TO SCENE VIEW
             GameObjectsInScene.Add(Player);
             ActorsInScene.Add(Player);
         }
@@ -101,11 +113,42 @@ namespace Skalm
             _potionSpawner.ScalingMultiplier++;
         }
 
+        // HANDLE ENEMY DEATH
+        private void HandleEnemyDeath(Enemy e)
+        {
+            RemoveGameObject(e);
+            HandleItemDrop(e);
+        }
+
         // HANDLE ITEM DROP ON DEATH
         private void HandleItemDrop(Enemy e)
         {
+            // CHECK DROP CHANCE
             if (_monsterDropGen.DetermineItemDrop(e.statsObject.Experience))
-                GameObjectsInScene.Add(_monsterDropGen.GenerateItemPickup(e.GridPosition, e.statsObject.Experience));
+            {
+                // GENERATE DROP
+                var itemDrop = _monsterDropGen.GenerateItemPickup(e.GridPosition, e.statsObject.Experience);
+
+                // CACHE TILE POSITION FOR REDRAW
+                PlaceObjectInScene(itemDrop);
+            }
+        }
+
+        // PLACE OBJECT IN SCENE AND DRAW IT
+        public void PlaceObjectInScene(GameObject obj)
+        {
+            // ADD TO SCENE LISTS
+            if (obj is Actor a)
+                ActorsInScene.Add(a);
+            GameObjectsInScene.Add(obj);
+
+            // GET GRID POSITION & ADD OBJECT TO TILE LIST
+            _mapManager.TileGrid.TryGetGridObject(obj.GridPosition, out BaseTile tile);
+            if (tile is IOccupiable o)
+                o.ObjectsOnTile.Push(obj);
+
+            // CACHE POSITION FOR REDRAW
+            _mapManager.MapPrinter.CacheUpdatedTile(obj.GridPosition);
         }
 
         // RESET PLAYER

@@ -23,9 +23,9 @@ namespace Skalm.GameObjects.Stats
             {
                 equipArr[i] = new ItemEquippable("-----", i, true);
             }
-
         }
 
+        // RESET INVENTORY
         public void ResetInventory()
         {
             inventory.itemList.Clear();

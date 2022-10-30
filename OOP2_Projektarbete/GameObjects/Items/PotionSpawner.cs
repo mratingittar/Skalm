@@ -1,5 +1,6 @@
 ﻿using Skalm.GameObjects.Interfaces;
 using Skalm.Structs;
+using Skalm.Utilities;
 
 namespace Skalm.GameObjects.Items
 {
@@ -19,32 +20,35 @@ namespace Skalm.GameObjects.Items
             _potionColor = potionColor;
         }
 
-        // SPAWN POTION
-        public ItemPickup Spawn(Vector2Int position)
-        {
-            return new ItemPickup(position, _potionSprite, _potionColor, GetRandomPotion());
-        }
+        // SPAWN POTION PICKUP
+        public ItemPickup Spawn(Vector2Int position, float scalingMod = 1) => new ItemPickup(position, _potionSprite, _potionColor, GetRandomPotion(scalingMod));
+
+        // GET POTION ITEM
+        public Potion GetItemPotion(float scalingMod = 1) => GetRandomPotion(scalingMod);
 
         // GET RANDOM POTION
-        private Potion GetRandomPotion()
+        private Potion GetRandomPotion(float scalingMod = 1)
         {
             Random rng = new Random();
-            int healAmount = 5;
+            int healAmount = 5 + rng.Next(0,6);
             int bonusCounter = 0;
-            float addHealChance = 0.75f;
+            float addHealChance = 0.8f * scalingMod;
             string potionName = "Potion of Healing";
+            int minRng, maxRng;
 
             // RANDOMIZE HEAL AMOUNT
             do
             {
                 bonusCounter++;
-                healAmount += rng.Next(1, 4);
+                minRng = Math.Max(1, (int)(1 * scalingMod));
+                maxRng = Math.Max(1, (int)(5 * scalingMod));
+                healAmount += rng.Next(minRng, maxRng);
                 addHealChance *= _scaledModifier;
             } while (rng.NextDouble() < addHealChance);
 
             // UPDATE ITEM NAME
-            if ((bonusCounter - 2) > 0)
-                potionName += $" +{bonusCounter - 2}";
+            if ((bonusCounter - 1) > 0)
+                potionName += $" +{bonusCounter - 1}";
 
             // CREATE & RETURN POTION
             return new Potion(potionName, healAmount);

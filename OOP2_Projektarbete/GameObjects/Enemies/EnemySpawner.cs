@@ -26,7 +26,7 @@ namespace Skalm.GameObjects.Enemies
             _monsterColor = monsterColor;
         }
 
-        public Enemy Spawn(Vector2Int gridPosition)
+        public Enemy Spawn(Vector2Int gridPosition, float scalingMod = 1)
         {
             return new Enemy(_mapManager, _player, new MovePathfinding(_mapManager, _player), new AttackNormal(), 
                 _monsterGen.GetWeightedRandom(_scaledModifier), gridPosition, _monsterSprite, _monsterColor);
