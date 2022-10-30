@@ -112,7 +112,7 @@ namespace Skalm.Maps
             Map starterMap = new Map(maps.First(), _settings.MapHeight, 1, 1, 1, 1);
             maps.RemoveAt(0);
 
-            maps.ForEach(x => _mapList.Add(new Map(x, _settings.MapHeight, 5, 2, 0, 3)));
+            maps.ForEach(m => _mapList.Add(new Map(m, _settings.MapHeight, 5, 2, 0, 3)));
             
             RandomizeMaps();
 

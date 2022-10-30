@@ -47,8 +47,6 @@ namespace Skalm
 
             ItemPickup.onItemPickup += RemoveGameObject;
             Enemy.OnEnemyDeath += HandleEnemyDeath;
-            //Enemy.OnEnemyDeath += RemoveGameObject;
-            //Enemy.OnEnemyDeath += HandleItemDrop;
         }
 
         // NEW GAME

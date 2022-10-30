@@ -1,5 +1,4 @@
-﻿using Skalm.GameObjects.Items;
-using Skalm.Structs;
+﻿using Skalm.Structs;
 
 namespace Skalm.Maps
 {
@@ -123,42 +122,44 @@ namespace Skalm.Maps
             int height = input.Length;
             int width = input.First().Length;
 
-            // Match width to limit
-            //if (width < limit)
-            //{
-            //    for (int i = 0; i < input.Length; i++)
-            //    {
-            //        input[i].PadRight(limit, ' ');
-            //    }
-            //}
-            //else 
             if (width > limit)
                 input = input.Select(s => s.Remove(limit)).ToArray();
 
-            // Match height to limit
-            //if (height < limit)
-            //{
-            //    for (int i = 0; i < limit - height; i++)
-            //    {
-            //        input = input.Append("".PadRight(limit)).ToArray();
-            //    }
-            //}
-            //else 
             if (height > limit)
                 input = input.Take(limit).ToArray();
+
+            if (width > height)
+            {
+                int difference = width - height;
+                int above = difference / 2;
+                int below = difference - above;
+
+                List<string> stringList = input.ToList();
+                for (int i = 0; i < above; i++)
+                {
+                    stringList.Insert(0, "".PadRight(width));
+                }
+
+                for (int i = 0; i < below; i++)
+                {
+                    stringList.Add("".PadRight(width));
+                }
+
+                input = stringList.ToArray();
+            }
+
+            if (height > width)
+            {
+                for (int i = 0; i < input.Length; i++)
+                {
+                    input[i] = input[i].PadLeft(height / 2 + input[i].Length / 2);
+                    input[i] = input[i].PadRight(height);
+                }
+            }
 
             return input;
         }
 
-        private string EmptyStringOfLength(int length)
-        {
-            string empty = "";
-            for (int i = 0; i < length; i++)
-            {
-                empty += " ";
-            }
-            return empty;
-        }
         private char[,] RotateCharMatrixClockwise(char[,] matrix, int n)
         {
             char[,] result = new char[n, n];
