@@ -66,6 +66,7 @@ namespace Skalm.GameObjects
 
         public void SetPlayerPosition(Vector2Int gridPosition) => GridPosition = gridPosition;
         public void NextFloor() => _currentFloor++;
+        public void AddItemToInventory(Item item) => _equipmentManager.AddItemToInventory(item);
 
         // UPDATE STATS DISPLAY
         public void UpdateStatDisplay() => OnPlayerStatsUpdated?.Invoke(statsObject, _currentFloor);

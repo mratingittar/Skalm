@@ -53,23 +53,34 @@ namespace Skalm
         // NEW GAME
         public void NewGame(GameManager gameManager)
         {
+            // RESET DIFFICULTY SCALING
             _potionSpawner.ScalingMultiplier = 0;
             _enemySpawner.ScalingMultiplier = 0;
             _itemSpawner.ScalingMultiplier = 0;
 
+            // INITIALIZE PLAYER & GAME SCENE
             InitializePlayer();
             InitializeScene();
 
+            // SUBSCRIBE TO EVENTS
             Player.statsObject.OnDeath += gameManager.GameOver;
         }
 
         // INITIALIZE PLAYER
         public void InitializePlayer()
         {
+            // DETERMINE NAME
             if (PlayerName.Length == 0)
                 PlayerName = "Nameless";
 
+            // INITIALIZE PLAYER STATS
             Player.InitializePlayer(_mapManager.MapGenerator.CurrentMap.PlayerSpawnPosition, PlayerName, _settings.PlayerSprite, _settings.PlayerColor);
+
+            // ADD POTIONS
+            for (int i = 0; i < 3; i++)
+                Player.AddItemToInventory(_potionSpawner.GetItemPotion());
+
+            // ADD PLAYER TO SCENE VIEW
             GameObjectsInScene.Add(Player);
             ActorsInScene.Add(Player);
         }
