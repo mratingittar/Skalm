@@ -61,15 +61,10 @@ namespace Skalm
             // STATE MACHINE & GAME STATES
             _stateMachine = new GameStateMachine(this, EGameStates.GameStateInitializing);
             _stateMachine.Initialize(EGameStates.GameStateInitializing);
-
-            sceneManager.Player.statsObject.OnDeath += GameOver;
         }
 
         // HANDLE GAME OVER
-        private void GameOver()
-        {
-            _stateMachine.ChangeState(EGameStates.GameStateGameOver);
-        }
+        public void GameOver() => _stateMachine.ChangeState(EGameStates.GameStateGameOver);
 
         // METHOD START STATE
         public void Start()

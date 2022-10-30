@@ -38,6 +38,9 @@ namespace Skalm.GameObjects
             // INVENTORY
             _equipmentManager = new EquipmentManager();
             _equipmentManager.inventory.OnInventoryChanged += UpdateInventoryDisplay;
+
+            // INITIALIZE PLAYER
+            InitializePlayer(gridPosition, name, sprite, color);
             statsObject.OnStatsChanged += UpdateStatDisplay;
         }
 
@@ -61,27 +64,17 @@ namespace Skalm.GameObjects
             _currentFloor = 0;
         }
 
-        // GENERATE RANDOM PLAYER STATS OBJECT
-        private ActorStatsObject GeneratePlayerStats(string name, int startingHP, int statPoints = 40, int statMinimum = 3)
-        {
-            // PLAYER STATS OBJECT
-            StatsObject stats = new StatsObject(statMinimum, statMinimum, statMinimum, statMinimum, statMinimum, startingHP, 1, 1);
-
-            // RANDOMIZE STATS
-            int statTmp;
-            statPoints -= (statMinimum * 5);
-            for (int i = 0; i < statPoints; i++)
-            {
-                statTmp = Dice.rng.Next(0, 6);
-                stats.statsArr[statTmp].AddValue(1);
-            }
-
-            // CREATE & RETURN ACTOR STATS OBJECT
-            return new ActorStatsObject(stats, name, 0);
-        }
-
         public void SetPlayerPosition(Vector2Int gridPosition) => GridPosition = gridPosition;
         public void NextFloor() => _currentFloor++;
+
+        // UPDATE STATS DISPLAY
+        public void UpdateStatDisplay() => OnPlayerStatsUpdated?.Invoke(statsObject, _currentFloor);
+
+        // UPDATE EQUIPMENT DISPLAY
+        public void UpdateEquipmentDisplay() => OnPlayerEquipmentUpdated?.Invoke(_equipmentManager);
+
+        // UPDATE INVENTORY DISPLAY
+        public void UpdateInventoryDisplay() => OnPlayerInventoryUpdated?.Invoke(_equipmentManager);
 
         // SEND STATS TO DISPLAY
         public void UpdateAllDisplays()
@@ -89,24 +82,6 @@ namespace Skalm.GameObjects
             UpdateStatDisplay();
             UpdateEquipmentDisplay();
             UpdateInventoryDisplay();
-        }
-
-        // UPDATE STATS DISPLAY
-        public void UpdateStatDisplay()
-        {
-            OnPlayerStatsUpdated?.Invoke(statsObject, _currentFloor);
-        }
-
-        // UPDATE EQUIPMENT DISPLAY
-        public void UpdateEquipmentDisplay()
-        {
-            OnPlayerEquipmentUpdated?.Invoke(_equipmentManager);
-        }
-
-        // UPDATE INVENTORY DISPLAY
-        public void UpdateInventoryDisplay()
-        {
-            OnPlayerInventoryUpdated?.Invoke(_equipmentManager);
         }
 
         // MOVE METHOD
@@ -143,6 +118,25 @@ namespace Skalm.GameObjects
                 _mapManager.MapPrinter.DrawSingleTile(neighbor.GridPosition);
                 OnPlayerTurn?.Invoke();
             }
+        }
+
+        // GENERATE RANDOM PLAYER STATS OBJECT
+        private ActorStatsObject GeneratePlayerStats(string name, int startingHP, int statPoints = 40, int statMinimum = 3)
+        {
+            // PLAYER STATS OBJECT
+            StatsObject stats = new StatsObject(statMinimum, statMinimum, statMinimum, statMinimum, statMinimum, startingHP, 1, 1);
+
+            // RANDOMIZE STATS
+            int statTmp;
+            statPoints -= (statMinimum * 5);
+            for (int i = 0; i < statPoints; i++)
+            {
+                statTmp = Dice.rng.Next(0, 6);
+                stats.statsArr[statTmp].AddValue(1);
+            }
+
+            // CREATE & RETURN ACTOR STATS OBJECT
+            return new ActorStatsObject(stats, name, 0);
         }
     }
 }
