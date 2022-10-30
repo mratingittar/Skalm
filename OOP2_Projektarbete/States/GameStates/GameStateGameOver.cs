@@ -16,6 +16,7 @@ namespace Skalm.States.GameStates
         private MapManager _mapManager;
         private Animator _animator;
 
+        // CONSTRUCTOR I
         public GameStateGameOver(GameManager gameManager)
         {
             _gameManager = gameManager;
@@ -27,6 +28,7 @@ namespace Skalm.States.GameStates
             _animator = gameManager.Animator;
         }
 
+        // ENTER STATE
         public void Enter()
         {
             _soundManager.PlayMusic(_soundManager.Tracks.Find(song => song.soundName == "Steel and Seething"));
@@ -36,12 +38,14 @@ namespace Skalm.States.GameStates
             _mapManager.MapGenerator.ResetMapGenerator();
         }
 
+        // EXIT STATE
         public void Exit()
         {
             _inputManager.OnInputCommand -= CommandInput;
             _displayManager.ClearMessageQueue();
         }
 
+        // COMMAND INPUT
         private void CommandInput(InputCommands command)
         {
             switch (command)
@@ -63,11 +67,13 @@ namespace Skalm.States.GameStates
             }
         }
 
+        // UPDATE DISPLAY
         public void UpdateDisplay()
         {
             _animator.LaughingSkull();
         }
 
+        // UPDATE LOGIC
         public void UpdateLogic()
         {
 

@@ -48,7 +48,7 @@ namespace Skalm.States.GameStates
 
                 // CREATE MAP
                 _mapManager.MapGenerator.CreateMap();
-                _sceneManager.NewGame();
+                _sceneManager.NewGame(_gameManager);
             }
 
             // DRAWING HUD & MAP
