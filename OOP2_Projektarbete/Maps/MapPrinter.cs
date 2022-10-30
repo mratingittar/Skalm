@@ -28,6 +28,7 @@ namespace Skalm.Maps
             _positionsToUpdate.Enqueue(newPos);
         }
 
+        // CACHE UPDATED TILE
         public void CacheUpdatedTile(Vector2Int position)
         {
             _positionsToUpdate.Enqueue(position);
@@ -54,6 +55,7 @@ namespace Skalm.Maps
             }
         }
 
+        // DEBUG PATH FINDER
         public void DebugPathfinder(Vector2Int position)
         {
             foreach (var pos in _tileGrid.GetPlanePositions(position))
@@ -68,6 +70,7 @@ namespace Skalm.Maps
             DrawSingleTile(gridPosition.X, gridPosition.Y);
         }
 
+        // DRAW SINGLE TILE OVERLOAD
         public void DrawSingleTile(int x, int y)
         {
             if (_tileGrid.TryGetGridObject(x, y, out BaseTile tile))

@@ -47,8 +47,8 @@ namespace Skalm.GameObjects.Items
             } while (rng.NextDouble() < addHealChance);
 
             // UPDATE ITEM NAME
-            if ((bonusCounter - 2) > 0)
-                potionName += $" +{bonusCounter - 2}";
+            if ((bonusCounter - 1) > 0)
+                potionName += $" +{bonusCounter - 1}";
 
             // CREATE & RETURN POTION
             return new Potion(potionName, healAmount);
