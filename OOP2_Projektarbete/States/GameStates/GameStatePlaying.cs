@@ -79,12 +79,10 @@ namespace Skalm.States.GameStates
         // UPDATE STATE LOGIC
         public void UpdateLogic()
         {
-            // NO ACTOR USES UPDATE FUNCTION!
-
-            //foreach (Actor actor in _sceneManager.ActorsInScene)
-            //{
-            //    actor.UpdateMain();
-            //}
+            foreach (Actor actor in _sceneManager.ActorsInScene)
+            {
+                actor.UpdateMain();
+            }
 
             if (_sceneManager.Player.GridPosition.Equals(_mapManager.MapGenerator.CurrentMap.GoalPosition))
                 _sceneManager.NextLevel();

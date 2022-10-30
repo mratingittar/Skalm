@@ -28,6 +28,9 @@ namespace Skalm.GameObjects
         private EquipmentManager _equipmentManager;
         private int _currentFloor;
 
+        private bool _statUpdateWaiting;
+        private bool _equipUpdateWaiting;
+        private bool _inventoryUpdateWaiting;
 
         // CONSTRUCTOR I
         public Player(MapManager mapManager, DisplayManager displayManager, IAttackComponent attack, ActorStatsObject statsObject, string name, Vector2Int gridPosition, char sprite = '@', ConsoleColor color = ConsoleColor.White) 
@@ -69,13 +72,13 @@ namespace Skalm.GameObjects
         public void AddItemToInventory(Item item) => _equipmentManager.AddItemToInventory(item);
 
         // UPDATE STATS DISPLAY
-        public void UpdateStatDisplay() => OnPlayerStatsUpdated?.Invoke(statsObject, _currentFloor);
+        public void UpdateStatDisplay() => _statUpdateWaiting = true;
 
         // UPDATE EQUIPMENT DISPLAY
-        public void UpdateEquipmentDisplay() => OnPlayerEquipmentUpdated?.Invoke(_equipmentManager);
+        public void UpdateEquipmentDisplay() => _equipUpdateWaiting = true;
 
         // UPDATE INVENTORY DISPLAY
-        public void UpdateInventoryDisplay() => OnPlayerInventoryUpdated?.Invoke(_equipmentManager);
+        public void UpdateInventoryDisplay() => _inventoryUpdateWaiting = true;
 
         // SEND STATS TO DISPLAY
         public void UpdateAllDisplays()
@@ -83,6 +86,27 @@ namespace Skalm.GameObjects
             UpdateStatDisplay();
             UpdateEquipmentDisplay();
             UpdateInventoryDisplay();
+        }
+
+        public override void UpdateMain()
+        {
+            if (_statUpdateWaiting)
+            {
+                OnPlayerStatsUpdated?.Invoke(statsObject, _currentFloor);
+                _statUpdateWaiting = false;
+            }
+
+            if (_equipUpdateWaiting)
+            {
+                OnPlayerEquipmentUpdated?.Invoke(_equipmentManager);
+                _equipUpdateWaiting = false;
+            }
+
+            if (_inventoryUpdateWaiting)
+            {
+                OnPlayerInventoryUpdated?.Invoke(_equipmentManager);
+                _inventoryUpdateWaiting = false;
+            }
         }
 
         // MOVE METHOD

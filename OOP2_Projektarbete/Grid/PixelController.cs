@@ -59,6 +59,8 @@ namespace Skalm.Grid
             Bounds subStats = FindConsoleBoundsOfSection("SubStatsSection");
             _equipmentConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, subStats.StartXY.Y + 1), new Vector2Int(subStats.EndXY.X - 2, subStats.StartXY.Y + 11));
             _inventoryConsole = new Bounds(new Vector2Int(subStats.StartXY.X + 2, _equipmentConsole.EndXY.Y + 2), new Vector2Int(subStats.EndXY.X - 2, subStats.EndXY.Y - 1));
+
+
         }
 
         // DISPLAY MESSAGE BOTTOM SECTION
@@ -73,7 +75,7 @@ namespace Skalm.Grid
         // DISPLAY STATS MAIN SECTION
         public void DisplayStats(ActorStatsObject playerStats, int currentFloor)
         {
-            ClearSection("MainStatsSection");            
+            ClearSection("MainStatsSection");
 
             string floor = $"Floor {currentFloor}";
 
@@ -148,10 +150,12 @@ namespace Skalm.Grid
             row++;
             _printer.PrintFromPosition("─────────", row, column, _textColor);
             row++;
-
-            InventoryRowsAvailable = _inventoryConsole.EndXY.Y - _inventoryConsole.StartXY.Y;
-
-            PrintInventory(equipment.inventory.itemList, row, column, InventoryIndex);
+            string keys = $"Keys: {equipment.inventory.Keys}";
+            _printer.PrintFromPosition(keys, row, column, _textColor);
+            row += 2;
+            InventoryRowsAvailable = _inventoryConsole.EndXY.Y - row;
+            var otherItems = equipment.inventory.itemList.Where(i => i is not Key).ToList();
+            PrintInventory(otherItems, row, column, InventoryIndex);
         }
 
         // PRINT INVENTORY
@@ -176,10 +180,10 @@ namespace Skalm.Grid
             else if (inventoryPage > 0 && items.Count() < InventoryRowsAvailable * (inventoryPage + 1))
             {
                 _printer.PrintFromPosition("◄ ... ", row, column, _textColor);
-                _eraser.EraseArea(new Bounds(new Vector2Int(column, row + 1), _inventoryConsole.EndXY));
+                _eraser.EraseArea(new Bounds(new Vector2Int(column, row + 1), new Vector2Int(_inventoryConsole.EndXY.X, _inventoryConsole.EndXY.Y + 1)));
             }
             else
-                _eraser.EraseArea(new Bounds(new Vector2Int(column, row), _inventoryConsole.EndXY));
+                _eraser.EraseArea(new Bounds(new Vector2Int(column, row), new Vector2Int(_inventoryConsole.EndXY.X, _inventoryConsole.EndXY.Y + 1)));
         }
 
         // PRINT WITHIN BOUNDS
