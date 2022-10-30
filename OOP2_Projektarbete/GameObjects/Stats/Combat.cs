@@ -17,11 +17,11 @@ namespace Skalm.GameObjects.Stats
         {
             // DEXTERITY BONUS
             double dexValue = statsAtk.statsArr[(int)EStats.Dexterity].GetValue();
-            double dexBonusToHit = dexValue / 10;
+            double dexBonusToHit = dexValue / 8;
 
             // LUCK BONUS
             double lucValue = statsAtk.statsArr[(int)EStats.Luck].GetValue();
-            double lucBonusToHit = lucValue / 15;
+            double lucBonusToHit = lucValue / 12;
 
             // TO HIT ROLLS
             int rollsTH = 1 + (int)Math.Round(dexBonusToHit + lucBonusToHit);
@@ -38,15 +38,15 @@ namespace Skalm.GameObjects.Stats
 
             // STRENGTH BONUS
             double strBase = statsAtk.statsArr[(int)EStats.Strength].GetValue();
-            double dmgStrBonus = strBase / 15;
+            double dmgStrBonus = strBase / 12;
 
             // DEXTERITY BONUS
             double dexBase = statsAtk.statsArr[(int)EStats.Dexterity].GetValue();
-            double dmgDexBonus = dexBase / 20;
+            double dmgDexBonus = dexBase / 16;
 
             // LUCK BONUS
             double lucBase = statsAtk.statsArr[(int)EStats.Luck].GetValue();
-            double dmgLucBonus = lucBase / 10;
+            double dmgLucBonus = lucBase / 8;
 
             // ROLLS
             int dmgRolls = 1 + (int)Math.Max(dmgStrBonus, dmgDexBonus);
@@ -56,13 +56,13 @@ namespace Skalm.GameObjects.Stats
             baseDamage += Dice.Rolls(dmgRolls, dmgSides);
 
             // CRITICAL HIT ROLL
-            int critSides = 16 + (int)Math.Round(dmgLucBonus / 5);
-            int critRolls = 1 + (int)(dmgDexBonus / 5) + (int)(dmgLucBonus / 5);
-            int critMinRoll = 16;
+            int critSides = 14 + (int)Math.Round(dmgLucBonus);
+            int critRolls = 1 + (int)((dmgDexBonus / 2.5) + (dmgLucBonus / 2.5));
+            int critMinRoll = 14;
             if (Dice.Chance(critMinRoll, critRolls, critSides))
             {
                 isCritical = true;
-                double critDmgMultiplier = 1.5 + (dexBase / 25) + (lucBase / 15);
+                double critDmgMultiplier = 1.75 + (dexBase / 25) + (lucBase / 15);
                 baseDamage = Math.Round(baseDamage * critDmgMultiplier);
             }
 
