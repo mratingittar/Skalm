@@ -90,7 +90,7 @@ namespace Skalm.GameObjects.Enemies
             }
 
             // XP VALUE
-            int xpValue = (int)Math.Ceiling(monsterPrefix.Item2 * 5);
+            int xpValue = (int)Math.Ceiling(monsterPrefix.Item2 * 3.5);
 
             return new ActorStatsObject(monsterStats, monsterName, xpValue);
         }

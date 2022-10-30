@@ -1,5 +1,6 @@
 ﻿using Skalm.GameObjects.Interfaces;
 using Skalm.Structs;
+using Skalm.Utilities;
 
 namespace Skalm.GameObjects.Items
 {
@@ -20,25 +21,25 @@ namespace Skalm.GameObjects.Items
         }
 
         // SPAWN POTION
-        public ItemPickup Spawn(Vector2Int position)
+        public ItemPickup Spawn(Vector2Int position, float scalingMod = 1)
         {
-            return new ItemPickup(position, _potionSprite, _potionColor, GetRandomPotion());
+            return new ItemPickup(position, _potionSprite, _potionColor, GetRandomPotion(scalingMod));
         }
 
         // GET RANDOM POTION
-        private Potion GetRandomPotion()
+        private Potion GetRandomPotion(float scalingMod = 1)
         {
             Random rng = new Random();
-            int healAmount = 5;
+            int healAmount = 5 + rng.Next(0,6);
             int bonusCounter = 0;
-            float addHealChance = 0.75f;
+            float addHealChance = 0.8f * scalingMod;
             string potionName = "Potion of Healing";
 
             // RANDOMIZE HEAL AMOUNT
             do
             {
                 bonusCounter++;
-                healAmount += rng.Next(1, 4);
+                healAmount += rng.Next((int)(1 * scalingMod), (int)(5 * scalingMod));
                 addHealChance *= _scaledModifier;
             } while (rng.NextDouble() < addHealChance);
 
