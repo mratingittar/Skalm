@@ -71,7 +71,9 @@ namespace Skalm.Maps
 
         public void CreateMap()
         {
-            CurrentMap = LoadMapIntoGrid(CurrentMap);
+            //CurrentMap = LoadMapIntoGrid(CurrentMap);
+            //var randomMap = GenerateRandomMap();
+            //LoadRandomMapIntoGrid(randomMap.Item1, randomMap.Item2);
             FindWalls();
             SetBorderFloorsAsWalls();
         }
@@ -259,6 +261,19 @@ namespace Skalm.Maps
 
             var floorTiles = connMap.Item1;
             var doorList2 = BSPgen.FindDoorsFromBoundsList(maxMap, floorTiles);
+        }
+
+        private void LoadRandomMapIntoGrid(HashSet<Vector2Int> floors, HashSet<Vector2Int> doors)
+        {
+            foreach (var floor in floors)
+            {
+                CreateFloorTile(floor.X, floor.Y);
+                FreeFloorTiles.Add(floor);
+            }
+            foreach (var door in doors)
+            {
+                CreateDoorTile(door.X, door.Y);
+            }
         }
     }
 }
