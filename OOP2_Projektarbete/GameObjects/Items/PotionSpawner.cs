@@ -1,12 +1,13 @@
 ﻿using Skalm.GameObjects.Interfaces;
 using Skalm.Structs;
+using Skalm.Utilities;
 
 namespace Skalm.GameObjects.Items
 {
     internal class PotionSpawner : ISpawner<ItemPickup>, IScalable
     {
         public float ScalingMultiplier { get; set; }
-        private float _scaledModifier => Math.Min(_baseModifier * (1 + 0.01f * ScalingMultiplier), 0.99f);
+        private float _scaledModifier => Calculations.SpawningScalingEquation(_baseModifier, ScalingMultiplier);
         private float _baseModifier;
         private char _potionSprite;
         private ConsoleColor _potionColor;

@@ -164,22 +164,12 @@ namespace Skalm
         // RESET OBJECTS IN SCENE
         public void ResetScene()
         {
-            foreach (GameObject go in GameObjectsInScene)
+            var objects = GameObjectsInScene.ToArray();
+            for (int i = 0; i < objects.Length; i++)
             {
-                if (_mapManager.TileGrid.TryGetGridObject(go.GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
-                    tileOcc.ObjectsOnTile.Clear();
+                RemoveGameObject(objects[i]);
             }
             GameObjectsInScene.Clear();
-
-            int actors = ActorsInScene.Count;
-            for (int i = 0; i < actors; i++)
-            {
-                if (_mapManager.TileGrid.TryGetGridObject(ActorsInScene[i].GridPosition, out BaseTile tile) && tile is IOccupiable tileOcc)
-                    tileOcc.ActorPresent = false;
-                if (ActorsInScene[i] is Enemy enemy)
-                    enemy.Remove();
-            }
-            ActorsInScene.Clear();
 
             _displayManager.ClearMessageQueue();
             _displayManager.ClearMessageSection();

@@ -1,5 +1,6 @@
 ﻿using Skalm.Display;
 using Skalm.Input;
+using Skalm.Maps;
 using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.Structs;
@@ -13,6 +14,7 @@ namespace Skalm.States.GameStates
         private SoundManager _soundManager;
         private InputManager _inputManager;
         private SceneManager _sceneManager;
+        private MapManager _mapManager;
 
         // CONSTRUCTOR I
         public GameStatePaused(GameManager gameManager)
@@ -22,6 +24,7 @@ namespace Skalm.States.GameStates
             _soundManager = gameManager.SoundManager;
             _inputManager = gameManager.InputManager;
             _sceneManager = gameManager.SceneManager;
+            _mapManager = gameManager.MapManager;
         }
 
         #region StateMachine Basics
@@ -89,6 +92,7 @@ namespace Skalm.States.GameStates
                     else if (item == "Exit")
                     {
                         _sceneManager.ResetScene();
+                        _mapManager.MapGenerator.ResetMapGenerator();
                         _gameManager.StateMachine.ChangeState(EGameStates.GameStateMainMenu);
                     }
                     break;

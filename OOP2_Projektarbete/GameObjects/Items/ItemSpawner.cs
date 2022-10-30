@@ -1,12 +1,13 @@
 ﻿using Skalm.GameObjects.Interfaces;
 using Skalm.Structs;
+using Skalm.Utilities;
 
 namespace Skalm.GameObjects.Items
 {
     internal class ItemSpawner : ISpawner<ItemPickup>, IScalable
     {
         public float ScalingMultiplier { get; set; }
-        private float _scaledModifier => Math.Min(_baseModifier * (1 + 0.01f * ScalingMultiplier), 0.99f);
+        private float _scaledModifier => Calculations.SpawningScalingEquation(_baseModifier, ScalingMultiplier);
         private float _baseModifier;
         private ItemGen _itemGen;
 
@@ -26,6 +27,11 @@ namespace Skalm.GameObjects.Items
         public ItemPickup Spawn(Vector2Int position)
         {
             return new ItemPickup(position, _itemSprite, _itemColor, _itemGen.GetWeightedRandom(_scaledModifier));
+        }
+
+        public ItemPickup Spawn(Vector2Int position, float experienceModifier)// <-- For monster drops, lacks implementation
+        {
+            return new ItemPickup(position, _itemSprite, _itemColor, _itemGen.GetWeightedRandom(_scaledModifier)); 
         }
     }
 }
