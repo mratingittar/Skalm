@@ -258,7 +258,7 @@ namespace Skalm.Maps
             var maxMap = RoomGen.MaximumRoomsList(BSPmap);
             var padMap = BSPgen.AddPaddingToBoundsList(maxMap, 2);
             var rwMap = RoomGen.CreateRandomRoomsFromList(padMap, 0.65);
-            var connMap = BSPgen.ConnectAllRooms(rwMap, roomPos);
+            var connMap = BSPgen.ConnectAllRooms(rwMap, roomPos, maxMap);
 
             var floorTiles = connMap.Item1;
             var doorList2 = BSPgen.FindDoorsFromBoundsList(maxMap, floorTiles);
