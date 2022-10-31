@@ -256,12 +256,16 @@ namespace Skalm.Maps
             var BSPmap = BSPgen.BSPgeneration(map, roomSize, roomSize);
             var roomPos = BSPgen.FindRoomCenters(BSPmap);
             var maxMap = RoomGen.MaximumRoomsList(BSPmap);
+            roomPos = MapGen.RemoveEmptyRoomCenters(maxMap, roomPos);
             var padMap = BSPgen.AddPaddingToBoundsList(maxMap, 2);
+            //var rwMap = RandomWalkGen.RandomWalkBoundsList(padMap);
             var rwMap = RoomGen.CreateRandomRoomsFromList(padMap, 0.65);
             var connMap = BSPgen.ConnectAllRooms(rwMap, roomPos, maxMap);
 
+            var doorList = connMap.Item2;
             var floorTiles = connMap.Item1;
-            var doorList2 = BSPgen.FindDoorsFromBoundsList(maxMap, floorTiles);
+            var doorList3 = MapGen.DoorCleaner(doorList, floorTiles);
+            //var doorList2 = BSPgen.FindDoorsFromBoundsList(maxMap, floorTiles);
         }
 
         private void LoadRandomMapIntoGrid(HashSet<Vector2Int> floors, HashSet<Vector2Int> doors)
