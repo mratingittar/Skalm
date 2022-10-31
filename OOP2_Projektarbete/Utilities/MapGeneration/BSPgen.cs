@@ -65,7 +65,7 @@ namespace Skalm.Utilities.MapGeneration
         // SPLIT SPACE VERTICAL
         private static void SplitVertically(int minW, Queue<Bounds> roomQueue, Bounds room, bool padding = true)
         {
-            int splitPad = padding ? (int)Math.Ceiling(room.Size.Width / 8f) : 0;
+            int splitPad = padding ? (int)Math.Ceiling(room.Size.Width / 7f) : 0;
 
             var WidthSplit = rng.Next(1 + splitPad, room.Size.Width + 1 - splitPad);
 
@@ -85,7 +85,7 @@ namespace Skalm.Utilities.MapGeneration
         // SPLIT SPACE HORIZONTALLY
         private static void SplitHorizontally(int minH, Queue<Bounds> roomQueue, Bounds room, bool padding = true)
         {
-            int splitPad = padding ? (int)Math.Ceiling(room.Size.Height / 8f) : 0;
+            int splitPad = padding ? (int)Math.Ceiling(room.Size.Height / 7f) : 0;
 
             var HeightSplit = rng.Next(1 + splitPad, room.Size.Height + 1 - splitPad);
 
@@ -110,6 +110,27 @@ namespace Skalm.Utilities.MapGeneration
             {
                 var startXY = new Vector2Int(bound.StartXY.X + padding, bound.StartXY.Y + padding);
                 var endXY = new Vector2Int(bound.EndXY.X - padding, bound.EndXY.Y - padding);
+
+                outList.Add(new Bounds(startXY, endXY));
+            }
+
+            return outList;
+        }
+
+        // ADD RANDOM PADDING TO BOUNDS LIST
+        public static List<Bounds> AddRandomPaddingToBoundsList(List<Bounds> inList, int padding = 2)
+        {
+            List<Bounds> outList = new List<Bounds>();
+            int paddingX1, paddingY1, paddingX2, paddingY2;
+            foreach (var bound in inList)
+            {
+                paddingX1 = rng.Next(0, padding);
+                paddingY1 = rng.Next(0, padding);
+                paddingX2 = rng.Next(0, padding);
+                paddingY2 = rng.Next(0, padding);
+
+                var startXY = new Vector2Int(bound.StartXY.X + paddingX1, bound.StartXY.Y + paddingY1);
+                var endXY = new Vector2Int(bound.EndXY.X - paddingX2, bound.EndXY.Y - paddingY2);
 
                 outList.Add(new Bounds(startXY, endXY));
             }
@@ -145,12 +166,12 @@ namespace Skalm.Utilities.MapGeneration
 
                 roomList.Remove(closest.Item1);
 
-                // MAKE SECOND CONNECTION?
+                // MAKE MORE CONNECTIONS?
                 var closest2 = FindClosestVector(currPos, roomList);
                 if (closest2.Item2 < dist * 1.75)
                 {
                     //tempResult = CorridorMaker(floorTiles, currPos, closest2.Item1);
-                    tempResult = CorridorMakerFindDoorsBounds(floorTiles, currPos, closest.Item1, boundsList);
+                    tempResult = CorridorMakerFindDoorsBounds(floorTiles, currPos, closest2.Item1, boundsList);
                     result.UnionWith(tempResult.Item1);
                     doors.UnionWith(tempResult.Item2);
                 }
@@ -496,6 +517,8 @@ namespace Skalm.Utilities.MapGeneration
         public static int CheckNeighbors8Way(Vector2Int pos, HashSet<Vector2Int> tiles)
         {
             int counter = 0;
+
+            if (tiles.Contains(pos)) counter++;
 
             if (tiles.Contains(pos.Add(Vector2Int.Up))) counter++;
             if (tiles.Contains(pos.Add(Vector2Int.Down))) counter++;

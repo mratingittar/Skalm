@@ -49,5 +49,21 @@ namespace Skalm.Utilities.MapGeneration
 
             return result;
         }
+
+        // FILL AROUND POINT
+        public static HashSet<Vector2Int> FillAroundPosition(Vector2Int pos, int steps = 1)
+        {
+            HashSet<Vector2Int> result = new HashSet<Vector2Int>();
+
+            for (int j = pos.Y - steps; j <= pos.Y + steps; j++)
+            {
+                for (int i = pos.X - steps; i <= pos.X + steps; i++)
+                {
+                    result.Add(new Vector2Int(i, j));
+                }
+            }
+
+            return result;
+        }
     }
 }

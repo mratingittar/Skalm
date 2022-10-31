@@ -24,9 +24,6 @@ namespace Skalm.Utilities.MapGeneration
         // GET RANDOM CARDINAL DIR
         public static Vector2Int Rnd4Dir() => cardinalDirs[rng.Next(0, cardinalDirs.Count)];
 
-        // INSIDE BOUNDS
-        public static bool InsideBounds(Bounds space, Vector2Int pos) => ((pos.X >= space.StartXY.X) && (pos.Y >= space.StartXY.Y) && (pos.X <= space.EndXY.X) && (pos.Y <= space.EndXY.Y));
-
         // CHANCE AROUND POINT
         public static double RandomAroundPoint(double point, double variance)
         {
@@ -39,7 +36,7 @@ namespace Skalm.Utilities.MapGeneration
         {
             HashSet<Vector2Int> floorTiles = new HashSet<Vector2Int>();
             foreach (var bound in boundsList)
-                floorTiles.UnionWith(RandomWalkBounds(bound, RandomAroundPoint(0.65, 0.15)));
+                floorTiles.UnionWith(RandomWalkBounds(bound, RandomAroundPoint(0.60, 0.15)));
 
             return floorTiles;
         }
@@ -78,5 +75,11 @@ namespace Skalm.Utilities.MapGeneration
             // RETURN FLOOR TILES
             return floorTiles;
         }
+
+        // INSIDE BOUNDS
+        public static bool InsideBounds(Bounds space, Vector2Int pos) => ((pos.X >= space.StartXY.X) && (pos.Y >= space.StartXY.Y) && (pos.X <= space.EndXY.X) && (pos.Y <= space.EndXY.Y));
+
+        // INSIDE BOUNDS 2
+        public static bool InsideBounds2(Bounds space, Vector2Int pos) => ((pos.X > space.StartXY.X) && (pos.Y > space.StartXY.Y) && (pos.X < space.EndXY.X) && (pos.Y < space.EndXY.Y));
     }
 }
