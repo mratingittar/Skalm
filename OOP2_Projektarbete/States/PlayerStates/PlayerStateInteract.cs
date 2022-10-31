@@ -64,6 +64,7 @@ namespace Skalm.States.PlayerStates
                     ExamineSameTile();
                     break;
                 case InputCommands.Inventory:
+                    _player.PlayerStateMachine.ChangeState(EPlayerStates.PlayerStateMove);
                     break;
             }
         }
