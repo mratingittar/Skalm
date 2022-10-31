@@ -2,6 +2,8 @@
 using Skalm.Maps.Tiles;
 using Skalm.Structs;
 using Skalm.Utilities;
+using Skalm.Utilities.MapGeneration;
+using System.Drawing;
 
 namespace Skalm.Maps
 {
@@ -69,7 +71,9 @@ namespace Skalm.Maps
 
         public void CreateMap()
         {
-            CurrentMap = LoadMapIntoGrid(CurrentMap);
+            //CurrentMap = LoadMapIntoGrid(CurrentMap);
+            //var randomMap = GenerateRandomMap();
+            //LoadRandomMapIntoGrid(randomMap.Item1, randomMap.Item2);
             FindWalls();
             SetBorderFloorsAsWalls();
         }
@@ -242,6 +246,59 @@ namespace Skalm.Maps
                     || position.Y == 0
                     || position.Y == _tileGrid.gridHeight - 1)
                     _tileGrid.SetGridObject(position, new WallTile(position, _settings.WallSprite));
+            }
+        }
+
+        // GENERATE MAP PROCEDURALLY
+        private void GenerateRandomMap(int size = 42, int roomSize = 9, int maxRooms = 8)
+        {
+            // BOUNDS FOR WHOLE MAP
+            Bounds map = new Bounds(new Vector2Int(1, 1), new Vector2Int(size - 1, size - 1));
+
+            // BINARY SPACE PARTITIONING OF MAP BOUNDS
+            var BSPmap = BSPgen.BSPgeneration(map, roomSize, roomSize);
+
+            // FIND EACH PARTITIONED ROOM CENTER POSITIONS
+            var roomPos = BSPgen.FindRoomCenters(BSPmap);
+
+            // LIMIT ROOMS TO CERTAIN MAXIMUM
+            var maxMap = RoomGen.MaximumRoomsList(BSPmap);
+
+            // REMOVE ROOM CENTERS FOR REMOVED ROOMS
+            roomPos = RoomGen.RemoveEmptyRoomCenters(maxMap, roomPos);
+
+            // PAD ALL ROOM BOUNDS = SMALLER ROOMS
+            var padMap = BSPgen.AddPaddingToBoundsList(maxMap, 2);
+            //var padMap = BSPgen.AddRandomPaddingToBoundsList(maxMap, 3);
+            //var rwMap = RandomWalkGen.RandomWalkBoundsList(padMap);
+
+            // CREATE ACTUAL ROOMS OF RANDOM TYPES, EXPORT TILES COLLECTION
+            var rwMap = RoomGen.CreateRandomRoomsFromList(padMap, 0.8);
+
+            // CONNECT ALL ROOMS WITH CORRIDORS AND FIND DOORS
+            var connMap = BSPgen.ConnectAllRooms(rwMap, roomPos, maxMap);
+            var doorList = connMap.Item2;
+            var floorTiles = connMap.Item1;
+
+            // MAKE SURE ALL ROOM CENTERS ARE 3x3 FLOOR
+            floorTiles.UnionWith(RoomGen.FillAroundRoomCenters(roomPos));
+
+            // TILE LISTS BY TYPE
+            var doorList3 = MapGen.DoorCleaner(doorList, floorTiles);
+            var doorList2 = BSPgen.FindDoorsFromBoundsList(maxMap, floorTiles);
+            var wallList = RoomGen.FindAllWalls(floorTiles);
+        }
+
+        private void LoadRandomMapIntoGrid(HashSet<Vector2Int> floors, HashSet<Vector2Int> doors)
+        {
+            foreach (var floor in floors)
+            {
+                CreateFloorTile(floor.X, floor.Y);
+                FreeFloorTiles.Add(floor);
+            }
+            foreach (var door in doors)
+            {
+                CreateDoorTile(door.X, door.Y);
             }
         }
     }
