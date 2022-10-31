@@ -249,6 +249,7 @@ namespace Skalm.Maps
             }
         }
 
+        // GENERATE MAP PROCEDURALLY
         private void GenerateRandomMap(int size = 42, int roomSize = 9, int maxRooms = 8)
         {
             Bounds map = new Bounds(new Vector2Int(1, 1), new Vector2Int(size - 1, size - 1));

@@ -217,24 +217,8 @@ namespace Skalm.Utilities.MapGeneration
             int stepsX = Math.Abs(startPos.X - endPos.X);
             int stepsY = Math.Abs(startPos.Y - endPos.Y);
 
-            Vector2Int moveDir = Vector2Int.Zero;
-
-            // DETERMINE STARTING MOVE DIRECTION
-            bool startVert = stepsY > stepsX;
-            if (startVert)
-            {
-                if (startPos.Y - endPos.Y > 0)
-                    moveDir = Vector2Int.Up;
-                else
-                    moveDir = Vector2Int.Down;
-            }
-            else
-            {
-                if (startPos.X - endPos.X > 0)
-                    moveDir = Vector2Int.Left;
-                else
-                    moveDir = Vector2Int.Right;
-            }
+            // FIND DIRECTION TO NEXT POINT
+            Vector2Int moveDir = FindDirection4Way(startPos, endPos);
 
             var newPos = startPos;
             var prevPos = startPos;
@@ -273,6 +257,35 @@ namespace Skalm.Utilities.MapGeneration
             return (result, doors);
         }
 
+        // FIND DIRECTION 4-WAY
+        public static Vector2Int FindDirection4Way(Vector2Int start, Vector2Int end)
+        {
+            // DETERMINE STEPS IN EACH DIRECTION
+            int stepsX = Math.Abs(start.X - end.X);
+            int stepsY = Math.Abs(start.Y - end.Y);
+
+            Vector2Int moveDir = Vector2Int.Zero;
+
+            // DETERMINE STARTING MOVE DIRECTION
+            bool startVert = stepsY > stepsX;
+            if (startVert)
+            {
+                if (start.Y - end.Y > 0)
+                    moveDir = Vector2Int.Up;
+                else
+                    moveDir = Vector2Int.Down;
+            }
+            else
+            {
+                if (start.X - end.X > 0)
+                    moveDir = Vector2Int.Left;
+                else
+                    moveDir = Vector2Int.Right;
+            }
+
+            return moveDir;
+        }
+
         // CONNECT ALL ROOMS
         public static (HashSet<Vector2Int>, HashSet<Vector2Int>) ConnectAllRooms(HashSet<Vector2Int> floorTiles, List<Vector2Int> roomPosList)
         {
@@ -289,7 +302,7 @@ namespace Skalm.Utilities.MapGeneration
                 var tempResult = CorridorMaker(floorTiles, currPos, closest);
                 result.UnionWith(tempResult.Item1);
                 doors.UnionWith(tempResult.Item2);
-                if (rng.NextDouble() < 0.5) roomList.Remove(currPos);
+                if (rng.NextDouble() < 1) roomList.Remove(currPos);
                 currPos = closest;
             }
 

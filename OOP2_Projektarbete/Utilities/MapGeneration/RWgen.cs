@@ -39,7 +39,7 @@ namespace Skalm.Utilities.MapGeneration
         {
             HashSet<Vector2Int> floorTiles = new HashSet<Vector2Int>();
             foreach (var bound in boundsList)
-                floorTiles.UnionWith(RandomWalkBounds(bound, RandomAroundPoint(0.60, 0.15)));
+                floorTiles.UnionWith(RandomWalkBounds(bound, RandomAroundPoint(0.65, 0.15)));
 
             return floorTiles;
         }
@@ -56,7 +56,7 @@ namespace Skalm.Utilities.MapGeneration
             var prevPos = startPos;
 
             // CALCULATE TOTAL STEPS
-            var steps = space.Size.Width * space.Size.Height * minFill;
+            int steps = (int)Math.Floor(space.Size.Width * space.Size.Height * minFill);
 
             // CONTINUE UNTIL STEPS EXHAUSTED
             while (steps > 0)
