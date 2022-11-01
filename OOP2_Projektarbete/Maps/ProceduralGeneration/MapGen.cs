@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Skalm.Utilities.MapGeneration
+namespace Skalm.Maps.ProceduralGeneration
 {
     internal static class MapGen
     {
@@ -43,7 +43,7 @@ namespace Skalm.Utilities.MapGeneration
             HashSet<Vector2Int> result = new HashSet<Vector2Int>(doorTiles);
             foreach (var door in doorTiles)
             {
-                if ((BSPgen.CheckNeighbors4Way(door, floorTiles) != 2) || (BSPgen.CheckNeighbors4Way(door, result) != 0))
+                if (BSPgen.CheckNeighbors4Way(door, floorTiles) != 2 || BSPgen.CheckNeighbors4Way(door, result) != 0)
                     result.Remove(door);
             }
 

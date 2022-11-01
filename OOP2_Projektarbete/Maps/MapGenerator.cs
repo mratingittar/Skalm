@@ -1,5 +1,6 @@
 ﻿using Skalm.GameObjects.Stats;
 using Skalm.Grid;
+using Skalm.Maps.ProceduralGeneration;
 using Skalm.Maps.Tiles;
 using Skalm.Structs;
 using Skalm.Utilities;
@@ -27,6 +28,7 @@ namespace Skalm.Maps
         private bool _useRandomMaps;
 
 
+        // CONSTRUCTOR I
         public MapGenerator(Grid2D<BaseTile> tileGrid, ISettings settings)
         {
             _tileGrid = tileGrid;
@@ -41,6 +43,7 @@ namespace Skalm.Maps
             _useRandomMaps = true;
         }
 
+        // GET RANDOM FLOOR POSITION
         public Vector2Int GetRandomFloorPosition()
         {
             if (FreeFloorTiles.Count == 0)
@@ -52,6 +55,7 @@ namespace Skalm.Maps
             return position;
         }
 
+        // GET NEIGHBORS
         public List<BaseTile> GetNeighbours(Vector2Int tile)
         {
             List<BaseTile> neighbors = new List<BaseTile>();
@@ -67,12 +71,14 @@ namespace Skalm.Maps
             return neighbors;
         }
 
+        // NEXT LEVEL
         public void NextLevel()
         {
             CurrentMap = _useRandomMaps ? GenerateRandomMap() : LoadNextStringMap();
             CreateMap();
         }
 
+        // CREATE MAP
         public void CreateMap()
         {
             if (_useRandomMaps)
@@ -88,6 +94,7 @@ namespace Skalm.Maps
                 SetBorderFloorsAsWalls();
         }
 
+        // RESET MAP GENERATOR
         public void ResetMapGenerator()
         {
             _mapIndex = 0;
@@ -97,6 +104,7 @@ namespace Skalm.Maps
             RandomizeMaps();
         }
 
+        // RANDOMIZE MAPS
         public void RandomizeMaps()
         {
             _mapList.Shuffle();
@@ -105,6 +113,7 @@ namespace Skalm.Maps
             _mapList.ForEach(m => m.DoorTiles.Clear());
         }
 
+        // RESET GRID
         public void ResetGrid()
         {
             _doors.Clear();
@@ -227,18 +236,21 @@ namespace Skalm.Maps
             return map;
         }
 
+        // CREATE DOOR TILE
         private void CreateDoorTile(int x, int y)
         {
             _tileGrid.SetGridObject(x, y, new DoorTile(new Vector2Int(x, y), _settings.DoorSpriteOpen, _settings.DoorSpriteClosed));
             _doors.Add(new Vector2Int(x, y));
         }
 
+        // CREATE FLOOR TILE
         private void CreateFloorTile(int x, int y)
         {
             _tileGrid.SetGridObject(x, y, new FloorTile(new Vector2Int(x, y), _settings.FloorSprite));
             _floorTiles.Add(new Vector2Int(x, y));
         }
 
+        // FIND WALLS
         private void FindWalls()
         {
             HashSet<Vector2Int> tiles = _floorTiles.Union(_doors).ToHashSet();
@@ -251,6 +263,7 @@ namespace Skalm.Maps
             }
         }
 
+        // SET BORDER FLOORS AS WALLS
         private void SetBorderFloorsAsWalls()
         {
             foreach (var position in FreeFloorTiles)

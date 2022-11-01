@@ -6,7 +6,7 @@ using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Skalm.Utilities.MapGeneration
+namespace Skalm.Maps.ProceduralGeneration
 {
     internal static class BSPgen
     {
@@ -23,7 +23,7 @@ namespace Skalm.Utilities.MapGeneration
             while (roomQueue.Count > 0)
             {
                 var room = roomQueue.Dequeue();
-                if ((room.Size.Height >= minH) && (room.Size.Width >= minW))
+                if (room.Size.Height >= minH && room.Size.Width >= minW)
                 {
                     if (rng.NextDouble() < 0.5f)
                     {
@@ -144,7 +144,6 @@ namespace Skalm.Utilities.MapGeneration
             HashSet<Vector2Int> result = new HashSet<Vector2Int>();
             HashSet<Vector2Int> doors = new HashSet<Vector2Int>();
             List<Vector2Int> roomList = new List<Vector2Int>();
-            List<Vector2Int> connectedList = new List<Vector2Int>();
 
             // COPY ROOM LIST
             foreach (var pos in roomPosList)
@@ -202,7 +201,7 @@ namespace Skalm.Utilities.MapGeneration
             {
                 v2 = new Vector2(posList[i].X, posList[i].Y);
                 temp = Vector2.Distance(v1, v2);
-                if ((temp != 0) && (temp < shortest.Item2))
+                if (temp != 0 && temp < shortest.Item2)
                     shortest = (i, temp);
             }
 
@@ -234,14 +233,14 @@ namespace Skalm.Utilities.MapGeneration
                 {
                     tempPos = new Vector2Int(i, bounds.StartXY.Y);
                     if (floorTiles.Contains(tempPos)
-                    && (CheckNeighbors4Way(tempPos, floorTiles) <= 2)
-                    && (CheckNeighbors4Way(tempPos, result) <= 0))
+                    && CheckNeighbors4Way(tempPos, floorTiles) <= 2
+                    && CheckNeighbors4Way(tempPos, result) <= 0)
                         result.Add(tempPos);
 
                     tempPos = new Vector2Int(i, bounds.EndXY.Y);
                     if (floorTiles.Contains(tempPos)
-                    && (CheckNeighbors4Way(tempPos, floorTiles) <= 2)
-                    && (CheckNeighbors4Way(tempPos, result) <= 0))
+                    && CheckNeighbors4Way(tempPos, floorTiles) <= 2
+                    && CheckNeighbors4Way(tempPos, result) <= 0)
                         result.Add(tempPos);
                 }
 
@@ -250,14 +249,14 @@ namespace Skalm.Utilities.MapGeneration
                 {
                     tempPos = new Vector2Int(bounds.StartXY.X, j);
                     if (floorTiles.Contains(tempPos)
-                    && (CheckNeighbors4Way(tempPos, floorTiles) <= 2)
-                    && (CheckNeighbors4Way(tempPos, result) <= 0))
+                    && CheckNeighbors4Way(tempPos, floorTiles) <= 2
+                    && CheckNeighbors4Way(tempPos, result) <= 0)
                         result.Add(tempPos);
 
                     tempPos = new Vector2Int(bounds.EndXY.X, j);
                     if (floorTiles.Contains(tempPos)
-                    && (CheckNeighbors4Way(tempPos, floorTiles) <= 2)
-                    && (CheckNeighbors4Way(tempPos, result) <= 0))
+                    && CheckNeighbors4Way(tempPos, floorTiles) <= 2
+                    && CheckNeighbors4Way(tempPos, result) <= 0)
                         result.Add(tempPos);
                 }
             }
@@ -307,7 +306,7 @@ namespace Skalm.Utilities.MapGeneration
 
             var newPos = startPos;
 
-            // CONTINUE WALKING WHILE NO STEP DIRECTION IS ZERO
+            // MAKE CORRIDOR IN CHOSEN DIRECTION OF SPECIFIED LENGTH
             var corridor = CorridorInDir(newPos, moveDir, counter);
 
             newPos = corridor.Item1;
@@ -317,7 +316,7 @@ namespace Skalm.Utilities.MapGeneration
             moveDir = Vector2Int.DirectionFromTo(newPos, endPos);
             counter = Math.Max(Math.Abs(newPos.X - endPos.X), Math.Abs(newPos.Y - endPos.Y));
 
-            // WALK UNTIL STEPS EMPTY
+            // MAKE CORRIDOR IN CHOSEN DIRECTION OF SPECIFIED LENGTH
             corridor = CorridorInDir(newPos, moveDir, counter);
 
             result.UnionWith(corridor.Item2);
@@ -382,10 +381,6 @@ namespace Skalm.Utilities.MapGeneration
                 result.Add(newPos);
 
                 steps--;
-
-                //MapGen.DrawAllTiles(floorTiles, '#', ConsoleColor.Gray);
-                //MapGen.DrawAllTiles(result, '#', ConsoleColor.Yellow, false);
-                //Console.ReadKey();
             }
 
             // RETURNS (LAST POSITION & CORRIDOR TILES)
@@ -415,19 +410,15 @@ namespace Skalm.Utilities.MapGeneration
 
                 // CHECK IF COORD CAN BE DOOR
                 var doorCheck = CoordinateOnBoundsEdgeList(boundsList, newPos);
-                if ((doorCheck.Item1)
-                    && (doorCount < 2)
-                    && (CheckNeighbors4Way(newPos, doorTiles) == 0)
-                    && (visitedRooms.Contains(doorCheck.Item2)))
+                if (doorCheck.Item1
+                    && doorCount < 2
+                    && CheckNeighbors4Way(newPos, doorTiles) == 0
+                    && visitedRooms.Contains(doorCheck.Item2))
                 {
                     doorTiles.Add(newPos);
                     visitedRooms.Remove(doorCheck.Item2);
                     doorCount++;
                 }
-
-                //MapGen.DrawAllTiles(floorTiles, '#', ConsoleColor.Gray);
-                //MapGen.DrawAllTiles(result, '#', ConsoleColor.Yellow, false);
-                //Console.ReadKey();
             }
 
             // RETURN (CORRIDOR TILES & DOOR TILES)
@@ -453,15 +444,15 @@ namespace Skalm.Utilities.MapGeneration
             // HORIZONTAL EDGE
             for (int i = bounds.StartXY.X; i <= bounds.EndXY.X; i++)
             {
-                if ((pos.X == i) && (pos.Y == bounds.StartXY.Y)) return true;
-                if ((pos.X == i) && (pos.Y == bounds.EndXY.Y)) return true;
+                if (pos.X == i && pos.Y == bounds.StartXY.Y) return true;
+                if (pos.X == i && pos.Y == bounds.EndXY.Y) return true;
             }
 
             // VERTICAL EDGE
             for (int j = bounds.StartXY.Y; j <= bounds.EndXY.Y; j++)
             {
-                if ((pos.X == bounds.StartXY.X) && (pos.Y == j)) return true;
-                if ((pos.X == bounds.EndXY.X) && (pos.Y == j)) return true;
+                if (pos.X == bounds.StartXY.X && pos.Y == j) return true;
+                if (pos.X == bounds.EndXY.X && pos.Y == j) return true;
             }
 
             return false;
