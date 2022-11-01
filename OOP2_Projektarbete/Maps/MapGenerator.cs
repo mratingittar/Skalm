@@ -212,8 +212,8 @@ namespace Skalm.Maps
                             break;
                         case 'g':
                             SetGoal(x + startX, y + startY);
-                            map.GoalPosition = new Vector2Int(x, y);
-                            _floorTiles.Add(new Vector2Int(x, y));
+                            map.GoalPosition = new Vector2Int(x + startX, y + startY);
+                            _floorTiles.Add(new Vector2Int(x + startX, y + startY));
                             randomPlayerGoal = false;
                             break;
                     }

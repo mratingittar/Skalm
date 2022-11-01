@@ -1,5 +1,4 @@
 ﻿using Skalm.Display;
-using Skalm.GameObjects.Enemies;
 using Skalm.GameObjects.Interfaces;
 using Skalm.GameObjects.Items;
 using Skalm.GameObjects.Stats;
