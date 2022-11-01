@@ -211,9 +211,9 @@ namespace Skalm.Maps
                             randomPlayerStart = false;
                             break;
                         case 'g':
-                            _tileGrid.SetGridObject(x + startX, y + startY, new FloorTile(new Vector2Int(x + startX, y + startY), _settings.GoalSprite, _settings.GoalColor, "stairs to the next floor"));
-                            _floorTiles.Add(new Vector2Int(x + startX, y + startY));
-                            map.GoalPosition = new Vector2Int(x + startX, y + startY);
+                            SetGoal(x + startX, y + startY);
+                            map.GoalPosition = new Vector2Int(x, y);
+                            _floorTiles.Add(new Vector2Int(x, y));
                             randomPlayerGoal = false;
                             break;
                     }
@@ -224,14 +224,24 @@ namespace Skalm.Maps
                 map.PlayerSpawnPosition = GetRandomFloorPosition();
 
             if (randomPlayerGoal)
+            {
                 map.GoalPosition = MapGen.FindFurthestVectorInList(map.PlayerSpawnPosition, FreeFloorTiles.ToList());
-            //GetRandomFloorPosition();
+                SetGoal(map.GoalPosition.X, map.GoalPosition.Y);
+            }
 
-            map.SetMininumObjectCount(_floorTiles.Count / _tilesPerEnemy, _floorTiles.Count / _tilesPerItem, _doors.Count, _floorTiles.Count / _tilesPerPotion);
+            map.SetMininumObjectCount(_floorTiles.Count / _tilesPerEnemy,
+                _floorTiles.Count / _tilesPerItem, _doors.Count, _floorTiles.Count / _tilesPerPotion);
             map.FloorTiles = _floorTiles;
             map.DoorTiles = _doors;
 
             return map;
+        }
+
+        private void SetGoal(int x, int y)
+        {
+            _tileGrid.SetGridObject(x, y, new FloorTile(
+              new Vector2Int(x, y), _settings.GoalSprite, _settings.GoalColor, "stairs to the next floor"));
+
         }
 
         // CREATE DOOR TILE
