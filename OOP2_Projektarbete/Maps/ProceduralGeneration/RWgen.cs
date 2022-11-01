@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Skalm.Utilities.MapGeneration
+namespace Skalm.Maps.ProceduralGeneration
 {
     // RANDOM WALK GENERATOR
     internal static class RWgen
@@ -27,7 +27,7 @@ namespace Skalm.Utilities.MapGeneration
         // CHANCE AROUND POINT
         public static double RandomAroundPoint(double point, double variance)
         {
-            double modifier = (rng.NextDouble() * variance * 2) - variance;
+            double modifier = rng.NextDouble() * variance * 2 - variance;
             return point + variance;
         }
 
@@ -47,7 +47,7 @@ namespace Skalm.Utilities.MapGeneration
             HashSet<Vector2Int> floorTiles = new HashSet<Vector2Int>();
 
             // START IN CENTER OF SPACE
-            var startPos = new Vector2Int(space.StartXY.X + (space.Size.Width / 2), space.StartXY.Y + (space.Size.Height / 2));
+            var startPos = new Vector2Int(space.StartXY.X + space.Size.Width / 2, space.StartXY.Y + space.Size.Height / 2);
 
             var newPos = startPos;
             var prevPos = startPos;
@@ -77,9 +77,9 @@ namespace Skalm.Utilities.MapGeneration
         }
 
         // INSIDE BOUNDS
-        public static bool InsideBounds(Bounds space, Vector2Int pos) => ((pos.X >= space.StartXY.X) && (pos.Y >= space.StartXY.Y) && (pos.X <= space.EndXY.X) && (pos.Y <= space.EndXY.Y));
+        public static bool InsideBounds(Bounds space, Vector2Int pos) => pos.X >= space.StartXY.X && pos.Y >= space.StartXY.Y && pos.X <= space.EndXY.X && pos.Y <= space.EndXY.Y;
 
         // INSIDE BOUNDS 2
-        public static bool InsideBounds2(Bounds space, Vector2Int pos) => ((pos.X > space.StartXY.X) && (pos.Y > space.StartXY.Y) && (pos.X < space.EndXY.X) && (pos.Y < space.EndXY.Y));
+        public static bool InsideBounds2(Bounds space, Vector2Int pos) => pos.X > space.StartXY.X && pos.Y > space.StartXY.Y && pos.X < space.EndXY.X && pos.Y < space.EndXY.Y;
     }
 }
