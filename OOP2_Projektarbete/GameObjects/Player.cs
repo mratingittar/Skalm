@@ -59,6 +59,7 @@ namespace Skalm.GameObjects
             statsObject.ResetHP();
             statsObject.name = playerName;
             _equipmentManager.ResetInventory();
+            _equipmentManager.inventory.Keys = 0;
 
             statsObject.OnStatsChanged += UpdateStatDisplay;
 
