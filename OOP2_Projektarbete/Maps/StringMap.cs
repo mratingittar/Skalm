@@ -2,17 +2,19 @@
 
 namespace Skalm.Maps
 {
-    internal class Map
+    internal class StringMap : IMap
     {
         public string[] MapString { get; private set; }
         public Dictionary<EMapObjects, (int, List<Vector2Int>)> ObjectsInMap { get; private set; }
+        public HashSet<Vector2Int> FloorTiles { get; set; }
+        public HashSet<Vector2Int> DoorTiles { get; set; }
         public Vector2Int PlayerSpawnPosition { get; set; }
         public Vector2Int GoalPosition { get; set; }
 
         private int _width => MapString.Select(s => s.Length).Max();
         private int _height => MapString.Length;
         private int _limit;
-        public Map(string[] mapString, int sizeLimit, int enemies, int items, int keys, int potions)
+        public StringMap(string[] mapString, int sizeLimit, int enemies, int items, int keys, int potions)
         {
             _limit = sizeLimit;
             MapString = PadStringsInArrayToEqualLength(mapString);
@@ -23,6 +25,8 @@ namespace Skalm.Maps
                 { EMapObjects.Keys, (keys,new List<Vector2Int>()) },
                 { EMapObjects.Potions, (potions,new List<Vector2Int>()) }
             };
+            FloorTiles = new HashSet<Vector2Int>();
+            DoorTiles = new HashSet<Vector2Int>();
         }
 
         public void SetMininumObjectCount(int enemies, int items, int keys, int potions)
@@ -39,6 +43,9 @@ namespace Skalm.Maps
             {
                 item.Value.Item2.Clear();
             }
+
+            FloorTiles.Clear();
+            DoorTiles.Clear();
         }
 
         public void RandomModification()

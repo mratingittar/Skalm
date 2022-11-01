@@ -1,28 +1,31 @@
-﻿using Skalm.Grid;
+﻿using Skalm.GameObjects.Stats;
+using Skalm.Grid;
 using Skalm.Maps.Tiles;
 using Skalm.Structs;
 using Skalm.Utilities;
 using Skalm.Utilities.MapGeneration;
-using System.Drawing;
 
 namespace Skalm.Maps
 {
     internal class MapGenerator
     {
+        private const int _tilesPerEnemy = 100;
+        private const int _tilesPerItem = 200;
+        private const int _tilesPerPotion = 150;
+
         public HashSet<Vector2Int> FreeFloorTiles { get; private set; }
-        public Map CurrentMap { get; private set; }
+        public IMap CurrentMap { get; private set; }
+        public bool UseRandomMaps { set => _useRandomMaps = value; }
 
         private HashSet<Vector2Int> _floorTiles;
         private HashSet<Vector2Int> _doors;
         private Grid2D<BaseTile> _tileGrid;
-        private List<Map> _mapList;
-        private Map _starterMap;
+        private List<StringMap> _mapList;
+        private StringMap _starterMap;
         private int _mapIndex;
         private readonly ISettings _settings;
+        private bool _useRandomMaps;
 
-        private const int _tilesPerEnemy = 100;
-        private const int _tilesPerItem = 200;
-        private const int _tilesPerPotion = 150;
 
         public MapGenerator(Grid2D<BaseTile> tileGrid, ISettings settings)
         {
@@ -33,8 +36,9 @@ namespace Skalm.Maps
             FreeFloorTiles = new HashSet<Vector2Int>();
 
             _mapIndex = 0;
-            _mapList = new List<Map>();
+            _mapList = new List<StringMap>();
             CurrentMap = _starterMap = LoadMapsFromFolder();
+            _useRandomMaps = true;
         }
 
         public Vector2Int GetRandomFloorPosition()
@@ -65,17 +69,23 @@ namespace Skalm.Maps
 
         public void NextLevel()
         {
-            CurrentMap = LoadNextMap();
+            CurrentMap = _useRandomMaps ? GenerateRandomMap() : LoadNextStringMap();
             CreateMap();
         }
 
         public void CreateMap()
         {
-            //CurrentMap = LoadMapIntoGrid(CurrentMap);
-            //var randomMap = GenerateRandomMap();
-            //LoadRandomMapIntoGrid(randomMap.Item1, randomMap.Item2);
-            FindWalls();
-            SetBorderFloorsAsWalls();
+            if (_useRandomMaps)
+            {
+                CurrentMap = GenerateRandomMap();
+                LoadRandomMapIntoGrid((RandomMap)CurrentMap);
+            }
+            else
+            {
+                CurrentMap = LoadStringMapIntoGrid((StringMap)CurrentMap);
+            }
+                FindWalls();
+                SetBorderFloorsAsWalls();
         }
 
         public void ResetMapGenerator()
@@ -91,6 +101,8 @@ namespace Skalm.Maps
         {
             _mapList.Shuffle();
             _mapList.ForEach(m => m.RandomModification());
+            _mapList.ForEach(m => m.FloorTiles.Clear());
+            _mapList.ForEach(m => m.DoorTiles.Clear());
         }
 
         public void ResetGrid()
@@ -108,22 +120,22 @@ namespace Skalm.Maps
             }
         }
 
-        private Map LoadMapsFromFolder()
+        private StringMap LoadMapsFromFolder()
         {
             if (!FileHandler.TryReadFolder("maps", out List<string[]> maps))
                 throw new Exception("No maps found in map folder!");
 
-            Map starterMap = new Map(maps.First(), _settings.MapHeight, 1, 1, 1, 1);
+            StringMap starterMap = new StringMap(maps.First(), _settings.MapHeight, 1, 1, 1, 1);
             maps.RemoveAt(0);
 
-            maps.ForEach(m => _mapList.Add(new Map(m, _settings.MapHeight, 5, 2, 0, 3)));
-            
+            maps.ForEach(m => _mapList.Add(new StringMap(m, _settings.MapHeight, 5, 2, 0, 3)));
+
             RandomizeMaps();
 
             return starterMap;
         }
 
-        private Map LoadNextMap()
+        private StringMap LoadNextStringMap()
         {
             if (_mapIndex >= _mapList.Count)
             {
@@ -131,12 +143,12 @@ namespace Skalm.Maps
                 RandomizeMaps();
             }
 
-            Map nextMap = _mapList[_mapIndex];
+            StringMap nextMap = _mapList[_mapIndex];
             _mapIndex++;
             return nextMap;
         }
 
-        private Map LoadMapIntoGrid(Map map)
+        private StringMap LoadStringMapIntoGrid(StringMap map)
         {
             bool randomPlayerStart = true;
             bool randomPlayerGoal = true;
@@ -209,6 +221,8 @@ namespace Skalm.Maps
                 map.GoalPosition = GetRandomFloorPosition();
 
             map.SetMininumObjectCount(_floorTiles.Count / _tilesPerEnemy, _floorTiles.Count / _tilesPerItem, _doors.Count, _floorTiles.Count / _tilesPerPotion);
+            map.FloorTiles = _floorTiles;
+            map.DoorTiles = _doors;
 
             return map;
         }
@@ -250,7 +264,7 @@ namespace Skalm.Maps
         }
 
         // GENERATE MAP PROCEDURALLY
-        private void GenerateRandomMap(int size = 42, int roomSize = 9, int maxRooms = 8)
+        private RandomMap GenerateRandomMap(int size = 42, int roomSize = 9, int maxRooms = 8)
         {
             // BOUNDS FOR WHOLE MAP
             Bounds map = new Bounds(new Vector2Int(1, 1), new Vector2Int(size - 1, size - 1));
@@ -287,19 +301,28 @@ namespace Skalm.Maps
             var doorList3 = MapGen.DoorCleaner(doorList, floorTiles);
             var doorList2 = BSPgen.FindDoorsFromBoundsList(maxMap, floorTiles);
             var wallList = RoomGen.FindAllWalls(floorTiles);
+
+            _floorTiles = floorTiles;
+            _doors = doorList3;
+            FreeFloorTiles = floorTiles;
+            RandomMap randomMap = new RandomMap(_floorTiles, _doors, _floorTiles.Count / _tilesPerEnemy, _floorTiles.Count / _tilesPerItem, _doors.Count, _floorTiles.Count / _tilesPerPotion);
+            randomMap.PlayerSpawnPosition = GetRandomFloorPosition();
+            randomMap.GoalPosition = GetRandomFloorPosition();
+            return randomMap;
         }
 
-        private void LoadRandomMapIntoGrid(HashSet<Vector2Int> floors, HashSet<Vector2Int> doors)
+        private void LoadRandomMapIntoGrid(RandomMap map)
         {
-            foreach (var floor in floors)
+            foreach (var floor in map.FloorTiles)
             {
                 CreateFloorTile(floor.X, floor.Y);
-                FreeFloorTiles.Add(floor);
             }
-            foreach (var door in doors)
+            foreach (var door in map.DoorTiles)
             {
                 CreateDoorTile(door.X, door.Y);
             }
+            _tileGrid.SetGridObject(map.GoalPosition, new FloorTile(map.GoalPosition, _settings.GoalSprite, _settings.GoalColor, "stairs to the next floor"));
+
         }
     }
 }

@@ -171,7 +171,7 @@ namespace Skalm
         }
 
         // SPAWN OBJECTS IN SCENE
-        private void SpawnObjects(Map map, EMapObjects objectType, ISpawner<GameObject> spawner)
+        private void SpawnObjects(IMap map, EMapObjects objectType, ISpawner<GameObject> spawner)
         {
             int minimum = map.ObjectsInMap[objectType].Item1;
             foreach (Vector2Int position in map.ObjectsInMap[objectType].Item2)
