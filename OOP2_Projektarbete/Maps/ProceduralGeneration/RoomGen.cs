@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Skalm.Utilities.MapGeneration
+namespace Skalm.Maps.ProceduralGeneration
 {
     internal static class RoomGen
     {
@@ -28,8 +28,6 @@ namespace Skalm.Utilities.MapGeneration
         // CREATE RANDOM ROOM AT BOUNDS
         public static HashSet<Vector2Int> CreateRandomRoom(Bounds space, double rwChance = 0.75, double fillRate = 0.65)
         {
-            HashSet<Vector2Int> room = new HashSet<Vector2Int>();
-
             if (rng.NextDouble() < rwChance)
                 return RWgen.RandomWalkBounds(space, fillRate);
             else
@@ -46,8 +44,8 @@ namespace Skalm.Utilities.MapGeneration
             int endX2 = space.EndXY.X - rng.Next(0, 2);
             int endY2 = space.EndXY.Y - rng.Next(0, 2);
 
-            bool noCorners = (rng.NextDouble() < 0.5);
-            bool pillars = (rng.NextDouble() < 0.5);
+            bool noCorners = rng.NextDouble() < 0.5;
+            bool pillars = rng.NextDouble() < 0.5;
 
             // FILL WHOLE ROOM SPACE
             for (int j = startY1; j <= endY2; j++)
@@ -84,10 +82,7 @@ namespace Skalm.Utilities.MapGeneration
         public static List<Bounds> MaximumRoomsList(List<Bounds> boundList, int maxRooms = 8)
         {
             while (boundList.Count > maxRooms)
-            {
-                int remove = rng.Next(0, boundList.Count);
-                boundList.RemoveAt(remove);
-            }
+                boundList.RemoveAt(rng.Next(0, boundList.Count));
 
             return boundList;
         }
@@ -97,9 +92,7 @@ namespace Skalm.Utilities.MapGeneration
         {
             HashSet<Vector2Int> result = new HashSet<Vector2Int>();
             foreach (var pos in roomCenters)
-            {
                 result.UnionWith(MapGen.FillAroundPosition(pos, steps));
-            }
 
             return result;
         }
@@ -142,7 +135,7 @@ namespace Skalm.Utilities.MapGeneration
                 for (int i = 1; i < floorTiles.Count; i++)
                 {
                     v = new Vector2Int(i, j);
-                    if ((!floorTiles.Contains(v)) && (BSPgen.CheckNeighbors8Way(v, floorTiles) > 0))
+                    if (!floorTiles.Contains(v) && BSPgen.CheckNeighbors8Way(v, floorTiles) > 0)
                         walls.Add(v);
                 }
             }
