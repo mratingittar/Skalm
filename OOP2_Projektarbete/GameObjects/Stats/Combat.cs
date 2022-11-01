@@ -34,6 +34,7 @@ namespace Skalm.GameObjects.Stats
         public static DoDamage DamageCalc(StatsObject statsAtk, StatsObject statsDfn)
         {
             double baseDamage = statsAtk.statsArr[(int)EStats.BaseDamage].GetValue();
+            baseDamage = (Math.Ceiling((baseDamage * 0.33) + (baseDamage * 0.67 * rng.NextDouble())));
             bool isCritical = false;
 
             // STRENGTH BONUS
@@ -56,13 +57,13 @@ namespace Skalm.GameObjects.Stats
             baseDamage += Dice.Rolls(dmgRolls, dmgSides);
 
             // CRITICAL HIT ROLL
-            int critSides = 14 + (int)Math.Round(dmgLucBonus);
-            int critRolls = 1 + (int)((dmgDexBonus / 2.5) + (dmgLucBonus / 2.5));
-            int critMinRoll = 14;
+            int critSides = 16 + (int)Math.Round(rng.NextDouble() * (lucBase / 10));
+            int critRolls = 1 + (int)(rng.NextDouble() * ((dexBase / 20) + (lucBase / 15)));
+            int critMinRoll = 16;
             if (Dice.Chance(critMinRoll, critRolls, critSides))
             {
                 isCritical = true;
-                double critDmgMultiplier = 1.75 + (dexBase / 25) + (lucBase / 15);
+                double critDmgMultiplier = 1.5 + (dexBase / 30) + (lucBase / 20);
                 baseDamage = Math.Round(baseDamage * critDmgMultiplier);
             }
 

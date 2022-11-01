@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -64,6 +65,24 @@ namespace Skalm.Maps.ProceduralGeneration
             }
 
             return result;
+        }
+
+        // FIND FURTHEST VECTOR IN LIST
+        public static Vector2Int FindFurthestVectorInList(Vector2Int origin, List<Vector2Int> posList)
+        {
+            (int, double) furthest = (0, 0);
+            double temp;
+            Vector2 v1 = new Vector2(origin.X, origin.Y);
+            Vector2 v2;
+            for (int i = 0; i < posList.Count; i++)
+            {
+                v2 = new Vector2(posList[i].X, posList[i].Y);
+                temp = Vector2.Distance(v1, v2);
+                if (temp != 0 && temp > furthest.Item2)
+                    furthest = (i, temp);
+            }
+
+            return posList[furthest.Item1];
         }
     }
 }
