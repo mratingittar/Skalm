@@ -1,5 +1,4 @@
-﻿using Skalm.GameObjects.Stats;
-using Skalm.Grid;
+﻿using Skalm.Grid;
 using Skalm.Maps.ProceduralGeneration;
 using Skalm.Maps.Tiles;
 using Skalm.Structs;
@@ -39,7 +38,6 @@ namespace Skalm.Maps
             _mapIndex = 0;
             _mapList = new List<StringMap>();
             CurrentMap = _starterMap = LoadMapsFromFolder();
-            _useRandomMaps = true;
         }
 
         // GET RANDOM FLOOR POSITION
@@ -89,8 +87,8 @@ namespace Skalm.Maps
             {
                 CurrentMap = LoadStringMapIntoGrid((StringMap)CurrentMap);
             }
-                FindWalls();
-                SetBorderFloorsAsWalls();
+            FindWalls();
+            SetBorderFloorsAsWalls();
         }
 
         // RESET MAP GENERATOR
@@ -226,7 +224,8 @@ namespace Skalm.Maps
                 map.PlayerSpawnPosition = GetRandomFloorPosition();
 
             if (randomPlayerGoal)
-                map.GoalPosition = GetRandomFloorPosition();
+                map.GoalPosition = MapGen.FindFurthestVectorInList(map.PlayerSpawnPosition, FreeFloorTiles.ToList());
+            //GetRandomFloorPosition();
 
             map.SetMininumObjectCount(_floorTiles.Count / _tilesPerEnemy, _floorTiles.Count / _tilesPerItem, _doors.Count, _floorTiles.Count / _tilesPerPotion);
             map.FloorTiles = _floorTiles;
@@ -317,10 +316,22 @@ namespace Skalm.Maps
             _floorTiles = floorTiles;
             _doors = doorList3;
             FreeFloorTiles = floorTiles;
-            RandomMap randomMap = new RandomMap(_floorTiles, _doors, _floorTiles.Count / _tilesPerEnemy, _floorTiles.Count / _tilesPerItem, _doors.Count, _floorTiles.Count / _tilesPerPotion);
-            randomMap.PlayerSpawnPosition = GetRandomFloorPosition();
-            randomMap.GoalPosition = GetRandomFloorPosition();
+            RandomMap randomMap = new RandomMap(_floorTiles, _doors,
+                _floorTiles.Count / _tilesPerEnemy, _floorTiles.Count / _tilesPerItem, _doors.Count, _floorTiles.Count / _tilesPerPotion);
+
+            List<Vector2Int> roomCenters = roomPos;
+            roomCenters = PopRandomPositionInList(roomCenters, out Vector2Int playerPos);
+            randomMap.PlayerSpawnPosition = playerPos;
+            randomMap.GoalPosition = MapGen.FindFurthestVectorInList(playerPos, roomCenters); ;
             return randomMap;
+        }
+
+        private List<Vector2Int> PopRandomPositionInList(List<Vector2Int> positions, out Vector2Int pos)
+        {
+            Random rng = new Random();
+            pos = positions.ElementAt(rng.Next(positions.Count));
+            positions.Remove(pos);
+            return positions;
         }
 
         private void LoadRandomMapIntoGrid(RandomMap map)
@@ -333,7 +344,8 @@ namespace Skalm.Maps
             {
                 CreateDoorTile(door.X, door.Y);
             }
-            _tileGrid.SetGridObject(map.GoalPosition, new FloorTile(map.GoalPosition, _settings.GoalSprite, _settings.GoalColor, "stairs to the next floor"));
+            _tileGrid.SetGridObject(map.GoalPosition, new FloorTile(
+                map.GoalPosition, _settings.GoalSprite, _settings.GoalColor, "stairs to the next floor"));
 
         }
     }

@@ -59,7 +59,7 @@ namespace Skalm.Menu
             return new Dictionary<string, MenuPage>
             {
                 {"MAIN MENU", new MenuPage(Page.MainMenu, "MAIN MENU", "New Game", "Options", "How To Play", "Credits", "Exit")},
-                {"NEW GAME", new MenuPage(Page.NewGame, "NEW GAME", "Start New Game", "Enter Name", "Back")},
+                {"NEW GAME", new MenuPage(Page.NewGame, "NEW GAME", "Start New Game", "Start Random Game", "Enter Name", "Back")},
                 {"OPTIONS", new MenuPage(Page.Options, "OPTIONS", "Input Method", "Music", "Toggle Beep", "Back")},
                 {"CREDITS", new MenuPage(Page.Credits, "CREDITS", "Josef Schönbäck", "Martin Lindvik", "Music by Kevin MacLeod(incompetech.com)", "Licensed under Creative Commons: By Attribution 4.0 License", "Back")},
                 {"INPUT METHOD", new MenuPage(Page.InputMethod, "INPUT METHOD", inputs.ToArray())},

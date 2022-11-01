@@ -73,7 +73,8 @@ namespace Skalm
                 PlayerName = "Nameless";
 
             // INITIALIZE PLAYER STATS
-            Player.InitializePlayer(_mapManager.MapGenerator.CurrentMap.PlayerSpawnPosition, PlayerName, _settings.PlayerSprite, _settings.PlayerColor);
+            Player.InitializePlayer(_mapManager.MapGenerator.CurrentMap.PlayerSpawnPosition, 
+                PlayerName, _settings.PlayerSprite, _settings.PlayerColor);
 
             // ADD STARTING EQUIPMENT
             Player.AddItemToInventory(new Key());

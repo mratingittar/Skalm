@@ -1,6 +1,7 @@
 ﻿using Skalm.Animation;
 using Skalm.Display;
 using Skalm.Input;
+using Skalm.Maps;
 using Skalm.Menu;
 using Skalm.Sounds;
 using Skalm.Structs;
@@ -11,7 +12,7 @@ namespace Skalm.States.GameStates
     {
         public string playerName = "";
 
-        private const int _menuPageHeight = 6;
+        private const int _menuPageHeight = 7;
         private Animator _fireAnimator;
         private GameManager _gameManager;
         private DisplayManager _displayManager;
@@ -19,6 +20,7 @@ namespace Skalm.States.GameStates
         private SoundManager _soundManager;
         private InputManager _inputManager;
         private SceneManager _sceneManager;
+        private MapManager _mapManager;
 
         // CONSTRUCTOR I
         public GameStateMainMenu(GameManager gameManager)
@@ -30,6 +32,7 @@ namespace Skalm.States.GameStates
             _inputManager = gameManager.InputManager;
             _fireAnimator = gameManager.Animator;
             _sceneManager = gameManager.SceneManager;
+            _mapManager = gameManager.MapManager;
         }
 
         #region StateBasics
@@ -115,6 +118,14 @@ namespace Skalm.States.GameStates
 
                     if (item == "Start New Game")
                     {
+                        _mapManager.MapGenerator.UseRandomMaps = false;
+                        _gameManager.NewGame = true;
+                        _gameManager.StateMachine.ChangeState(EGameStates.GameStatePlaying);
+                    }
+
+                    if (item == "Start Random Game")
+                    {
+                        _mapManager.MapGenerator.UseRandomMaps = true;
                         _gameManager.NewGame = true;
                         _gameManager.StateMachine.ChangeState(EGameStates.GameStatePlaying);
                     }

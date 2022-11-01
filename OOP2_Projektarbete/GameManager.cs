@@ -40,7 +40,9 @@ namespace Skalm
         #endregion
 
         // CONSTRUCTOR I
-        public GameManager(ISettings settings, DisplayManager displayManager, MapManager mapManager, SoundManager soundManager, InputManager inputManager, MenuManager menuManager, SceneManager sceneManager)
+        public GameManager(ISettings settings, DisplayManager displayManager, 
+            MapManager mapManager, SoundManager soundManager, InputManager inputManager, 
+            MenuManager menuManager, SceneManager sceneManager)
         {
             Settings = settings;
 
