@@ -9,6 +9,7 @@ Use 'Escape' to cancel out of menus.
 
 Some features:
 - There is support for preconstructed maps (more can be added in the data/maps folder) as well as procedurally generated maps.
+- The preconstructed maps are recycled when they run out. They are shuffled and flipped or rotated to keep things fresh.
 - You can add your own music in the data/audio folder. It must be .wav-format. Simply select the song in the options menu after launching the game
 - The settings.txt file can be fiddled with as you please, at your own risk. 
   If something gets too messed up you can simply delete the file and Skälm will simply generate a new one.
