@@ -15,6 +15,7 @@ Some features:
   If something gets too messed up you can simply delete the file and Skälm will simply generate a new one.
 
 Some caveats:
+- The game only works on Windows, due to some OS-specific APIs.
 - Don't resize the console window, or you'll have to restart the game.
 - There is a slight risk of being softlocked if you are unlucky with key placements. Take care when planning your route.
 - The game is not very balanced due to time constraints.
